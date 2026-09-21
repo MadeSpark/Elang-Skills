@@ -1,0 +1,171 @@
+# HKCU\Software\FlySky 快照  2026-09-21T20:27:53
+
+[KEY ] Software\FlySky\E
+[KEY ] Software\FlySky\E\EInf40
+[BIN ] Software\FlySky\E\EInf40 :: CoolBar40  type=3 size=136 sha1=02c8e3b752b1 head=050006000400000081000000E0000000D1000000E9000000C8000000E6000000
+[BIN ] Software\FlySky\E\EInf40 :: SaveStr40  type=3 size=1363 sha1=e1d824ff6d1f head=0500060053050000070000001E2D01F82E2D01F87C5F6F94792065C82E4B33CB
+[BIN ] Software\FlySky\E\EInf40 :: SaveE40  type=3 size=892 sha1=5d8af3e96d46 head=CAFC5980BF5F06800500060080BE5F065E5A0680BF5F0680BF5F06808F52368D
+[STR ] Software\FlySky\E\EInf40 :: Ver  type=4 = 393221
+[STR ] Software\FlySky\E\EInf40 :: Type  type=4 = 1
+[STR ] Software\FlySky\E\EInf40 :: Language  type=4 = 1
+[KEY ] Software\FlySky\E\ETBP40-Bar0
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: BarID  type=4 = 59392
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: XPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: YPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUDockID  type=4 = 59419
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUDockLeftPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUDockTopPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUDockRightPos  type=4 = 839
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUDockBottomPos  type=4 = 23
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUFloatStyle  type=4 = 8196
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar0 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar1
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: BarID  type=4 = 133
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: XPos  type=4 = 4294966349
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: YPos  type=4 = 1045
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUDockLeftPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUDockTopPos  type=4 = 49
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUDockRightPos  type=4 = 355
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUDockBottomPos  type=4 = 74
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUFloatStyle  type=4 = 8196
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar1 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar10
+[STR ] Software\FlySky\E\ETBP40-Bar10 :: BarID  type=4 = 59422
+[STR ] Software\FlySky\E\ETBP40-Bar10 :: Bars  type=4 = 3
+[STR ] Software\FlySky\E\ETBP40-Bar10 :: Bar#0  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar10 :: Bar#1  type=4 = 130
+[STR ] Software\FlySky\E\ETBP40-Bar10 :: Bar#2  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar11
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: BarID  type=4 = 59420
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bars  type=4 = 5
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bar#0  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bar#1  type=4 = 129
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bar#2  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bar#3  type=4 = 132
+[STR ] Software\FlySky\E\ETBP40-Bar11 :: Bar#4  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar12
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: BarID  type=4 = 59421
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: Bars  type=4 = 3
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: Bar#0  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: Bar#1  type=4 = 110
+[STR ] Software\FlySky\E\ETBP40-Bar12 :: Bar#2  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar2
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: BarID  type=4 = 135
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: XPos  type=4 = 4294962291
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: YPos  type=4 = 4294962306
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUDockLeftPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUDockTopPos  type=4 = 72
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUDockRightPos  type=4 = 517
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUDockBottomPos  type=4 = 97
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUFloatStyle  type=4 = 8196
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar2 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar3
+[STR ] Software\FlySky\E\ETBP40-Bar3 :: BarID  type=4 = 59393
+[STR ] Software\FlySky\E\ETBP40-Bar3 :: Visible  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar4
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: BarID  type=4 = 129
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: XPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: YPos  type=4 = 24
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUDockLeftPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUDockTopPos  type=4 = 24
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUDockRightPos  type=4 = 231
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUDockBottomPos  type=4 = 756
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUFloatStyle  type=4 = 4
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar4 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar5
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: BarID  type=4 = 130
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: XPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: YPos  type=4 = 32
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUDockLeftPos  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUDockTopPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUDockRightPos  type=4 = 904
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUDockBottomPos  type=4 = 186
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUFloatStyle  type=4 = 4
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar5 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar6
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: BarID  type=4 = 132
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: XPos  type=4 = 4294966580
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: YPos  type=4 = 1070
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUDockLeftPos  type=4 = 229
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUDockTopPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUDockRightPos  type=4 = 837
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUDockBottomPos  type=4 = 2
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUFloatStyle  type=4 = 4
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar6 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar7
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: BarID  type=4 = 110
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: XPos  type=4 = 9
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: YPos  type=4 = 24
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUDockLeftPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUDockTopPos  type=4 = 24
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUDockRightPos  type=4 = 133
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUDockBottomPos  type=4 = 729
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUFloatStyle  type=4 = 4
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar7 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar8
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: BarID  type=4 = 59396
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: Visible  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: XPos  type=4 = 4294967289
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: YPos  type=4 = 8
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: Docking  type=4 = 1
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUDockID  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUDockLeftPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUDockTopPos  type=4 = 4294967294
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUDockRightPos  type=4 = 1721
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUDockBottomPos  type=4 = 28
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUFloatStyle  type=4 = 8196
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUFloatXPos  type=4 = 2147483648
+[STR ] Software\FlySky\E\ETBP40-Bar8 :: MRUFloatYPos  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Bar9
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: BarID  type=4 = 59419
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bars  type=4 = 9
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#0  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#1  type=4 = 59396
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#2  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#3  type=4 = 59392
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#4  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#5  type=4 = 133
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#6  type=4 = 0
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#7  type=4 = 135
+[STR ] Software\FlySky\E\ETBP40-Bar9 :: Bar#8  type=4 = 0
+[KEY ] Software\FlySky\E\ETBP40-Summary
+[STR ] Software\FlySky\E\ETBP40-Summary :: Bars  type=4 = 13
+[STR ] Software\FlySky\E\ETBP40-Summary :: ScreenCX  type=4 = 1707
+[STR ] Software\FlySky\E\ETBP40-Summary :: ScreenCY  type=4 = 1067
+[KEY ] Software\FlySky\E\Install
+[STR ] Software\FlySky\E\Install :: Path  type=1 = D:\ides\e\lib\
+[KEY ] Software\FlySky\E\Recent File List
+[STR ] Software\FlySky\E\Recent File List :: File1  type=1 = D:\ides\e\plugins\samples\PluginsTest.e
+[STR ] Software\FlySky\E\Recent File List :: File2  type=1 = C:\Users\MadeSpark\Desktop\测试\demos\03-Json解析测试\项目.代码\代码.e
+[STR ] Software\FlySky\E\Recent File List :: File3  type=1 = C:\Users\MadeSpark\Desktop\测试\demos\03-Json解析测试\项目.e
+[STR ] Software\FlySky\E\Recent File List :: File4  type=1 = C:\Users\MadeSpark\Desktop\测试\demos\02-嵌套控制流压测\项目\代码.e
+[STR ] Software\FlySky\E\Recent File List :: File5  type=1 = C:\Users\MadeSpark\AppData\Local\Temp\elang_gui\嵌套压测\代码.e
+[STR ] Software\FlySky\E\Recent File List :: File6  type=1 = C:\Users\MadeSpark\AppData\Local\Temp\elang_gui\判断测试\代码.e
+[STR ] Software\FlySky\E\Recent File List :: File7  type=1 = C:\Users\MadeSpark\Desktop\测试\debug\代码.e
+[STR ] Software\FlySky\E\Recent File List :: File8  type=1 = C:\Users\MadeSpark\Desktop\测试\测试.e
+[KEY ] Software\FlySky\E\Settings

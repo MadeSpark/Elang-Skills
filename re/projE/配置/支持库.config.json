@@ -1,0 +1,26 @@
+﻿[
+    {
+        "CmdCount": 193,
+        "Guid": "d09f2340818511d396f6aaf844c7e325",
+        "Key": "krnln",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 11,
+        "Name": "系统核心支持库",
+        "Version": {
+            "Major": 5,
+            "Minor": 7
+        }
+    },
+    {
+        "CmdCount": 1,
+        "Guid": "63aa4bea120c4dabad567115556de054",
+        "Key": "cncnv",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 0,
+        "Name": "文字编码转换支持库",
+        "Version": {
+            "Major": 2,
+            "Minor": 0
+        }
+    }
+]

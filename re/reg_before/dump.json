@@ -1,0 +1,991 @@
+{
+ "captured_at": "2026-09-21T20:27:53",
+ "root": "HKCU\\Software\\FlySky",
+ "entries": [
+  {
+   "path": "Software\\FlySky\\E",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "CoolBar40",
+   "type": 3,
+   "size": 136,
+   "hex_file": "Software_FlySky_E_EInf40__CoolBar40.hex",
+   "sha1": "02c8e3b752b14b653718c4cdf83bd8238708a8ee",
+   "head": "050006000400000081000000E0000000D1000000E9000000C8000000E6000000"
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "SaveStr40",
+   "type": 3,
+   "size": 1363,
+   "hex_file": "Software_FlySky_E_EInf40__SaveStr40.hex",
+   "sha1": "e1d824ff6d1f31cdbefa5c587e7bbb61053d38bb",
+   "head": "0500060053050000070000001E2D01F82E2D01F87C5F6F94792065C82E4B33CB"
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "SaveE40",
+   "type": 3,
+   "size": 892,
+   "hex_file": "Software_FlySky_E_EInf40__SaveE40.hex",
+   "sha1": "5d8af3e96d460d7a5e6c5dbfc16d69a22b9a02cd",
+   "head": "CAFC5980BF5F06800500060080BE5F065E5A0680BF5F0680BF5F06808F52368D"
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "Ver",
+   "type": 4,
+   "value": 393221
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "Type",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\EInf40",
+   "name": "Language",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "BarID",
+   "type": 4,
+   "value": 59392
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "XPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "YPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 59419
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 839
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 23
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 8196
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar0",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "BarID",
+   "type": 4,
+   "value": 133
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "XPos",
+   "type": 4,
+   "value": 4294966349
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "YPos",
+   "type": 4,
+   "value": 1045
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 49
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 355
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 74
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 8196
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar1",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "name": "BarID",
+   "type": 4,
+   "value": 59422
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "name": "Bars",
+   "type": 4,
+   "value": 3
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "name": "Bar#0",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "name": "Bar#1",
+   "type": 4,
+   "value": 130
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar10",
+   "name": "Bar#2",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "BarID",
+   "type": 4,
+   "value": 59420
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bars",
+   "type": 4,
+   "value": 5
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bar#0",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bar#1",
+   "type": 4,
+   "value": 129
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bar#2",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bar#3",
+   "type": 4,
+   "value": 132
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar11",
+   "name": "Bar#4",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "BarID",
+   "type": 4,
+   "value": 59421
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "Bars",
+   "type": 4,
+   "value": 3
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "Bar#0",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "Bar#1",
+   "type": 4,
+   "value": 110
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar12",
+   "name": "Bar#2",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "BarID",
+   "type": 4,
+   "value": 135
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "XPos",
+   "type": 4,
+   "value": 4294962291
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "YPos",
+   "type": 4,
+   "value": 4294962306
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 72
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 517
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 97
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 8196
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar2",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar3",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar3",
+   "name": "BarID",
+   "type": 4,
+   "value": 59393
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar3",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "BarID",
+   "type": 4,
+   "value": 129
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "XPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "YPos",
+   "type": 4,
+   "value": 24
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 24
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 231
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 756
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 4
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar4",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "BarID",
+   "type": 4,
+   "value": 130
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "XPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "YPos",
+   "type": 4,
+   "value": 32
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 904
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 186
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 4
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar5",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "BarID",
+   "type": 4,
+   "value": 132
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "XPos",
+   "type": 4,
+   "value": 4294966580
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "YPos",
+   "type": 4,
+   "value": 1070
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 229
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 837
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 2
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 4
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar6",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "BarID",
+   "type": 4,
+   "value": 110
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "XPos",
+   "type": 4,
+   "value": 9
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "YPos",
+   "type": 4,
+   "value": 24
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 24
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 133
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 729
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 4
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar7",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "BarID",
+   "type": 4,
+   "value": 59396
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "Visible",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "XPos",
+   "type": 4,
+   "value": 4294967289
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "YPos",
+   "type": 4,
+   "value": 8
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "Docking",
+   "type": 4,
+   "value": 1
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUDockID",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUDockLeftPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUDockTopPos",
+   "type": 4,
+   "value": 4294967294
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUDockRightPos",
+   "type": 4,
+   "value": 1721
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUDockBottomPos",
+   "type": 4,
+   "value": 28
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUFloatStyle",
+   "type": 4,
+   "value": 8196
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUFloatXPos",
+   "type": 4,
+   "value": 2147483648
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar8",
+   "name": "MRUFloatYPos",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "BarID",
+   "type": 4,
+   "value": 59419
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bars",
+   "type": 4,
+   "value": 9
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#0",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#1",
+   "type": 4,
+   "value": 59396
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#2",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#3",
+   "type": 4,
+   "value": 59392
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#4",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#5",
+   "type": 4,
+   "value": 133
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#6",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#7",
+   "type": 4,
+   "value": 135
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Bar9",
+   "name": "Bar#8",
+   "type": 4,
+   "value": 0
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Summary",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Summary",
+   "name": "Bars",
+   "type": 4,
+   "value": 13
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Summary",
+   "name": "ScreenCX",
+   "type": 4,
+   "value": 1707
+  },
+  {
+   "path": "Software\\FlySky\\E\\ETBP40-Summary",
+   "name": "ScreenCY",
+   "type": 4,
+   "value": 1067
+  },
+  {
+   "path": "Software\\FlySky\\E\\Install",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\Install",
+   "name": "Path",
+   "type": 1,
+   "value": "D:\\ides\\e\\lib\\"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "_key": true
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File1",
+   "type": 1,
+   "value": "D:\\ides\\e\\plugins\\samples\\PluginsTest.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File2",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\03-Json解析测试\\项目.代码\\代码.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File3",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\03-Json解析测试\\项目.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File4",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\02-嵌套控制流压测\\项目\\代码.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File5",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\AppData\\Local\\Temp\\elang_gui\\嵌套压测\\代码.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File6",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\AppData\\Local\\Temp\\elang_gui\\判断测试\\代码.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File7",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\Desktop\\测试\\debug\\代码.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Recent File List",
+   "name": "File8",
+   "type": 1,
+   "value": "C:\\Users\\MadeSpark\\Desktop\\测试\\测试.e"
+  },
+  {
+   "path": "Software\\FlySky\\E\\Settings",
+   "_key": true
+  }
+ ]
+}

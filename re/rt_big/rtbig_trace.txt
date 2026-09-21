@@ -1,0 +1,296 @@
+[00:00:53.327][tid=81484] ===== elang_addin loaded into e.exe (pid=60584) =====
+[00:00:53.329][tid=81484] LIBINFO state=0xE0000104 (LBS_IDE_PLUGIN=256) name='AIµ˜ ‘Àﬁ÷˜' guid=7A1E4F22C3B0499E8D6A0011223344FE
+[00:00:53.329][tid=81484] LIBINFO pfnNotify=0x1D7532B0
+[00:00:53.330][tid=81484] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[00:00:53.330][tid=81484] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[00:00:53.335][tid=81484] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[00:00:53.335][tid=81484] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[00:01:02.200][tid=81484] NOTIFY nMsg=18 (0x12) p1=0x00000000 p2=0x00000000
+[00:01:02.201][tid=81484] HOOK NL_IDE_READY (ai_mode=1)
+[00:01:02.202][tid=82188] WORKER start (thread created on NL_IDE_READY)
+[00:01:02.202][tid=82188] STEP2 AI task param -> 'C:\Users\MadeSpark\Desktop\≤‚ ‘\re\rt_big\caged.e' (source=env:ELANG_AI_TASK)
+[00:01:02.202][tid=82188] STEP3 read-only probe begin
+[00:01:02.203][tid=82188] MACRO FN_COMPILE_AND_RUN = 0x05020002 (expect 0x05020002)
+[00:01:02.203][tid=82188] MACRO FN_END_RUN         = 0x05020003
+[00:01:02.204][tid=82188] MACRO FN_OPEN_FILE2      = 0x03010008 (expect 0x03010008)
+[00:01:02.204][tid=82188] MACRO FN_ADD_TAB         = 0x05030001 (expect 0x05030001)
+[00:01:02.204][tid=82188] MACRO FN_SWITCH_OUTPUT_BAR = 0x04020003 (expect 0x04020003)
+[00:01:02.205][tid=82188] MACRO FN_IS_FUNC_ENABLED = 0x05030004 (expect 0x05030004)
+[00:01:02.205][tid=82188] MACRO FN_STEP_INTO       = 0x05010001 (expect 0x05010001)
+[00:01:02.205][tid=82188] MACRO FN_SET_BREAK_POINTER = 0x05010006 (expect 0x05010006)
+[00:01:02.206][tid=82188] MACRO NL_SYS_NOTIFY_FUNCTION = 1 / NL_IDE_READY = 18 / NL_RIGHT_POPUP_MENU_SHOW = 19
+[00:01:02.206][tid=82188] MACRO LBS_IDE_PLUGIN = 0x100 / NES_GET_MAIN_HWND = 1 / NES_RUN_FUNC = 2
+[00:01:02.206][tid=82188] MACRO LIB_FORMAT_VER = 20000101
+[00:01:02.207][tid=82188] STruct sizeof(LIB_INFO)=144  offsetof m_dwState=48 m_nCmdCount=100 m_pCmdsFunc=108 m_pfnNotify=120 m_pLibConst=136
+[00:01:02.207][tid=82188] STruct sizeof(LIB_INFO2)=160 (LIB_INFO=144 + 4 ptrs)
+[00:01:02.208][tid=82188] PROBE NES_GET_MAIN_HWND -> hwnd=0x00570606 class='ENewFrame' visible=1 (expect class ENewFrame)
+[00:01:02.208][tid=82188] PROBE GetCommandLineA    = 'D:\ides\e\e.exe C:\Users\MadeSpark\Desktop\≤‚ ‘\re\rt_big\caged.e'
+[00:01:02.208][tid=82188] PROBE GetModuleFileNameA(nullptr) = 'D:\ides\e\e.exe'
+[00:01:02.209][tid=82188] PROBE FN_IS_FUNC_ENABLED table (nMsg=2 func=0x05030004):
+[00:01:02.210][tid=82188]    func 0x05020002 FN_COMPILE_AND_RUN           -> handled=1 enabled=1
+[00:01:02.210][tid=82188]    func 0x05020003 FN_END_RUN                   -> handled=1 enabled=0
+[00:01:02.211][tid=82188]    func 0x05020001 FN_COMPILE                   -> handled=1 enabled=1
+[00:01:02.211][tid=82188]    func 0x03010008 FN_OPEN_FILE2                -> handled=1 enabled=1
+[00:01:02.211][tid=82188]    func 0x05030001 FN_ADD_TAB                   -> handled=1 enabled=1
+[00:01:02.212][tid=82188]    func 0x04020003 FN_SWITCH_OUTPUT_BAR         -> handled=1 enabled=1
+[00:01:02.212][tid=82188]    func 0x05030004 FN_IS_FUNC_ENABLED           -> handled=1 enabled=1
+[00:01:02.212][tid=82188]    func 0x05010001 FN_STEP_INTO                 -> handled=1 enabled=0
+[00:01:02.213][tid=82188]    func 0x05010002 FN_STEP                      -> handled=1 enabled=0
+[00:01:02.213][tid=82188]    func 0x05010003 FN_STEP_OUT                  -> handled=1 enabled=0
+[00:01:02.213][tid=82188]    func 0x05010004 FN_RUN_TO_CURSOR             -> handled=1 enabled=1
+[00:01:02.214][tid=82188]    func 0x05010006 FN_SET_BREAK_POINTER         -> handled=1 enabled=1
+[00:01:02.214][tid=82188]    func 0x05010007 FN_CLEAR_ALL_BREAK_POINTER   -> handled=1 enabled=1
+[00:01:02.214][tid=82188]    func 0x05010008 FN_SHOW_NEXT_STATMENT        -> handled=1 enabled=0
+[00:01:02.215][tid=82188]    func 0x0503000A FN_GET_PRG_TEXT              -> handled=1 enabled=1
+[00:01:02.215][tid=82188]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[00:01:02.216][tid=82188]    func 0x01010042 FN_MOVE_CARET                -> handled=1 enabled=1
+[00:01:02.216][tid=82188]    func 0x0202006D FN_INSERT_TEXT               -> handled=1 enabled=1
+[00:01:02.217][tid=82188]    func 0x02020070 FN_PRE_COMPILE               -> handled=1 enabled=1
+[00:01:02.217][tid=82188] PROBE EnumChildWindows of main window begin:
+[00:01:02.217][tid=82188]   child#1 hwnd=0x007F0C50 class='AfxControlBar42s' text='◊¥Ã¨º–' rect=(5,789,1702,1014) visible=1
+[00:01:02.220][tid=82188]   child#2 hwnd=0x004E0CCA class='Afx:400000:8:10003:900015:0' text='◊¥Ã¨º–' rect=(5,821,1702,1014) visible=1
+[00:01:02.220][tid=82188]   child#3 hwnd=0x00FC164E class='#32770' text='' rect=(5,821,1702,1014) visible=1
+[00:01:02.222][tid=82188]   child#4 hwnd=0x00770E48 class='SysTabControl32' text='◊¥Ã¨º–”“±ﬂ' rect=(1702,821,1702,1014) visible=1
+[00:01:02.224][tid=82188]   child#5 hwnd=0x0082060E class='SysTabControl32' text='◊¥Ã¨º–◊Û±ﬂ' rect=(5,821,1702,1014) visible=1
+[00:01:02.227][tid=82188]   child#6 hwnd=0x0045072A class='Edit' text='°Ù’˝‘⁄º”‘ÿ≤Âº˛...
+' rect=(6,821,1701,821) visible=1
+[00:01:02.228][tid=82188]   child#7 hwnd=0x00840C82 class='ScintillaForEIDETools' text='
+°Ô ƒ⁄¡™ª„±‡≤Âº˛:µ±«∞“◊”Ô—‘∞Ê±æ [593] ÷ß≥÷µ±«∞∞Ê±æ(ø…“‘‘⁄≤Àµ•÷–—°‘Ò°∞π§æﬂ->ƒ⁄¡™ª„±‡…Ë÷√°±–ﬁ∏ƒ…Ë÷√; ◊˜’ﬂ: yecate qq: 869443499)
+°Ô µ±«∞∞Ê±æŒ™ v3.59(20250727) ø™∑¢Œ¨ª§≤ª“◊, »Áπ˚¥À≤Âº˛∂‘ƒ„ø™∑¢”–∞Ô÷˙,«Î‘ﬁ÷˙÷ß≥÷œ¬, –ª–ª!
+
+
+°Ù
+®ã®ã®ã®ã®ã≤Âº˛’˝‘⁄º”‘ÿ÷–£¨«Î' rect=(6,821,1701,990) visible=1
+[00:01:02.228][tid=82188]   child#8 hwnd=0x015117F6 class='Edit' text='--- ≥Ã–Úµƒ ‰»Î∑Ω∑®£∫
+    Œ™¡À±„”⁄ ‰»Î≥Ã–Ú£¨“◊”Ô—‘ƒ⁄÷√Àƒ÷÷√˚≥∆ ‰»Î∑®£∫ ◊∆¥°¢»´∆¥°¢À´∆¥°¢”¢Œƒ°£»˝÷÷∆¥“Ù ‰»Î∑®æ˘÷ß≥÷ƒœ∑Ω“Ùº∞∂‡“Ù◊÷°£ ◊∆¥ ‰»Î∑®º∞»´∆¥ ‰»Î∑®‘⁄œµÕ≥÷–±ª∫œ≤¢Œ™°∞ ◊∆¥º∞»´∆¥ ‰»Î∑®°±£¨œµÕ≥◊‘∂Ø≈–±À˘ ‰»Îµƒ∆¥“Ù « ◊∆¥∑Ω Ωªπ «»´∆¥∑Ω Ω°£À´∆¥ ‰»Î∑®µƒ±‡¬Î' rect=(9,847,1243,989) visible=0
+[00:01:02.230][tid=82188]   child#9 hwnd=0x007E09FA class='SysTreeView32' text='Tree1' rect=(9,847,1243,989) visible=0
+[00:01:02.230][tid=82188]   child#10 hwnd=0x00A60AAA class='SysListView32' text='List1' rect=(9,847,1243,989) visible=0
+[00:01:02.245][tid=82188]   child#11 hwnd=0x006D0A20 class='SysHeader32' text='' rect=(11,849,163,867) visible=0
+[00:01:02.252][tid=82188]   child#12 hwnd=0x00FA1806 class='Static' text=' ' rect=(470,869,1243,890) visible=0
+[00:01:02.252][tid=82188]   child#13 hwnd=0x004204AA class='Edit' text='' rect=(421,892,1243,989) visible=0
+[00:01:02.254][tid=82188]   child#14 hwnd=0x00750AB2 class='SysTreeView32' text='Tree1' rect=(9,847,419,989) visible=0
+[00:01:02.257][tid=82188]   child#15 hwnd=0x004D07D2 class='ComboBox' text='' rect=(421,847,1243,867) visible=0
+[00:01:02.259][tid=82188]   child#16 hwnd=0x00D7050C class='Button' text='–¥»Î' rect=(421,869,465,890) visible=0
+[00:01:02.261][tid=82188]   child#17 hwnd=0x009804BA class='Static' text='--- Ωˆµ˜ ‘÷–∂œ◊¥Ã¨œ¬”––ß ---' rect=(9,847,1243,989) visible=0
+[00:01:02.266][tid=82188]   child#18 hwnd=0x008309DE class='ListBox' text='' rect=(9,847,1243,989) visible=0
+[00:01:02.267][tid=82188]   child#19 hwnd=0x00790AA0 class='ListBox' text='' rect=(9,847,1243,989) visible=0
+[00:01:02.271][tid=82188]   child#20 hwnd=0x006202C2 class='SysListView32' text='List1' rect=(9,847,1243,989) visible=0
+[00:01:02.274][tid=82188]   child#21 hwnd=0x007719F8 class='SysTabControl32' text='Tab1' rect=(397,914,502,1006) visible=0
+[00:01:02.276][tid=82188]   child#22 hwnd=0x00C81810 class='SysTabControl32' text='Tab1' rect=(5,771,1702,1064) visible=1
+[00:01:02.285][tid=82188]   child#23 hwnd=0x01391854 class='MDIClient' text='' rect=(328,105,1702,789) visible=1
+[00:01:02.288][tid=82188]   child#24 hwnd=0x003F0608 class='CCustomTabCtrl' text='' rect=(0,43,0,43) visible=0
+[00:01:02.302][tid=82188]   child#25 hwnd=0x00610C44 class='AfxControlBar42s' text='≤Àµ•Ãı' rect=(5,35,905,61) visible=1
+[00:01:02.306][tid=82188]   child#26 hwnd=0x00510A36 class='ToolbarWindow32' text='∂‘∆Îπ§æﬂÃı' rect=(-947,1080,-590,1105) visible=0
+[00:01:02.307][tid=82188]   child#27 hwnd=0x00530376 class='ToolbarWindow32' text='±Í◊ºπ§æﬂÃı' rect=(5,35,905,56) visible=1
+[00:01:02.308][tid=82188]   child#28 hwnd=0x00400C42 class='Afx:400000:b:10003:10:0' text='≤Àµ•Ãı' rect=(-7,53,1273,83) visible=0
+[00:01:02.310][tid=82188]   child#29 hwnd=0x0088053A class='ToolbarWindow32' text='∂®Œªπ§æﬂÃı' rect=(-5000,-4955,-4481,-4930) visible=0
+[00:01:02.312][tid=82188]   child#30 hwnd=0x004F16DC class='AfxControlBar42s' text='π§◊˜º–' rect=(5,61,328,789) visible=1
+[00:01:02.321][tid=82188]   child#31 hwnd=0x00A30D94 class='Afx:400000:8:10003:900015:0' text='π§◊˜”Î◊¥Ã¨◊È∫œº–' rect=(-716,1103,-108,1107) visible=0
+[00:01:02.322][tid=82188]   child#32 hwnd=0x00A50A22 class='Afx:400000:8:10003:900015:0' text='π§◊˜º–' rect=(5,85,320,789) visible=1
+[00:01:02.323][tid=82188]   child#33 hwnd=0x009309C8 class='#32770' text='' rect=(5,85,320,789) visible=1
+[00:01:02.325][tid=82188]   child#34 hwnd=0x008706D8 class='SysTabControl32' text='Tab1' rect=(5,85,320,789) visible=1
+[00:01:02.326][tid=82188]   child#35 hwnd=0x007010D4 class='Afx:400000:b:10003:900015:0' text='' rect=(9,109,219,412) visible=0
+[00:01:02.327][tid=82188]   child#36 hwnd=0x005C0FF0 class='ComboBox' text='--- Œﬁ∂‘”¶ ¬º˛ ---' rect=(9,413,219,433) visible=0
+[00:01:02.329][tid=82188]   child#37 hwnd=0x00510F70 class='ComboBox' text='' rect=(9,89,219,109) visible=0
+[00:01:02.330][tid=82188]   child#38 hwnd=0x00990E96 class='SysTreeView32' text='Tree1' rect=(9,89,219,433) visible=0
+[00:01:02.331][tid=82188]   child#39 hwnd=0x00D80EE2 class='SysTreeView32' text='Tree1' rect=(6,85,319,769) visible=1
+[00:01:02.332][tid=82188]   child#40 hwnd=0x00FB0EBE class='SysTabControl32' text='Tab1' rect=(12,144,198,278) visible=0
+[00:01:02.333][tid=82188]   child#41 hwnd=0x00571818 class='AfxControlBar42s' text='¥∞ø⁄◊Èº˛œ‰' rect=(1707,66,1707,833) visible=0
+[00:01:02.334][tid=82188]   child#42 hwnd=0x00990A1E class='Afx:400000:8:10003:900015:0' text='¥∞ø⁄◊Èº˛œ‰' rect=(1716,90,1716,828) visible=0
+[00:01:02.335][tid=82188]   child#43 hwnd=0x00A41A20 class='#32770' text='' rect=(1716,90,1716,828) visible=0
+[00:01:02.343][tid=82188]   child#44 hwnd=0x012A06E8 class='Button' text='¿©’π◊Èº˛' rect=(1716,781,1716,801) visible=0
+[00:01:02.345][tid=82188]   child#45 hwnd=0x009C0018 class='Button' text='Õ‚≤ø◊Èº˛' rect=(1716,802,1716,822) visible=0
+[00:01:02.362][tid=82188]   child#46 hwnd=0x00870564 class='Button' text='ª˘±æ◊Èº˛' rect=(1716,95,1716,115) visible=0
+[00:01:02.363][tid=82188]   child#47 hwnd=0x008117FE class='SysTreeView32' text='Tree1' rect=(1716,119,1716,776) visible=0
+[00:01:02.366][tid=82188]   child#48 hwnd=0x00AA0C70 class='SysTabControl32' text='' rect=(1722,109,1723,110) visible=0
+[00:01:02.369][tid=82188]   child#49 hwnd=0x0113180C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.370][tid=82188]   child#50 hwnd=0x00360E6C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.372][tid=82188]   child#51 hwnd=0x00490C58 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.373][tid=82188]   child#52 hwnd=0x00420C4C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.374][tid=82188]   child#53 hwnd=0x00F60480 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.375][tid=82188]   child#54 hwnd=0x003F07C2 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.375][tid=82188]   child#55 hwnd=0x004E0AA8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.378][tid=82188]   child#56 hwnd=0x005A0A7C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.379][tid=82188]   child#57 hwnd=0x00D30A02 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.379][tid=82188]   child#58 hwnd=0x00721A58 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.380][tid=82188]   child#59 hwnd=0x005C1A46 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.450][tid=82188]   child#60 hwnd=0x007F1A36 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.455][tid=82188]   child#61 hwnd=0x007419EC class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.456][tid=82188]   child#62 hwnd=0x007C1A4A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.457][tid=82188]   child#63 hwnd=0x00821A52 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.458][tid=82188]   child#64 hwnd=0x005C1A50 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.459][tid=82188]   child#65 hwnd=0x003E1A54 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.461][tid=82188]   child#66 hwnd=0x008B1A38 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.969][tid=82188]   child#67 hwnd=0x00F61A48 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.971][tid=82188]   child#68 hwnd=0x007D1A4E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.972][tid=82188]   child#69 hwnd=0x00561A5A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.973][tid=82188]   child#70 hwnd=0x00641A5E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.974][tid=82188]   child#71 hwnd=0x006E1A62 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.975][tid=82188]   child#72 hwnd=0x008A1A6E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.976][tid=82188]   child#73 hwnd=0x00461A70 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.976][tid=82188]   child#74 hwnd=0x00751A74 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.978][tid=82188]   child#75 hwnd=0x005C1A7A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.978][tid=82188]   child#76 hwnd=0x011D1A7C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.992][tid=82188]   child#77 hwnd=0x0058050A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.994][tid=82188]   child#78 hwnd=0x005D06FC class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:02.999][tid=82188]   child#79 hwnd=0x005B199A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.005][tid=82188]   child#80 hwnd=0x009B1A82 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.005][tid=82188]   child#81 hwnd=0x008F1A84 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.006][tid=82188]   child#82 hwnd=0x00701A88 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.006][tid=82188]   child#83 hwnd=0x00681A8C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.007][tid=82188]   child#84 hwnd=0x004C049A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.007][tid=82188]   child#85 hwnd=0x00620474 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.008][tid=82188]   child#86 hwnd=0x00661A16 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.008][tid=82188]   child#87 hwnd=0x00D619E2 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.009][tid=82188]   child#88 hwnd=0x006F1A8E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.009][tid=82188]   child#89 hwnd=0x005C1A92 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.010][tid=82188]   child#90 hwnd=0x00911A94 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.010][tid=82188]   child#91 hwnd=0x00831A98 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.010][tid=82188]   child#92 hwnd=0x00B61A9A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.010][tid=82188]   child#93 hwnd=0x006A1A9E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.011][tid=82188]   child#94 hwnd=0x00641AA8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.011][tid=82188]   child#95 hwnd=0x00851AAA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.011][tid=82188]   child#96 hwnd=0x004C1AB0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.011][tid=82188]   child#97 hwnd=0x009819CC class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.012][tid=82188]   child#98 hwnd=0x004B0462 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.012][tid=82188]   child#99 hwnd=0x00590C28 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.013][tid=82188]   child#100 hwnd=0x00341AB2 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.013][tid=82188]   child#101 hwnd=0x005E1AB4 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.013][tid=82188]   child#102 hwnd=0x00581AB6 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.014][tid=82188]   child#103 hwnd=0x00481AB8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.014][tid=82188]   child#104 hwnd=0x00571ABC class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.015][tid=82188]   child#105 hwnd=0x00521ABE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.015][tid=82188]   child#106 hwnd=0x00591AC0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.016][tid=82188]   child#107 hwnd=0x00591AC2 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.016][tid=82188]   child#108 hwnd=0x006919DA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.017][tid=82188]   child#109 hwnd=0x011C156A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.017][tid=82188]   child#110 hwnd=0x009E19C6 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.017][tid=82188]   child#111 hwnd=0x009518E0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.018][tid=82188]   child#112 hwnd=0x00460610 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.018][tid=82188]   child#113 hwnd=0x0045035E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.018][tid=82188]   child#114 hwnd=0x005919C4 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.019][tid=82188]   child#115 hwnd=0x00641A2A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.019][tid=82188]   child#116 hwnd=0x007318DA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.020][tid=82188]   child#117 hwnd=0x00741AC6 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.020][tid=82188]   child#118 hwnd=0x005A1ACC class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.020][tid=82188]   child#119 hwnd=0x005F1ACE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.021][tid=82188]   child#120 hwnd=0x006F1AD0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.021][tid=82188]   child#121 hwnd=0x005F1AD8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.022][tid=82188]   child#122 hwnd=0x00931ADA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.022][tid=82188]   child#123 hwnd=0x00631ADE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.023][tid=82188]   child#124 hwnd=0x00591AE0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.023][tid=82188]   child#125 hwnd=0x004F1AE2 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.023][tid=82188]   child#126 hwnd=0x00B31AE4 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.023][tid=82188]   child#127 hwnd=0x00591AE6 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.024][tid=82188]   child#128 hwnd=0x005A1AE8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.024][tid=82188]   child#129 hwnd=0x00691AEA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.024][tid=82188]   child#130 hwnd=0x006A1AEE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.025][tid=82188]   child#131 hwnd=0x00A71AF0 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.025][tid=82188]   child#132 hwnd=0x006F1AF4 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.025][tid=82188]   child#133 hwnd=0x00671AF8 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.026][tid=82188]   child#134 hwnd=0x004C1AFA class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.026][tid=82188]   child#135 hwnd=0x00601AFE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.026][tid=82188]   child#136 hwnd=0x008F1B00 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.027][tid=82188]   child#137 hwnd=0x00541B06 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.027][tid=82188]   child#138 hwnd=0x00411B08 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.028][tid=82188]   child#139 hwnd=0x00541B0E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.028][tid=82188]   child#140 hwnd=0x002F1B16 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.029][tid=82188]   child#141 hwnd=0x007E1B1A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.029][tid=82188]   child#142 hwnd=0x005E1B1E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.030][tid=82188]   child#143 hwnd=0x004F1B20 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.030][tid=82188]   child#144 hwnd=0x002E1B22 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.031][tid=82188]   child#145 hwnd=0x008E1B2A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.031][tid=82188]   child#146 hwnd=0x00AC1B2E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.031][tid=82188]   child#147 hwnd=0x004C1B34 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.032][tid=82188]   child#148 hwnd=0x004A1B36 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.032][tid=82188]   child#149 hwnd=0x00541B38 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.032][tid=82188]   child#150 hwnd=0x00841B3A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.033][tid=82188]   child#151 hwnd=0x00861B3C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.033][tid=82188]   child#152 hwnd=0x004C1B3E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.034][tid=82188]   child#153 hwnd=0x00461B40 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.035][tid=82188]   child#154 hwnd=0x00DE1B42 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.035][tid=82188]   child#155 hwnd=0x004D1B46 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.036][tid=82188]   child#156 hwnd=0x00471B4C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.036][tid=82188]   child#157 hwnd=0x00471B4E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#158 hwnd=0x00941B50 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#159 hwnd=0x004C1B52 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#160 hwnd=0x004A1B54 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#161 hwnd=0x00431B72 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#162 hwnd=0x00361B76 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#163 hwnd=0x004F1B7A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.037][tid=82188]   child#164 hwnd=0x00491B7C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.040][tid=82188]   child#165 hwnd=0x00571B80 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.040][tid=82188]   child#166 hwnd=0x003C1B86 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.040][tid=82188]   child#167 hwnd=0x00461B88 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#168 hwnd=0x00421B8A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#169 hwnd=0x0042060A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#170 hwnd=0x00421B8C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#171 hwnd=0x00501B8E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#172 hwnd=0x004B1B90 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#173 hwnd=0x00431B94 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.041][tid=82188]   child#174 hwnd=0x007A130C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.043][tid=82188]   child#175 hwnd=0x00991A18 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.043][tid=82188]   child#176 hwnd=0x004A060C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.044][tid=82188]   child#177 hwnd=0x00841798 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.045][tid=82188]   child#178 hwnd=0x00971774 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.045][tid=82188]   child#179 hwnd=0x009B1A3E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.046][tid=82188]   child#180 hwnd=0x00D41B98 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.046][tid=82188]   child#181 hwnd=0x003E0A9A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.046][tid=82188]   child#182 hwnd=0x005803AE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.047][tid=82188]   child#183 hwnd=0x0083186C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.048][tid=82188]   child#184 hwnd=0x004C1A06 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.048][tid=82188]   child#185 hwnd=0x00941B9A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.048][tid=82188]   child#186 hwnd=0x006B1B9C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.048][tid=82188]   child#187 hwnd=0x00531A04 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.049][tid=82188]   child#188 hwnd=0x01E6036A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.049][tid=82188]   child#189 hwnd=0x00DF1A00 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.050][tid=82188]   child#190 hwnd=0x00411B0C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.050][tid=82188]   child#191 hwnd=0x00BE1B56 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.050][tid=82188]   child#192 hwnd=0x003A1B58 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.051][tid=82188]   child#193 hwnd=0x002B1B5A class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.051][tid=82188]   child#194 hwnd=0x002E1B5C class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.051][tid=82188]   child#195 hwnd=0x003D09E6 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.052][tid=82188]   child#196 hwnd=0x009E1A64 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.052][tid=82188]   child#197 hwnd=0x00961A7E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.052][tid=82188]   child#198 hwnd=0x00B11296 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.053][tid=82188]   child#199 hwnd=0x006B1388 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.053][tid=82188]   child#200 hwnd=0x002205FE class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.053][tid=82188]   child#201 hwnd=0x0054057E class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.054][tid=82188]   child#202 hwnd=0x00B50410 class='Button' text='' rect=(1716,90,1716,90) visible=0
+[00:01:03.054][tid=82188]   child#203 hwnd=0x00BB181E class='ToolbarWindow32' text='' rect=(905,35,974,56) visible=1
+[00:01:03.055][tid=82188]   child#204 hwnd=0x00900616 class='msctls_statusbar32' text='--- ≥Ã–Úµƒ ‰»Î∑Ω∑®£∫ £¸  Œ™¡À±„”⁄ ‰»Î≥Ã–Ú£¨“◊”Ô—‘ƒ⁄÷√Àƒ÷÷√˚≥∆ ‰»Î∑®£∫ ◊∆¥°¢»´∆¥°¢À´∆¥°¢”¢Œƒ°£»˝÷÷∆¥“Ù ‰»Î∑®æ˘÷ß≥÷ƒœ∑Ω“Ùº∞∂‡“Ù◊÷°£ ◊∆¥ ‰»Î∑®º∞»´∆¥ ‰»Î∑®‘⁄œµÕ≥÷–±ª∫œ≤¢Œ™°∞ ◊∆¥º∞»´∆¥ ‰»Î∑®°±£¨œµÕ≥◊‘∂Ø≈–±À˘ ‰»Îµƒ∆¥“Ù « ◊∆¥∑Ω Ωªπ «»´∆¥∑Ω Ω°£À´∆¥ ‰»Î∑®µƒ±‡¬Îπ' rect=(338,739,1692,759) visible=0
+[00:01:03.055][tid=82188]   child#205 hwnd=0x008604A8 class='msctls_progress32' text='' rect=(338,742,538,758) visible=0
+[00:01:03.055][tid=82188]   child#206 hwnd=0x00E307D4 class='Button' text='' rect=(1549,742,1565,758) visible=0
+[00:01:03.055][tid=82188]   child#207 hwnd=0x008A04B0 class='ComboBox' text='≤‚ ‘¥∞ø⁄ *' rect=(328,85,877,105) visible=1
+[00:01:03.056][tid=82188]   child#208 hwnd=0x014B0240 class='ComboBox' text='∞¥≈•1' rect=(877,85,1702,105) visible=1
+[00:01:03.057][tid=82188] PROBE EnumChildWindows end: total=208
+[00:01:03.057][tid=82188] PROBE hide not requested (ELANG_AI_HIDE != 1)
+[00:01:03.057][tid=82188] STEP3 read-only probe end
+[00:01:03.058][tid=82188] STEP4 PoC-2 run+capture begin (hMain=0x00570606)
+[00:01:03.058][tid=82188] RUN capture file = C:\Users\MadeSpark\Desktop\≤‚ ‘\re\rt_big\big.debug.log (delay=2500ms stop=4s)
+[00:01:03.059][tid=82188] RUN panel snapshot: 5 ∏ˆŒƒ±æ¿‡◊”¥∞ø⁄
+[00:01:03.059][tid=82188] RUN   panel[0] hwnd=0x004A0CAA class='Edit' len=3906
+[00:01:03.060][tid=82188] RUN   panel[1] hwnd=0x0045072A class='Edit' len=161
+[00:01:03.060][tid=82188] RUN   panel[2] hwnd=0x00840C82 class='ScintillaForEIDETools' len=560
+[00:01:03.060][tid=82188] RUN   panel[3] hwnd=0x015117F6 class='Edit' len=3906
+[00:01:03.060][tid=82188] RUN   panel[4] hwnd=0x004204AA class='Edit' len=0
+[00:01:03.061][tid=82188] RUN BEFORE hwnd=0x004A0CAA class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:03.061][tid=82188] RUN BEFORE hwnd=0x0045072A class='Edit' | prev='  ' | last=''
+[00:01:03.062][tid=82188] RUN BEFORE hwnd=0x00840C82 class='ScintillaForEIDETools' | prev='  ' | last=''
+[00:01:03.062][tid=82188] RUN BEFORE hwnd=0x015117F6 class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:05.571][tid=82188] RUN trigger FN_COMPILE_AND_RUN(0x05020002) ...
+[00:01:05.707][tid=82188] RUN FN_COMPILE_AND_RUN handled=1
+[00:01:05.707][tid=82188] RUN no-poll=0
+[00:01:05.709][tid=82188] RUN FN_END_RUN enabled: 0 -> 1 (t=0.0s)
+[00:01:06.016][tid=82188] RUN FN_END_RUN enabled: 1 -> 0 (t=0.3s)
+[00:01:06.017][tid=82188] RUN AFTER-END hwnd=0x004A0CAA class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:06.017][tid=82188] RUN AFTER-END hwnd=0x0045072A class='Edit' | prev='±ªµ˜ ‘“◊≥Ã–Ú‘À––ÕÍ±œ  ' | last=''
+[00:01:06.017][tid=82188] RUN AFTER-END hwnd=0x00840C82 class='ScintillaForEIDETools' | prev='[00:01:05] ±ªµ˜ ‘“◊≥Ã–Ú‘À––ÕÍ±œ  ' | last=''
+[00:01:06.017][tid=82188] RUN AFTER-END hwnd=0x015117F6 class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:06.019][tid=82188] RUN FINAL hwnd=0x004A0CAA class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:06.020][tid=82188] RUN FINAL hwnd=0x0045072A class='Edit' | prev='±ªµ˜ ‘“◊≥Ã–Ú‘À––ÕÍ±œ  ' | last=''
+[00:01:06.020][tid=82188] RUN FINAL hwnd=0x00840C82 class='ScintillaForEIDETools' | prev='[00:01:05] ±ªµ˜ ‘“◊≥Ã–Ú‘À––ÕÍ±œ  ' | last=''
+[00:01:06.020][tid=82188] RUN FINAL hwnd=0x015117F6 class='Edit' | prev='    10°¢‘Ÿœ¬“∆“ª––π‚±Í∫Û ‰»Î°∞fh (sz2)°±°£  ' | last=''
+[00:01:06.021][tid=82188] RUN capture done (iters=6, file=C:\Users\MadeSpark\Desktop\≤‚ ‘\re\rt_big\big.debug.log)
+[00:01:06.021][tid=82188] STEP4 PoC-2 run+capture end
+[00:01:06.022][tid=82188] WORKER done

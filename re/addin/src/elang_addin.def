@@ -1,0 +1,12 @@
+; elang_addin.def —— 「AI调试宿主」支持库导出表
+; 易语言支持库（.fne）本质是一个导出 GetNewInf 的 32 位 DLL。
+; 官方 SDsample HtmlView.def 也只导出 GetNewInf，此处保持一致。
+;
+; 说明：swift 约定 —— 本库全部回调按 __cdecl（见 sdk_compat.h 把 WINAPI 还原为空），
+; 因此导出名无需去修饰（不需要 --kill-at）。
+
+LIBRARY      "elang_addin"
+DESCRIPTION  'AI Debug Host (Elang PoC addin)'
+
+EXPORTS
+    GetNewInf

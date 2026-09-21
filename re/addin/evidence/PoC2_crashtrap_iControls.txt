@@ -1,0 +1,47 @@
+CRASHTRAP armed: GetNewInf entered, pid=39088, modules=210
+================ CRASHTRAP (pid=39088) ================
+ExceptionCode   = 0xC0000005
+ExceptionAddr   = 0x0BE8092E  (iControls.dll+0x5092E)
+AccessType      = READ
+AccessAddr      = 0x00000004  (?00000004)
+EIP=0x0BE8092E (iControls.dll+0x5092E)  ESP=0x001AF430  EBP=0x001AF47C  EAX=0x00000000  EBX=0x00000000  ECX=0xA27F070F  EDX=0x00000000  ESI=0x00000000  EDI=0x1A199D60
+-- stack scan (candidate return addresses inside known modules) --
+  stack[+0x028] = 0x7823556E  ->  iDraw.fne+0x556E
+  stack[+0x03C] = 0x78234A00  ->  iDraw.fne+0x4A00
+  stack[+0x050] = 0x0BE80E47  ->  iControls.dll+0x50E47
+  stack[+0x114] = 0x004603AE  ->  <main-exe>+0x603AE
+  stack[+0x124] = 0x78397C24  ->  Plugin_eFix.dll+0x57C24
+  stack[+0x12C] = 0x785AFE70  ->  SciLexer.dll+0xFE70
+  stack[+0x130] = 0x004603AE  ->  <main-exe>+0x603AE
+  stack[+0x148] = 0x785CE9E1  ->  SciLexer.dll+0x2E9E1
+  stack[+0x14C] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x1B8] = 0x762F32E9  ->  KERNELBASE.dll+0x1532E9
+  stack[+0x1D0] = 0x77E8228E  ->  ntdll.dll+0x9228E
+  stack[+0x218] = 0x77E2EEFA  ->  ntdll.dll+0x3EEFA
+  stack[+0x23C] = 0x77E71DB0  ->  ntdll.dll+0x81DB0
+  stack[+0x24C] = 0x76D33526  ->  GDI32.dll+0x3526
+  stack[+0x264] = 0x785AD3D6  ->  SciLexer.dll+0xD3D6
+  stack[+0x284] = 0x76D33A31  ->  GDI32.dll+0x3A31
+  stack[+0x294] = 0x76D4B4E8  ->  GDI32.dll+0x1B4E8
+  stack[+0x2C0] = 0x76D33956  ->  GDI32.dll+0x3956
+  stack[+0x2C8] = 0x75A912EC  ->  win32u.dll+0x12EC
+  stack[+0x2CC] = 0x785AD523  ->  SciLexer.dll+0xD523
+  stack[+0x2D0] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x2DC] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x2E0] = 0x785AD563  ->  SciLexer.dll+0xD563
+  stack[+0x2EC] = 0x752B59EC  ->  USER32.dll+0x259EC
+  stack[+0x380] = 0x785AF2A7  ->  SciLexer.dll+0xF2A7
+  stack[+0x38C] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x39C] = 0x785B1F5E  ->  SciLexer.dll+0x11F5E
+  stack[+0x3A0] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x3B8] = 0x786107E8  ->  SciLexer.dll+0x707E8
+  stack[+0x3C0] = 0x785AF2A7  ->  SciLexer.dll+0xF2A7
+  stack[+0x3C4] = 0x785B203A  ->  SciLexer.dll+0x1203A
+  stack[+0x3C8] = 0x006C09FA  ->  <main-exe>+0x2C09FA
+  stack[+0x3D0] = 0x77E2B19C  ->  ntdll.dll+0x3B19C
+  stack[+0x3D8] = 0x785B1F5E  ->  SciLexer.dll+0x11F5E
+  stack[+0x3F0] = 0x78610B8B  ->  SciLexer.dll+0x70B8B
+  stack[+0x3F8] = 0x785B203F  ->  SciLexer.dll+0x1203F
+  stack[+0x3FC] = 0x752C93B3  ->  USER32.dll+0x393B3
+================ end CRASHTRAP ================
+

@@ -1,0 +1,11 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\rt_big\caged.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\Desktop\测试\Releases\Elang-AiTools\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\rt_big\big.debug.log
+   tag     = rtbig
+   timeout = 120.0s   stop-after = 4.0
+   已投放 lib\elang_addin.fne (59904 B)
+   e.exe pid = 60584
+   观测: runStart=True runEnd=True weSent=False e_self_exit=None
+   install-dir 新文件: （无）

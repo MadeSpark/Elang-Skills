@@ -1,0 +1,4 @@
+path=D:\ides\e\e.exe
+size=3338240
+mtime=1673009046
+version={'FileVersionMS': '0x00050009', 'FileVersionLS': '0x00000000', 'FileVersion': '5.9.0.0'}

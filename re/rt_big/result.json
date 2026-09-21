@@ -1,0 +1,25 @@
+{
+  "srcSize": 658067,
+  "rtSize": 656881,
+  "srcMd5": "bfbf4b755751193624a4ba0fe4082d06",
+  "rtMd5": "d0383057d9f4936013e2b056aee9f792",
+  "e2t": {
+    "rc": 0,
+    "err": 0,
+    "warn": 0,
+    "succ": 1,
+    "fail": 0,
+    "textFiles": 19,
+    "errSamples": []
+  },
+  "t2e": {
+    "rc": 0,
+    "err": 0,
+    "warn": 0,
+    "succ": 1,
+    "fail": 0,
+    "errSamples": []
+  },
+  "prefix": 360,
+  "suffix": 55
+}

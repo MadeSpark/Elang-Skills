@@ -1,0 +1,6 @@
+[21:12:17.152][=== RUN BEGIN ===] 
+[21:12:17.154][PANEL-TAIL] BEFORE hwnd=0x00591A68 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:12:17.154][PANEL-TAIL] BEFORE hwnd=0x005C05DE class='Edit' | prev='  ' | last=''
+[21:12:17.156][PANEL-TAIL] BEFORE hwnd=0x00B10D9E class='ScintillaForEIDETools' | prev='  ' | last=''
+[21:12:17.156][PANEL-TAIL] BEFORE hwnd=0x00C309E2 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:12:19.662][RUN-TRIGGER] FN_COMPILE_AND_RUN

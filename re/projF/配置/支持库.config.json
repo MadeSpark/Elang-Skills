@@ -1,0 +1,26 @@
+﻿[
+    {
+        "CmdCount": 193,
+        "Guid": "d09f2340818511d396f6aaf844c7e325",
+        "Key": "krnln",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 11,
+        "Name": "系统核心支持库",
+        "Version": {
+            "Major": 5,
+            "Minor": 7
+        }
+    },
+    {
+        "CmdCount": 0,
+        "Guid": "3600360036003600360036003600GZ3600GZ",
+        "Key": "etools",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 0,
+        "Name": ".易语言助手",
+        "Version": {
+            "Major": 3,
+            "Minor": 4
+        }
+    }
+]

@@ -1,0 +1,75 @@
+== elang_addin struct layout self-test ==
+sizeof(void*)   = 4
+sizeof(DWORD)   = 4
+sizeof(INT)     = 4
+sizeof(LPTSTR)  = 4
+sizeof(LIB_INFO)= 144
+sizeof(LIB_INFO2)=160
+sizeof(MDATA_INF)=16
+sizeof(CMD_INFO) =36
+sizeof(LIB_DATA_TYPE_INFO)=56
+sizeof(LIB_CONST_INFO)=32
+
+-- LIB_INFO field offsets --
+  offsetof(LIB_INFO, m_dwLibFormatVer        ) =   0
+  offsetof(LIB_INFO, m_szGuid                ) =   4
+  offsetof(LIB_INFO, m_nMajorVersion         ) =   8
+  offsetof(LIB_INFO, m_nMinorVersion         ) =  12
+  offsetof(LIB_INFO, m_nBuildNumber          ) =  16
+  offsetof(LIB_INFO, m_nRqSysMajorVer        ) =  20
+  offsetof(LIB_INFO, m_nRqSysMinorVer        ) =  24
+  offsetof(LIB_INFO, m_nRqSysKrnlLibMajorVer ) =  28
+  offsetof(LIB_INFO, m_nRqSysKrnlLibMinorVer ) =  32
+  offsetof(LIB_INFO, m_szName                ) =  36
+  offsetof(LIB_INFO, m_nLanguage             ) =  40
+  offsetof(LIB_INFO, m_szExplain             ) =  44
+  offsetof(LIB_INFO, m_dwState               ) =  48
+  offsetof(LIB_INFO, m_szAuthor              ) =  52
+  offsetof(LIB_INFO, m_szZipCode             ) =  56
+  offsetof(LIB_INFO, m_szAddress             ) =  60
+  offsetof(LIB_INFO, m_szPhoto               ) =  64
+  offsetof(LIB_INFO, m_szFax                 ) =  68
+  offsetof(LIB_INFO, m_szEmail               ) =  72
+  offsetof(LIB_INFO, m_szHomePage            ) =  76
+  offsetof(LIB_INFO, m_szOther               ) =  80
+  offsetof(LIB_INFO, m_nDataTypeCount        ) =  84
+  offsetof(LIB_INFO, m_pDataType             ) =  88
+  offsetof(LIB_INFO, m_nCategoryCount        ) =  92
+  offsetof(LIB_INFO, m_szzCategory           ) =  96
+  offsetof(LIB_INFO, m_nCmdCount             ) = 100
+  offsetof(LIB_INFO, m_pBeginCmdInfo         ) = 104
+  offsetof(LIB_INFO, m_pCmdsFunc             ) = 108
+  offsetof(LIB_INFO, m_pfnRunAddInFn         ) = 112
+  offsetof(LIB_INFO, m_szzAddInFnInfo        ) = 116
+  offsetof(LIB_INFO, m_pfnNotify             ) = 120
+  offsetof(LIB_INFO, m_pfnSuperTemplate      ) = 124
+  offsetof(LIB_INFO, m_szzSuperTemplateInfo  ) = 128
+  offsetof(LIB_INFO, m_nLibConstCount        ) = 132
+  offsetof(LIB_INFO, m_pLibConst             ) = 136
+  offsetof(LIB_INFO, m_szzDependFiles        ) = 140
+
+-- critical offsets (expected) --
+  m_dwState   expect 48  got 48
+  m_pCmdsFunc expect 108 got 108
+  m_pfnNotify expect 120 got 120
+  sizeof      expect 144 got 144
+
+-- key macros --
+  LIB_FORMAT_VER            = 20000101
+  LBS_IDE_PLUGIN            = 0x100
+  NL_SYS_NOTIFY_FUNCTION    = 1
+  NL_IDE_READY              = 18
+  NL_RIGHT_POPUP_MENU_SHOW  = 19
+  NL_GET_CMD_FUNC_NAMES     = 14
+  NES_GET_MAIN_HWND         = 1
+  NES_RUN_FUNC              = 2
+  FN_COMPILE_AND_RUN        = 0x05020002
+  FN_END_RUN                = 0x05020003
+  FN_OPEN_FILE2             = 0x03010008
+  FN_ADD_TAB                = 0x05030001
+  FN_SWITCH_OUTPUT_BAR      = 0x04020003
+  FN_IS_FUNC_ENABLED        = 0x05030004
+  FN_STEP_INTO              = 0x05010001
+  FN_SET_BREAK_POINTER      = 0x05010006
+
+[PASS] all compile-time static_asserts already verified at build time.

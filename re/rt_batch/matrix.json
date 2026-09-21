@@ -1,0 +1,93 @@
+[
+  {
+    "name": "测试",
+    "srcSize": 658067,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 656881,
+    "delta": -1186,
+    "deltaPct": -0.18
+  },
+  {
+    "name": "爱莲说",
+    "srcSize": 1293876,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 1295112,
+    "delta": 1236,
+    "deltaPct": 0.1
+  },
+  {
+    "name": "贷款管理",
+    "srcSize": 1366820,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 1381729,
+    "delta": 14909,
+    "deltaPct": 1.09
+  },
+  {
+    "name": "中学电路虚拟实验室",
+    "srcSize": 2192127,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 2198894,
+    "delta": 6767,
+    "deltaPct": 0.31
+  },
+  {
+    "name": "易之表增强版3.3",
+    "srcSize": 691001,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 691304,
+    "delta": 303,
+    "deltaPct": 0.04
+  },
+  {
+    "name": "OPenGL向导",
+    "srcSize": 3921240,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 3922807,
+    "delta": 1567,
+    "deltaPct": 0.04
+  },
+  {
+    "name": "萌尘框架官方版_UI自适应版",
+    "srcSize": 1488685,
+    "e2tRC": 0,
+    "e2tErr": 0,
+    "placeholders": 0,
+    "t2eRC": 0,
+    "t2eErr": 0,
+    "succ": true,
+    "rtSize": 1290219,
+    "delta": -198466,
+    "deltaPct": -13.33
+  }
+]

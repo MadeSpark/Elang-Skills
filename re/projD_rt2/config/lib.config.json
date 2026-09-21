@@ -1,0 +1,26 @@
+﻿[
+    {
+        "CmdCount": 193,
+        "Guid": "d09f2340818511d396f6aaf844c7e325",
+        "Key": "krnln",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 11,
+        "Name": "系统核心支持库",
+        "Version": {
+            "Major": 5,
+            "Minor": 7
+        }
+    },
+    {
+        "CmdCount": 0,
+        "Guid": "7a1e4f22c3b0499e8d6a0011223344fe",
+        "Key": "elang_addin",
+        "MaxRefConstPos": 0,
+        "MaxRefObjectPos": 0,
+        "Name": "AI调试宿主",
+        "Version": {
+            "Major": 1,
+            "Minor": 0
+        }
+    }
+]

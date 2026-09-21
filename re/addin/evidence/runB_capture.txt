@@ -1,0 +1,51 @@
+[21:11:36.438][=== RUN BEGIN ===] 
+[21:11:36.440][PANEL-TAIL] BEFORE hwnd=0x00551A5E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:36.441][PANEL-TAIL] BEFORE hwnd=0x00660AB2 class='Edit' | prev='  ' | last=''
+[21:11:36.441][PANEL-TAIL] BEFORE hwnd=0x003C1324 class='ScintillaForEIDETools' | prev='  ' | last=''
+[21:11:36.441][PANEL-TAIL] BEFORE hwnd=0x008F0AAC class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:38.949][RUN-TRIGGER] FN_COMPILE_AND_RUN
+[21:11:39.065][RUN-TRIGGER-RET] handled=1
+[21:11:39.070][PANEL-CHANGED] hwnd=0x00660AB2 class='Edit' oldlen=161 newlen=20
+[21:11:39.071][PANEL-DELTA] DELTA: 开始运行被调试程序
+
+[21:11:39.071][PANEL-CHANGED] hwnd=0x003C1324 class='ScintillaForEIDETools' oldlen=560 newlen=808
+[21:11:39.071][PANEL-DELTA] DELTA: 
+
+正在编译现行程序
+正在检查重复名称...
+正在预处理现行程序
+正在进行名称连接...
+正在统计需要编译的子程序
+正在编译...
+正在生成主程序入口代码
+程序代码编译成功
+程序代码编译成功,耗时: 32 ms
+正在封装易格式目的代码
+[21:11:39] 开始运行被调试程序
+
+[21:11:39.072][RUN-STATE] FN_END_RUN enabled: 0 -> 1 (t=0.0s)
+[21:11:39.133][PANEL-CHANGED] hwnd=0x003C1324 class='ScintillaForEIDETools' oldlen=808 newlen=837
+[21:11:39.133][PANEL-DELTA] DELTA: [调试] - 调试程序[76208]创建
+
+[21:11:39.254][PANEL-CHANGED] hwnd=0x003C1324 class='ScintillaForEIDETools' oldlen=837 newlen=861
+[21:11:39.254][PANEL-DELTA] DELTA: [21:11:39] * 长任务开始
+
+[21:11:42.079][RUN-STOP] send FN_END_RUN
+[21:11:42.139][PANEL-CHANGED] hwnd=0x00660AB2 class='Edit' oldlen=20 newlen=22
+[21:11:42.139][PANEL-DELTA] DELTA: 被调试易程序运行完毕
+
+[21:11:42.140][PANEL-CHANGED] hwnd=0x003C1324 class='ScintillaForEIDETools' oldlen=861 newlen=934
+[21:11:42.140][PANEL-DELTA] DELTA: [调试] - 调试程序[76208]退出,ExitCode:0
+[21:11:42] 被调试易程序运行完毕
+
+[21:11:42.141][RUN-STATE] FN_END_RUN enabled: 1 -> 0 (t=3.1s)
+[21:11:42.141][RUN-END-DETECTED] FN_END_RUN enabled 1->0
+[21:11:42.141][PANEL-TAIL] AFTER-END hwnd=0x00551A5E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:42.141][PANEL-TAIL] AFTER-END hwnd=0x00660AB2 class='Edit' | prev='被调试易程序运行完毕  ' | last=''
+[21:11:42.141][PANEL-TAIL] AFTER-END hwnd=0x003C1324 class='ScintillaForEIDETools' | prev='[21:11:42] 被调试易程序运行完毕  ' | last=''
+[21:11:42.142][PANEL-TAIL] AFTER-END hwnd=0x008F0AAC class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:42.142][PANEL-TAIL] FINAL hwnd=0x00551A5E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:42.142][PANEL-TAIL] FINAL hwnd=0x00660AB2 class='Edit' | prev='被调试易程序运行完毕  ' | last=''
+[21:11:42.142][PANEL-TAIL] FINAL hwnd=0x003C1324 class='ScintillaForEIDETools' | prev='[21:11:42] 被调试易程序运行完毕  ' | last=''
+[21:11:42.142][PANEL-TAIL] FINAL hwnd=0x008F0AAC class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:11:42.143][=== RUN END ===] 

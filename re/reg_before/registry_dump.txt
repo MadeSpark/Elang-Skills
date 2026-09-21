@@ -1,0 +1,171 @@
+KEY Software\FlySky
+KEY Software\FlySky\E
+KEY Software\FlySky\E\EInf40
+  VAL CoolBar40        type=REG_BINARY len=136 hex=050006000400000081000000e0000000d1000000e9000000c8000000e6000000c8000000f40100008200000057020000bc00000060020000b30000005d020000b3000000f40100008400000057020000bc00000060020000b30000003d030000b3000000f40100006e0000007e00000035010000870000002c010000840000002c010000f4010000
+  VAL SaveStr40        type=REG_BINARY len=1363 hex=0500060053050000070000001e2d01f82e2d01f87c5f6f94792065c82e4b33cb231d39c92f1830c9731e38ce711b6099711535cc741a64cb25180ccd1a1a0c37a2e0b242dcfdc52eb09ed747f52d01f8172d01f8172d01f8172d01f8172d01f8172d01f8172d01f8172d01f8172d01f8173501f8173f01f8177a5247da96a64edc03b737a88721d0c2cb28f1172d01ac7e4064ab634c6c881b2d01f8dc8fd13ac2e6bb3dc7e8ce5a1f2d01f8c2e6bb3dac97b51e132d01f8c780d3111d2d01f86742769d655e699d7b4119f8172dcf4cc187cf3cabd3c118c7e0ba0ad59abf4ea596b51ec3f705f8172d30ca271d0ef8172d4e965a48728b764a64af7e436597602501f8176472af7e436597602101f8174c65996759648a3941689e722701f8179cec3ffe9dfd41cbedecfc172d0137c89ecdfd172d0137c89ecda71e2d01f8d8f2b23448ebf54eb82101f81791c62af3edb52ca396bb4cf12301f817ede1a7acccba485e695e36d39cbff5172d012ed496e043a76445a7d9e9b0461c2d01f8acccba485e695e36d39cbff1172d01a7744375a7565d688b102d01f8b69d27db6f8cb0fe172d0145f5e3f7d83f2701f8179ef432ab96ae4fe9e3f0f6172d01d0b69d7a85b69c2dd83b0dd41e3e2d01f8176101f8172801f81744458a765a07f8172d6f9b735538c0182d01f85e436d917948408b64486c9a7b4873f0172d018f7a5d38d6795d6af2172d019a63496e8f79416e99732501f8176865916548628c4f2a01f81742668a7241689a132d01f8721f649d1d2d01f87268799b724133c8271d08f8172d448062444a8a79416fff172d01b2765b60947e4f05f8172d6b9d734404f8172d6c81645c6dfe172d01b747486fbf5b2501f8174851a8431f31c8272a01f8175e70947e5964cb1f2d01f8445c6d91634845ba102d01f8614e6d9a765e64f1172d019d4042739c251d31c81d2d01f852754cb4474c738b725f04f8172d79887b4463f1172d019d645c6d91634832c9112d01f8726240b47e4f09f8172d44ab44616081725f04f8172d689b784377fd172d018b7f486d94102d01f8525575b5724374ff172d019d794e7381675909f8172d498c7a415791725a0cf8172d42977348528c6e4164bd734475f4172d01a87f426f9d5442738c65426dfe172d0188785f7591782a01f817484cb572496899102d01f85279698a724c65fd172d019d505f689c122d01f87e5e60887e2501f817446f8c725f6f9d632b01f8175e628a7e5d75f5172d01bd5e43759d657d73977448728b132d01f84063648c122d01f874437788722a01f8174e6e9664426d9d102d01f8644564947b6879fd172d0191725575ca122d01f87e48798c212801f817446480631e04f8172d689d6f5934fc172d0191725575f2172d01bb796e609472436599652001f81768579d74596e8a566b73997a4802f8172d6588262301f817684599634c528c6558628c625f64fb172d019d536f08f8172d44bb7f4c738c554c73fd172d018c604c6896122d01f8726e6094742901f8175e719d742a01f8174e6e957a4263921a2d01f872646c9f54426f8e725f759d652601f81748658a785d7599654a648c102d01f8734276967b4463f5172d019d594875b17959648a7448718c132d01f8644262931f2d01f8527f608f444262931d2d01f8554071b76748739963480cf8172d44ab6748649b7f686f9f7e4364fd172d019b794e6f8e1e2d01f8726e6e95675f648b642701f817684d977042519979486dff172d019d60447b99654905f8172d64b9476405f8172d7197671e06f8172d44807a417388742801f8177f649f52550bf8172d459d724179aa724a4480102d01f85144668d654872f8172d01f9172d01e8172d01af4492cc43b09bcad6a1e2be52370528
+  VAL SaveE40          type=REG_BINARY len=892 hex=cafc5980bf5f06800500060080be5f065e5a0680bf5f0680bf5f06808f52368d8e5237b78e680bb18e6e3f808a6635b58c66308d8a6d3fb4876c33b58d6c0bb48c6632b98d6a35b38b5f068041a0f97fbe5f0680bc5f0680bf5f06806283da80a0411880d3326b8056ae8980a0411880a0411880a0411880a0411880a0411880a0411880a0411880a041188041a0f980de3f668041a0f9806283ac80e8c3d0805c215a805c3a47807697ce80e9f94c806283da806283da806283da806283da806283da80603ed8806283ac8081d3d1806283ac805696bd806283da8041dfc680de3f668082633a80ec115b80de3f66806283ac8095cea9808d6c35807697ce80f096b6806283da807697ce806283ac80f096b6806283ac80415ff98082633a806283da80a04118806283da80a041188041a0f980de3f6680de3f66807e9fc680a0411880410f8680410f868041df068060817c807697ce80c120798082633a8041a0f9807e9fc680a85f0680ba5f0680ba5f0680ba5f06804ca0f97fbe5f0680be5f0680be5f0680be5f0680be5f0606bd5d07b10485ca65beba0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680bf5f0680be5f0680bf5f0680bf5f0680be5f0680bf5f0680bf5f0680be5f0680bf5f0680bf5f0680bf5f0680bf5f0680be5f2680bf5f0680b45f0680bf5f0680bf5f0680bf5f0680855f0680be5f0680bf5f0680be5f06801fef06801fee0680e55f0680e35f0680e55f0680e35f0680965f0680975f0680925f0680905f0680c55f0680c35f06809d5f0680985f0680c25e0680445f0680b45f0680bf5f0680b65f0680b65f0680bf5f0680bf5f0680be5f0680bf5f0680be5f0680bf5f0680bf5f0680bf5f0680765f0680da5f0680285f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680bc5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680bf5f0680be5f068041a0f97fbe5f0680be5f0680be5f0680be5f0680be5f0680be5f0680be5f0680bf5f0680bf5f0680bf5f0680
+  VAL Ver              type=REG_DWORD value=393221
+  VAL Type             type=REG_DWORD value=1
+  VAL Language         type=REG_DWORD value=1
+KEY Software\FlySky\E\ETBP40-Bar0
+  VAL BarID            type=REG_DWORD value=59392
+  VAL XPos             type=REG_DWORD value=0
+  VAL YPos             type=REG_DWORD value=0
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=59419
+  VAL MRUDockLeftPos   type=REG_DWORD value=0
+  VAL MRUDockTopPos    type=REG_DWORD value=4294967294
+  VAL MRUDockRightPos  type=REG_DWORD value=839
+  VAL MRUDockBottomPos type=REG_DWORD value=23
+  VAL MRUFloatStyle    type=REG_DWORD value=8196
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar1
+  VAL BarID            type=REG_DWORD value=133
+  VAL Visible          type=REG_DWORD value=0
+  VAL XPos             type=REG_DWORD value=4294966349
+  VAL YPos             type=REG_DWORD value=1045
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=4294967294
+  VAL MRUDockTopPos    type=REG_DWORD value=49
+  VAL MRUDockRightPos  type=REG_DWORD value=355
+  VAL MRUDockBottomPos type=REG_DWORD value=74
+  VAL MRUFloatStyle    type=REG_DWORD value=8196
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar10
+  VAL BarID            type=REG_DWORD value=59422
+  VAL Bars             type=REG_DWORD value=3
+  VAL Bar#0            type=REG_DWORD value=0
+  VAL Bar#1            type=REG_DWORD value=130
+  VAL Bar#2            type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar11
+  VAL BarID            type=REG_DWORD value=59420
+  VAL Bars             type=REG_DWORD value=5
+  VAL Bar#0            type=REG_DWORD value=0
+  VAL Bar#1            type=REG_DWORD value=129
+  VAL Bar#2            type=REG_DWORD value=0
+  VAL Bar#3            type=REG_DWORD value=132
+  VAL Bar#4            type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar12
+  VAL BarID            type=REG_DWORD value=59421
+  VAL Visible          type=REG_DWORD value=0
+  VAL Bars             type=REG_DWORD value=3
+  VAL Bar#0            type=REG_DWORD value=0
+  VAL Bar#1            type=REG_DWORD value=110
+  VAL Bar#2            type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar2
+  VAL BarID            type=REG_DWORD value=135
+  VAL Visible          type=REG_DWORD value=0
+  VAL XPos             type=REG_DWORD value=4294962291
+  VAL YPos             type=REG_DWORD value=4294962306
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=4294967294
+  VAL MRUDockTopPos    type=REG_DWORD value=72
+  VAL MRUDockRightPos  type=REG_DWORD value=517
+  VAL MRUDockBottomPos type=REG_DWORD value=97
+  VAL MRUFloatStyle    type=REG_DWORD value=8196
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar3
+  VAL BarID            type=REG_DWORD value=59393
+  VAL Visible          type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar4
+  VAL BarID            type=REG_DWORD value=129
+  VAL XPos             type=REG_DWORD value=0
+  VAL YPos             type=REG_DWORD value=24
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=4294967294
+  VAL MRUDockTopPos    type=REG_DWORD value=24
+  VAL MRUDockRightPos  type=REG_DWORD value=231
+  VAL MRUDockBottomPos type=REG_DWORD value=756
+  VAL MRUFloatStyle    type=REG_DWORD value=4
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar5
+  VAL BarID            type=REG_DWORD value=130
+  VAL XPos             type=REG_DWORD value=0
+  VAL YPos             type=REG_DWORD value=32
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=0
+  VAL MRUDockTopPos    type=REG_DWORD value=4294967294
+  VAL MRUDockRightPos  type=REG_DWORD value=904
+  VAL MRUDockBottomPos type=REG_DWORD value=186
+  VAL MRUFloatStyle    type=REG_DWORD value=4
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar6
+  VAL BarID            type=REG_DWORD value=132
+  VAL Visible          type=REG_DWORD value=0
+  VAL XPos             type=REG_DWORD value=4294966580
+  VAL YPos             type=REG_DWORD value=1070
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=229
+  VAL MRUDockTopPos    type=REG_DWORD value=4294967294
+  VAL MRUDockRightPos  type=REG_DWORD value=837
+  VAL MRUDockBottomPos type=REG_DWORD value=2
+  VAL MRUFloatStyle    type=REG_DWORD value=4
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar7
+  VAL BarID            type=REG_DWORD value=110
+  VAL Visible          type=REG_DWORD value=0
+  VAL XPos             type=REG_DWORD value=9
+  VAL YPos             type=REG_DWORD value=24
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=4294967294
+  VAL MRUDockTopPos    type=REG_DWORD value=24
+  VAL MRUDockRightPos  type=REG_DWORD value=133
+  VAL MRUDockBottomPos type=REG_DWORD value=729
+  VAL MRUFloatStyle    type=REG_DWORD value=4
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar8
+  VAL BarID            type=REG_DWORD value=59396
+  VAL Visible          type=REG_DWORD value=0
+  VAL XPos             type=REG_DWORD value=4294967289
+  VAL YPos             type=REG_DWORD value=8
+  VAL Docking          type=REG_DWORD value=1
+  VAL MRUDockID        type=REG_DWORD value=0
+  VAL MRUDockLeftPos   type=REG_DWORD value=4294967294
+  VAL MRUDockTopPos    type=REG_DWORD value=4294967294
+  VAL MRUDockRightPos  type=REG_DWORD value=1721
+  VAL MRUDockBottomPos type=REG_DWORD value=28
+  VAL MRUFloatStyle    type=REG_DWORD value=8196
+  VAL MRUFloatXPos     type=REG_DWORD value=2147483648
+  VAL MRUFloatYPos     type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Bar9
+  VAL BarID            type=REG_DWORD value=59419
+  VAL Bars             type=REG_DWORD value=9
+  VAL Bar#0            type=REG_DWORD value=0
+  VAL Bar#1            type=REG_DWORD value=59396
+  VAL Bar#2            type=REG_DWORD value=0
+  VAL Bar#3            type=REG_DWORD value=59392
+  VAL Bar#4            type=REG_DWORD value=0
+  VAL Bar#5            type=REG_DWORD value=133
+  VAL Bar#6            type=REG_DWORD value=0
+  VAL Bar#7            type=REG_DWORD value=135
+  VAL Bar#8            type=REG_DWORD value=0
+KEY Software\FlySky\E\ETBP40-Summary
+  VAL Bars             type=REG_DWORD value=13
+  VAL ScreenCX         type=REG_DWORD value=1707
+  VAL ScreenCY         type=REG_DWORD value=1067
+KEY Software\FlySky\E\Install
+  VAL Path             type=REG_SZ value='D:\\ides\\e\\lib\\'
+KEY Software\FlySky\E\Recent File List
+  VAL File1            type=REG_SZ value='D:\\ides\\e\\plugins\\samples\\PluginsTest.e'
+  VAL File2            type=REG_SZ value='C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\03-Json解析测试\\项目.代码\\代码.e'
+  VAL File3            type=REG_SZ value='C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\03-Json解析测试\\项目.e'
+  VAL File4            type=REG_SZ value='C:\\Users\\MadeSpark\\Desktop\\测试\\demos\\02-嵌套控制流压测\\项目\\代码.e'
+  VAL File5            type=REG_SZ value='C:\\Users\\MadeSpark\\AppData\\Local\\Temp\\elang_gui\\嵌套压测\\代码.e'
+  VAL File6            type=REG_SZ value='C:\\Users\\MadeSpark\\AppData\\Local\\Temp\\elang_gui\\判断测试\\代码.e'
+  VAL File7            type=REG_SZ value='C:\\Users\\MadeSpark\\Desktop\\测试\\debug\\代码.e'
+  VAL File8            type=REG_SZ value='C:\\Users\\MadeSpark\\Desktop\\测试\\测试.e'
+KEY Software\FlySky\E\Settings
+(cannot open Software\FlySky: [WinError 2] 系統找不到指定的檔案。)

@@ -1,0 +1,12 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\skill_smoke\runA_ai.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\Desktop\测试\Releases\Elang-AiTools\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\skill_smoke\smokeA.debug.log
+   tag     = smokeA
+   timeout = 30.0s   stop-after = None
+   已投放 lib\elang_addin.fne (59904 B)
+   e.exe pid = 33100
+   观测: runStart=True runEnd=True weSent=False e_self_exit=None
+[safe-delete][SAFE_DELETE_BULK_CONFIRM_REQUIRED] {"count":50,"threshold":50,"scope":"turn","targets":["D:\\ides\\e\\lib\\elang_addin.fne"],"targetCount":1}
+{"ok": false, "status": "error", "error": "1"}

@@ -1,0 +1,12 @@
+{
+    "AsyncFile": false,
+    "E2TXT-EFile": "",
+    "E2TXT-InSourceDir": false,
+    "E2TXT-IsCreateE": false,
+    "Encoding": "UTF-8",
+    "Level": 2,
+    "NameStyle": 1,
+    "Password": "",
+    "ResetNames": [],
+    "Source": "../e2t_base/projD_base.e"
+}

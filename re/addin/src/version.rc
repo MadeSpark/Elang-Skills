@@ -1,0 +1,36 @@
+// version.rc —— 给支持库嵌入 VS_VERSION_INFO 资源(RT_VERSION=16)
+// 原因: 官方样例 HtmlView.rc 就带这个资源; 且真实库(cncnv/etools/dp1)的 .rsrc 里
+//       都有 type=16 的版本资源, 而我们的 .fne 一开始没有 —— 怀疑 e.exe 打开引用该库的
+//       程序时会去读库文件的版本信息, 读不到就 AV. 这里补上以验证.
+//
+// 注意: GNU windres 不认 ';' 行注释(那是 MS rc 的方言), 必须用 '//';
+//       且数值常量不要带 'L' 后缀. 这两点就是上一版 "src/version.rc:1: syntax error" 的原因.
+// 不 #include windows.h(避免 windres 头文件搜索路径问题), 直接用关键字与数值.
+
+1 VERSIONINFO
+FILEVERSION     1,0,0,1
+PRODUCTVERSION  1,0,0,1
+FILEFLAGSMASK   0x3f
+FILEFLAGS       0x0
+FILEOS          0x4
+FILETYPE        0x2
+FILESUBTYPE     0x0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404B0"
+        BEGIN
+            VALUE "CompanyName",      "PoC"
+            VALUE "FileDescription",  "AI Debug Host (Elang addin PoC)"
+            VALUE "FileVersion",      "1.0.0.1"
+            VALUE "InternalName",     "elang_addin"
+            VALUE "OriginalFilename", "elang_addin.fne"
+            VALUE "ProductName",      "AI Debug Host"
+            VALUE "ProductVersion",   "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END

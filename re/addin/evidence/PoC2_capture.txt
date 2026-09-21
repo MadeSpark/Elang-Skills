@@ -1,0 +1,12 @@
+[21:05:41.863][=== RUN BEGIN ===] 
+[21:05:41.867][PANEL-TAIL] BEFORE hwnd=0x00A31A9A class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:05:41.867][PANEL-TAIL] BEFORE hwnd=0x00DB0A24 class='Edit' | prev='  ' | last=''
+[21:05:41.868][PANEL-TAIL] BEFORE hwnd=0x002C0C42 class='ScintillaForEIDETools' | prev='  ' | last=''
+[21:05:41.868][PANEL-TAIL] BEFORE hwnd=0x00AB0D9E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:05:44.379][RUN-TRIGGER] FN_COMPILE_AND_RUN
+[21:06:09.767][=== RUN BEGIN ===] 
+[21:06:09.770][PANEL-TAIL] BEFORE hwnd=0x00401A5A class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:06:09.771][PANEL-TAIL] BEFORE hwnd=0x008B0AAC class='Edit' | prev='  ' | last=''
+[21:06:09.771][PANEL-TAIL] BEFORE hwnd=0x01241352 class='ScintillaForEIDETools' | prev='  ' | last=''
+[21:06:09.771][PANEL-TAIL] BEFORE hwnd=0x00380AA8 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:06:12.285][RUN-TRIGGER] FN_COMPILE_AND_RUN

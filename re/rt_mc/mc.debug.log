@@ -1,0 +1,56 @@
+[00:05:48.330][=== RUN BEGIN ===] 
+[00:05:48.335][PANEL-TAIL] BEFORE hwnd=0x00471B88 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:48.335][PANEL-TAIL] BEFORE hwnd=0x007B1586 class='Edit' | prev='  ' | last=''
+[00:05:48.335][PANEL-TAIL] BEFORE hwnd=0x005D0FF0 class='ScintillaForEIDETools' | prev='  ' | last=''
+[00:05:48.336][PANEL-TAIL] BEFORE hwnd=0x005C152C class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:50.852][RUN-TRIGGER] FN_COMPILE_AND_RUN
+[00:05:51.142][RUN-TRIGGER-RET] handled=1
+[00:05:51.143][PANEL-CHANGED] hwnd=0x007B1586 class='Edit' oldlen=161 newlen=20
+[00:05:51.143][PANEL-DELTA] DELTA: 开始运行被调试程序
+
+[00:05:51.143][PANEL-CHANGED] hwnd=0x005D0FF0 class='ScintillaForEIDETools' oldlen=560 newlen=1087
+[00:05:51.143][PANEL-DELTA] DELTA: 
+
+正在编译现行程序
+正在检查重复名称...
+正在预处理现行程序
+正在编译易模块"精易模块", 文件名: "D:\DevelopmentFolder\常用模塊\精易模块[v11.1.5].ec", 版本号: "11.1", 创建号: "5.0", 作者: "广大易友".
+正在编译易模块"叮叮当当可可爱爱", 文件名: "D:\DevelopmentFolder\常用模塊\叮叮当当可可爱爱.ec", 版本号: "1.0", 创建号: "0.0", 作者: "叮当".
+正在进行名称连接...
+正在统计需要编译的子程序
+正在编译...
+正在生成主程序入口代码
+程序代码编译成功
+程序代码编译成功,耗时: 208 ms
+正在封装易格式目的代码
+[00:05:51] 开始运行被调试程序
+
+[00:05:51.143][RUN-STATE] FN_END_RUN enabled: 0 -> 1 (t=0.0s)
+[00:05:51.209][PANEL-CHANGED] hwnd=0x005D0FF0 class='ScintillaForEIDETools' oldlen=1087 newlen=1116
+[00:05:51.209][PANEL-DELTA] DELTA: [调试] - 调试程序[39156]创建
+
+[00:05:51.334][PANEL-CHANGED] hwnd=0x005D0FF0 class='ScintillaForEIDETools' oldlen=1116 newlen=1140
+[00:05:51.334][PANEL-DELTA] DELTA: [00:05:51] * Windows 11
+
+[00:05:51.780][PANEL-CHANGED] hwnd=0x005D0FF0 class='ScintillaForEIDETools' oldlen=1140 newlen=1162
+[00:05:51.780][PANEL-DELTA] DELTA: [00:05:51] * 1.499707
+
+[00:05:56.142][RUN-STOP] send FN_END_RUN
+[00:05:56.205][PANEL-CHANGED] hwnd=0x007B1586 class='Edit' oldlen=20 newlen=22
+[00:05:56.205][PANEL-DELTA] DELTA: 被调试易程序运行完毕
+
+[00:05:56.206][PANEL-CHANGED] hwnd=0x005D0FF0 class='ScintillaForEIDETools' oldlen=1162 newlen=1235
+[00:05:56.206][PANEL-DELTA] DELTA: [调试] - 调试程序[39156]退出,ExitCode:0
+[00:05:56] 被调试易程序运行完毕
+
+[00:05:56.207][RUN-STATE] FN_END_RUN enabled: 1 -> 0 (t=5.1s)
+[00:05:56.207][RUN-END-DETECTED] FN_END_RUN enabled 1->0
+[00:05:56.207][PANEL-TAIL] AFTER-END hwnd=0x00471B88 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:56.208][PANEL-TAIL] AFTER-END hwnd=0x007B1586 class='Edit' | prev='被调试易程序运行完毕  ' | last=''
+[00:05:56.208][PANEL-TAIL] AFTER-END hwnd=0x005D0FF0 class='ScintillaForEIDETools' | prev='[00:05:56] 被调试易程序运行完毕  ' | last=''
+[00:05:56.209][PANEL-TAIL] AFTER-END hwnd=0x005C152C class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:56.210][PANEL-TAIL] FINAL hwnd=0x00471B88 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:56.211][PANEL-TAIL] FINAL hwnd=0x007B1586 class='Edit' | prev='被调试易程序运行完毕  ' | last=''
+[00:05:56.212][PANEL-TAIL] FINAL hwnd=0x005D0FF0 class='ScintillaForEIDETools' | prev='[00:05:56] 被调试易程序运行完毕  ' | last=''
+[00:05:56.213][PANEL-TAIL] FINAL hwnd=0x005C152C class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[00:05:56.213][=== RUN END ===] 

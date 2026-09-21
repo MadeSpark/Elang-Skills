@@ -1,0 +1,6 @@
+SELFCHECK GetNewInf() called
+pid=71772
+env ELANG_AI_TRACE='C:\Users\MADESP~1\AppData\Local\Temp\elang_ai_poc1_trace.txt'
+env ELANG_AI_TASK='C:\Users\MadeSpark\Desktop\≤‚ ‘\re\ework_decl\probe.e'
+ai_mode=1
+
