@@ -69,6 +69,12 @@ static_assert(offsetof(LIB_INFO, m_pLibConst) == 136, "LIB_INFO.m_pLibConst offs
 #define RUN_ENV_VAR       "ELANG_AI_RUN"         /* =1 → 允许 NES_RUN_FUNC(FN_COMPILE_AND_RUN) */
 #define RUN_DELAY_ENV_VAR "ELANG_AI_RUN_DELAY"   /* 触发前等待毫秒（默认 1500） */
 #define STOP_ENV_VAR      "ELANG_AI_STOP"        /* >0 → 运行 N 秒后发 FN_END_RUN（收尾2） */
+#define COMPILE_ENV_VAR   "ELANG_AI_COMPILE"     /* static|static_exe|static_console|static_dll|exe|console|dll
+                                                     → 触发对应编译功能号（PublicIDEFunctions.h FNST_RUN 家族） */
+#define COMPILE_DELAY_ENV_VAR "ELANG_AI_COMPILE_DELAY" /* 触发前等待毫秒（默认 1500） */
+#define COMPILE_OUT_ENV_VAR   "ELANG_AI_EXPECT_OUT"    /* 期望产物路径：出现即 CapWrite COMPILE-OUT-SEEN */
+
+static char g_szCompileOutPath[MAX_PATH] = { 0 };      /* 期望产物路径（用于填编译保存对话框 + 出现检测） */
 #define CAP_ENV_VAR       "ELANG_AI_CAPTURE"     /* 面板增量落盘文件（默认 %TEMP%\elang_ai_capture.txt） */
 
 /* 由 e.exe 提供、由“本库回调”的整条链路，实测全部是 __stdcall（callee 清栈）：
@@ -627,6 +633,16 @@ static const FUNC_PROBE g_ProbeFns[] =
     { FN_MOVE_CARET,            "FN_MOVE_CARET" },
     { FN_INSERT_TEXT,           "FN_INSERT_TEXT" },
     { FN_PRE_COMPILE,           "FN_PRE_COMPILE" },
+    { FN_PUBLISH,               "FN_PUBLISH" },
+    { FN_COMPILE_STANDARD,      "FN_COMPILE_STANDARD" },
+    { FN_COMPILE_STATIC,        "FN_COMPILE_STATIC" },
+    { FN_COMPILE_EPACKAGE,      "FN_COMPILE_EPACKAGE" },
+    { FN_COMPILE_WINDOWS_EXE,               "FN_COMPILE_WINDOWS_EXE" },
+    { FN_COMPILE_WINDOWS_CONOLE_EXE,        "FN_COMPILE_WINDOWS_CONOLE_EXE" },
+    { FN_COMPILE_WINDOWS_DLL,               "FN_COMPILE_WINDOWS_DLL" },
+    { FN_STATIC_COMPILE_WINDOWS_EXE,        "FN_STATIC_COMPILE_WINDOWS_EXE" },
+    { FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE, "FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE" },
+    { FN_STATIC_COMPILE_WINDOWS_DLL,        "FN_STATIC_COMPILE_WINDOWS_DLL" },
 };
 
 static void DoProbes(void)
@@ -979,6 +995,227 @@ static void DoRunAndCapture(HWND hMain)
     }
 }
 
+/* ---- 编译任务：ELANG_AI_COMPILE=<种类> → 触发 FNST_RUN 家族对应功能号 ----
+ * 与 RUN 同构但更简单：编译没有“运行态”标志可轮询，完成与否由**外部包装脚本**
+ * 监视 ELANG_AI_EXPECT_OUT 指向的产物文件（本库发现文件出现时只做记录）。
+ * 产物落盘后 IDE 仍存活，由包装脚本按精确 PID 收尾。 */
+static DWORD CompileFuncNoFromEnv(void)
+{
+    char szKind[32] = { 0 };
+    if (GetEnvStr(COMPILE_ENV_VAR, szKind, sizeof(szKind)) == FALSE || !szKind[0])
+        return 0;
+    if (strcmp(szKind, "1") == 0 || strcmp(szKind, "static") == 0)
+        return FN_COMPILE_STATIC;                        /* 静态编译（IDE 当前工程类型的静态形态） */
+    if (strcmp(szKind, "static_exe") == 0)
+        return FN_STATIC_COMPILE_WINDOWS_EXE;            /* 静态编译为 Windows 程序 */
+    if (strcmp(szKind, "static_console") == 0)
+        return FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE;     /* 静态编译为 Windows 控制台程序 */
+    if (strcmp(szKind, "static_dll") == 0)
+        return FN_STATIC_COMPILE_WINDOWS_DLL;            /* 静态编译为 Windows 动态链接库 */
+    if (strcmp(szKind, "exe") == 0)
+        return FN_COMPILE_WINDOWS_EXE;                   /* 编译为 Windows 程序 */
+    if (strcmp(szKind, "console") == 0)
+        return FN_COMPILE_WINDOWS_CONOLE_EXE;            /* 编译为 Windows 控制台程序 */
+    if (strcmp(szKind, "dll") == 0)
+        return FN_COMPILE_WINDOWS_DLL;                   /* 编译为 Windows 动态链接库 */
+    Trace("COMPILE unknown kind '%s'", szKind);
+    return 0;
+}
+
+/* 触发静态编译后 IDE 会弹「请输入欲编译到的可执行文件名：」保存对话框（实测）。
+   我们就在 IDE 进程内：找到它 → 把期望产物路径填进文件名框 → 点确认。 */
+static BOOL CALLBACK FindCompileSaveDlgProc(HWND hWnd, LPARAM lp)
+{
+    DWORD dwPid = 0;
+    char  szClass[64] = { 0 };
+    char  szTitle[256] = { 0 };
+
+    GetWindowThreadProcessId(hWnd, &dwPid);
+    if (dwPid != GetCurrentProcessId() || !IsWindowVisible(hWnd))
+        return TRUE;
+    GetClassNameA(hWnd, szClass, sizeof(szClass));
+    if (strcmp(szClass, "#32770") != 0)
+        return TRUE;
+    GetWindowTextA(hWnd, szTitle, sizeof(szTitle));
+    if (strstr(szTitle, "请输入欲编译到") == NULL)     /* GBK 源码 → GBK 窗口文本，可直接比 */
+        return TRUE;
+    *(HWND *)lp = hWnd;
+    return FALSE;
+}
+
+static BOOL CALLBACK FillSaveDlgChildProc(HWND hChild, LPARAM lp)
+{
+    char szClass[64] = { 0 };
+    (void)lp;
+
+    GetClassNameA(hChild, szClass, sizeof(szClass));
+    if (strcmp(szClass, "Edit") != 0 || !IsWindowVisible(hChild))
+        return TRUE;
+    SendMessageA(hChild, WM_SETTEXT, 0,
+                 (LPARAM)(const char *)g_szCompileOutPath);
+    return FALSE;                                       /* 填完第一个可见 Edit 就停 */
+}
+
+/* 返回 TRUE=找到并确认了保存对话框 */
+static BOOL TryFillCompileSaveDialog(void)
+{
+    HWND hDlg = NULL;
+
+    if (!g_szCompileOutPath[0])
+        return FALSE;
+    EnumWindows(FindCompileSaveDlgProc, (LPARAM)&hDlg);
+    if (hDlg == NULL)
+        return FALSE;
+    EnumChildWindows(hDlg, FillSaveDlgChildProc, 0);
+    {
+        HWND hOk = GetDlgItem(hDlg, IDOK);
+        CapWrite("COMPILE-DIALOG", "fill+confirm");
+        Trace("COMPILE save dialog filled path='%s'", g_szCompileOutPath);
+        if (hOk != NULL && IsWindowEnabled(hOk))
+            PostMessageA(hOk, BM_CLICK, 0, 0);
+        else
+            Trace("COMPILE IDOK missing/disabled");
+    }
+    return TRUE;
+}
+
+/* ⚠️ 关键：触发线程调 NES_RUN_FUNC(FN_COMPILE_STATIC…) 时，IDE 在**同一线程**里弹
+ * 模态保存对话框，调用不返回 → 触发线程无法自己填框。必须另起线程专职填框。 */
+static DWORD __stdcall DialogFillerProc(LPVOID lp)
+{
+    DWORD t0 = GetTickCount();
+    BOOL  blFilled = FALSE;
+    (void)lp;
+
+    while ((GetTickCount() - t0) < 600000)
+    {
+        if (!blFilled)
+        {
+            blFilled = TryFillCompileSaveDialog();   /* 只填一次，防重复点击已确认对话框 */
+        }
+        else
+        {
+            /* 填完之后盯产物：出现即记录，再陪 3 秒让面板刷完，然后退出 */
+            DWORD dwAttr = GetFileAttributesA(g_szCompileOutPath);
+            if (dwAttr != INVALID_FILE_ATTRIBUTES && !(dwAttr & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                CapWrite("COMPILE-OUT-SEEN", g_szCompileOutPath);
+                Trace("COMPILE output seen: %s", g_szCompileOutPath);
+                Sleep(3000);
+                break;
+            }
+        }
+        Sleep(100);
+    }
+    Trace("DIALOG-FILLER exit");
+    return 0;
+}
+
+static void DoCompileTask(HWND hMain)
+{
+    char  szTmp[MAX_PATH] = { 0 };
+    char  szEnv[MAX_PATH] = { 0 };
+    int   nDelay = 1500;
+    DWORD dwFn;
+    DWORD t0;
+    int   nIter = 0;
+    BOOL  blOutSeen = FALSE;
+
+    dwFn = CompileFuncNoFromEnv();
+    if (dwFn == 0)
+        return;
+
+    /* 捕获文件（与 RUN 同一路径约定） */
+    if (GetEnvStr(CAP_ENV_VAR, g_szCapturePath, MAX_PATH) == FALSE)
+    {
+        if (GetTempDir(szTmp, MAX_PATH))
+            snprintf(g_szCapturePath, MAX_PATH, "%selang_ai_capture.txt", szTmp);
+    }
+    g_hCapture = CreateFileA(g_szCapturePath, FILE_APPEND_DATA,
+                             FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                             OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    CapWrite("=== COMPILE BEGIN ===", "");
+
+    if (GetEnvStr(COMPILE_DELAY_ENV_VAR, szEnv, sizeof(szEnv)) && szEnv[0])
+        nDelay = atoi(szEnv);
+    GetEnvStr(COMPILE_OUT_ENV_VAR, g_szCompileOutPath, MAX_PATH);
+    {
+        BOOL blEnabled = FALSE, blHandled = FALSE;
+        blEnabled = IdeIsFuncEnabled(dwFn, &blHandled);
+        Trace("COMPILE func=0x%08X handled=%d enabled=%d delay=%dms",
+              (unsigned)dwFn, blHandled ? 1 : 0, blEnabled ? 1 : 0, nDelay);
+        CapWrite("COMPILE-CHECK", blEnabled ? "enabled=1" : "enabled=0");
+    }
+
+    PanelSnapshot(hMain);
+    PanelDumpTails("BEFORE");
+    Sleep((DWORD)(nDelay > 0 ? nDelay : 0));
+
+    Trace("COMPILE trigger 0x%08X ...", (unsigned)dwFn);
+    CapWrite("COMPILE-TRIGGER", "send");
+    {
+        HANDLE hFiller = NULL;
+        BOOL   blHandled;
+        if (g_szCompileOutPath[0])
+            hFiller = CreateThread(NULL, 0, DialogFillerProc, NULL, 0, NULL);
+        blHandled = IdeRunFunc(dwFn, 0, 0);   /* 模态保存对话框在此阻塞，由 filler 解掉 */
+        Trace("COMPILE handled=%d", blHandled ? 1 : 0);
+        CapWrite("COMPILE-TRIGGER-RET", blHandled ? "handled=1" : "handled=0");
+        if (hFiller != NULL)
+        {
+            WaitForSingleObject(hFiller, 30000);
+            CloseHandle(hFiller);
+        }
+    }
+
+    /* 最多观察 600 秒；每 100ms 轮询面板增量；发现期望产物出现即记录
+       （真正的收尾由包装脚本做：杀自己这个会话的 e.exe PID） */
+    t0 = GetTickCount();
+    while ((GetTickCount() - t0) < 600000)
+    {
+        int nChanged = PanelPollOnce();
+        nIter++;
+
+        if (nChanged > 0)
+            PanelDumpTails("DELTA");      /* 编译错误/进度都写在输出面板，落下来给包装脚本判读 */
+
+        /* 保存对话框出现后立即填充确认（标题「请输入欲编译到…」） */
+        if (g_szCompileOutPath[0] && !blOutSeen)
+            TryFillCompileSaveDialog();
+
+        if (!blOutSeen && g_szCompileOutPath[0])
+        {
+            DWORD dwAttr = GetFileAttributesA(g_szCompileOutPath);
+            if (dwAttr != INVALID_FILE_ATTRIBUTES && !(dwAttr & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                CapWrite("COMPILE-OUT-SEEN", g_szCompileOutPath);
+                Trace("COMPILE output seen: %s", g_szCompileOutPath);
+                blOutSeen = TRUE;
+            }
+        }
+        if (blOutSeen && nChanged == 0 && nIter % 30 == 0)
+        {
+            /* 产物已出现且面板安静 → 再陪跑一小段就收（等面板刷完编译日志） */
+            char szB[64];
+            snprintf(szB, sizeof(szB), "quiesce t=%.1fs", (double)(GetTickCount() - t0) / 1000.0);
+            CapWrite("COMPILE-QUIESCE", szB);
+            break;
+        }
+        if (nIter % 100 == 0)
+            Trace("COMPILE poll iter=%d changed=%d outSeen=%d", nIter, nChanged, blOutSeen ? 1 : 0);
+        Sleep(100);
+    }
+
+    PanelDumpTails("FINAL");
+    CapWrite("=== COMPILE END ===", blOutSeen ? "out-seen" : "timeout-or-not-seen");
+    Trace("COMPILE capture done (iters=%d, outSeen=%d, file=%s)", nIter, blOutSeen ? 1 : 0, g_szCapturePath);
+    if (g_hCapture != INVALID_HANDLE_VALUE)
+    {
+        CloseHandle(g_hCapture);
+        g_hCapture = INVALID_HANDLE_VALUE;
+    }
+}
+
 /* ==========================================================================
  * 7. 工作线程：第 2/3 步
  * ========================================================================== */
@@ -1025,6 +1262,15 @@ static DWORD __stdcall WorkerProc(LPVOID lParam)
         {
             Trace("STEP4 skipped (ELANG_AI_RUN != 1)");
         }
+    }
+
+    /* 第 5 步：编译任务（ELANG_AI_COMPILE）——与 RUN 互斥使用，一个会话只做一个 */
+    {
+        HWND hMain = IdeGetMainHwnd();
+        if (hMain != NULL && IsWindow(hMain))
+            DoCompileTask(hMain);
+        else
+            Trace("STEP5 skipped: main window is NULL or ELANG_AI_COMPILE unset");
     }
 
     Trace("WORKER done");

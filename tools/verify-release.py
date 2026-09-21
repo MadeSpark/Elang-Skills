@@ -169,10 +169,6 @@ SELF_CONTAINED = [
      ROOT / "docs" / "程序入口与编译验证.md"),
     ("elang-ai-coding/references/黑月编译与黑月界面类.md",
      ROOT / "docs" / "黑月编译与黑月界面类.md"),
-    ("e2txt-cli/assets/e-packager.exe",
-     ROOT / "src" / "epackager" / "e-packager.exe"),
-    ("e2txt-cli/references/e-packager.md",
-     ROOT / "docs" / "e-packager.md"),
     ("elang-build/scripts/ecompile.py",
      ROOT / "tools" / "ecompile.py"),
     ("elang-build/references/AutoLinker与无头编译.md",
@@ -205,9 +201,6 @@ REF_ALLOW = {
         "Win32与DLL互操作.md",
         "程序入口与编译验证.md",
         "黑月编译与黑月界面类.md",
-    },
-    "e2txt-cli": {
-        "e-packager.md",
     },
     "elang-build": {
         "AutoLinker与无头编译.md",
@@ -301,14 +294,12 @@ DOCS = ["README.md",
         "docs/Win32与DLL互操作.md",
         "docs/程序入口与编译验证.md",
         "docs/黑月编译与黑月界面类.md",
-        "docs/e-packager.md",
         "docs/AutoLinker与无头编译.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/易语言文本格式规范.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/置入代码与机器码.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/Win32与DLL互操作.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/程序入口与编译验证.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/黑月编译与黑月界面类.md",
-        "Releases/Elang-AiTools/skills/e2txt-cli/references/e-packager.md",
         "Releases/Elang-AiTools/skills/elang-build/references/AutoLinker与无头编译.md"]
 PAT = re.compile(
     r"elang-ai/"                        # 已废弃的旧开发目录

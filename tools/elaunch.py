@@ -217,7 +217,8 @@ def safe_remove(p: str) -> bool:
 # 主流程
 # --------------------------------------------------------------------------- #
 def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float = None,
-            fne: str = None, home: str = None, tag: str = None, quiet: bool = False) -> dict:
+            fne: str = None, home: str = None, tag: str = None, quiet: bool = False,
+            compile_kind: str = None, expect_out: str = None) -> dict:
     ai_e = os.path.abspath(ai_e)
     if not os.path.isfile(ai_e):
         raise SystemExit("找不到加壳后的 .e: %s" % ai_e)
@@ -275,47 +276,87 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         print("   已投放 lib\\%s (%d B)" % (LIB_FNAME, os.path.getsize(dst_fne)))
 
         env = os.environ.copy()
-        env.update({
-            "ELANG_AI_TRACE": trace,
-            "ELANG_AI_TASK": ai_e,
-            "ELANG_AI_RUN": "1",
-            "ELANG_AI_RUN_DELAY": "2500",
-            "ELANG_AI_CAPTURE": log,
-            "ELANG_AI_HIDE": "0",
-        })
-        env["ELANG_AI_STOP"] = str(int(stop_after)) if stop_after else "0"
+        if compile_kind:
+            # 编译模式：触发 FNST_RUN 编译家族功能号，监视期望产物出现
+            env.update({
+                "ELANG_AI_TRACE": trace,
+                "ELANG_AI_TASK": ai_e,
+                "ELANG_AI_COMPILE": compile_kind,
+                "ELANG_AI_COMPILE_DELAY": "2500",
+                "ELANG_AI_EXPECT_OUT": expect_out or "",
+                "ELANG_AI_CAPTURE": log,
+                "ELANG_AI_HIDE": "0",
+            })
+        else:
+            env.update({
+                "ELANG_AI_TRACE": trace,
+                "ELANG_AI_TASK": ai_e,
+                "ELANG_AI_RUN": "1",
+                "ELANG_AI_RUN_DELAY": "2500",
+                "ELANG_AI_CAPTURE": log,
+                "ELANG_AI_HIDE": "0",
+            })
+            env["ELANG_AI_STOP"] = str(int(stop_after)) if stop_after else "0"
 
         # e.exe 的 stdout/stderr 也并进 harness（追加）
         ho = open(harness, "ab")
+        if compile_kind and expect_out and os.path.exists(expect_out):
+            # 旧产物会干扰「产物出现」判定，启动前清掉（该路径是本次编译的输出目标）
+            safe_remove(expect_out)
         proc = subprocess.Popen([e_exe, ai_e], cwd=e_dir, env=env,
                                 stdout=ho, stderr=ho)
         pid = proc.pid
         print("   e.exe pid = %d" % pid)
 
         deadline = t0 + float(timeout)
-        while True:
-            rc = proc.poll()
-            if rc is not None:
-                e_self_exit = rc
-                break
-            tr = read_text_best(trace)
-            if start["runStart"] is None and "FN_END_RUN enabled: 0 -> 1" in tr:
-                start["runStart"] = time.time()
-            if "发送 FN_END_RUN" in tr:
-                start["weSent"] = True
-            if start["runEnd"] is None and "FN_END_RUN enabled: 1 -> 0" in tr:
-                start["runEnd"] = time.time()
-            if start["runEnd"] is not None:
-                # 给 IDE 一点余量把退出码/尾行刷出来，再判是否崩
-                for _ in range(15):
-                    if proc.poll() is not None:
-                        e_exit_after_grace = proc.returncode
-                        break
-                    time.sleep(0.05)
-                break
-            if time.time() > deadline:
-                break
-            time.sleep(0.2)
+        if compile_kind:
+            # 编译等待：期望产物出现（mtime 晚于启动）即成；触发被拒或面板出现
+            # 编译错误（`错误(NNNN):`）即败；否则到点超时
+            while True:
+                rc = proc.poll()
+                if rc is not None:
+                    e_self_exit = rc
+                    break
+                tr = read_text_best(trace)
+                log_txt_early = read_text_best(log)
+                if "COMPILE-TRIGGER-RET handled=0" in tr:
+                    start["compileFailed"] = True
+                    break
+                if re.search(r"错误\(\d+\)", log_txt_early or ""):
+                    start["compileFailed"] = True
+                    break
+                if expect_out and os.path.isfile(expect_out) \
+                        and os.path.getmtime(expect_out) >= t0 - 1:
+                    start["outSeen"] = time.time()
+                    time.sleep(1.0)          # 陪 1 秒让面板/文件系统落定
+                    break
+                if time.time() > deadline:
+                    break
+                time.sleep(0.2)
+        else:
+            while True:
+                rc = proc.poll()
+                if rc is not None:
+                    e_self_exit = rc
+                    break
+                tr = read_text_best(trace)
+                if start["runStart"] is None and "FN_END_RUN enabled: 0 -> 1" in tr:
+                    start["runStart"] = time.time()
+                if "发送 FN_END_RUN" in tr:
+                    start["weSent"] = True
+                if start["runEnd"] is None and "FN_END_RUN enabled: 1 -> 0" in tr:
+                    start["runEnd"] = time.time()
+                if start["runEnd"] is not None:
+                    # 给 IDE 一点余量把退出码/尾行刷出来，再判是否崩
+                    for _ in range(15):
+                        if proc.poll() is not None:
+                            e_exit_after_grace = proc.returncode
+                            break
+                        time.sleep(0.05)
+                    break
+                if time.time() > deadline:
+                    break
+                time.sleep(0.2)
 
         if start["runStart"] and start["runEnd"]:
             run_seconds = round(start["runEnd"] - start["runStart"], 2)
@@ -374,7 +415,15 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     else:
         e_exit = e_code & 0xFFFFFFFF
 
-    if e_self_exit is not None and (e_self_exit & 0xFFFFFFFF) != 0:
+    if compile_kind:
+        # 编译模式判定：产物出现=ok；触发被拒/面板报错/IDE 崩溃=failed；否则超时
+        if start.get("outSeen"):
+            status = "ok"
+        elif start.get("compileFailed") or e_self_exit is not None:
+            status = "failed"
+        else:
+            status = "timeout"
+    elif e_self_exit is not None and (e_self_exit & 0xFFFFFFFF) != 0:
         status = "crashed"
     elif start["runEnd"] and start["weSent"]:
         status = "stopped"
@@ -406,14 +455,17 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         "stopAfter": stop_after,
         "timeout": timeout,
         "cleanupWarning": cleanup_warn or None,
+        "compileKind": compile_kind,
+        "expectOut": expect_out,
     }
     # 结果摘要**始终**写进 harness（stderr），这样 `<TAG>_harness.txt` 里也有
-    # 「异常 → 退出码」这条物证（即使面板随崩溃一起没了）。stdout 仍只放 JSON。
-    print("== 结果 ==")
+    # 「异常 → 退出码」这条物证（即使面板随崩溃一起没了）。
+    # ⚠️ 摘要只走 stderr —— `--json` 契约是「stdout 只放结果 JSON」。
+    print("== 结果 ==", file=sys.stderr)
     print("   status=%s targetExitCode=%s eExitCode=0x%08X runSeconds=%s"
-          % (status, target_exit, e_exit, run_seconds))
+          % (status, target_exit, e_exit, run_seconds), file=sys.stderr)
     print("   panelSeen=%s logBytes=%d cleanupWarning=%s"
-          % (panel_seen, log_bytes, cleanup_warn or "无"))
+          % (panel_seen, log_bytes, cleanup_warn or "无"), file=sys.stderr)
     return result
 
 
@@ -428,14 +480,23 @@ def main():
                     help="运行满这么多秒就主动发 FN_END_RUN（默认不主动停）")
     ap.add_argument("--json", action="store_true", dest="as_json", help="结果 JSON 打到 stdout")
     ap.add_argument("--fne", help="要投放的 .fne（默认 ../assets/elang_addin.fne）")
+    ap.add_argument("--compile", dest="compile_kind",
+                    choices=["static", "static_exe", "static_console", "static_dll",
+                             "exe", "console", "dll"],
+                    help="编译模式：触发 FNST_RUN 家族对应功能号（不调试运行）")
+    ap.add_argument("--expect-out", dest="expect_out",
+                    help="编译模式下期望产物路径（出现即判成功并收尾）")
     ap.add_argument("--home", help="易语言安装目录（默认 $ELANG_HOME → 注册表）")
     ap.add_argument("--tag", help="证据命名前缀（默认 <名>_<时分秒>）")
     ap.add_argument("-q", "--quiet", action="store_true", help="不打印过程")
     a = ap.parse_args()
 
     try:
+        if a.compile_kind and a.timeout == 30.0:
+            a.timeout = 300.0                   # 编译比调试运行慢得多，默认放宽
         result = elaunch(a.ai_e, a.log, a.timeout, a.stop_after, a.fne, a.home, a.tag,
-                         quiet=(a.quiet or a.as_json))
+                         quiet=(a.quiet or a.as_json),
+                         compile_kind=a.compile_kind, expect_out=a.expect_out)
     except SystemExit as e:
         if a.as_json:
             print(json.dumps({"ok": False, "status": "error", "error": str(e)},
