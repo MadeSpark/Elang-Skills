@@ -11,3 +11,9 @@
 
 # Python 运行产物
 __pycache__/
+
+# 上游技能克隆与第三方下载（体积大，不入库；来源见 docs/ 各参考文档脚注）
+/re/_upstream_e-language-skill/
+/re/_upstream_dl/
+/re/up_test/
+/re/epk_test/

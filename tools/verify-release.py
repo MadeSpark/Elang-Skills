@@ -161,6 +161,22 @@ SELF_CONTAINED = [
      ROOT / "导出支持库文档.exe"),
     ("elang-ai-coding/references/易语言文本格式规范.md",
      ROOT / "docs" / "易语言文本格式规范.md"),
+    ("elang-ai-coding/references/置入代码与机器码.md",
+     ROOT / "docs" / "置入代码与机器码.md"),
+    ("elang-ai-coding/references/Win32与DLL互操作.md",
+     ROOT / "docs" / "Win32与DLL互操作.md"),
+    ("elang-ai-coding/references/程序入口与编译验证.md",
+     ROOT / "docs" / "程序入口与编译验证.md"),
+    ("elang-ai-coding/references/黑月编译与黑月界面类.md",
+     ROOT / "docs" / "黑月编译与黑月界面类.md"),
+    ("e2txt-cli/assets/e-packager.exe",
+     ROOT / "src" / "epackager" / "e-packager.exe"),
+    ("e2txt-cli/references/e-packager.md",
+     ROOT / "docs" / "e-packager.md"),
+    ("elang-build/scripts/ecompile.py",
+     ROOT / "tools" / "ecompile.py"),
+    ("elang-build/references/AutoLinker与无头编译.md",
+     ROOT / "docs" / "AutoLinker与无头编译.md"),
     ("elang-debug/assets/elang_addin.fne",
      ROOT / "src" / "addin" / "elang_addin.fne"),
     ("elang-debug/assets/elang_addin.libinfo.txt",
@@ -183,7 +199,19 @@ for rel, src in SELF_CONTAINED:
 # 开发工程说明）满是本机路径与统计数，绝不能随技能发出去。sync-release.sh 已从
 # `docs/*.md` 改成显式名单，这里再加一道闸门 **按技能** 防止退化。
 REF_ALLOW = {
-    "elang-ai-coding": {"易语言文本格式规范.md"},
+    "elang-ai-coding": {
+        "易语言文本格式规范.md",
+        "置入代码与机器码.md",
+        "Win32与DLL互操作.md",
+        "程序入口与编译验证.md",
+        "黑月编译与黑月界面类.md",
+    },
+    "e2txt-cli": {
+        "e-packager.md",
+    },
+    "elang-build": {
+        "AutoLinker与无头编译.md",
+    },
     "elang-debug": {
         "加壳流程.md",
         "接口与调用约定清单.md",
@@ -267,8 +295,21 @@ DOCS = ["README.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/SKILL.md",
         "Releases/Elang-AiTools/skills/e2txt-cli/SKILL.md",
         "Releases/Elang-AiTools/skills/elang-debug/SKILL.md",
+        "Releases/Elang-AiTools/skills/elang-build/SKILL.md",
         "docs/易语言文本格式规范.md",
-        "Releases/Elang-AiTools/skills/elang-ai-coding/references/易语言文本格式规范.md"]
+        "docs/置入代码与机器码.md",
+        "docs/Win32与DLL互操作.md",
+        "docs/程序入口与编译验证.md",
+        "docs/黑月编译与黑月界面类.md",
+        "docs/e-packager.md",
+        "docs/AutoLinker与无头编译.md",
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/易语言文本格式规范.md",
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/置入代码与机器码.md",
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/Win32与DLL互操作.md",
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/程序入口与编译验证.md",
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/黑月编译与黑月界面类.md",
+        "Releases/Elang-AiTools/skills/e2txt-cli/references/e-packager.md",
+        "Releases/Elang-AiTools/skills/elang-build/references/AutoLinker与无头编译.md"]
 PAT = re.compile(
     r"elang-ai/"                        # 已废弃的旧开发目录
     r"|%USERPROFILE%[\\/]\.workbuddy"    # 写死的安装绝对路径

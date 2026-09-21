@@ -27,9 +27,10 @@ PY=python
 
 # 每技能一行： <技能名>|<scripts（真源 tools/）>|<references（真源 docs/）>
 SKILLS=(
-  "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py|易语言文本格式规范.md"
-  "e2txt-cli||"
+  "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py|易语言文本格式规范.md 置入代码与机器码.md Win32与DLL互操作.md 程序入口与编译验证.md 黑月编译与黑月界面类.md"
+  "e2txt-cli||e-packager.md"
   "elang-debug|mkcage.py elaunch.py readlog.py|"
+  "elang-build|ecompile.py|AutoLinker与无头编译.md"
 )
 
 # 发布区可能被挪动，按顺序找
@@ -72,3 +73,6 @@ if command -v $PY >/dev/null 2>&1; then
 else
   echo "!! 没找到 python，跳过 mk-cmd.py 与技能安装副本刷新"
 fi
+
+# Python 导入安装器会再生 __pycache__（verify-release 会拦），收尾清掉
+find "$KIT" -name "__pycache__" -type d -prune -exec rm -rf {} + 2>/dev/null || true

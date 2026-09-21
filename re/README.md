@@ -42,3 +42,18 @@
 - 涉及 e.exe 的实验只用精确 PID 终止，**绝不 `taskkill /F /IM e.exe`**；
 - `D:\ides\e\` 只读（只允许投放/移除 `lib\elang_addin.fne` 并 diff 自证）；
 - 本目录不进技能包、不进发布区（`sync-release.sh` 显式名单不含 `re/`）。
+
+## 5. 上游技能搬运与无头编译实证（2026-09-22）
+
+| 路径/文件 | 说明 |
+|---|---|
+| `addin_gate_exp/` | **AutoLinker 版本闸门受控实验**：V1（LBS_LIB_INFO2 位）/V2（RqSys3.7+RqKrnl5.3）/V3（仅 RqSys）/V4（仅 RqKrnl）四组变体的源码与 `.fne`，逐一证明旧 IDE 的三道独立拒载闸 |
+| `al_window_probe.py` / `al_errdlg_probe.py` | 无头编译阻塞探针：枚举 e.exe 顶层窗口、抓「不能载入支持库」弹窗全文 |
+| `al_screen.py` | 30 个 AutoLinker 历史版本批量下载 + 特征筛查（无头编译串 + LIB_INFO 门槛 dump） |
+| `make_tests.py` / `make_mc_tests.py` | 控制台验证 / 置入代码（NOP、INT3）测试工程生成 |
+| `fne_loadtest.py` / `webview2_check.py` / `reg_dump.py` / `reg_libsearch.py` | 排查辅助（64 位 Python 加载 32 位 fne 的误区、WebView2 检查、注册表排查） |
+| `up_test/`、`epk_test/` | 实测工作目录（沙箱布局、semantic 编译产物）；可由上述脚本再生，已 gitignore 大文件 |
+| `_upstream_e-language-skill/`（本地克隆，不入库） | 上游 [aiqinxuancai/e-language-skill](https://github.com/aiqinxuancai/e-language-skill)（MIT）参考本体 |
+| `_upstream_dl/`（本地，不入库） | AutoLinker / e-packager 各版本下载与解包 |
+
+关键结论沉淀在技能包内：`docs/AutoLinker与无头编译.md` §1（三道闸）、`docs/e-packager.md` §5（semantic 编译配方与缺陷）、`docs/置入代码与机器码.md` §7（NOP/INT3 实弹）。

@@ -11,13 +11,14 @@
 
 | 组件 | 说明 |
 |---|---|
-| `Releases/Elang-AiTools/skills/elang-ai-coding/` | **编码技能**：格式铁律、五种控制语句精确语义、Unicode/文本长度铁律、支持库命令查询、双次往返验证、GUI 项目产出。自包含（脚本/exe/规范全文都在包内） |
-| `Releases/Elang-AiTools/skills/e2txt-cli/` | **e2txt 命令行技能**：`.e` ⇄ 文本目录互转的参数与全部坑 |
+| `Releases/Elang-AiTools/skills/elang-ai-coding/` | **编码技能**：格式铁律、五种控制语句精确语义、Unicode/文本长度铁律、声明槽位总表、DLL cdecl、支持库命令查询、双次往返验证、GUI 项目产出。自包含（脚本/exe/规范全文都在包内）。**references 带四份专题**：置入代码与机器码、Win32 与 DLL 互操作、程序入口与编译验证、黑月编译与黑月界面类（搬运自 [aiqinxuancai/e-language-skill](https://github.com/aiqinxuancai/e-language-skill)，MIT，经本机实测修订） |
+| `Releases/Elang-AiTools/skills/e2txt-cli/` | **e2txt 命令行技能**：`.e` ⇄ 文本目录互转的参数与全部坑。**内置 e-packager.exe（MIT）**：密码工程解包回包、`decrypt-fne` 从 .fne 导出接口、加资源、verify-roundtrip 往返验证 |
 | `Releases/Elang-AiTools/skills/elang-debug/` | **调试技能**：给 `.e` 加壳声明宿主库 → 程序化触发易语言 IDE 的「调试运行」→ 流式收调试框日志 → 输出结果 JSON（`ok`/`stopped`/`crashed`/`timeout`）。自包含（宿主库 `.fne` + 两个脚本都在包内） |
-| `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch` 等工程脚本 |
+| `Releases/Elang-AiTools/skills/elang-build/` | **无头编译技能**：不开 IDE 把 `.e` 编译成原生 exe/dll。通道 A = e-packager 语义编译（`ecompile.py` 一条命令，实测可用）；通道 B = AutoLinker 无头编译（含**旧版 IDE 三道版本闸门拒载**的实测判定）。自包含 |
+| `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；e-packager 源本（`src/epackager/`）；以及 `mkcage`/`elaunch`/`ecompile` 等工程脚本 |
 
 技能遵循 **Agent Skills 开放规范**（agentskills.io），frontmatter 只有 `name` + `description`，
-一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 3 技能）。
+一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 4 技能）。
 
 ## 实测钉死的关键结论（AI 最容易写错的地方）
 
@@ -64,7 +65,7 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 ## 目录
 
 ```
-├── Releases/Elang-AiTools/   发布区（成品）：三个技能 + 跨工具安装器
+├── Releases/Elang-AiTools/   发布区（成品）：四个技能 + 跨工具安装器
 ├── demos/                    实测 demo（工程 + 示例输出）
 ├── docs/                     格式规范全文 + 开发工程说明
 ├── tools/                    mkproj / rtcheck / efix / mkcage / elaunch / 打包与校验脚本
