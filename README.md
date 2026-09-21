@@ -7,16 +7,17 @@
 > 让 IDE 的**流程线串线**；`判断` 被当成 switch 用；`寻找文件` 边找边递归导致漏项。
 > 本项目把这些坑全部实测钉死，做成跨工具通用的 Agent Skills。
 
-## 三件套
+## 组件
 
 | 组件 | 说明 |
 |---|---|
 | `Releases/Elang-AiTools/skills/elang-ai-coding/` | **编码技能**：格式铁律、五种控制语句精确语义、Unicode/文本长度铁律、支持库命令查询、双次往返验证、GUI 项目产出。自包含（脚本/exe/规范全文都在包内） |
 | `Releases/Elang-AiTools/skills/e2txt-cli/` | **e2txt 命令行技能**：`.e` ⇄ 文本目录互转的参数与全部坑 |
-| `src/` + `tools/` | 支持库文档导出工具（32 位 C 单文件，扫 `lib\*.fne` 得 77 库 / 5951 条命令）与工程脚本 |
+| `Releases/Elang-AiTools/skills/elang-debug/` | **调试技能**：给 `.e` 加壳声明宿主库 → 程序化触发易语言 IDE 的「调试运行」→ 流式收调试框日志 → 输出结果 JSON（`ok`/`stopped`/`crashed`/`timeout`）。自包含（宿主库 `.fne` + 两个脚本都在包内） |
+| `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch` 等工程脚本 |
 
 技能遵循 **Agent Skills 开放规范**（agentskills.io），frontmatter 只有 `name` + `description`，
-一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 2 技能）。
+一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 3 技能）。
 
 ## 实测钉死的关键结论（AI 最容易写错的地方）
 
@@ -63,11 +64,11 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 ## 目录
 
 ```
-├── Releases/Elang-AiTools/   发布区（成品）：两个技能 + 跨工具安装器
-├── demos/                    两个实测 demo（工程 + 示例输出）
+├── Releases/Elang-AiTools/   发布区（成品）：三个技能 + 跨工具安装器
+├── demos/                    实测 demo（工程 + 示例输出）
 ├── docs/                     格式规范全文 + 开发工程说明
-├── tools/                    mkproj / rtcheck / efix / 打包与校验脚本
-├── src/                      导出支持库文档工具的 C 源码与构建脚本
+├── tools/                    mkproj / rtcheck / efix / mkcage / elaunch / 打包与校验脚本
+├── src/                      导出支持库文档工具、调试宿主支持库的 C 源码与构建脚本
 └── 支持库文档/               导出产物（77 库 / 5951 条命令）
 ```
 
@@ -84,6 +85,26 @@ echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
 块首块尾配对，把 AI 最常犯的错挡在进 IDE 之前；`rtcheck` 保证格式收敛。
 
 唯一验收标准：**能不能在易语言 IDE 里打开并编译运行**。
+
+## 调试易语言程序（`elang-debug`）
+
+让 AI 不只是“写”，还能**跑起来看**：
+
+1. `mkcage.py` 给用户的 `.e` **加壳**（只在工程文本里声明一个宿主支持库，全程离线、不启 IDE）；
+2. `elaunch.py` 启动易语言 IDE 打开加壳后的 `.e`，**程序化触发一次「调试运行」**，
+   并把调试框文本 **50ms 增量流式落盘**（中文同时给 `.utf8.txt` 视图）；
+3. 结束时输出**机器可读 JSON**：`status` 判定**不看面板尾行**（尾行分不出“正常结束/被中断”）——
+   `crashed` 靠 **IDE 子进程退出码 ≠ 0**（如 `0xC0000005`），
+   `stopped` 靠“**我们主动**发过 `FN_END_RUN` 且观测到 `enabled 1→0`”，
+   `ok` = 自然结束，`timeout` = 超时未结束。
+
+前置：Windows + 易语言 IDE（用 `ELANG_HOME` 或注册表 `HKCU\Software\FlySky\E\Install` 定位）+ e2txt + Python 3.9+。
+```bash
+python skills/elang-debug/scripts/mkcage.py   <用户.e> <_ai.e>      # 加壳
+python skills/elang-debug/scripts/elaunch.py  <_ai.e> --json        # 调试运行 + 收日志
+```
+风险：被调试程序**运行期异常**可能连带打挂 IDE（第三方插件 bug）——因此**每个会话独立进程**、
+以**子进程退出码**判定，异常程序应隔离运行。
 
 ## License
 

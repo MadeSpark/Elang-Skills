@@ -161,6 +161,10 @@ SELF_CONTAINED = [
      ROOT / "导出支持库文档.exe"),
     ("elang-ai-coding/references/易语言文本格式规范.md",
      ROOT / "docs" / "易语言文本格式规范.md"),
+    ("elang-debug/assets/elang_addin.fne",
+     ROOT / "src" / "addin" / "elang_addin.fne"),
+    ("elang-debug/assets/elang_addin.libinfo.txt",
+     ROOT / "src" / "addin" / "elang_addin.libinfo.txt"),
 ]
 for rel, src in SELF_CONTAINED:
     p = SKILLS_SRC / rel.replace("/", os.sep)
@@ -174,6 +178,29 @@ for rel, src in SELF_CONTAINED:
         bad(f"{rel} 与工程侧源本不一致（跑 src/build.sh 或 tools/sync-release.sh 同步）")
     else:
         ok(f"{rel:46s} {p.stat().st_size:>9,} B  与工程侧源本一致")
+
+# references/ 只放**给用户看的成品文档**；工程内部工作文档（方案、逆向分析报告、
+# 开发工程说明）满是本机路径与统计数，绝不能随技能发出去。sync-release.sh 已从
+# `docs/*.md` 改成显式名单，这里再加一道闸门 **按技能** 防止退化。
+REF_ALLOW = {
+    "elang-ai-coding": {"易语言文本格式规范.md"},
+    "elang-debug": {
+        "加壳流程.md",
+        "接口与调用约定清单.md",
+        "踩坑清单.md",
+    },
+}
+for d in sorted(SKILLS_SRC.iterdir()):
+    ref = d / "references"
+    if not ref.is_dir():
+        continue
+    allow = REF_ALLOW.get(d.name, set())
+    extra = sorted(p.name for p in ref.iterdir()
+                   if p.is_file() and p.name not in allow)
+    if extra:
+        bad(f"{d.name}/references/ 混进非白名单文件: {extra}（内部文档不要随技能发布）")
+    else:
+        ok(f"{d.name}/references/ 仅含白名单 {sorted(allow)}")
 
 head(3, "安装点一致性")
 try:
@@ -239,6 +266,7 @@ DOCS = ["README.md",
         "Releases/Elang-AiTools/使用说明.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/SKILL.md",
         "Releases/Elang-AiTools/skills/e2txt-cli/SKILL.md",
+        "Releases/Elang-AiTools/skills/elang-debug/SKILL.md",
         "docs/易语言文本格式规范.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/易语言文本格式规范.md"]
 PAT = re.compile(
