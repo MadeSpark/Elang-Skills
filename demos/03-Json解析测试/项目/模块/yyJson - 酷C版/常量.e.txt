@@ -1,0 +1,25 @@
+﻿.版本 2
+
+.常量 JSON_解析标志_默认模式, "0", , yyJson 默认模式
+.常量 JSON_解析标志_原位解析, "1", , yyJson 原位解析,会破坏源变量内容,可以提高解析速度.
+.常量 JSON_解析标志_完成时停止, "2", , yyJson 解析完成直接返回,JSON后面还有内容则不报错.如: "{"name":"yyjson"}{"age":1}"
+.常量 JSON_解析标志_允许尾随逗号, "4", , yyJson 允许在对象或数组的末尾使用单个尾随逗号. 如: [1,2,] 或 {"name":"yyjson",}
+.常量 JSON_解析标志_允许注释, "8", , yyJson 允许C样式的单行和多行注释. 如: "//注释" "/*注释*/"
+.常量 JSON_解析标志_允许nan_inf, "16", , yyJson 允许nan/inf数字或文字，如1e999、nan、inf、无穷大.
+.常量 JSON_解析标志_ANSI, "1073741824", , yyJson 兼容ANSI编码,能够解析包含ANSI中文内容. (非原版功能,属于魔改)
+.常量 JSON_生成标志_默认模式, "0", , yyJson 默认模式
+.常量 JSON_生成标志_格式化JSON, "1", , yyJson 格式化JSON
+.常量 JSON_生成标志_转义UNICODE, "2", , yyJson 将unicode转义为“\uxxx”，使输出仅为ASCII。
+.常量 JSON_生成标志_转义正斜杠, "4", , yyJson 转义“/”为“\/”
+.常量 JSON_生成标志_输出nan_inf, "8", , yyJson 将inf和nan数字写入“inf”和“nan”文字 (非标准JSON)
+.常量 JSON_生成标志_ANSI, "1073741824", , yyJson 兼容ANSI编码,能够正常写出中文内容. (非原版功能,属于魔改)
+.常量 JSON_类型_无, "0", , yyJson
+.常量 JSON_类型_NULL, "2", , yyJson
+.常量 JSON_类型_逻辑型, "3", , yyJson
+.常量 JSON_类型_数值型, "4", , yyJson
+.常量 JSON_类型_文本型, "5", , yyJson
+.常量 JSON_类型_数组型, "6", , yyJson
+.常量 JSON_类型_对象型, "7", , yyJson
+.常量 JSON_数值类型_双精度小数, "100", , yyJson
+.常量 JSON_数值类型_长整数, "101", , yyJson
+.常量 JSON_数组_加入, "-1", , yyJson

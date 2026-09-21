@@ -1,0 +1,7 @@
+# 以 . 开头的 IDE / 工具目录，不入库
+/.codebuddy/
+/.workbuddy/
+/.tmp/
+/.vscode/
+/.idea/
+/.git/
