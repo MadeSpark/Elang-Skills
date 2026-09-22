@@ -1,4 +1,8 @@
-# AutoLinker 与无头编译
+﻿# AutoLinker 与无头编译（实验区归档）
+
+> ⚠️ 本文档**不进技能包**（2026-09-22 起 elang-build 全面走自家宿主库链路，AutoLinker 无关）。
+> 它是 `re/addin_gate_exp/` 三道版本闸门受控实验（V1~V4 变体）的结论文档，
+> 留档用途：若将来换新版 IDE 想评估 AutoLinker，先读 §1 的闸门判定再决定装不装。
 
 > AutoLinker（aiqinxuancai 出品，MIT）是装进易语言 IDE 的支持库插件：给 IDE 加 MCP 服务、内置 AI、**无头命令行编译**与项目级编译配置。本文覆盖它的无头编译用法、项目配置、MCP 边界，以及**本套装实测的版本兼容闸门**（重要，先看 §1）。
 > 改编自 aiqinxuancai/e-language-skill（MIT）。

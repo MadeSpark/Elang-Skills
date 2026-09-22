@@ -30,7 +30,7 @@ SKILLS=(
   "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py|易语言文本格式规范.md 置入代码与机器码.md Win32与DLL互操作.md 程序入口与编译验证.md 黑月编译与黑月界面类.md"
   "e2txt-cli||"
   "elang-debug|mkcage.py elaunch.py readlog.py|"
-  "elang-build|ecompile.py|AutoLinker与无头编译.md"
+  "elang-build|ecompile.py|"
 )
 
 # 发布区可能被挪动，按顺序找

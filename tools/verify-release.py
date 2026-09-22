@@ -171,8 +171,6 @@ SELF_CONTAINED = [
      ROOT / "docs" / "黑月编译与黑月界面类.md"),
     ("elang-build/scripts/ecompile.py",
      ROOT / "tools" / "ecompile.py"),
-    ("elang-build/references/AutoLinker与无头编译.md",
-     ROOT / "docs" / "AutoLinker与无头编译.md"),
     ("elang-debug/assets/elang_addin.fne",
      ROOT / "src" / "addin" / "elang_addin.fne"),
     ("elang-debug/assets/elang_addin.libinfo.txt",
@@ -202,9 +200,7 @@ REF_ALLOW = {
         "程序入口与编译验证.md",
         "黑月编译与黑月界面类.md",
     },
-    "elang-build": {
-        "AutoLinker与无头编译.md",
-    },
+    "elang-build": set(),
     "elang-debug": {
         "加壳流程.md",
         "接口与调用约定清单.md",
@@ -294,13 +290,11 @@ DOCS = ["README.md",
         "docs/Win32与DLL互操作.md",
         "docs/程序入口与编译验证.md",
         "docs/黑月编译与黑月界面类.md",
-        "docs/AutoLinker与无头编译.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/易语言文本格式规范.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/置入代码与机器码.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/Win32与DLL互操作.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/references/程序入口与编译验证.md",
-        "Releases/Elang-AiTools/skills/elang-ai-coding/references/黑月编译与黑月界面类.md",
-        "Releases/Elang-AiTools/skills/elang-build/references/AutoLinker与无头编译.md"]
+        "Releases/Elang-AiTools/skills/elang-ai-coding/references/黑月编译与黑月界面类.md"]
 PAT = re.compile(
     r"elang-ai/"                        # 已废弃的旧开发目录
     r"|%USERPROFILE%[\\/]\.workbuddy"    # 写死的安装绝对路径

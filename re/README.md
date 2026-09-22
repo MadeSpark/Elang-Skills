@@ -1,4 +1,4 @@
-# `re/` 目录说明（逆向 / 实验 / 物证，非交付产物）
+﻿# `re/` 目录说明（逆向 / 实验 / 物证，非交付产物）
 
 > 本目录是**实验与逆向工作区**：PoC 脚本、受控实验、物证都在这里。
 > **里面的任何东西都不是交付产物**——技能成品在 `Releases/Elang-AiTools/`，工具真源在 `tools/`，宿主库源码在 `src/addin/`。
@@ -56,4 +56,6 @@
 | `_upstream_e-language-skill/`（本地克隆，不入库） | 上游 [aiqinxuancai/e-language-skill](https://github.com/aiqinxuancai/e-language-skill)（MIT）参考本体 |
 | `_upstream_dl/`（本地，不入库） | AutoLinker / e-packager 各版本下载与解包 |
 
-关键结论沉淀在技能包内：`docs/AutoLinker与无头编译.md` §1（三道闸）、`docs/e-packager.md` §5（semantic 编译配方与缺陷）、`docs/置入代码与机器码.md` §7（NOP/INT3 实弹）。
+关键结论沉淀：三道闸见 `re/addin_gate_exp/AutoLinker与无头编译.md` §1（实验区归档，不进技能包）；
+NOP/INT3 实弹已改走自家静态编译链路复验，记录在 `docs/置入代码与机器码.md` §7。
+（e-packager 通道 2026-09-22 按用户决策整体移除，其历史配方见 git 提交 b60e6b9。）
