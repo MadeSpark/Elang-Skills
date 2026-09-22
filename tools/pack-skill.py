@@ -119,7 +119,11 @@ def validate(skill_dir):
                 if os.path.isdir(os.path.join(root, d))
                 and os.path.exists(os.path.join(root, d, rel.replace('/', os.sep)))]
         if sibs:
-            warns.append(f'引用了同级技能 {sibs[0]} 的 {rel}（跨技能引用，合法）')
+            sib = sibs[0]
+            how = ('本技能 SKILL.md 已声明同装' if sib in body
+                   else '⚠ 本技能 SKILL.md 没写同装，单独分发会失效')
+            warns.append(f'引用了同级技能 {sib} 的 {rel}'
+                         f'（跨技能引用：{sib} 必须同装；{how}）')
         else:
             errs.append(f'SKILL.md 里引用了不存在的文件: {rel}')
 

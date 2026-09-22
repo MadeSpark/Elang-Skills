@@ -152,7 +152,8 @@ def t2e_if_dir(src: Path, e2txt: str | None, work: Path) -> Path:
         err = r.stderr.decode("gbk", "replace")
         if "AI调试宿主" in err or "elang_addin" in err:
             raise SystemExit("输入 .e 已经加壳过（库表里已有本套装宿主库），请改用原始 .e；"
-                             "e2t 无法回读声明了未安装支持库的工程（交接文档 §4.3 坑 B）")
+                             "e2t 无法回读声明了未安装支持库的工程"
+                             "（会报「加载支持库失败」且不产出文本目录）")
         raise SystemExit("t2e 失败（见上方 stderr 的 [错误] 行）: %s" % src)
     return dst
 
