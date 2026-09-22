@@ -1,0 +1,17 @@
+# 行尾策略
+#
+# 本仓库 core.autocrlf=true，默认检出会把文本文件写成 CRLF。实测后果：clone 出来的
+# `tools/sync-release.sh`、`src/build.sh`、`install-skills.sh` 全带 \r，bash 直接报
+# 「bad interpreter / 找不到命令」—— 发布链路在新机器上第一次就跑不起来。
+#
+# 这里只钉死「行尾不对就直接失效」的类型，刻意不写 `* text=auto`：
+# 仓库里已有大量受 autocrlf 管理的文件（含 demos/ 下易语言文本格式的 .txt，它本身
+# 要求 CRLF），全局重规范化会制造巨量无意义 diff，还可能破坏这些固定样本。
+#
+# 注意：本文件里属性行的行尾**不能写注释**（`#` 只能整行，否则会被当成属性名）。
+
+# 检出成 CRLF 会让 bash 报 \r
+*.sh   text eol=lf
+# Windows 批处理必须 CRLF（安装技能.cmd 同时要求 GBK 编码）
+*.cmd  text eol=crlf
+*.bat  text eol=crlf

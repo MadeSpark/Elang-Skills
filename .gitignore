@@ -6,11 +6,25 @@
 /.idea/
 /.git/
 
-# 发布附件不入库，仅在用户明确要求时打包推送
-/Releases/
+# 发布区成品**必须入库**：四个 SKILL.md、使用说明、三个安装入口都只在这里手工维护，
+# 工程侧没有它们的源本 —— 不入库就是单点存储，丢了无法重建。
+# （skills/*/scripts|references|assets 是 tools/ docs/ src/ 的同步副本，
+#   verify-release.py 会断言它们与源本逐字节一致，所以入库还能顺带暴露「改完忘同步」。）
+# 曾经的坑：整目录忽略时，dist/ 里的分发包会与发布区内容悄悄漂移，而 git 完全看不见。
+#
+# 只忽略**发布附件本身**（打包好的压缩包）—— 这正是 bafd77e 那次提交的原本意图，
+# 当时把规则写成 `/Releases/`，连整个目录一起忽略了，属于误伤。
+/Releases/**/*.zip
+/Releases/**/*.tar.gz
 
 # Python 运行产物
 __pycache__/
+
+# dist/ 里的技能分发包：内容可从 Releases/ 完全再生，**不入库**。
+# 它还有一个硬理由：打包字节**跨环境不可复现** —— 同样的源内容，zlib 与 zlib-ng
+# 压出的 deflate 流不同（CRC 相同、compress_size 不同），入库只会每次打包都产生
+# 无意义的二进制 diff。要发给别人时跑 python tools/pack-skill.py 现打即可。
+/dist/
 
 # 上游技能克隆与第三方下载（体积大，不入库；来源见 docs/ 各参考文档脚注）
 /re/_upstream_e-language-skill/
