@@ -1,0 +1,50 @@
+[prep] 已用目录占位 C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2\MbKit.dll
+[prep] 清掉 C:\Users\MADESP~1\AppData\Local\Temp\ElangMbKit\MbKit.dll（若存在）
+
+==========================================================================================
+兜底分支验证：宿主 exe 目录写不出去 → 应退到 %%TEMP%%\ElangMbKit
+==========================================================================================
+  exit                 = 0
+  wkeIsInitialize      = 1
+  TEMP 兜底文件        = C:\Users\MADESP~1\AppData\Local\Temp\ElangMbKit\MbKit.dll
+  TEMP 兜底文件尺寸    = 56320
+
+  结论：PASS
+
+--- probe2.log ---
+01 启动；宿主程序目录 = C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2
+02 模块内置 MbKit 资源长度 = 56320
+03 环境变量 MBKIT_TEST_NODE = [C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x]
+04 WKE设置node路径 返回 = 真
+05 WKE载入宿主库 返回 = 真
+06 再次 WKE载入宿主库（幂等）= 真
+07 宿主库落盘尺寸（应为 56320）= 0
+08 [模块裸名命令] wkeIsInitialize = 0
+09 加载前宿主自检：
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x\node.dll
+  内核模块     : 0x781E0000
+  自定义路径   : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+
+10 wkeInitialize 后 wkeIsInitialize = 1
+11 WKE取node路径 = C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x\node.dll
+12 加载后宿主自检：
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x\node.dll
+  内核模块     : 0x781E0000
+  自定义路径   : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\kernel_x
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e2
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+
+== 探测结束 ==
+

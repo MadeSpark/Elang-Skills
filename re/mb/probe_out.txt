@@ -1,0 +1,38 @@
+=========== miniblink 热重载诊断 ===========
+node.dll = node.dll
+
+[1] 首次 LoadLibrary
+  module base = 79b90000
+  wkeGetVersion       = 258
+
+[2] 阶段 A：首次 initialize + 建 WebView
+  wkeIsInitialize -> 1
+  wkeGetVersionString = wke version 1.02
+blink build 98096
+build time Wed Mar 10 09:29:26 2021
+
+  A-1st view             view=03ae0e78  loadingCompleted=1
+  [OK]   阶段A 首次 WebView 可用
+
+[3] 阶段 B：销毁 WebView 后【不 finalize】再建
+  B-2nd view             view=038e8788  loadingCompleted=1
+  [OK]   阶段B 未 finalize 也能再建 (内核可复用)
+
+[4] 阶段 C：finalize -> initialize -> 再建 WebView
+  finalize 后 wkeIsInitialize -> 1
+  再 initialize 后 wkeIsInitialize -> 1
+  C-3rd view             view=038be630  loadingCompleted=1
+  [OK]   阶段C finalize+init 后可重建
+
+[5] 阶段 D：FreeLibrary 能否真正卸载
+  FreeLibrary=1  GetModuleHandle(node.dll)=00000000
+  [OK]   node.dll 已从本进程卸载
+
+[6] 阶段 E：重新 LoadLibrary + 完整重来（用户场景）
+  新 module base = 79b90000  (与首次相同=其实没卸载过)
+  E-4th view             view=038906d0  loadingCompleted=1
+  [OK]   重载后可用 —— 热重载可行
+
+=========== 汇总: 5 通过 / 0 失败 ===========
+
+（手动结束：本进程已 init 且未 finalize 时可能残留线程，10 秒后自动退出）

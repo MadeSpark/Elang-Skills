@@ -1,0 +1,1742 @@
+﻿.版本 2
+
+.程序集 MB浏览框, , 公开, miniblink
+.程序集变量 m_WebView, 整数型, 数组
+
+.子程序 _初始化
+
+.子程序 _销毁
+
+.子程序 _WndProc, 整数型
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .局部变量 _局部变量1, 逻辑型, 数组
+    .局部变量 _局部变量2, _结构41010B08, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+    .局部变量 _局部变量4, 整数型, 数组
+    .局部变量 _局部变量5, _结构41010A13, 数组
+    .局部变量 _局部变量6, _结构41010C40, 数组
+    .局部变量 _局部变量7, 整数型, 数组
+    .局部变量 _局部变量8, 整数型, 数组
+    .局部变量 _局部变量9, _结构41010A14, 数组
+    .局部变量 _局部变量10, 整数型, 数组
+    .局部变量 _局部变量11, _结构41010C45, 数组
+    .局部变量 _局部变量12, _结构41011156, 数组
+    .局部变量 _局部变量13, 整数型, 数组
+    .局部变量 _局部变量14, _结构41010A13, 数组
+    .局部变量 _局部变量15, _结构41010A13, 数组
+    .局部变量 _局部变量16, _结构41010A13, 数组
+    .局部变量 _局部变量17, 整数型, 数组
+    .局部变量 _局部变量18, 整数型, 数组
+    .局部变量 _局部变量19, 整数型, 数组
+    .局部变量 _局部变量20, 整数型, 数组
+    .局部变量 _局部变量21, 整数型, 数组
+    .局部变量 _局部变量22, 整数型, 数组
+
+    _局部变量22 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DA)
+    .判断开始 (_参数2 ＝ #_常量18010ACE)
+        
+        _DLL命令0A010977_wkeRepaintIfNeeded (m_WebView)
+        _DLL命令0A010B00_BeginPaint (_参数1, _局部变量2)
+        _局部变量14 ＝ _局部变量2._成员35010B0B
+        _DLL命令0A010B8B_GetClientRect (_参数1, _局部变量15)
+        _局部变量16 ＝ _局部变量15
+        .如果真 (_局部变量14._成员35010A17 ≠ _局部变量14._成员35010A15 且 _局部变量14._成员35010A18 ≠ _局部变量14._成员35010A16)
+            _DLL命令0A010B92_IntersectRect (_局部变量16, _局部变量14, _局部变量15)
+        .如果真结束
+        _局部变量17 ＝ _局部变量16._成员35010A15 － _局部变量15._成员35010A15
+        _局部变量18 ＝ _局部变量16._成员35010A16 － _局部变量15._成员35010A16
+        _局部变量19 ＝ _局部变量16._成员35010A15
+        _局部变量20 ＝ _局部变量16._成员35010A16
+        _局部变量3 ＝ _局部变量16._成员35010A17 － _局部变量16._成员35010A15
+        _局部变量4 ＝ _局部变量16._成员35010A18 － _局部变量16._成员35010A16
+        .如果真 (0 ≠ _局部变量3 且 0 ≠ _局部变量4)
+            _DLL命令0A010BA6_BitBlt (_局部变量2._成员35010B09, _局部变量19, _局部变量20, _局部变量3, _局部变量4, _DLL命令0A0102C9_wkeGetViewDC (m_WebView), _局部变量17, _局部变量18, #_常量18010BB0)
+        .如果真结束
+        
+        _DLL命令0A010B01_EndPaint (_参数1, _局部变量2)
+        返回 (0)
+    .判断 (_参数2 ＝ #_常量18010C39)
+        返回 (1)
+    .判断 (_参数2 ＝ #_常量18010ACF)
+        _局部变量3 ＝ _LOWORD (_参数4)
+        _局部变量4 ＝ _HIWORD (_参数4)
+        _DLL命令0A01028E_wkeResize (m_WebView, _局部变量3, _局部变量4)
+        _DLL命令0A010977_wkeRepaintIfNeeded (m_WebView)
+    .判断 (_参数2 ＝ #_常量18010AD1)
+        _局部变量7 ＝ _参数3
+        _局部变量8 ＝ 0
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACB) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B17)
+        .如果真结束
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACC) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B16)
+        .如果真结束
+        
+        .如果真 (_DLL命令0A010B18_wkeFireKeyDownEvent (m_WebView, _局部变量7, _局部变量8, 0) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AD2)
+        _局部变量7 ＝ _参数3
+        _局部变量8 ＝ 0
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACB) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B17)
+        .如果真结束
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACC) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B16)
+        .如果真结束
+        .如果真 (_DLL命令0A010B3F_wkeFireKeyUpEvent (m_WebView, _局部变量7, _局部变量8, 0) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AD3)
+        _局部变量7 ＝ _参数3
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACB) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B17)
+        .如果真结束
+        .如果真 (位与 (_HIWORD (_参数4), #_常量18010ACC) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010B16)
+        .如果真结束
+        
+        .如果真 (_DLL命令0A010B4A_wkeFireKeyPressEvent (m_WebView, _局部变量7, _局部变量8, 0) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AD4 或 _参数2 ＝ #_常量18010AD5 或 _参数2 ＝ #_常量18010AD6 或 _参数2 ＝ #_常量18010AD7 或 _参数2 ＝ #_常量18010AD8 或 _参数2 ＝ #_常量18010AD9 或 _参数2 ＝ #_常量18010ADA 或 _参数2 ＝ #_常量18010ADB 或 _参数2 ＝ #_常量18010ADC 或 _参数2 ＝ #_常量18010ADD)
+        .如果 (_参数2 ＝ #_常量18010AD4 或 _参数2 ＝ #_常量18010AD5 或 _参数2 ＝ #_常量18010AD6)
+            .如果真 (_DLL命令0A010C3A_GetFocus () ≠ _参数1)
+                _DLL命令0A010C5A_SetFocus (_参数1)
+            .如果真结束
+            _DLL命令0A010C60_SetCapture (_参数1)
+        .否则
+            .如果真 (_参数2 ＝ #_常量18010ADA 或 _参数2 ＝ #_常量18010ADB 或 _参数2 ＝ #_常量18010ADC)
+                _DLL命令0A010C5F_ReleaseCapture ()
+            .如果真结束
+            
+        .如果结束
+        _局部变量9._成员35010A19 ＝ _LOWORD (_参数4)
+        _局部变量9._成员35010A1A ＝ _HIWORD (_参数4)
+        _局部变量8 ＝ 0
+        .如果真 (位与 (_参数3, #_常量18010ADE) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C66)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010ADF) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C65)
+        .如果真结束
+        
+        .如果真 (位与 (_参数3, #_常量18010AE0) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C63)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE1) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C67)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE2) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C64)
+        .如果真结束
+        .如果真 (_DLL命令0A010B28_wkeFireMouseEvent (m_WebView, _参数2, _局部变量9._成员35010A19, _局部变量9._成员35010A1A, _局部变量8) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AE3)
+        _局部变量9._成员35010A19 ＝ _LOWORD (_参数4)
+        _局部变量9._成员35010A1A ＝ _HIWORD (_参数4)
+        .如果真 (_局部变量9._成员35010A19 ≠ -1 且 _局部变量9._成员35010A1A ≠ -1)
+            _DLL命令0A010C68_ScreenToClient (_参数1, _局部变量9)
+        .如果真结束
+        _局部变量8 ＝ _参数3
+        .如果真 (位与 (_参数3, #_常量18010ADE) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C66)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010ADF) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C65)
+        .如果真结束
+        
+        .如果真 (位与 (_参数3, #_常量18010AE0) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C63)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE1) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C67)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE2) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C64)
+        .如果真结束
+        
+        .如果真 (_DLL命令0A010B2E_wkeFireContextMenuEvent (m_WebView, _局部变量9._成员35010A19, _局部变量9._成员35010A1A, _局部变量8) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AE4)
+        _局部变量9._成员35010A19 ＝ _LOWORD (_参数4)
+        _局部变量9._成员35010A1A ＝ _HIWORD (_参数4)
+        _DLL命令0A010C68_ScreenToClient (_参数1, _局部变量9)
+        _局部变量10 ＝ _HIWORD (_参数3)
+        _局部变量8 ＝ 0
+        .如果真 (位与 (_参数3, #_常量18010ADE) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C66)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010ADF) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C65)
+        .如果真结束
+        
+        .如果真 (位与 (_参数3, #_常量18010AE0) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C63)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE1) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C67)
+        .如果真结束
+        .如果真 (位与 (_参数3, #_常量18010AE2) ≠ 0)
+            _局部变量8 ＝ 位或 (_局部变量8, #_常量18010C64)
+        .如果真结束
+        .如果真 (_DLL命令0A010B36_wkeFireMouseWheelEvent (m_WebView, _局部变量9._成员35010A19, _局部变量9._成员35010A1A, _局部变量10, _局部变量8) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AE5)
+        _DLL命令0A010359_wkeSetFocus (m_WebView)
+        返回 (0)
+    .判断 (_参数2 ＝ #_常量18010AE6)
+        _DLL命令0A01035D_wkeKillFocus (m_WebView)
+        返回 (0)
+    .判断 (_参数2 ＝ #_常量18010AE7)
+        _DLL命令0A010C3C_wkeGetCaretRect (_局部变量6, m_WebView)
+        _局部变量11._成员35010C46 ＝ 0
+        _局部变量11._成员35010C47 ＝ #_常量18010AE8
+        _局部变量11._成员35010C48._成员35010A19 ＝ _局部变量6._成员35010C41
+        _局部变量11._成员35010C48._成员35010A1A ＝ _局部变量6._成员35010C42 ＋ _局部变量6._成员35010C44
+        _局部变量11._成员35010C49._成员35010A16 ＝ _局部变量6._成员35010C42
+        _局部变量11._成员35010C49._成员35010A18 ＝ _局部变量6._成员35010C42 ＋ _局部变量6._成员35010C44
+        _局部变量11._成员35010C49._成员35010A15 ＝ _局部变量6._成员35010C41
+        _局部变量11._成员35010C49._成员35010A17 ＝ _局部变量6._成员35010C41 ＋ _局部变量6._成员35010C43
+        
+        _局部变量12._成员35011157 ＝ #_常量18010AE8
+        _局部变量12._成员35011158 ＝ _局部变量11._成员35010C48
+        _局部变量12._成员35011159 ＝ _局部变量11._成员35010C49
+        
+        _局部变量13 ＝ _DLL命令0A010C4C_ImmGetContext (_参数1)
+        _DLL命令0A010C4D_ImmSetCandidateWindow (_局部变量13, _局部变量11)
+        _DLL命令0A011152_ImmSetCompositionWindow (_局部变量13, _局部变量12)
+        _DLL命令0A010C4E_ImmReleaseContext (_参数1, _局部变量13)
+        
+    .判断 (_参数2 ＝ #_常量18010AF3)
+        .如果真 (_DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DB) ≠ 0)
+            返回 (on_nchittest (_参数1, _参数4))
+        .如果真结束
+        
+        
+    .判断 (_参数2 ＝ #_常量18010AF4)
+        .如果真 (on_getminmaxinfo (_参数1, _参数4) ＝ 0)
+            返回 (0)
+        .如果真结束
+        
+    .判断 (_参数2 ＝ #_常量18010AFF)
+        _局部变量21 ＝ _DLL命令0A0109C4_CallWindowProcW (_局部变量22, _参数1, _参数2, _参数3, _参数4)
+        销毁 ()
+        返回 (_局部变量21)
+    .判断 (_参数2 ＝ #_常量18010C3B)
+        .如果真 (_DLL命令0A010B45_wkeFireWindowsMessage (m_WebView, _参数1, #_常量18010C3B, 0, 0, 0) ≠ 0)
+            返回 (0)
+        .如果真结束
+        
+    .默认
+        
+    .判断结束
+    
+    返回 (_DLL命令0A0109C4_CallWindowProcW (_局部变量22, _参数1, _参数2, _参数3, _参数4))
+    
+
+.子程序 on_getminmaxinfo, 整数型
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .局部变量 _局部变量1, _结构41010D27, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+    .局部变量 _局部变量3, _结构41010A13, 数组
+
+    _DLL命令0A010D2E_RtlMoveMemory (_局部变量1, _参数2, 40)
+    _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DC)
+    .如果真 (_局部变量2 ≠ 0)
+        _DLL命令0A0100C1_RtlMoveMemory (_取指针Struct (_局部变量3), _局部变量2, 16)
+        _局部变量1._成员35010D2A._成员35010A19 ＝ _局部变量3._成员35010A15
+        _局部变量1._成员35010D2A._成员35010A1A ＝ _局部变量3._成员35010A16
+        _局部变量1._成员35010D29._成员35010A19 ＝ _局部变量3._成员35010A17 － _局部变量3._成员35010A15
+        _局部变量1._成员35010D29._成员35010A1A ＝ _局部变量3._成员35010A18 － _局部变量3._成员35010A16
+        _DLL命令0A010D2F_RtlMoveMemory (_参数2, _局部变量1, 40)
+        返回 (0)
+    .如果真结束
+    返回 (1)
+    
+
+.子程序 on_nchittest, 整数型
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .局部变量 _局部变量1, _结构41010A14, 数组
+    .局部变量 _局部变量2, _结构41010A13, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+    .局部变量 _局部变量4, 整数型, 数组
+    .局部变量 _局部变量5, 整数型, 数组
+
+    .如果真 (_DLL命令0A010D40_IsZoomed (_参数1) ≠ 0)
+        返回 (1)
+    .如果真结束
+    _局部变量1._成员35010A19 ＝ _LOWORD (_参数2)
+    _局部变量1._成员35010A1A ＝ _HIWORD (_参数2)
+    _DLL命令0A010C68_ScreenToClient (_参数1, _局部变量1)
+    _DLL命令0A010B8B_GetClientRect (_参数1, _局部变量2)
+    _局部变量4 ＝ _局部变量2._成员35010A17 － _局部变量2._成员35010A15
+    _局部变量5 ＝ _局部变量2._成员35010A18 － _局部变量2._成员35010A16
+    
+    .判断开始 (_DLL命令0A010D42_PtInRect (_MakeRect (5, 0, _局部变量4 － 5, 5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AF6
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (0, 5, 5, _局部变量5 － 5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AF7
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (_局部变量4 － 5, 5, _局部变量4, _局部变量5 － 10), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AF8
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (5, _局部变量5 － 5, _局部变量4 － 10, _局部变量5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AF9
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (0, 0, 5, 5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AFA
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (0, _局部变量5 － 5, 5, _局部变量5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AFC
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (_局部变量4 － 5, 0, _局部变量4, 5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AFB
+    .判断 (_DLL命令0A010D42_PtInRect (_MakeRect (_局部变量4 － 10, _局部变量5 － 10, _局部变量4, _局部变量5), _局部变量1._成员35010A19, _局部变量1._成员35010A1A))
+        _局部变量3 ＝ #_常量18010AFD
+    .默认
+        _局部变量3 ＝ 1
+    .判断结束
+    返回 (_局部变量3)
+    
+
+.子程序 _FreeEventPtr
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DD)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A0103D7_wkeOnTitleChanged (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DD, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DE)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010403_wkeOnURLChanged (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DE, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DF)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01041C_wkeOnURLChanged2 (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DF, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E1)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01042D_wkeOnAlertBox (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E1, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E2)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010449_wkeOnConfirmBox (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E2, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E3)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01044E_wkeOnPromptBox (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E3, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E4)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010462_wkeOnNavigation (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E4, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E5)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010479_wkeOnCreateView (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E5, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E6)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01048D_wkeOnDocumentReady (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E6, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E7)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010492_wkeOnDocumentReady2 (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E7, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E8)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A0104AF_wkeOnLoadingFinish (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E8, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E9)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A0104C4_wkeOnDownload (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E9, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EA)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A0104D7_wkeOnConsole (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EA, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EB)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010561_wkeOnLoadUrlBegin (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EB, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EC)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010578_wkeOnLoadUrlEnd (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EC, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111ED)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A0109EF_wkeOnPaintUpdated (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111ED, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EE)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01058A_wkeOnDidCreateScriptContext (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EE, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EF)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01058F_wkeOnWillReleaseScriptContext (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EF, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F0)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A010EAD_wkeNetOnResponse (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F0, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F1)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A01101E_wkeOnMouseOverUrlChanged (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F1, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F2)
+    .如果真 (_局部变量1 ≠ 0)
+        _DLL命令0A011104_wkeOnWillMediaLoad (m_WebView, 0, 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F2, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F3)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F3, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180113BB)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180113BB, 0)
+    .如果真结束
+    
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801143A)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量1801143A, 0)
+    .如果真结束
+    
+
+.子程序 绑定, 逻辑型, 公开, 将指定窗口设置为miniblink的宿主窗口
+    .参数 参数_窗口句柄, 整数型, 可空
+    .参数 参数_是否透明, 逻辑型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+    .局部变量 _局部变量4, _结构41010A13, 数组
+    .局部变量 _局部变量5, 整数型, 数组
+
+    _局部变量1 ＝ 0
+    置入代码 ({ 139, 69, 8, 139, 0, 137, 69, 252 })
+    
+    
+    
+    WKE初始化 ()
+    
+    .如果真 (m_WebView ≠ 0)
+        返回 (假)
+    .如果真结束
+    
+    .如果 (参数_窗口句柄 ＝ 0)
+        m_WebView ＝ _DLL命令0A010954_wkeCreateWebView ()
+    .否则
+        
+        .如果真 (_DLL命令0A0109A6_IsWindow (参数_窗口句柄) ＝ 0)
+            返回 (假)
+        .如果真结束
+        m_WebView ＝ _DLL命令0A010954_wkeCreateWebView ()
+        .如果真 (m_WebView ＝ 0)
+            返回 (假)
+        .如果真结束
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180100F8, 参数_窗口句柄)
+        _DLL命令0A0101FB_wkeSetHandle (m_WebView, 参数_窗口句柄)
+        
+        _局部变量5 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111ED)
+        .如果真 (_局部变量5 ≠ 0)
+            _stdcall_to_free (_局部变量5)
+        .如果真结束
+        _局部变量5 ＝ _stdcall_to_cdecl (到整数 (&_wkePaintUpdatedCallback), 7)
+        _DLL命令0A0109EF_wkeOnPaintUpdated (m_WebView, _局部变量5, 参数_窗口句柄)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111ED, _局部变量5)
+        
+        .如果 (参数_是否透明)
+            _DLL命令0A0109BB_wkeSetTransparent (m_WebView, 1)
+            _局部变量2 ＝ _DLL命令0A0109C2_GetWindowLongW (参数_窗口句柄, -20)
+            _DLL命令0A0109C3_SetWindowLongW (参数_窗口句柄, -20, 位或 (_局部变量2, #_常量18010AF1))
+        .否则
+            _DLL命令0A0109BB_wkeSetTransparent (m_WebView, 0)
+        .如果结束
+        _子类化 (m_WebView, 参数_窗口句柄, _局部变量1)
+        _DLL命令0A010B8B_GetClientRect (参数_窗口句柄, _局部变量4)
+        _DLL命令0A01028E_wkeResize (m_WebView, _局部变量4._成员35010A17 － _局部变量4._成员35010A15, _局部变量4._成员35010A18 － _局部变量4._成员35010A16)
+        
+    .如果结束
+    
+    返回 (真)
+    
+
+.子程序 置浏览器指针, , 公开
+    .参数 参数_WebView, 整数型
+
+    m_WebView ＝ 参数_WebView
+    
+
+.子程序 销毁, , 公开, wkeDestroyWebView 取消绑定
+    .局部变量 _局部变量1, 整数型, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+
+    .如果真 (m_WebView ≠ 0)
+        _局部变量3 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DC)
+        .如果真 (_局部变量3 ≠ 0)
+            _Free (_局部变量3)
+        .如果真结束
+        _局部变量3 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量18011620)
+        .如果真 (_局部变量3 ≠ 0)
+            _Free (_局部变量3)
+        .如果真结束
+        _局部变量3 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量18011621)
+        .如果真 (_局部变量3 ≠ 0)
+            _Free (_局部变量3)
+        .如果真结束
+        
+        _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180100F8)
+        _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DA)
+        .如果真 (_DLL命令0A0109A6_IsWindow (_局部变量1) ≠ 0)
+            _DLL命令0A0109C3_SetWindowLongW (_局部变量1, #_常量18010A42, _局部变量2)
+            _DLL命令0A010C55_RemovePropA (_局部变量1, “wkeEThis”)
+        .如果真结束
+        _FreeEventPtr ()
+        _DLL命令0A0101FB_wkeSetHandle (m_WebView, 0)
+        _DLL命令0A01095D_wkeDestroyWebView (m_WebView)
+        m_WebView ＝ 0
+    .如果真结束
+    
+
+.子程序 取窗口句柄, 整数型, 公开, wkeGetHostHWND
+    返回 (_DLL命令0A010999_wkeGetHostHWND (m_WebView))
+    
+
+.子程序 置窗口最大化矩形, , 公开, 设置最大化时窗口矩形的大小
+    .参数 参数_左边, 整数型
+    .参数 参数_顶边, 整数型
+    .参数 参数_宽度, 整数型
+    .参数 参数_高度, 整数型
+    .局部变量 _局部变量1, _结构41010A13, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+
+    _局部变量1 ＝ _MakeRect (参数_左边, 参数_顶边, 参数_左边 ＋ 参数_宽度, 参数_顶边 ＋ 参数_高度)
+    _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DC)
+    .如果真 (_局部变量2 ＝ 0)
+        _局部变量2 ＝ _Alloc (16)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DC, _局部变量2)
+    .如果真结束
+    
+    _DLL命令0A0100C1_RtlMoveMemory (_局部变量2, _取指针Struct (_局部变量1), 16)
+    
+
+.子程序 置窗口无边框缩放, , 公开, 如果设置为真，则可在无边框时拖拉窗口大小
+    .参数 参数_是否无边框缩放, 逻辑型
+
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DB, 到整数 (参数_是否无边框缩放))
+    
+
+.子程序 置窗口最大缩放, , 公开
+    .参数 参数_宽度, 整数型
+    .参数 参数_高度, 整数型
+    .局部变量 _局部变量1, _结构41010C5C, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+
+    _局部变量1._成员35010C5D ＝ 参数_宽度
+    _局部变量1._成员35010C5E ＝ 参数_高度
+    _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量18011620)
+    .如果真 (_局部变量2 ＝ 0)
+        _局部变量2 ＝ _Alloc (8)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量18011620, _局部变量2)
+    .如果真结束
+    _DLL命令0A0100C1_RtlMoveMemory (_局部变量2, _取指针Struct (_局部变量1), 8)
+    
+    
+
+.子程序 置窗口最小缩放, , 公开
+    .参数 参数_宽度, 整数型
+    .参数 参数_高度, 整数型
+    .局部变量 _局部变量1, _结构41010C5C, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+
+    _局部变量1._成员35010C5D ＝ 参数_宽度
+    _局部变量1._成员35010C5E ＝ 参数_高度
+    _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量18011621)
+    .如果真 (_局部变量2 ＝ 0)
+        _局部变量2 ＝ _Alloc (8)
+        _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量18011621, _局部变量2)
+    .如果真结束
+    _DLL命令0A0100C1_RtlMoveMemory (_局部变量2, _取指针Struct (_局部变量1), 8)
+    
+
+.子程序 取浏览器指针, 整数型, 公开, 返回 wkeWebView
+    返回 (m_WebView)
+    
+
+.子程序 取源码, 文本型, 公开, wkeGetSource
+    返回 (指针到文本 (_DLL命令0A0110BC_wkeGetSource (m_WebView)))
+    
+
+.子程序 置调试配置, , 公开, wkeSetDebugConfig
+    .参数 参数_调试文本, 文本型
+    .参数 参数_参数, 文本型
+
+    _DLL命令0A011048_wkeSetDebugConfig (m_WebView, 参数_调试文本, WkeToUTF8 (参数_参数))
+    
+    
+
+.子程序 置调试配置_UTF8, , 公开, wkeSetDebugConfig
+    .参数 参数_调试文本, 文本型
+    .参数 参数_参数, 文本型
+
+    _DLL命令0A011048_wkeSetDebugConfig (m_WebView, 参数_调试文本, 参数_参数)
+    
+
+.子程序 启用导航到新窗口, , 公开, wkeSetNavigationToNewWindowEnable 当参数设置为假时，不会弹出新窗口
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A010185_wkeSetNavigationToNewWindowEnable (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用鼠标, , 公开, wkeSetMouseEnabled 开启关闭鼠标消息，可以在开启触屏后，关闭鼠标消息
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A01117A_wkeSetMouseEnabled (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用触摸, , 公开, wkeSetTouchEnabled
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A011007_wkeSetTouchEnabled (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用Npapi插件, , 公开, wkeSetNpapiPluginsEnabled
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A011008_wkeSetNpapiPluginsEnabled (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用Headless, , 公开, wkeSetHeadlessEnabled 可以关闭渲染
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A01100E_wkeSetHeadlessEnabled (m_WebView, 到字节 (参数_是否启用))
+    
+    
+
+.子程序 启用拖拽, , 公开, wkeSetDragEnable 可关闭拖拽文件加载网页
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A011017_wkeSetDragEnable (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用拖拽到, , 公开, wkeSetDragDropEnable 可关闭拖拽到其他进程
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A01117D_wkeSetDragDropEnable (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 启用内存缓存, , 公开, wkeSetMemoryCacheEnable
+    .参数 参数_是否启用, 逻辑型
+
+    _DLL命令0A01101A_wkeSetMemoryCacheEnable (m_WebView, 到字节 (参数_是否启用))
+    
+
+.子程序 置代理, , 公开, 设置当前浏览框代理
+    .参数 参数_类型, 整数型, , “WKE代理_”开头常量
+    .参数 参数_服务器, 文本型
+    .参数 参数_端口, 短整数型
+    .参数 参数_用户名, 文本型, 可空
+    .参数 参数_密码, 文本型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _GetProxySetings (参数_类型, 参数_服务器, 参数_端口, 参数_用户名, 参数_密码)
+    .如果真 (_局部变量1 ＝ 0)
+        返回 ()
+    .如果真结束
+    _DLL命令0A0101D4_wkeSetViewProxy (m_WebView, _局部变量1)
+    _Free (_局部变量1)
+    
+
+.子程序 取名称, 文本型, 公开, wkeGetName
+    返回 (指针到文本 (_DLL命令0A0101EA_wkeGetName (m_WebView)))
+    
+
+.子程序 置名称, , 公开, wkeSetName
+    .参数 参数_名称, 文本型
+
+    _DLL命令0A0101F0_wkeSetName (m_WebView, 参数_名称)
+    
+
+.子程序 休眠, , 公开, wkeSleep 暂未实现
+    _DLL命令0A010380_wkeSleep (m_WebView)
+    
+
+.子程序 唤醒, , 公开, wkeWake 暂未实现
+    _DLL命令0A010382_wkeWake (m_WebView)
+    
+
+.子程序 是否唤醒, 逻辑型, 公开, wkeIsAwake 暂未实现
+    返回 (_DLL命令0A01037C_wkeIsAwake (m_WebView) ≠ 0)
+    
+
+.子程序 置UserAgent, , 公开, wkeSetUserAgent
+    .参数 参数_UserAgent, 文本型
+
+    _DLL命令0A01020D_wkeSetUserAgentW (m_WebView, WkeA2W (参数_UserAgent))
+    
+
+.子程序 置UserAgentW, , 公开, wkeSetUserAgent
+    .参数 参数_UserAgent, 字节集
+
+    _DLL命令0A01020D_wkeSetUserAgentW (m_WebView, 参数_UserAgent)
+    
+
+.子程序 取UserAgent, 文本型, 公开, wkeGetUserAgent
+    返回 (指针到文本 (_DLL命令0A011333_wkeGetUserAgent (m_WebView)))
+    
+
+.子程序 载入W, , 公开, wkeLoad
+    .参数 参数_URL, 字节集
+
+    _DLL命令0A01018F_wkeLoadW (m_WebView, 参数_URL)
+    
+
+.子程序 载入, , 公开, wkeLoad
+    .参数 参数_URL, 文本型
+
+    _DLL命令0A01018F_wkeLoadW (m_WebView, WkeA2W (参数_URL))
+    
+
+.子程序 载入URLW, , 公开, wkeLoadURL
+    .参数 参数_URL, 字节集
+
+    _DLL命令0A01021C_wkeLoadURLW (m_WebView, 参数_URL)
+    
+
+.子程序 载入URL, , 公开, wkeLoadURL
+    .参数 参数_URL, 文本型
+
+    _DLL命令0A01021C_wkeLoadURLW (m_WebView, WkeA2W (参数_URL))
+    
+
+.子程序 载入HTMLW, , 公开, wkeLoadHTML 载入HTML文本内容
+    .参数 参数_HTML, 字节集
+
+    _DLL命令0A01022A_wkeLoadHTMLW (m_WebView, 参数_HTML)
+    
+
+.子程序 载入HTML, , 公开, wkeLoadHTML 载入HTML文本内容
+    .参数 参数_HTML, 文本型
+
+    _DLL命令0A01022A_wkeLoadHTMLW (m_WebView, WkeA2W (参数_HTML))
+    
+
+.子程序 载入HTML2, , 公开, wkeLoadHtmlWithBaseUrl
+    .参数 参数_HTML, 文本型
+    .参数 参数_BaseUrl, 文本型
+
+    _DLL命令0A011315_wkeLoadHtmlWithBaseUrl (m_WebView, WkeToUTF8 (参数_HTML), WkeToUTF8 (参数_BaseUrl))
+    
+
+.子程序 载入HTML2_Utf8, , 公开, wkeLoadHtmlWithBaseUrl
+    .参数 参数_HTML, 文本型
+    .参数 参数_BaseUrl, 文本型
+
+    _DLL命令0A011315_wkeLoadHtmlWithBaseUrl (m_WebView, 参数_HTML, 参数_BaseUrl)
+    
+
+.子程序 载入文件W, , 公开, wkeLoadFile 载入本地文件
+    .参数 参数_fileName, 字节集
+
+    _DLL命令0A010239_wkeLoadFileW (m_WebView, 参数_fileName)
+    
+
+.子程序 载入文件, , 公开, wkeLoadFile 载入本地文件
+    .参数 参数_fileName, 文本型
+
+    _DLL命令0A010239_wkeLoadFileW (m_WebView, WkeA2W (参数_fileName))
+    
+
+.子程序 PostURLW, , 公开, wkePostURLW
+    .参数 参数_URL, 字节集
+    .参数 参数_Post数据, 字节集
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _取指针字节集 (参数_Post数据)
+    _DLL命令0A010E6C_wkePostURLW (m_WebView, _取指针字节集 (参数_URL), _局部变量1, 取字节集长度 (参数_Post数据))
+    
+
+.子程序 PostURL, , 公开, wkePostURL
+    .参数 参数_URL, 文本型
+    .参数 参数_Post数据, 字节集
+    .局部变量 _局部变量1, 整数型, 数组
+    .局部变量 _局部变量2, 字节集, 数组
+
+    _局部变量1 ＝ _取指针字节集 (参数_Post数据)
+    _局部变量2 ＝ WkeA2W (参数_URL)
+    _DLL命令0A010E6C_wkePostURLW (m_WebView, _取指针字节集 (_局部变量2), _局部变量1, 取字节集长度 (参数_Post数据))
+    
+
+.子程序 取URL_UTF8, 文本型, 公开, wkeGetURL
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010246_wkeGetURL (m_WebView)
+    .如果真 (_局部变量1 ＝ 0)
+        返回 (“”)
+    .如果真结束
+    返回 (指针到文本 (_局部变量1))
+    
+    
+
+.子程序 取URL, 文本型, 公开, wkeGetURL
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010246_wkeGetURL (m_WebView)
+    .如果真 (_局部变量1 ＝ 0)
+        返回 (“”)
+    .如果真结束
+    返回 (WkeToGB2312_Ptr (_局部变量1))
+    
+
+.子程序 是否载入, 逻辑型, 公开, wkeIsLoading
+    返回 (_DLL命令0A01025B_wkeIsLoading (m_WebView) ≠ 0)
+    
+
+.子程序 是否载入成功, 逻辑型, 公开, wkeIsLoadingSucceeded 已废弃
+    返回 (_DLL命令0A010261_wkeIsLoadingSucceeded (m_WebView) ≠ 0)
+    
+
+.子程序 是否载入失败, 逻辑型, 公开, wkeIsLoadingFailed
+    返回 (_DLL命令0A010264_wkeIsLoadingFailed (m_WebView) ≠ 0)
+    
+
+.子程序 是否载入完毕, 逻辑型, 公开, wkeIsLoadingCompleted
+    返回 (_DLL命令0A010266_wkeIsLoadingCompleted (m_WebView) ≠ 0)
+    
+
+.子程序 是否文档已就绪, 逻辑型, 公开, wkeIsDocumentReady
+    返回 (_DLL命令0A01026E_wkeIsDocumentReady (m_WebView) ≠ 0)
+    
+
+.子程序 停止载入, , 公开, wkeStopLoading
+    _DLL命令0A01026C_wkeStopLoading (m_WebView)
+    
+
+.子程序 重新载入, , 公开, wkeReload
+    _DLL命令0A010272_wkeReload (m_WebView)
+    
+
+.子程序 取标题, 文本型, 公开, wkeGetTitle
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010274_wkeGetTitleW (m_WebView)
+    .如果真 (_局部变量1 ＝ 0)
+        返回 (“”)
+    .如果真结束
+    返回 (WkeW2A_Point (_局部变量1))
+    
+
+.子程序 取标题W, 字节集, 公开, wkeGetTitleW
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010274_wkeGetTitleW (m_WebView)
+    .如果真 (_局部变量1 ≠ 0)
+        返回 (指针到字节集 (_局部变量1, _DLL命令0A010253_lstrlenW (_局部变量1) × 2 ＋ 2))
+    .如果真结束
+    返回 ({ 0, 0 })
+    
+
+.子程序 取宽度, 整数型, 公开, wkeGetWidth
+    返回 (_DLL命令0A01028F_wkeGetWidth (m_WebView))
+    
+
+.子程序 取高度, 整数型, 公开, wkeGetHeight
+    返回 (_DLL命令0A010290_wkeGetHeight (m_WebView))
+    
+
+.子程序 取内容宽度, 整数型, 公开, wkeGetContentWidth
+    返回 (_DLL命令0A010291_wkeGetContentWidth (m_WebView))
+    
+
+.子程序 取内容高度, 整数型, 公开, wkeGetContentHeight
+    返回 (_DLL命令0A010292_wkeGetContentHeight (m_WebView))
+    
+
+.子程序 是否可后退, 逻辑型, 公开, wkeCanGoBack
+    返回 (_DLL命令0A0102D0_wkeCanGoBack (m_WebView) ≠ 0)
+    
+
+.子程序 后退, 逻辑型, 公开, wkeGoBack
+    返回 (_DLL命令0A0102D1_wkeGoBack (m_WebView) ≠ 0)
+    
+
+.子程序 是否可前进, 逻辑型, 公开, wkeCanGoForward
+    返回 (_DLL命令0A0102D2_wkeCanGoForward (m_WebView) ≠ 0)
+    
+
+.子程序 前进, 逻辑型, 公开, wkeGoForward
+    返回 (_DLL命令0A0102D3_wkeGoForward (m_WebView) ≠ 0)
+    
+
+.子程序 编辑全选, , 公开, wkeEditorSelectAll
+    _DLL命令0A0102E4_wkeEditorSelectAll (m_WebView)
+    
+
+.子程序 编辑取消选择, , 公开, wkeEditorUnSelect
+    _DLL命令0A0102E6_wkeEditorUnSelect (m_WebView)
+    
+
+.子程序 编辑复制, , 公开, wkeEditorCopy
+    _DLL命令0A0102E8_wkeEditorCopy (m_WebView)
+    
+
+.子程序 编辑剪切, , 公开, wkeEditorCut
+    _DLL命令0A0102EA_wkeEditorCut (m_WebView)
+    
+
+.子程序 编辑粘贴, , 公开, wkeEditorPaste
+    _DLL命令0A0102EC_wkeEditorPaste (m_WebView)
+    
+
+.子程序 编辑删除, , 公开, wkeEditorDelete
+    _DLL命令0A0102EE_wkeEditorDelete (m_WebView)
+    
+
+.子程序 编辑撤销, , 公开, wkeEditorUndo
+    _DLL命令0A0102F0_wkeEditorUndo (m_WebView)
+    
+
+.子程序 编辑重做, , 公开, wkeEditorRedo
+    _DLL命令0A0102CF_wkeEditorRedo (m_WebView)
+    
+
+.子程序 取设备场景, 整数型, 公开, wkeGetViewDC
+    返回 (_DLL命令0A0102C9_wkeGetViewDC (m_WebView))
+    
+
+.子程序 Cookie获取, 文本型, 公开, wkeGetCookie 返回当前浏览框的cookie键值，以分号(;)分割，如 "name1=value1; name2=value2"
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010F39_wkeGetCookie (m_WebView)
+    .如果真 (_局部变量1 ≠ 0)
+        返回 (WkeToGB2312_Ptr (_局部变量1))
+    .如果真结束
+    返回 (“”)
+    
+
+.子程序 Cookie获取W, 字节集, 公开, wkeGetCookieW 返回当前浏览框的cookie键值，以分号(;)分割，如 "name1=value1; name2=value2"
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A010302_wkeGetCookieW (m_WebView)
+    .如果真 (_局部变量1 ≠ 0)
+        返回 (指针到字节集 (_局部变量1, _DLL命令0A010253_lstrlenW (_局部变量1) × 2 ＋ 2))
+    .如果真结束
+    返回 ({ 0, 0 })
+    
+
+.子程序 Cookie设置, , 公开, wkeSetCookie
+    .参数 参数_URL, 文本型, , utf8
+    .参数 参数_Cookie, 文本型, , utf8 cookie格式必须是:Set-cookie: PRODUCTINFO=webxpress; domain=.fidelity.com; path=/; secure
+
+    _DLL命令0A010FE2_wkeSetCookie (m_WebView, 参数_URL, 参数_Cookie)
+    
+
+.子程序 Cookie可用, , 公开, wkeSetCookieEnabled 设置Cookie是否可用
+    .参数 参数_是否可用, 逻辑型
+
+    _DLL命令0A010313_wkeSetCookieEnabled (m_WebView, 到字节 (参数_是否可用))
+    
+
+.子程序 Cookie是否可用, 逻辑型, 公开, wkeIsCookieEnabled 获取Cookie是否可用
+    返回 (_DLL命令0A01031A_wkeIsCookieEnabled (m_WebView) ≠ 0)
+    
+
+.子程序 Cookie置目录W, , 公开, 设置Cookie文件的目录，文件名是 cookies.dat
+    .参数 参数_目录, 字节集
+
+    _DLL命令0A01031F_wkeSetCookieJarPath (m_WebView, 参数_目录)
+    
+
+.子程序 Cookie置目录, , 公开, 设置Cookie文件的目录，文件名是 cookies.dat
+    .参数 参数_目录, 文本型
+
+    _DLL命令0A01031F_wkeSetCookieJarPath (m_WebView, WkeA2W (参数_目录))
+    
+
+.子程序 Cookie置全路径W, , 公开, 设置Cookie文件的全路径包括文件名
+    .参数 参数_路径, 字节集
+
+    _DLL命令0A010325_wkeSetCookieJarFullPath (m_WebView, 参数_路径)
+    
+
+.子程序 Cookie置全路径, , 公开, 设置Cookie文件的全路径包括文件名
+    .参数 参数_路径, 文本型
+
+    _DLL命令0A010325_wkeSetCookieJarFullPath (m_WebView, WkeA2W (参数_路径))
+    
+
+.子程序 置本地储存全路径W, , 公开
+    .参数 参数_路径, 字节集
+
+    _DLL命令0A010EE0_wkeSetLocalStorageFullPath (m_WebView, 参数_路径)
+    
+
+.子程序 置本地储存全路径, , 公开
+    .参数 参数_路径, 文本型
+
+    _DLL命令0A010EE0_wkeSetLocalStorageFullPath (m_WebView, WkeA2W (参数_路径))
+    
+
+.子程序 置媒体音量, , 公开, wkeSetMediaVolume
+    .参数 参数_媒体音量, 小数型, , 正常是 1
+
+    _DLL命令0A010348_wkeSetMediaVolume (m_WebView, 参数_媒体音量)
+    
+
+.子程序 取媒体音量, 小数型, 公开, wkeGetMediaVolume 正常是 1
+    返回 (_DLL命令0A01034E_wkeGetMediaVolume (m_WebView))
+    
+
+.子程序 获取焦点, , 公开, wkeSetFocus
+    _DLL命令0A010359_wkeSetFocus (m_WebView)
+    
+
+.子程序 失去焦点, , 公开, wkeKillFocus
+    _DLL命令0A01035D_wkeKillFocus (m_WebView)
+    
+
+.子程序 运行JSW, 长整数型, 公开
+    .参数 参数_JavaScript, 字节集
+
+    返回 (_DLL命令0A010364_wkeRunJSW (m_WebView, 参数_JavaScript))
+    
+
+.子程序 运行JS, 长整数型, 公开
+    .参数 参数_JavaScript, 文本型
+
+    返回 (_DLL命令0A010364_wkeRunJSW (m_WebView, WkeA2W (参数_JavaScript)))
+    
+
+.子程序 运行JS_UTF8, 长整数型, 公开
+    .参数 参数_JavaScript, 文本型
+
+    返回 (_DLL命令0A01085C_wkeRunJS (m_WebView, 参数_JavaScript))
+    
+
+.子程序 运行JS自框架_UTF8, 长整数型, 公开, 可以在 事件_文档就绪2 回调里注入js执行
+    .参数 参数_框架句柄, 整数型
+    .参数 参数_JavaScript, 文本型, , utf8
+    .参数 参数_闭包, 逻辑型, 可空
+
+    返回 (_DLL命令0A010F22_wkeRunJsByFrame (m_WebView, 参数_框架句柄, 参数_JavaScript, 到字节 (参数_闭包)))
+    
+
+.子程序 运行JS自框架, 长整数型, 公开, 可以在 事件_文档就绪2 回调里注入js执行
+    .参数 参数_框架句柄, 整数型
+    .参数 参数_JavaScript, 文本型
+    .参数 参数_闭包, 逻辑型, 可空
+
+    返回 (_DLL命令0A010F22_wkeRunJsByFrame (m_WebView, 参数_框架句柄, WkeToUTF8 (参数_JavaScript), 到字节 (参数_闭包)))
+    
+
+.子程序 取脚本上下文, , 公开, wkeWebFrameGetMainWorldScriptContext 返回v8ContextPtr
+    .参数 参数_框架句柄, 整数型
+    .参数 参数_v8上下文指针, 整数型
+
+    _DLL命令0A010D78_wkeWebFrameGetMainWorldScriptContext (m_WebView, 参数_框架句柄, 参数_v8上下文指针)
+    
+
+.子程序 全局执行, 整数型, 公开, wkeGlobalExec 返回 JS执行状态
+    返回 (_DLL命令0A010373_wkeGlobalExec (m_WebView))
+    
+
+.子程序 置缩放, , 公开, wkeSetZoomFactor
+    .参数 参数_缩放因子, 小数型, , 正常是 1
+
+    _DLL命令0A01038B_wkeSetZoomFactor (m_WebView, 参数_缩放因子)
+    
+
+.子程序 取缩放, 小数型, 公开, wkeGetZoomFactor 正常是 1
+    返回 (_DLL命令0A010385_wkeGetZoomFactor (m_WebView))
+    
+
+.子程序 置编辑模式, , 公开, wkeSetEditable 未实现
+    .参数 参数_是否编辑模式, 逻辑型
+
+    _DLL命令0A01038F_wkeSetEditable (m_WebView, 到字节 (参数_是否编辑模式))
+    
+
+.子程序 取鼠标类型, 整数型, 公开, wkeGetCursorInfoType 返回“WkeCursorInfo”开头常量
+    返回 (_DLL命令0A010E05_wkeGetCursorInfoType (m_WebView))
+    
+
+.子程序 置用户键值, , 公开, wkeSetUserKeyValue
+    .参数 参数_key, 文本型
+    .参数 参数_value, 整数型
+
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, 参数_key, 参数_value)
+    
+
+.子程序 取用户键值, 整数型, 公开
+    .参数 参数_key, 文本型
+
+    返回 (_DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, 参数_key))
+    
+
+.子程序 置拖放文件
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 文本型, 数组
+    .局部变量 _局部变量1, 整数型, 数组, "0"
+    .局部变量 _局部变量2, 整数型, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+    .局部变量 _局部变量4, 字节集, 数组
+    .局部变量 _局部变量5, 整数型, 数组
+    .局部变量 _局部变量6, _结构41010A14, 数组
+    .局部变量 _局部变量7, _结构41010A14, 数组
+
+    _局部变量2 ＝ 取数组成员数 (_参数5)
+    重定义数组 (_局部变量1, 假, _局部变量2)
+    .计次循环首 (_局部变量2, _局部变量3)
+        _局部变量4 ＝ WkeA2W (_参数5 [_局部变量3])
+        _局部变量5 ＝ _取指针字节集 (_局部变量4)
+        _局部变量1 [_局部变量3] ＝ _DLL命令0A010EC0_wkeCreateStringW (_局部变量5, _DLL命令0A010253_lstrlenW (_局部变量5) × 2)
+    .计次循环尾 ()
+    _局部变量6._成员35010A19 ＝ _参数1
+    _局部变量6._成员35010A1A ＝ _参数2
+    _局部变量7._成员35010A19 ＝ _参数3
+    _局部变量7._成员35010A1A ＝ _参数4
+    _DLL命令0A010FB4_wkeSetDragFiles (m_WebView, _局部变量6, _局部变量7, _局部变量1, _局部变量2)
+    
+
+.子程序 取主框架, 整数型, 公开, wkeWebFrameGetMainFrame 返回框架句柄
+    返回 (_DLL命令0A010505_wkeWebFrameGetMainFrame (m_WebView))
+    
+
+.子程序 跨域检查, , 公开, wkeSetCspCheckEnable 打开或关闭跨域检查
+    .参数 参数_是否检查, 逻辑型
+
+    _DLL命令0A010E0F_wkeSetCspCheckEnable (m_WebView, 到字节 (参数_是否检查))
+    
+
+.子程序 置网络接口, , 公开, wkeSetViewNetInterface
+    .参数 参数_网络接口, 文本型
+
+    _DLL命令0A010E15_wkeSetViewNetInterface (m_WebView, 参数_网络接口)
+    
+
+.子程序 是否主框架, 逻辑型, 公开, wkeIsMainFrame
+    .参数 参数_框架句柄, 整数型
+
+    返回 (_DLL命令0A0104FD_wkeIsMainFrame (m_WebView, 参数_框架句柄) ≠ 0)
+    
+
+.子程序 是否远程框架, 逻辑型, 公开, wkeIsWebRemoteFrame
+    .参数 参数_框架句柄, 整数型
+
+    返回 (_DLL命令0A010503_wkeIsWebRemoteFrame (m_WebView, 参数_框架句柄) ≠ 0)
+    
+
+.子程序 截图, 字节集, 公开, 返回带文件头的 位图字节集
+    .局部变量 _局部变量1, 整数型, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+    .局部变量 _局部变量3, 整数型, 数组
+    .局部变量 _局部变量4, 整数型, 数组
+    .局部变量 _局部变量5, 字节集, 数组
+    .局部变量 _局部变量6, 整数型, 数组
+    .局部变量 _局部变量7, _结构41010861, 数组
+    .局部变量 _局部变量8, _结构41010862, 数组
+    .局部变量 _局部变量9, 字节集, 数组
+    .局部变量 _局部变量10, 整数型, 数组
+    .局部变量 _局部变量11, 整数型, 数组
+
+    .如果真 (m_WebView ＝ 0)
+        返回 ({ })
+    .如果真结束
+    _DLL命令0A01085C_wkeRunJS (m_WebView, “document.body.style.overflow='hidden'”)
+    _局部变量1 ＝ _DLL命令0A010291_wkeGetContentWidth (m_WebView)
+    _局部变量2 ＝ _DLL命令0A010292_wkeGetContentHeight (m_WebView)
+    
+    _局部变量3 ＝ _DLL命令0A01028F_wkeGetWidth (m_WebView)
+    _局部变量4 ＝ _DLL命令0A010290_wkeGetHeight (m_WebView)
+    _DLL命令0A01028E_wkeResize (m_WebView, _局部变量1, _局部变量2)
+    
+    _局部变量11 ＝ _局部变量1 × _局部变量2 × 4
+    _局部变量5 ＝ 取空白字节集 (_局部变量11)
+    _局部变量6 ＝ _取指针字节集 (_局部变量5)
+    _DLL命令0A0102C3_wkePaint (m_WebView, _局部变量6, 0)
+    
+    _局部变量8._成员35010870 ＝ 19778
+    _局部变量8._成员35010874 ＝ 14 ＋ 40
+    _局部变量8._成员35010871 ＝ _局部变量8._成员35010874 ＋ _局部变量11
+    
+    _局部变量7._成员35010865 ＝ 40
+    _局部变量7._成员35010866 ＝ _局部变量1
+    _局部变量7._成员35010867 ＝ －_局部变量2
+    _局部变量7._成员35010868 ＝ 1
+    _局部变量7._成员35010869 ＝ 32
+    _局部变量7._成员3501086A ＝ 0
+    _局部变量7._成员3501086B ＝ _局部变量11
+    _局部变量7._成员3501086C ＝ 3780
+    _局部变量7._成员3501086D ＝ 3780
+    
+    _局部变量9 ＝ 取空白字节集 (_局部变量8._成员35010871)
+    _局部变量10 ＝ _取指针字节集 (_局部变量9)
+    _DLL命令0A010875_RtlMoveMemory (_局部变量10, _局部变量8, 14)
+    _DLL命令0A010876_RtlMoveMemory (_局部变量10 ＋ 14, _局部变量7, 40)
+    _DLL命令0A0100C1_RtlMoveMemory (_局部变量10 ＋ 54, _局部变量6, _局部变量11)
+    
+    _DLL命令0A01028E_wkeResize (m_WebView, _局部变量3, _局部变量4)
+    _DLL命令0A01085C_wkeRunJS (m_WebView, “document.body.style.overflow='visible'”)
+    
+    返回 (_局部变量9)
+    
+
+.子程序 垃圾回收, , 公开, wkeGC
+    .参数 参数_延迟毫秒, 整数型
+
+    _DLL命令0A0110B1_wkeGC (m_WebView, 参数_延迟毫秒)
+    
+
+.子程序 置设备参数, , 公开, wkeSetDeviceParameter
+    .参数 参数_设备, 文本型, , 如：“navigator.maxTouchPoints”
+    .参数 参数_文本参数, 文本型, 可空
+    .参数 参数_整数参数, 整数型, 可空
+    .参数 参数_浮点参数, 小数型, 可空
+
+    _DLL命令0A01113B_wkeSetDeviceParameter (m_WebView, 参数_设备, 参数_文本参数, 参数_整数参数, 参数_浮点参数)
+    
+
+.子程序 添加插件目录, , 公开, wkeAddPluginDirectory
+    .参数 参数_目录, 文本型
+    .局部变量 _局部变量1, 字节集, 数组
+
+    _局部变量1 ＝ WkeA2W (参数_目录)
+    _DLL命令0A011162_wkeAddPluginDirectory (m_WebView, _局部变量1)
+    
+
+.子程序 添加插件目录W, , 公开, wkeAddPluginDirectory
+    .参数 参数_目录, 字节集
+
+    _DLL命令0A011162_wkeAddPluginDirectory (m_WebView, 参数_目录)
+    
+
+.子程序 取执行状态自框架, 整数型, 公开, wkeGetGlobalExecByFrame
+    .参数 参数_框架句柄, 整数型
+
+    返回 (_DLL命令0A011187_wkeGetGlobalExecByFrame (m_WebView, 参数_框架句柄))
+    
+
+.子程序 插入CSS, , 公开, wkeInsertCSSByFrame
+    .参数 参数_框架句柄, 整数型
+    .参数 参数_CSS, 文本型
+
+    _DLL命令0A0112DD_wkeInsertCSSByFrame (m_WebView, 参数_框架句柄, WkeToUTF8 (参数_CSS))
+    
+
+.子程序 置资源回收间隔, , 公开, wkeSetResourceGc
+    .参数 参数_间隔时间, 整数型, , 单位：秒
+
+    _DLL命令0A011328_wkeSetResourceGc (m_WebView, 参数_间隔时间)
+    
+
+.子程序 取框架URL, 文本型, 公开, wkeGetFrameUrl
+    .参数 参数_框架句柄, 整数型
+
+    返回 (指针到文本 (_DLL命令0A01133B_wkeGetFrameUrl (m_WebView, 参数_框架句柄)))
+    
+
+.子程序 是否正在处理用户手势, 逻辑型, 公开, wkeIsProcessingUserGesture
+    返回 (_DLL命令0A0113ED_wkeIsProcessingUserGesture (m_WebView) ≠ 0)
+    
+    
+    
+
+.子程序 执行COOKIE命令, , 公开, wkePerformCookieCommand 执行一个COOKIE操作（清除、刷新到文件、从文件载入 等）
+    .参数 参数_命令, 整数型, , “COOKIE命令_” 开头常量
+
+    _DLL命令0A010E47_wkePerformCookieCommand (m_WebView, 参数_命令)
+    
+
+.子程序 访问所有COOKIE, , 公开, wkeVisitAllCookie 通过一个回调函数访问所有COOKIE，如何回调返回真，则此Cookie有用户处理，miniblink不处理
+    .参数 参数_回调函数, 子程序指针, , 返回值：逻辑型（整数型 params，文本型 name，文本型 value，文本型 domain，文本型 path，整数型 secure，整数型 httpOnly，整数型[参考] expires）
+    .参数 参数_回调参数, 整数型, 可空, params
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801143A)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_回调函数), 8)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量1801143A, _局部变量1)
+    _DLL命令0A010E3F_wkeVisitAllCookie (m_WebView, 参数_回调参数, _局部变量1)
+    
+
+.子程序 序列化到HTML, 文本型, 公开, wkeUtilSerializeToMHTML
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A011461_wkeUtilSerializeToMHTML (m_WebView)
+    返回 (WkeToGB2312_Ptr (_局部变量1))
+    
+
+.子程序 序列化到HTML_UTF8, 文本型, 公开, wkeUtilSerializeToMHTML
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A011461_wkeUtilSerializeToMHTML (m_WebView)
+    返回 (指针到文本 (_局部变量1))
+    
+
+.子程序 事件_标题被改变, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 标题【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DD)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DD, _局部变量1)
+    _DLL命令0A0103D7_wkeOnTitleChanged (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_URL被改变, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 URL【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DE)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DE, _局部变量1)
+    _DLL命令0A010403_wkeOnURLChanged (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_URL被改变2, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 框架句柄，整数型 URL【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111DF)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111DF, _局部变量1)
+    _DLL命令0A01041C_wkeOnURLChanged2 (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_Alert被调用, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 消息【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E1)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E1, _局部变量1)
+    _DLL命令0A01042D_wkeOnAlertBox (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_Confirm被调用, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，整数型 消息【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E2)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E2, _局部变量1)
+    _DLL命令0A010449_wkeOnConfirmBox (m_WebView, _局部变量1, 参数_用户数据)
+    
+    
+
+.子程序 事件_Prompt被调用, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，整数型 消息【wkeString】，整数型 默认返回值【wkeString】，整数型 返回值【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E3)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 5)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E3, _局部变量1)
+    _DLL命令0A01044E_wkeOnPromptBox (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_即将导航, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，整数型 导航类型【#WKE导航类型_】，整数型 URL【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E4)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E4, _局部变量1)
+    _DLL命令0A010462_wkeOnNavigation (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_即将创建新窗口, , 公开, 返回值：整数型【wkeWebView】 （整数型 wkeWebView，整数型 用户数据，整数型 导航类型【#WKE导航类型_】，整数型 URL【wkeString】，整数型 窗口特征【wkeWindowFeatures*】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E5)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 5)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E5, _局部变量1)
+    _DLL命令0A010479_wkeOnCreateView (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_文档就绪, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E6)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 2)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E6, _局部变量1)
+    _DLL命令0A01048D_wkeOnDocumentReady (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_文档就绪2, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 框架句柄【wkeWebFrameHandle】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E7)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E7, _局部变量1)
+    _DLL命令0A010492_wkeOnDocumentReady2 (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_载入完成, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 URL【wkeString】，整数型 载入返回【#WKE载入_】，整数型 失败原因【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E8)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 5)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E8, _局部变量1)
+    _DLL命令0A0104AF_wkeOnLoadingFinish (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_正在下载, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，文本型 URL）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111E9)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111E9, _局部变量1)
+    _DLL命令0A0104C4_wkeOnDownload (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_控制台消息, , 公开, 返回值：无 ( 整数型 wkeWebView，整数型 用户数据， 整数型 级别【#WKE消息级别_】 ，整数型 消息【wkeString】，整数型 来源名【wkeString】，整数型 行号，整数型 堆栈跟踪【wkeString】)
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EA)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 7)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EA, _局部变量1)
+    _DLL命令0A0104D7_wkeOnConsole (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_开始载入URL, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，文本型 URL，整数型 job）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EB)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EB, _局部变量1)
+    _DLL命令0A010561_wkeOnLoadUrlBegin (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_结束载入URL, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，文本型 URL，整数型 job，整数型 数据指针，整数型 长度），要触发此事件需要在 开始载入URL的事件里面调用 WKE网络HOOK请求（）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EC)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 6)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EC, _局部变量1)
+    _DLL命令0A010578_wkeOnLoadUrlEnd (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_脚本上下文创建, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 框架句柄，整数型 脚本上下文，整数型 extensionGroup，整数型 worldId）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EE)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 6)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EE, _局部变量1)
+    _DLL命令0A01058A_wkeOnDidCreateScriptContext (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_脚本上下文释放, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 框架句柄，整数型 脚本上下文，整数型 worldId）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111EF)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 5)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111EF, _局部变量1)
+    _DLL命令0A01058F_wkeOnWillReleaseScriptContext (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_网络响应, , 公开, 返回值：逻辑型 （整数型 wkeWebView，整数型 用户数据，文本型 url，整数型 job）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F0)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F0, _局部变量1)
+    _DLL命令0A010EAD_wkeNetOnResponse (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_鼠标经过URL改变, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，整数型 url【wkeString】）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F1)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 3)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F1, _局部变量1)
+    _DLL命令0A01101E_wkeOnMouseOverUrlChanged (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 事件_将载入媒体, , 公开, 返回值：无 （整数型 wkeWebView，整数型 用户数据，文本型 url， wkeMediaLoadInfo* info）
+    .参数 参数_子程序指针, 子程序指针
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F2)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_子程序指针), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F2, _局部变量1)
+    _DLL命令0A011104_wkeOnWillMediaLoad (m_WebView, _局部变量1, 参数_用户数据)
+    
+
+.子程序 显示开发者工具W, , 公开, wkeShowDevtools
+    .参数 参数_回调函数, 子程序指针, , 返回值：无 （整数型 wkeWebView ， 整数型 用户数据）
+    .参数 参数_路径, 字节集
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F3)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_回调函数), 2)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F3, _局部变量1)
+    _DLL命令0A01118A_wkeShowDevtools (m_WebView, 参数_路径, _局部变量1, 参数_用户数据)
+    
+
+.子程序 显示开发者工具, , 公开, wkeShowDevtools
+    .参数 参数_回调函数, 子程序指针, , 返回值：无 （整数型 wkeWebView ， 整数型 用户数据）
+    .参数 参数_路径, 文本型
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 字节集, 数组
+    .局部变量 _局部变量2, 整数型, 数组
+
+    _局部变量2 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180111F3)
+    .如果真 (_局部变量2 ≠ 0)
+        _stdcall_to_free (_局部变量2)
+    .如果真结束
+    _局部变量2 ＝ _stdcall_to_cdecl (到整数 (参数_回调函数), 2)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180111F3, _局部变量2)
+    _局部变量1 ＝ WkeA2W (参数_路径)
+    _DLL命令0A01118A_wkeShowDevtools (m_WebView, _局部变量1, _局部变量2, 参数_用户数据)
+    
+
+.子程序 取网站图标, 整数型, 公开, wkeNetGetFavicon
+    .参数 参数_回调函数, 子程序指针, , 返回值：无 （整数型 wkeWebWiew，整数型 用户数据，文本型 url，整数型 内存缓冲区【WKE内存缓冲区 的指针】）
+    .参数 参数_用户数据, 整数型, 可空
+    .局部变量 _局部变量1, 整数型, 数组
+
+    _局部变量1 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量180113BB)
+    .如果真 (_局部变量1 ≠ 0)
+        _stdcall_to_free (_局部变量1)
+    .如果真结束
+    _局部变量1 ＝ _stdcall_to_cdecl (到整数 (参数_回调函数), 4)
+    _DLL命令0A0103B2_wkeSetUserKeyValue (m_WebView, #_常量180113BB, _局部变量1)
+    返回 (_DLL命令0A0113AF_wkeNetGetFavicon (m_WebView, _局部变量1, 参数_用户数据))
+    
+
+.子程序 开始URL请求, 整数型, 公开, wkeNetStartUrlRequest
+    .参数 参数_请求指针, 整数型
+    .参数 参数_用户数据, 整数型, 可空
+    .参数 参数_将重定向回调, 子程序指针, 可空, 返回值：无（整数型 wkeWebWiew，整数型 用户数据，整数型 旧请求指针，整数型 请求指针，整数型 重定向响应指针）
+    .参数 参数_已接收响应回调, 子程序指针, 可空, 返回值：无（整数型 wkeWebWiew，整数型 用户数据，整数型 请求指针，整数型 响应指针）
+    .参数 参数_已接收数据回调, 子程序指针, 可空, 返回值：无（整数型 wkeWebWiew，整数型 用户数据，整数型 请求指针，整数型 数据指针，整数型 数据长度）
+    .参数 参数_已失败回调, 子程序指针, 可空, 返回值：无（整数型 wkeWebWiew，整数型 用户数据，整数型 请求指针，文本型 错误）
+    .参数 参数_已完成载入回调, 子程序指针, 可空, 返回值：无（整数型 wkeWebWiew，整数型 用户数据，整数型 请求指针，双精度小数 完成时间）
+    .局部变量 _局部变量1, _结构41011540, 数组
+
+    _局部变量1._成员35011541 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801158B)
+    .如果真 (_局部变量1._成员35011541 ≠ 0)
+        _stdcall_to_free (_局部变量1._成员35011541)
+        _局部变量1._成员35011541 ＝ 0
+    .如果真结束
+    
+    _局部变量1._成员35011544 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801158C)
+    .如果真 (_局部变量1._成员35011544 ≠ 0)
+        _stdcall_to_free (_局部变量1._成员35011544)
+        _局部变量1._成员35011544 ＝ 0
+    .如果真结束
+    
+    _局部变量1._成员35011547 ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801158D)
+    .如果真 (_局部变量1._成员35011547 ≠ 0)
+        _stdcall_to_free (_局部变量1._成员35011547)
+        _局部变量1._成员35011547 ＝ 0
+    .如果真结束
+    
+    _局部变量1._成员3501154A ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801158E)
+    .如果真 (_局部变量1._成员3501154A ≠ 0)
+        _stdcall_to_free (_局部变量1._成员3501154A)
+        _局部变量1._成员3501154A ＝ 0
+    .如果真结束
+    
+    _局部变量1._成员3501154D ＝ _DLL命令0A0103B3_wkeGetUserKeyValue (m_WebView, #_常量1801158F)
+    .如果真 (_局部变量1._成员3501154D ≠ 0)
+        _stdcall_to_free (_局部变量1._成员3501154D)
+        _局部变量1._成员3501154D ＝ 0
+    .如果真结束
+    
+    .如果真 (到整数 (参数_将重定向回调) ≠ 0)
+        _局部变量1._成员35011541 ＝ _stdcall_to_cdecl (到整数 (参数_将重定向回调), 5)
+    .如果真结束
+    .如果真 (到整数 (参数_已接收响应回调) ≠ 0)
+        _局部变量1._成员35011544 ＝ _stdcall_to_cdecl (到整数 (参数_已接收响应回调), 4)
+    .如果真结束
+    .如果真 (到整数 (参数_已接收数据回调) ≠ 0)
+        _局部变量1._成员35011547 ＝ _stdcall_to_cdecl (到整数 (参数_已接收数据回调), 5)
+    .如果真结束
+    .如果真 (到整数 (参数_已失败回调) ≠ 0)
+        _局部变量1._成员3501154A ＝ _stdcall_to_cdecl (到整数 (参数_已失败回调), 4)
+    .如果真结束
+    .如果真 (到整数 (参数_已完成载入回调) ≠ 0)
+        _局部变量1._成员3501154D ＝ _stdcall_to_cdecl (到整数 (参数_已完成载入回调), 5)
+    .如果真结束
+    
+    返回 (_DLL命令0A011533_wkeNetStartUrlRequest (m_WebView, 参数_请求指针, 参数_用户数据, _取指针Struct (_局部变量1)))
+    
+

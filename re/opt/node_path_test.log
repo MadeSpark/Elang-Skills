@@ -1,0 +1,83 @@
+[build] gcc.exe (Rev9, Built by MSYS2 project) 15.2.0
+
+================ CASE A: custom kernel dir (SetNodePath) ================
+[00] host exe          = C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\A
+[01] LoadLibraryA(full path)      = 7a7c0000
+[02] LoadLibraryA("MbKit.dll")     = 7a7c0000   same-as-[01] = YES
+[03] SetNodePath("C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/kernel_x") = 1   (1=accepted, 0=refused)
+[04] ConfigNodePath        = [C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/kernel_x]
+[05] KernelLoaded (before) = 0
+[06] Init(NULL)            = 0   (0=MBKIT_OK, -2=MBKIT_E_NODLL)
+[07] KernelLoaded (after)  = 1
+[08] IsReady               = 1
+[09] KernelPath            = [C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/kernel_x\node.dll]
+[10] FwdError              = []
+[11] Diag:
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/kernel_x\node.dll
+  内核模块     : 0x781E0000
+  自定义路径   : C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/kernel_x
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\A
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\A
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+
+---- exit=0 ----
+
+================ CASE B: not set => default = host exe dir ================
+[00] host exe          = C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\B
+[01] LoadLibraryA(full path)      = 7a7c0000
+[02] LoadLibraryA("MbKit.dll")     = 7a7c0000   same-as-[01] = YES
+[03] SetNodePath           = <not set>  -> default = host exe dir
+[04] ConfigNodePath        = []
+[05] KernelLoaded (before) = 0
+[06] Init(NULL)            = 0   (0=MBKIT_OK, -2=MBKIT_E_NODLL)
+[07] KernelLoaded (after)  = 1
+[08] IsReady               = 1
+[09] KernelPath            = [C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\B\node.dll]
+[10] FwdError              = []
+[11] Diag:
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\B\node.dll
+  内核模块     : 0x781E0000
+  自定义路径   : (未设置 → 默认: 宿主程序根目录)
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\B
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\B
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+
+---- exit=0 ----
+
+================ CASE C: set but not found (must FAIL loudly) ================
+[00] host exe          = C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\C
+[01] LoadLibraryA(full path)      = 7a7c0000
+[02] LoadLibraryA("MbKit.dll")     = 7a7c0000   same-as-[01] = YES
+[03] SetNodePath("C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel") = 1   (1=accepted, 0=refused)
+[04] ConfigNodePath        = [C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel]
+[05] KernelLoaded (before) = 0
+[06] Init(NULL)            = -2   (0=MBKIT_OK, -2=MBKIT_E_NODLL)
+[07] KernelLoaded (after)  = 0
+[08] IsReady               = 0
+[09] KernelPath            = [C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel\node.dll]
+[10] FwdError              = [「WKE设置node路径」指定的位置里没有 node.dll：
+  C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel
+（不需要自定义时请把路径留空，默认即宿主程序根目录）]
+[11] Diag:
+MbKit 自检
+  内核状态     : 加载失败
+  内核路径     : C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel\node.dll
+  内核模块     : 0x00000000
+  自定义路径   : C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\C
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\opt\e2e\C
+  内核缺失导出 : 0（其中被真正调用过 0 次）
+  缺失清单     : (无)
+  加载期错误   : 「WKE设置node路径」指定的位置里没有 node.dll：
+  C:/Users/MadeSpark/Desktop/测试/re/opt/e2e/C/empty_kernel
+（不需要自定义时请把路径留空，默认即宿主程序根目录）
+
+---- exit=1 ----

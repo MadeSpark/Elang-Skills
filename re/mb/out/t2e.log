@@ -1,0 +1,1073 @@
+LOG:
+2026-09-23 20:50:51 [信息] [ SectionSystem::LoadFromTxt ]              正在加载文本代码
+2026-09-23 20:50:51 [信息] [ SectionSystem::LoadFromTxt ]              文本代码加载成功
+2026-09-23 20:50:51 [信息] [ SectionUser::LoadFromTxt ]                正在加载文本代码
+2026-09-23 20:50:51 [信息] [ SectionUser::LoadFromTxt ]                文本代码加载成功
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            开始加载【常量】文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/const.e.txt
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            加载【常量】成功。共载入 199 个常量
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            读取资源描述文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/resource/resource.desc.json
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            载入资源描述文件成功
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            开始扫描【资源】 [目录] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/resource
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            扫描载入资源完成! 共载入(个) [图片] 0 [声音] 0 [长文本(常量)] 0
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            开始扫描【窗口】 [目录] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/form
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            完成【窗口】扫描
+2026-09-23 20:50:51 [信息] [ SectionResource::LoadFromTxt ]            文本代码加载成功
+2026-09-23 20:50:51 [信息] [ SectionEPack1::LoadFromTxt ]              开始加载【易包】引用信息 [文件] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/config/epack.files.config.json
+2026-09-23 20:50:51 [信息] [ SectionEPack1::LoadFromTxt ]              加载【易包】引用信息文件完成
+2026-09-23 20:50:51 [信息] [ SectionDirInfo::LoadFromTxt ]             开始载入代码【目录】描述信息文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/class/dirs.desc.json
+2026-09-23 20:50:51 [信息] [ SectionDirInfo::LoadFromTxt ]             开始扫描代码【目录】信息 [目录] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/class
+2026-09-23 20:50:51 [信息] [ SectionDirInfo::LoadFromTxt ]             完成代码【目录】扫描！共添加 0 个目录
+2026-09-23 20:50:51 [信息] [ SectionCode::LoadBaseFromTxt ]            加载程序【图标】数据 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/icon.ico
+2026-09-23 20:50:51 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【图标】数据成功
+2026-09-23 20:50:51 [信息] [ SectionCode::LoadBaseFromTxt ]            读取【支持库】配置文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/config/lib.config.json
+2026-09-23 20:50:51 [信息] [ SectionCode::LoadBaseFromTxt ]            载入【支持库】配置文件成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]              >> 引入支持库 [名称] 系统核心支持库 [主键] krnln
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【支持库】引用成功。共引入 1 个支持库
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            开始加载【自定义类型】文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/struct.e.txt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010860
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010861
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010862
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构410108A7
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010934
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010A13
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010A14
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010A20
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010B08
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010C40
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010C45
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010C5C
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010C83
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41010D27
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: WKE媒体载入信息
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41011156
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: WKE内存缓冲区
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: WKEPOST元素
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: WKEPOST元素集
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: JS异常信息
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadStructArray_FromContent ] 解析【自定义类型】: _结构41011540
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【自定义类型】成功。共载入 21 个类型
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            开始加载【DLL】文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/dll.e.txt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010004_wkeCreateWebWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01001C_wkeDestroyWebWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010020_wkeGetWindowHandle
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010026_wkeShowWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010031_wkeEnableWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010034_wkeMoveWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01003E_wkeMoveToCenter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010042_wkeResizeWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010048_wkeSetWindowTitleW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01010B_wkeInitialize
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010113_wkeIsInitialize
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010115_wkeInitializeEx
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010123_wkeFinalize
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010125_wkeUpdate
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010128_wkeGetVersion
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01012B_wkeGetVersionString
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010138_wkeOnWindowClosing
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010142_wkeOnWindowDestroy
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010185_wkeSetNavigationToNewWindowEnable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01018F_wkeLoadW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0101A0_wkeSetProxy
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0101D4_wkeSetViewProxy
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0101EA_wkeGetName
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0101F0_wkeSetName
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0101FB_wkeSetHandle
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010202_wkeSetHandleOffset
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01020D_wkeSetUserAgentW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F55_wkeSetUserAgent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01021C_wkeLoadURLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F47_wkeLoadURL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01022A_wkeLoadHTMLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F4C_wkeLoadHTML
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010239_wkeLoadFileW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E6C_wkePostURLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E88_wkePostURL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010246_wkeGetURL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01025B_wkeIsLoading
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010261_wkeIsLoadingSucceeded
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010264_wkeIsLoadingFailed
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010266_wkeIsLoadingCompleted
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01026E_wkeIsDocumentReady
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01026C_wkeStopLoading
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010272_wkeReload
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010274_wkeGetTitleW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F3D_wkeGetTitle
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01028E_wkeResize
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01028F_wkeGetWidth
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010290_wkeGetHeight
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010291_wkeGetContentWidth
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010292_wkeGetContentHeight
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010977_wkeRepaintIfNeeded
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01097B_wkeSetDirty
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010986_wkeIsDirty
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010982_wkeAddDirtyArea
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010995_wkeLayoutIfNeeded
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01028D_wkePaint2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102C3_wkePaint
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102C9_wkeGetViewDC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0110B1_wkeGC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010999_wkeGetHostHWND
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0110BC_wkeGetSource
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102D0_wkeCanGoBack
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102D1_wkeGoBack
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102D2_wkeCanGoForward
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102D3_wkeGoForward
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102E4_wkeEditorSelectAll
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102E6_wkeEditorUnSelect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102E8_wkeEditorCopy
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102EA_wkeEditorCut
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102EC_wkeEditorPaste
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102EE_wkeEditorDelete
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102F0_wkeEditorUndo
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0102CF_wkeEditorRedo
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010302_wkeGetCookieW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F39_wkeGetCookie
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010FE2_wkeSetCookie
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010313_wkeSetCookieEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01031A_wkeIsCookieEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01031F_wkeSetCookieJarPath
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010325_wkeSetCookieJarFullPath
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010348_wkeSetMediaVolume
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01034E_wkeGetMediaVolume
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010359_wkeSetFocus
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01035D_wkeKillFocus
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010364_wkeRunJSW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01085C_wkeRunJS
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010373_wkeGlobalExec
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010380_wkeSleep
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010382_wkeWake
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01037C_wkeIsAwake
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109BB_wkeSetTransparent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01038B_wkeSetZoomFactor
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010385_wkeGetZoomFactor
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01038F_wkeSetEditable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01039F_wkeGetStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010ED4_wkeGetString
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0103A5_wkeSetStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0103AF_wkeGetWebViewForCurrentContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0103B2_wkeSetUserKeyValue
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0103B3_wkeGetUserKeyValue
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010FB4_wkeSetDragFiles
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0103D7_wkeOnTitleChanged
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010403_wkeOnURLChanged
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01041C_wkeOnURLChanged2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01042D_wkeOnAlertBox
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010449_wkeOnConfirmBox
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01044E_wkeOnPromptBox
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010462_wkeOnNavigation
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010479_wkeOnCreateView
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01048D_wkeOnDocumentReady
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010492_wkeOnDocumentReady2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0104AF_wkeOnLoadingFinish
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0104C4_wkeOnDownload
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0104D7_wkeOnConsole
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109EF_wkeOnPaintUpdated
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011104_wkeOnWillMediaLoad
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B28_wkeFireMouseEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B2E_wkeFireContextMenuEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B36_wkeFireMouseWheelEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B3F_wkeFireKeyUpEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B18_wkeFireKeyDownEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B4A_wkeFireKeyPressEvent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B45_wkeFireWindowsMessage
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0104FD_wkeIsMainFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010503_wkeIsWebRemoteFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010505_wkeWebFrameGetMainFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010517_wkeNetSetMIMEType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01051E_wkeNetSetHTTPHeaderField
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01144C_wkeNetGetHTTPHeaderField
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010527_wkeNetSetURL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01052D_wkeNetSetData
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E05_wkeGetCursorInfoType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E0F_wkeSetCspCheckEnable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E15_wkeSetViewNetInterface
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E0B_wkeNetHookRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010561_wkeOnLoadUrlBegin
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010578_wkeOnLoadUrlEnd
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01058A_wkeOnDidCreateScriptContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01058F_wkeOnWillReleaseScriptContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010EAD_wkeNetOnResponse
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010EB1_wkeNetGetMIMEType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D78_wkeWebFrameGetMainWorldScriptContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D7F_wkeGetBlinkMainThreadIsolate
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010EC0_wkeCreateStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010EC9_wkeDeleteString
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010EE0_wkeSetLocalStorageFullPath
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010594_wkeJsBindFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010825_jsBindFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105A5_wkeJsBindGetter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01082C_JsBindGetter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105A0_wkeJsBindSetter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010831_JsBindSetter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105D5_jsArgCount
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105DC_jsArgType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105E9_jsArg
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105F6_jsTypeOf
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105F9_jsIsNumber
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105FB_jsIsString
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105FD_jsIsBoolean
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105FF_jsIsObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010601_jsIsFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010603_jsIsUndefined
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010605_jsIsNull
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010607_jsIsArray
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010609_jsIsTrue
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0105F1_jsIsFalse
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010649_jsToInt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01064D_jsToFloat
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010651_jsToDouble
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010655_jsToBoolean
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010641_jsToTempStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01065E_jsInt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010661_jsFloat
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010664_jsDouble
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010659_jsBoolean
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010668_jsUndefined
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01066C_jsNull
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01066D_jsTrue
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01066B_jsFalse
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01066E_jsStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01067A_jsEmptyObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010675_jsEmptyArray
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01067C_jsObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010685_jsFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010688_jsGetData
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010690_jsGet
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010699_jsSet
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106A0_jsGetAt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106A8_jsSetAt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106AF_jsGetLength
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106BE_jsSetLength
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106C3_jsGlobalObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106B8_jsGetWebView
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106CC_jsEvalW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106C5_jsEvalExW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106E0_jsCall
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106E6_jsCallGlobal
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106EC_jsGetGlobal
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106D2_jsSetGlobal
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0106F1_jsGC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01081D_jsToStringW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011127_jsArrayBuffer
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108AE_wkeSetFileSystem
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010954_wkeCreateWebView
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010958_wkeGetWebView
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C3C_wkeGetCaretRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01095D_wkeDestroyWebView
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E3F_wkeVisitAllCookie
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010E47_wkePerformCookieCommand
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010F22_wkeRunJsByFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011008_wkeSetNpapiPluginsEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01100E_wkeSetHeadlessEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011007_wkeSetTouchEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011017_wkeSetDragEnable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01101A_wkeSetMemoryCacheEnable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01101E_wkeOnMouseOverUrlChanged
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011048_wkeSetDebugConfig
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01113B_wkeSetDeviceParameter
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100BB_MultiByteToWideChar
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100BC_WideCharToMultiByte
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100BD_WideCharToMultiByte
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100BE_MultiByteToWideChar
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100BF_VirtualAlloc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100C0_VirtualFree
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0100C1_RtlMoveMemory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01017B_HeapFree
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01017C_HeapAlloc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01017D_GetProcessHeap
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010253_lstrlenW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010813_lstrlenA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010875_RtlMoveMemory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010876_RtlMoveMemory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108DB_PathRemoveFileSpecA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108DC_PathCombineA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108DD_PathIsRelativeA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108DE_SetWindowsHookExW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108DF_CallNextHookEx
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108E0_GetCurrentThreadId
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108E1_TranslateMessage
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108E2_DispatchMessageW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0108E3_UnhookWindowsHookEx
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01092A_UrlUnescapeA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01092B_UrlEscapeA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010941_wvsprintfA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109A6_IsWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109C2_GetWindowLongW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109C3_SetWindowLongW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109C4_CallWindowProcW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109F7_GetWindowRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109F8_OffsetRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109F9_GetDC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109FA_UpdateLayeredWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0109FB_ReleaseDC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010A43_SetPropA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010A56_GetPropA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010A59_DefWindowProcA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B00_BeginPaint
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B01_EndPaint
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B6F_SetTimer
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B70_KillTimer
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B8B_GetClientRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010B92_IntersectRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010BA6_BitBlt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C3A_GetFocus
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C4C_ImmGetContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C4D_ImmSetCandidateWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C4E_ImmReleaseContext
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C55_RemovePropA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C58_DestroyWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C5A_SetFocus
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C5F_ReleaseCapture
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C60_SetCapture
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C68_ScreenToClient
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C8D_GetCurrentObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010C8E_GetObjectA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CA8_CreateCompatibleDC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CA9_CreateCompatibleBitmap
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CAA_SelectObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CAB_DeleteObject
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CAC_DeleteDC
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CBB_InvalidateRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CDD_PeekMessageW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CDE_IsIconic
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CE8_CreateThread
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CE6_CloseHandle
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CF0_Sleep
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010CF2_SendMessageA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D2E_RtlMoveMemory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D2F_RtlMoveMemory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D3D_IsRectEmpty
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D40_IsZoomed
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010D42_PtInRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A010DD1_GetAncestor
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011152_ImmSetCompositionWindow
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011162_wkeAddPluginDirectory
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01117A_wkeSetMouseEnabled
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01117D_wkeSetDragDropEnable
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011187_wkeGetGlobalExecByFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01118A_wkeShowDevtools
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111B2_wkeNetGetRequestMethod
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111BF_wkeNetContinueJob
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111C0_wkeNetGetUrlByJob
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111C1_wkeNetCancelRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111C2_wkeNetChangeRequestUrl
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0111C3_wkeNetHoldJobToAsynCommit
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011458_wkeNetCreateWebUrlRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01152B_wkeNetAddHTTPHeaderFieldToUrlRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011533_wkeNetStartUrlRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011558_wkeNetGetHttpStatusCode
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011552_wkeNetGetExpectedContentLength
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01155C_wkeNetGetResponseUrl
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011560_wkeNetCancelWebUrlRequest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0115BA_wkeNetGetPostBody
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0112DD_wkeInsertCSSByFrame
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0112ED_jsDeleteObjectProp
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0112FD_jsIsJsValueValid
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011306_jsIsValidExecState
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011315_wkeLoadHtmlWithBaseUrl
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011328_wkeSetResourceGc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011333_wkeGetUserAgent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01133B_wkeGetFrameUrl
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01134A_jsGetArrayBuffer
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011385_jsGetLastErrorIfException
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A01139D_jsThrowException
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0113AF_wkeNetGetFavicon
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0113D1_jsGetKeys
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0113ED_wkeIsProcessingUserGesture
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A0113FB_IsCharAlphaNumericA
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadDllArray_FromContent ] 解析【DLL】命令: _DLL命令0A011461_wkeUtilSerializeToMHTML
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【DLL】成功。共载入 329 个DLL
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            开始加载【全局变量】文件 [路径] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/global.e.txt
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050107C0
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050107BF
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050107B9
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050107B8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050107B7
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量05010DFE
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050105C0
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050105BD
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050108A2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050108A3
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadGlobalVarArray_FromContent ] 解析【全局变量】: _全局变量050108A4
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【全局变量】成功。共载入 11 个全局变量
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            开始加载【类/程序集】定义信息 [目录] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/class
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ] 开始扫描 [类/程序集]  [目录] /
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【程序集】定义信息: 程序集_启动
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【程序集】定义信息: 程序集_help
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【类】定义信息: MB浏览框
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【程序集】定义信息: 程序集_JS
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【程序集】定义信息: 程序集_callback
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【类】定义信息: wke文件系统
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_ClassDefinedArray ]   >> 载入【程序集】定义信息: 程序集_全局
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadBaseFromTxt ]            加载【类/程序集】定义信息成功。共载入 7 个类定义信息
+2026-09-23 20:50:52 [信息] [ E2TXT::OpenTxtDir ]                       开始扫描【模块】目录 [目录] C:/Users/MadeSpark/Desktop/测试/re/mb/text_kit/module
+2026-09-23 20:50:52 [信息] [ E2TXT::OpenTxtDir ]                       未找到【模块】目录
+2026-09-23 20:50:52 [信息] [ E2TXT::OpenTxtDir ]                       创建【资源/常量】索引索引
+2026-09-23 20:50:52 [信息] [ SectionResource::MakeScope ]              开始创建【资源】作用域
+2026-09-23 20:50:52 [信息] [ SectionResource::MakeScope ]              正在创建【窗口】索引
+2026-09-23 20:50:52 [信息] [ SectionResource::MakeScope ]              正在创建【常量】索引
+2026-09-23 20:50:52 [信息] [ SectionResource::MakeScope ]              正在创建【资源】索引
+2026-09-23 20:50:52 [信息] [ SectionResource::MakeScope ]              完成创建【资源】作用域
+2026-09-23 20:50:52 [信息] [ E2TXT::OpenTxtDir ]                       完成【资源/常量】索引创建
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          开始载入【类/程序集】定义信息
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _启动子程序
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _临时子程序
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【程序集】定义信息成功：程序集_启动
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeA2W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeA2W_Point
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeW2A
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeW2A_Point
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeToUTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeToGB2312
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WkeToGB2312_Ptr
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _stdcall_to_cdecl
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _stdcall_to_FastCall
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _stdcall_to_free
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取变量地址
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取指针数组
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取指针文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取指针字节集
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取指针Struct
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _指针到整数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取类成员变量
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call5
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call0
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call1
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call3
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call4
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call1_Int64
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call6
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: call7
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: callJSNativeFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: callwkeJSGetProperty
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: callwkeJSSetProperty
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: callwkeJSCallAsFunction
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _Alloc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _Free
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _HIWORD
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _LOWORD
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _MakeRect
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _Set
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _Get
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _GetLong
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【程序集】定义信息成功：程序集_help
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _初始化
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _销毁
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _WndProc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: on_getminmaxinfo
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: on_nchittest
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _FreeEventPtr
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 绑定
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置浏览器指针
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 销毁
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取窗口句柄
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置窗口最大化矩形
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置窗口无边框缩放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置窗口最大缩放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置窗口最小缩放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取浏览器指针
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取源码
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置调试配置
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置调试配置_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用导航到新窗口
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用鼠标
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用触摸
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用Npapi插件
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用Headless
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用拖拽
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用拖拽到
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 启用内存缓存
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置代理
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取名称
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置名称
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 休眠
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 唤醒
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否唤醒
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置UserAgent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置UserAgentW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取UserAgent
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入URLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入HTMLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入HTML
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入HTML2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入HTML2_Utf8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入文件W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 载入文件
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: PostURLW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: PostURL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取URL_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否载入
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否载入成功
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否载入失败
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否载入完毕
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否文档已就绪
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 停止载入
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 重新载入
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取标题
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取标题W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取宽度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取高度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取内容宽度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取内容高度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否可后退
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 后退
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否可前进
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 前进
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑全选
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑取消选择
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑复制
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑剪切
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑粘贴
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑删除
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑撤销
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 编辑重做
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取设备场景
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie获取
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie获取W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie设置
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie可用
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie是否可用
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie置目录W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie置目录
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie置全路径W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: Cookie置全路径
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置本地储存全路径W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置本地储存全路径
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置媒体音量
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取媒体音量
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 获取焦点
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 失去焦点
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 运行JSW
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 运行JS
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 运行JS_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 运行JS自框架_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 运行JS自框架
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取脚本上下文
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 全局执行
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置缩放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取缩放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置编辑模式
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取鼠标类型
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置用户键值
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取用户键值
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置拖放文件
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取主框架
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 跨域检查
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置网络接口
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否主框架
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否远程框架
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 截图
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 垃圾回收
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置设备参数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 添加插件目录
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 添加插件目录W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取执行状态自框架
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 插入CSS
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 置资源回收间隔
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取框架URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 是否正在处理用户手势
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 执行COOKIE命令
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 访问所有COOKIE
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 序列化到HTML
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 序列化到HTML_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_标题被改变
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_URL被改变
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_URL被改变2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_Alert被调用
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_Confirm被调用
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_Prompt被调用
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_即将导航
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_即将创建新窗口
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_文档就绪
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_文档就绪2
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_载入完成
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_正在下载
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_控制台消息
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_开始载入URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_结束载入URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_脚本上下文创建
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_脚本上下文释放
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_网络响应
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_鼠标经过URL改变
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 事件_将载入媒体
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 显示开发者工具W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 显示开发者工具
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 取网站图标
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 开始URL请求
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【类】定义信息成功：MB浏览框
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS绑定函数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS绑定置属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS绑定取属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数个数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数类型
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取类型
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_整数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_逻辑
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_小数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_双精度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取参数_文本W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否数值
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否逻辑
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否对象
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否方法
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否未定义
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否为空
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否数组
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否真
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS是否假
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到整数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到小数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到双精度小数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到逻辑
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS到文本W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS整数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS小数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS双精度小数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS逻辑
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS未定义
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS空
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS真
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS假
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS文本W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS空对象
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS空数组
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS数组缓冲区
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS全局对象
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取数据
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS计算表达式
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS计算表达式W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS调用函数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS调用全局函数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS置属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取全局属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS置全局属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取索引值
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS置索引值
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取长度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS置长度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS垃圾回收
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS对象
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS函数
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS删除对象属性
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS值是否有效
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS执行状态是否有效
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取数组缓冲区
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取最后异常错误
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS抛出异常_UTF8
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS抛出异常
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取所有键
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: JS取浏览器指针
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【程序集】定义信息成功：程序集_JS
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkePaintUpdatedCallback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _子类化
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _置类成员数据
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取类成员数据
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _取类函数地址
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _SubProc
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkeJSGetPropertyCallback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkeJSSetPropertyCallback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkeJSCallAsFunctionCallback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkeJSFinalizeCallback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: FILE_OPEN
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: FILE_CLOSE
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: FILE_SIZE
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: FILE_READ
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: FILE_SEEK
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _wkeJsBindFunction
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【程序集】定义信息成功：程序集_callback
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _初始化
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _销毁
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 文件打开
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 文件关闭
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 文件尺寸
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 文件读取
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: 文件移动
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【类】定义信息成功：wke文件系统
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE初始化
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE卸载
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取版本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取版本文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取文本W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置文本
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置文本W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: _GetProxySetings
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置代理
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取MIMEType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络置MIMEType
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络置HTTP头字段W
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络置HTTP头字段
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取HTTP头字段
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络置URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络置数据
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络HOOK请求
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取请求方法
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络继续工作
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取URL自工作
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取消请求
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络改变请求URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络保持工作到异步提交
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络创建URL请求
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络添加HTTP头字段到URL请求
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取响应HTTP状态码
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取响应预期内容长度
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE网络取响应URL
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置文件系统
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置易TAB切换焦点
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: HookProp
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取消易TAB切换焦点
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKEUrl编码
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKEUrl解码
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE置调试配置
+2026-09-23 20:50:52 [信息] [ TxtSourceLoader::ReadMethod_NoCode ]      解析【方法】完成: WKE取POST数据
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]            >> 载入【程序集】定义信息成功：程序集_全局
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          完成【类/程序集】定义信息的加载
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          开始构建【类/程序集】作用域索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在创建【作用域】信息
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在构建【方法】索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在构建【类/程序集】索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在构建【自定义数据】索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在构建【DLL】索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  正在构建【全局变量】索引
+2026-09-23 20:50:52 [信息] [ SectionCode::MakeScope ]                  完成创建【作用域】信息
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          完成构建【类/程序集】作用域索引
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          开始解析【类/程序集】代码
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【程序集】 程序集_启动 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_启动::_启动子程序 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_启动::_临时子程序 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【程序集】 程序集_help 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeA2W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeA2W_Point 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeW2A 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeW2A_Point 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeToUTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeToGB2312 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::WkeToGB2312_Ptr 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_stdcall_to_cdecl 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_stdcall_to_FastCall 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_stdcall_to_free 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取变量地址 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取指针数组 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取指针文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取指针字节集 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取指针Struct 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_指针到整数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_取类成员变量 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call5 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call0 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call1 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call2 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call3 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call4 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call1_Int64 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call6 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::call7 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::callJSNativeFunction 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::callwkeJSGetProperty 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::callwkeJSSetProperty 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::callwkeJSCallAsFunction 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_Alloc 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_Free 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_HIWORD 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_LOWORD 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_MakeRect 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_Set 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_Get 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_help::_GetLong 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【类】 MB浏览框 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::_初始化 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::_销毁 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::_WndProc 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::on_getminmaxinfo 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::on_nchittest 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::_FreeEventPtr 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::绑定 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置浏览器指针 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::销毁 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取窗口句柄 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置窗口最大化矩形 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置窗口无边框缩放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置窗口最大缩放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置窗口最小缩放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取浏览器指针 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取源码 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置调试配置 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置调试配置_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用导航到新窗口 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用鼠标 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用触摸 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用Npapi插件 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用Headless 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用拖拽 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用拖拽到 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::启用内存缓存 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置代理 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取名称 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置名称 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::休眠 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::唤醒 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否唤醒 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置UserAgent 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置UserAgentW 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取UserAgent 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入URLW 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入HTMLW 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入HTML 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入HTML2 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入HTML2_Utf8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入文件W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::载入文件 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::PostURLW 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::PostURL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取URL_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否载入 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否载入成功 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否载入失败 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否载入完毕 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否文档已就绪 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::停止载入 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::重新载入 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取标题 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取标题W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取宽度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取高度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取内容宽度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取内容高度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否可后退 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::后退 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否可前进 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::前进 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑全选 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑取消选择 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑复制 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑剪切 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑粘贴 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑删除 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑撤销 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::编辑重做 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取设备场景 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie获取 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie获取W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie设置 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie可用 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie是否可用 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie置目录W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie置目录 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie置全路径W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::Cookie置全路径 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置本地储存全路径W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置本地储存全路径 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置媒体音量 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取媒体音量 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::获取焦点 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::失去焦点 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::运行JSW 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::运行JS 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::运行JS_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::运行JS自框架_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::运行JS自框架 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取脚本上下文 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::全局执行 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置缩放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取缩放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置编辑模式 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取鼠标类型 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置用户键值 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取用户键值 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置拖放文件 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取主框架 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::跨域检查 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置网络接口 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否主框架 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否远程框架 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::截图 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::垃圾回收 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置设备参数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::添加插件目录 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::添加插件目录W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取执行状态自框架 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::插入CSS 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::置资源回收间隔 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取框架URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::是否正在处理用户手势 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::执行COOKIE命令 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::访问所有COOKIE 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::序列化到HTML 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::序列化到HTML_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_标题被改变 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_URL被改变 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_URL被改变2 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_Alert被调用 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_Confirm被调用 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_Prompt被调用 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_即将导航 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_即将创建新窗口 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_文档就绪 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_文档就绪2 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_载入完成 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_正在下载 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_控制台消息 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_开始载入URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_结束载入URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_脚本上下文创建 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_脚本上下文释放 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_网络响应 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_鼠标经过URL改变 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::事件_将载入媒体 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::显示开发者工具W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::显示开发者工具 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::取网站图标 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 MB浏览框::开始URL请求 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【程序集】 程序集_JS 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS绑定函数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS绑定置属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS绑定取属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数个数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数类型 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取类型 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_整数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_逻辑 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_小数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_双精度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取参数_文本W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否数值 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否逻辑 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否对象 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否方法 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否未定义 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否为空 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否数组 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否真 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS是否假 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到整数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到小数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到双精度小数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到逻辑 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS到文本W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS整数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS小数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS双精度小数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS逻辑 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS未定义 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS空 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS真 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS假 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS文本W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS空对象 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS空数组 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS数组缓冲区 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS全局对象 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取数据 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS计算表达式 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS计算表达式W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS调用函数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS调用全局函数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS置属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取全局属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS置全局属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取索引值 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS置索引值 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取长度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS置长度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS垃圾回收 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS对象 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS函数 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS删除对象属性 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS值是否有效 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS执行状态是否有效 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取数组缓冲区 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取最后异常错误 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS抛出异常_UTF8 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS抛出异常 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取所有键 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_JS::JS取浏览器指针 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【程序集】 程序集_callback 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkePaintUpdatedCallback 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_子类化 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_置类成员数据 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_取类成员数据 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_取类函数地址 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_SubProc 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkeJSGetPropertyCallback 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkeJSSetPropertyCallback 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkeJSCallAsFunctionCallback 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkeJSFinalizeCallback 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::FILE_OPEN 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::FILE_CLOSE 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::FILE_SIZE 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::FILE_READ 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::FILE_SEEK 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_callback::_wkeJsBindFunction 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【类】 wke文件系统 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::_初始化 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::_销毁 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::文件打开 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::文件关闭 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::文件尺寸 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::文件读取 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 wke文件系统::文件移动 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ] 开始解析【程序集】 程序集_全局 的方法
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE初始化 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE卸载 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取版本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取版本文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取文本W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置文本 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置文本W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::_GetProxySetings 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置代理 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取MIMEType 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络置MIMEType 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络置HTTP头字段W 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络置HTTP头字段 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取HTTP头字段 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络置URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络置数据 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络HOOK请求 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取请求方法 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络继续工作 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取URL自工作 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取消请求 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络改变请求URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络保持工作到异步提交 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络创建URL请求 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络添加HTTP头字段到URL请求 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取响应HTTP状态码 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取响应预期内容长度 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE网络取响应URL 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置文件系统 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置易TAB切换焦点 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::HookProp 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取消易TAB切换焦点 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKEUrl编码 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKEUrl解码 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE置调试配置 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class_ParseOne ]   >> 解析方法 程序集_全局::WKE取POST数据 代码成功
+2026-09-23 20:50:52 [信息] [ SectionCode::LoadFromTxt_Class ]          完成【类/程序集】代码解析
+2026-09-23 20:50:52 [信息] [ SectionCode::WriteClasses ]               开始写出【类/程序集】数据
+2026-09-23 20:50:52 [信息] [ SectionCode::WriteClasses ]               完成写出【类/程序集】数据
+2026-09-23 20:50:52 [信息] [ SectionCode::WriteStructs ]               开始写出【自定义】数据
+2026-09-23 20:50:52 [信息] [ SectionCode::WriteStructs ]               完成写出【自定义】数据
+SUCC:C:/Users/MadeSpark/Desktop/测试/re/mb/out/miniblink_MbKit.e

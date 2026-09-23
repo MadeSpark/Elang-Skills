@@ -87,6 +87,10 @@ typedef INT (__stdcall *PFN_NOTIFY_SYS_STD)(INT nMsg, DWORD dwParam1, DWORD dwPa
 
 static LIB_INFO          s_LibInfo;          /* 惰性填充，见 GetNewInf() */
 static PFN_NOTIFY_SYS_STD g_fnNotifySys = NULL;
+
+/* 无头档位解析（实现在第 6a 节）：0=关闭 1=只移出屏幕 2=隐藏+移出屏幕。
+   前置声明 —— `DoProbes` 比它的定义更早。 */
+static int HideModeFromEnv(void);
 static BOOL             g_blAiMode    = FALSE;
 static volatile LONG    g_lInitDone   = 0;
 static volatile LONG    g_lWorkerRun  = 0;
@@ -640,9 +644,83 @@ static const FUNC_PROBE g_ProbeFns[] =
     { FN_COMPILE_WINDOWS_EXE,               "FN_COMPILE_WINDOWS_EXE" },
     { FN_COMPILE_WINDOWS_CONOLE_EXE,        "FN_COMPILE_WINDOWS_CONOLE_EXE" },
     { FN_COMPILE_WINDOWS_DLL,               "FN_COMPILE_WINDOWS_DLL" },
+    { FN_COMPILE_WINDOWS_ECOM,              "FN_COMPILE_WINDOWS_ECOM" },   /* 编译为易模块(.ec) */
     { FN_STATIC_COMPILE_WINDOWS_EXE,        "FN_STATIC_COMPILE_WINDOWS_EXE" },
     { FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE, "FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE" },
     { FN_STATIC_COMPILE_WINDOWS_DLL,        "FN_STATIC_COMPILE_WINDOWS_DLL" },
+
+    /* ===================== 窗体设计器 / 组件操作族（2026-09-23 新增探测） =====================
+     * 目的：判定「让 IDE 自己改窗口」这条路线是否有官方通道。
+     * 若这些功能号 enabled=1，则可在 .fne 内驱动窗体设计器（不碰 form.json 天书字段）。 */
+    { FN_INSERT_NEW_WIN_FORM,   "FN_INSERT_NEW_WIN_FORM"   },  /* 插入一个新窗体 */
+    { FN_MENU_MODI,             "FN_MENU_MODI"             },  /* 启动当前窗体的菜单设计器 */
+    { FN_REMOVE_SPEC_UNIT,      "FN_REMOVE_SPEC_UNIT"      },  /* 删除窗体上被选择的组件 */
+    { FN_MOVE_LEFT_ONE,         "FN_MOVE_LEFT_ONE"         },  /* 移动被选组件 */
+    { FN_MOVE_RIGHT_ONE,        "FN_MOVE_RIGHT_ONE"        },
+    { FN_MOVE_UP_ONE,           "FN_MOVE_UP_ONE"           },
+    { FN_MOVE_DOWN_ONE,         "FN_MOVE_DOWN_ONE"         },
+    { FN_MOVE_LEFT_ONE_GRID,    "FN_MOVE_LEFT_ONE_GRID"    },
+    { FN_MOVE_RIGHT_ONE_GRID,   "FN_MOVE_RIGHT_ONE_GRID"   },
+    { FN_MOVE_UP_ONE_GRID,      "FN_MOVE_UP_ONE_GRID"      },
+    { FN_MOVE_DOWN_ONE_GRID,    "FN_MOVE_DOWN_ONE_GRID"    },
+    { FN_RESIZE_LEFT_ONE,       "FN_RESIZE_LEFT_ONE"       },  /* 缩放被选组件 */
+    { FN_RESIZE_RIGHT_ONE,      "FN_RESIZE_RIGHT_ONE"      },
+    { FN_RESIZE_UP_ONE,         "FN_RESIZE_UP_ONE"         },
+    { FN_RESIZE_DOWN_ONE,       "FN_RESIZE_DOWN_ONE"       },
+    { FN_RESIZE_LEFT_ONE_GRID,  "FN_RESIZE_LEFT_ONE_GRID"  },
+    { FN_RESIZE_RIGHT_ONE_GRID, "FN_RESIZE_RIGHT_ONE_GRID" },
+    { FN_RESIZE_UP_ONE_GRID,    "FN_RESIZE_UP_ONE_GRID"    },
+    { FN_RESIZE_DOWN_ONE_GRID,  "FN_RESIZE_DOWN_ONE_GRID"  },
+    { FN_HORZ_CENTER,           "FN_HORZ_CENTER"           },  /* 居中 / 置顶底 */
+    { FN_VERT_CENTER,           "FN_VERT_CENTER"           },
+    { FN_UNIT_GO_TOP,           "FN_UNIT_GO_TOP"           },
+    { FN_UNIT_GO_BOTTOM,        "FN_UNIT_GO_BOTTOM"        },
+    { FN_HORZ_UNIT_MIDDLE,      "FN_HORZ_UNIT_MIDDLE"      },
+    { FN_VERT_UNIT_MIDDLE,      "FN_VERT_UNIT_MIDDLE"      },
+    { FN_LEFT_ALIGN,            "FN_LEFT_ALIGN"            },  /* 对齐 / 分布 / 等宽高 */
+    { FN_TOP_ALIGN,             "FN_TOP_ALIGN"             },
+    { FN_RIGHT_ALIGN,           "FN_RIGHT_ALIGN"           },
+    { FN_BOTTOM_ALIGN,          "FN_BOTTOM_ALIGN"          },
+    { FN_HORZ_MIDDLE,           "FN_HORZ_MIDDLE"           },
+    { FN_VERT_MIDDLE,           "FN_VERT_MIDDLE"           },
+    { FN_HORZ_AVG,              "FN_HORZ_AVG"              },
+    { FN_VERT_AVG,              "FN_VERT_AVG"              },
+    { FN_EQU_WIDTH,             "FN_EQU_WIDTH"             },
+    { FN_EQU_HEIGHT,            "FN_EQU_HEIGHT"            },
+    { FN_EQU_WIDTHHEIGHT,       "FN_EQU_WIDTHHEIGHT"       },
+    { FN_LOCK_UNIT,             "FN_LOCK_UNIT"             },  /* 加锁/解锁组件 */
+    { FN_UNLOCK_UNIT,           "FN_UNLOCK_UNIT"           },
+    { FN_INSERT_NEW_CLASS_MOD,  "FN_INSERT_NEW_CLASS_MOD"  },  /* 插入新类程序集 */
+    { FN_INSERT_NEW_LOCAL_VAR,  "FN_INSERT_NEW_LOCAL_VAR"  },  /* 插入新局部变量 */
+    { FN_INSERT_NEW_CONST_RES,  "FN_INSERT_NEW_CONST_RES"  },  /* 插入新常量/图片/声音资源 */
+    { FN_INSERT_NEW_PIC_RES,    "FN_INSERT_NEW_PIC_RES"    },
+    { FN_INSERT_NEW_SOUND_RES,  "FN_INSERT_NEW_SOUND_RES"  },
+    { FN_INSERT_NEW_LONGTEXT,   "FN_INSERT_NEW_LONGTEXT"   },
+    { FN_GOTO_SPEC_UNIT_DATA_TYPE, "FN_GOTO_SPEC_UNIT_DATA_TYPE" }, /* 跳到设计器所选组件的类型 */
+    { FN_RELINK,                "FN_RELINK"                },  /* 重新名称关联 */
+    { FN_EVA_DESIGNER,          "FN_EVA_DESIGNER"          },  /* EVA 设计器（语义待考） */
+
+    /* ===================== 组件/易程序数据 剪贴板族（关键：复制/粘贴组件的官方通道） ===================== */
+    { FN_GET_ACTIVE_WND_TYPE,      "FN_GET_ACTIVE_WND_TYPE"      }, /* 当前活动文档类型(1程序集/5窗体设计…) */
+    { FN_INPUT_ECOM,               "FN_INPUT_ECOM"               }, /* 输入易模块 */
+    { FN_CLIP_GET_EPRG_DATA_SIZE,  "FN_CLIP_GET_EPRG_DATA_SIZE"  }, /* 读剪贴板"易程序数据"尺寸 */
+    { FN_CLIP_GET_EPRG_DATA,       "FN_CLIP_GET_EPRG_DATA"       }, /* 读剪贴板"易程序数据"内容 */
+    { FN_CLIP_SET_EPRG_DATA,       "FN_CLIP_SET_EPRG_DATA"       }, /* 写剪贴板"易程序数据"内容 */
+    { FN_GET_CARET_ROW_INDEX,      "FN_GET_CARET_ROW_INDEX"      },
+    { FN_GET_CARET_COL_INDEX,      "FN_GET_CARET_COL_INDEX"      },
+    { FN_GET_PRG_HELP,             "FN_GET_PRG_HELP"             },
+    { FN_GET_NUM_ECOM,             "FN_GET_NUM_ECOM"             },
+    { FN_GET_ECOM_FILE_NAME,       "FN_GET_ECOM_FILE_NAME"       },
+    { FN_GET_NUM_LIB,              "FN_GET_NUM_LIB"              },
+    { FN_GET_LIB_INFO_TEXT,        "FN_GET_LIB_INFO_TEXT"        },
+    { FN_ADD_NEW_ECOM2,            "FN_ADD_NEW_ECOM2"            }, /* 加入指定文件名的易模块 */
+    { FN_INPUT_PRG2,               "FN_INPUT_PRG2"               }, /* 合并指定程序文件 */
+    { FN_SET_AND_COMPILE_PRG_ITEM_TEXT, "FN_SET_AND_COMPILE_PRG_ITEM_TEXT" },
+    { FN_REPLACE_ALL2,             "FN_REPLACE_ALL2"             },
+    { FN_FORCE_PROCESS,            "FN_FORCE_PROCESS"            },
+    { FN_GOTO_LAST_MODI_PLACE,     "FN_GOTO_LAST_MODI_PLACE"     },
+    { FN_UNDO,                     "FN_UNDO"                     },
+    { FN_REDO,                     "FN_REDO"                     },
 };
 
 static void DoProbes(void)
@@ -703,26 +781,26 @@ static void DoProbes(void)
         Trace("PROBE EnumChildWindows end: total=%d", ctx.nCount);
     }
 
-    /* --- 3.e hide=1 隐藏主窗口 --- */
+    /* --- 3.e hide=1 隐藏主窗口（`HideModeFromEnv()` 语义见无头守护一节） --- */
     {
-        char szHide[16] = { 0 };
-        if (GetEnvStr(HIDE_ENV_VAR, szHide, sizeof(szHide)) && strcmp(szHide, "1") == 0)
+        int nHide = HideModeFromEnv();
+        if (nHide >= 2)
         {
             if (hMain != NULL && IsWindow(hMain))
             {
-                Trace("PROBE hide=1 -> ShowWindow(hwnd=0x%08X, SW_HIDE) (visible before=%d)",
-                      (unsigned)(size_t)hMain, IsWindowVisible(hMain) ? 1 : 0);
+                Trace("PROBE hide=%d -> ShowWindow(hwnd=0x%08X, SW_HIDE) (visible before=%d)",
+                      nHide, (unsigned)(size_t)hMain, IsWindowVisible(hMain) ? 1 : 0);
                 ShowWindow(hMain, SW_HIDE);
-                Trace("PROBE hide=1 -> visible after=%d", IsWindowVisible(hMain) ? 1 : 0);
+                Trace("PROBE hide=%d -> visible after=%d", nHide, IsWindowVisible(hMain) ? 1 : 0);
             }
             else
             {
-                Trace("PROBE hide=1 requested but main window is NULL");
+                Trace("PROBE hide=%d requested but main window is NULL", nHide);
             }
         }
         else
         {
-            Trace("PROBE hide not requested (ELANG_AI_HIDE != 1)");
+            Trace("PROBE hide not requested (ELANG_AI_HIDE=%d, 需要 2)", nHide);
         }
     }
 }
@@ -995,10 +1073,15 @@ static void DoRunAndCapture(HWND hMain)
     }
 }
 
-/* ---- 编译任务：ELANG_AI_COMPILE=<种类> → 触发 FNST_RUN 家族对应功能号 ----
- * 与 RUN 同构但更简单：编译没有“运行态”标志可轮询，完成与否由**外部包装脚本**
- * 监视 ELANG_AI_EXPECT_OUT 指向的产物文件（本库发现文件出现时只做记录）。
- * 产物落盘后 IDE 仍存活，由包装脚本按精确 PID 收尾。 */
+/* ---- 编译任务：ELANG_AI_COMPILE=<种类> → 触发 FNST_RUN / FNST_MODIFY 家族对应功能号 ----
+ * 两种形态：
+ *   ① 真编译（static* / exe / console / dll）：无“运行态”标志可轮询，完成与否由**外部
+ *      包装脚本**监视 ELANG_AI_EXPECT_OUT 指向的产物文件（本库发现文件出现时只做记录）。
+ *      产物落盘后 IDE 仍存活，由包装脚本按精确 PID 收尾。
+ *   ② 预编译（precompile → FN_PRE_COMPILE）：**只做语法/语义静态检查，不生成任何产物**。
+ *      它的功能参数1是个 BOOL*，调用返回后即为「是否预编译成功」——这是官方原生的
+ *      「检查代码」入口，比走真编译快得多，也不会弹保存框。
+ */
 static DWORD CompileFuncNoFromEnv(void)
 {
     char szKind[32] = { 0 };
@@ -1006,6 +1089,8 @@ static DWORD CompileFuncNoFromEnv(void)
         return 0;
     if (strcmp(szKind, "1") == 0 || strcmp(szKind, "static") == 0)
         return FN_COMPILE_STATIC;                        /* 静态编译（IDE 当前工程类型的静态形态） */
+    if (strcmp(szKind, "precompile") == 0)
+        return FN_PRE_COMPILE;                           /* 预编译：只检查，不出产物 */
     if (strcmp(szKind, "static_exe") == 0)
         return FN_STATIC_COMPILE_WINDOWS_EXE;            /* 静态编译为 Windows 程序 */
     if (strcmp(szKind, "static_console") == 0)
@@ -1018,12 +1103,22 @@ static DWORD CompileFuncNoFromEnv(void)
         return FN_COMPILE_WINDOWS_CONOLE_EXE;            /* 编译为 Windows 控制台程序 */
     if (strcmp(szKind, "dll") == 0)
         return FN_COMPILE_WINDOWS_DLL;                   /* 编译为 Windows 动态链接库 */
+    if (strcmp(szKind, "ecom") == 0)
+        return FN_COMPILE_WINDOWS_ECOM;                  /* 编译为 Windows 易模块（产物 .ec）
+                                                          * 2026-09-23 补：此前只有 exe/dll，
+                                                          * 易模块（.ec）工程编译不出东西。 */
     Trace("COMPILE unknown kind '%s'", szKind);
     return 0;
 }
 
 /* 触发静态编译后 IDE 会弹「请输入欲编译到的可执行文件名：」保存对话框（实测）。
-   我们就在 IDE 进程内：找到它 → 把期望产物路径填进文件名框 → 点确认。 */
+   我们就在 IDE 进程内：找到它 → 把期望产物路径填进文件名框 → 点确认。
+
+   ⚠️⚠️ 这里**绝对不能要求窗口可见**（2026-09-22 踩坑）：无头模式下宿主/外部会把 IDE 的
+   窗口 SW_HIDE 或移出屏幕，加了 `IsWindowVisible` 过滤就永远找不到这个对话框 ——
+   模态框不会被消掉，触发线程的 `IdeRunFunc(FN_COMPILE_STATIC…)` **永远不返回**，
+   表现为编译静默卡死到超时（曾误判成「IDE 依赖窗口可见」）。判据只用
+   「同进程 + 类名 #32770 + 标题含『请输入欲编译到』」，标题本身已经足够特异。 */
 static BOOL CALLBACK FindCompileSaveDlgProc(HWND hWnd, LPARAM lp)
 {
     DWORD dwPid = 0;
@@ -1031,7 +1126,7 @@ static BOOL CALLBACK FindCompileSaveDlgProc(HWND hWnd, LPARAM lp)
     char  szTitle[256] = { 0 };
 
     GetWindowThreadProcessId(hWnd, &dwPid);
-    if (dwPid != GetCurrentProcessId() || !IsWindowVisible(hWnd))
+    if (dwPid != GetCurrentProcessId())
         return TRUE;
     GetClassNameA(hWnd, szClass, sizeof(szClass));
     if (strcmp(szClass, "#32770") != 0)
@@ -1043,17 +1138,444 @@ static BOOL CALLBACK FindCompileSaveDlgProc(HWND hWnd, LPARAM lp)
     return FALSE;
 }
 
-static BOOL CALLBACK FillSaveDlgChildProc(HWND hChild, LPARAM lp)
-{
-    char szClass[64] = { 0 };
-    (void)lp;
+/* --------------------------------------------------------------------------
+ * 保存框填充（2026-09-24 重写）
+ * --------------------------------------------------------------------------
+ * 旧实现 = 「`WM_SETTEXT` 到枚举到的**第一个** `Edit`」+「只 `BM_CLICK` 一次」，
+ * 在真实工程上**静默失效**：实测 `re/opt/e2ework2` 的 trace 里填充器连续
+ * **1155 次**报 `filled path='...\probe.exe' (visible=1)`，但产物从未出现、
+ * 保存框从未消失 —— 也就是说「填」和「点」至少有一个是假动作，而旧代码
+ * **没有任何回读校验**，所以它自己一直以为成功了。
+ *
+ * 四个必须同时解决的坑：
+ *
+ * 1) **文件名框不是「第一个 Edit」**。保存框里同时有「查找范围（目录）」
+ *    「文件名」「文件类型」三套输入控件，且每套都是一个 `ComboBox` 套着一个
+ *    内层 `Edit`（`EnumChildWindows` 会把它们**全部**枚举出来）。写错框 =
+ *    白写，而且毫无提示。→ 改为**收集全部候选 + 回读自证**；文件名框优先按
+ *    comdlg32 的固定控件号 `edt1(0x0480)` 取，取不到再退到「最后一个 Edit」。
+ *
+ * 2) **只写内层 `Edit` 不够**。`ComboBox` 型文件名框取的是 **ComboBox 自身**
+ *    的文本/选中项，光改内层 `Edit` 的文本，对话框读到的还是空 —— 这与
+ *    `re/opt/dump_dialogs.py` 观测到的「点击后 Edit 文本仍为空」完全吻合。
+ *    → 同时给 `Edit` 和它的父 `ComboBox` 各写一次。
+ *
+ * 3) **覆盖确认框没人回答**。目标文件已存在（或文件名没填进去、易语言退回按
+ *    工程名另存）时，会再弹一个 `#32770`（标题「另存新檔 / 另存为 /
+ *    Confirm Save As」）。模态栈不消 ⇒ 触发线程的 `IdeRunFunc` **永不返回**，
+ *    编译一路卡到超时。→ 每轮先把它点掉。
+ *
+ * 4) **`BM_CLICK` 可能不被处理**。对模态框只投一个 `BM_CLICK` 不够稳。
+ *    → 「`WM_COMMAND(IDOK)` + `BM_CLICK` + 向输入框投 `VK_RETURN`」三连，
+ *    任一条被处理即可。
+ *
+ * 诊断：`ELANG_AI_DLG_ONLY=1` ⇒ **只扫描落盘、不填不点**，把整个控件树
+ * （类名/控件号/父类/使能/可见/文本）写进 trace。用于 90 秒级的快速取证，
+ * 不必等编译超时（旧跑法一次要 9 分钟才拿到结论）。
+ * -------------------------------------------------------------------------- */
+#define DLG_DUMP_MAX 8192
 
-    GetClassNameA(hChild, szClass, sizeof(szClass));
-    if (strcmp(szClass, "Edit") != 0 || !IsWindowVisible(hChild))
+typedef struct
+{
+    HWND   hDlg;
+    HWND   hEditFirst;                   /* 第一个 Edit（兜底） */
+    HWND   hEditLast;                    /* 最后一个 Edit（= 文件名框的常见位置） */
+    int    nEdit;
+    int    nCombo;
+    int    nBtn;
+    size_t cbDump;
+    char   szDump[DLG_DUMP_MAX];
+} SAVEDLG_SCAN;
+
+static void DlgDumpAppend(SAVEDLG_SCAN *p, const char *pszFmt, ...)
+{
+    va_list ap;
+    int     n;
+
+    if (p->cbDump + 2 >= sizeof(p->szDump))
+        return;
+    va_start(ap, pszFmt);
+    n = _vsnprintf(p->szDump + p->cbDump, sizeof(p->szDump) - p->cbDump - 1,
+                   pszFmt, ap);
+    va_end(ap);
+    if (n > 0)
+        p->cbDump += (size_t)n;
+    if (p->cbDump + 2 < sizeof(p->szDump))
+    {
+        p->szDump[p->cbDump++] = '\n';
+        p->szDump[p->cbDump]   = '\0';
+    }
+}
+
+/* 把多行 dump 按行喂给 Trace（Trace 单行上限 2048）。 */
+static void DlgDumpTrace(const char *pszTag, const char *pszDump)
+{
+    const char *p = pszDump;
+    char        szLine[1600];
+
+    while (*p != '\0')
+    {
+        const char *pEol = strchr(p, '\n');
+        size_t      cb   = (pEol != NULL) ? (size_t)(pEol - p) : strlen(p);
+        if (cb >= sizeof(szLine))
+            cb = sizeof(szLine) - 1;
+        memcpy(szLine, p, cb);
+        szLine[cb] = '\0';
+        if (cb > 0)
+            Trace("%s %s", pszTag, szLine);
+        if (pEol == NULL)
+            break;
+        p = pEol + 1;
+    }
+}
+
+static BOOL CALLBACK ScanSaveDlgChildProc(HWND hChild, LPARAM lp)
+{
+    SAVEDLG_SCAN *p = (SAVEDLG_SCAN *)lp;
+    char          szCls[64]  = { 0 };
+    char          szPar[64]  = { 0 };
+    char          szTxt[400] = { 0 };
+    HWND          hPar = GetParent(hChild);
+
+    GetClassNameA(hChild, szCls, sizeof(szCls));
+    if (hPar != NULL)
+        GetClassNameA(hPar, szPar, sizeof(szPar));
+    GetWindowTextA(hChild, szTxt, sizeof(szTxt));
+
+    DlgDumpAppend(p, "  id=%-5d cls=%-16s par=%-14s en=%d vis=%d txt='%s'",
+                  GetDlgCtrlID(hChild), szCls, szPar,
+                  IsWindowEnabled(hChild) ? 1 : 0,
+                  IsWindowVisible(hChild) ? 1 : 0, szTxt);
+
+    if (_stricmp(szCls, "Edit") == 0)
+    {
+        if (p->hEditFirst == NULL)
+            p->hEditFirst = hChild;
+        p->hEditLast = hChild;
+        ++p->nEdit;
+    }
+    else if (_stricmp(szCls, "ComboBox") == 0 || _stricmp(szCls, "ComboBoxEx32") == 0)
+    {
+        ++p->nCombo;
+    }
+    else if (_stricmp(szCls, "Button") == 0)
+    {
+        ++p->nBtn;
+    }
+    return TRUE;
+}
+
+/* 写文本到控件并**回读自证**；pszBack 回填实际读到的内容（诊断用）。 */
+static BOOL SetCtlTextVerified(HWND hCtl, const char *pszText,
+                              char *pszBack, size_t cbBack)
+{
+    int nTry;
+
+    if (pszBack != NULL && cbBack > 0)
+        pszBack[0] = '\0';
+    for (nTry = 0; nTry < 2; ++nTry)
+    {
+        SendMessageA(hCtl, WM_SETTEXT, 0, (LPARAM)pszText);
+        if (pszBack != NULL && cbBack > 0)
+        {
+            pszBack[0] = '\0';
+            SendMessageA(hCtl, WM_GETTEXT, (WPARAM)cbBack, (LPARAM)pszBack);
+            if (pszBack[0] == '\0')
+                GetWindowTextA(hCtl, pszBack, (int)cbBack);
+            if (strcmp(pszBack, pszText) == 0)
+                return TRUE;
+        }
+        if (nTry == 0)
+            SetFocus(hCtl);                 /* 部分控件要求先聚焦才吃 WM_SETTEXT */
+    }
+    return FALSE;
+}
+
+/* --------------------------------------------------------------------------
+ * 把路径写进保存框 —— 判据必须是**对话框自己的答案**（2026-09-24）
+ * --------------------------------------------------------------------------
+ * 踩过的坑：易语言的保存框是 **Vista 风格（Explorer 式）公共对话框**，
+ * 控件树长这样（`re/opt/dlg_watch.py` 实测）：
+ *
+ *     DirectUIHWND
+ *       └ FloatNotifySink
+ *           ├ ComboBox            ← 「保存位置」目录框
+ *           │   └ Edit id=1001
+ *           └ ComboBox            ← 「文件名」框
+ *               └ Edit id=1001    ← 两个 Edit 的类名/控件号**完全一样**
+ *
+ * 于是「取第 N 个编辑框」这种启发式必然摇摆：命中文件名框就成功，命中目录框就
+ * 把完整路径写进了目录框、文件名框留空 ⇒ 易语言退回「上次目录 + 默认文件名」
+ * （实测产物落到了上一次编译的目录，脚本判成 timeout，其实编译是成功的）。
+ *
+ * 更坏的是：**控件回读会骗人** —— 写进目录框后 `WM_GETTEXT` 一样回读成功。
+ *
+ * 最终判据（两条，按对话框是否支持 `CDM_GETFILEPATH` 分流）：
+ *   ① 对话框支持 CDM（老式 comdlg32）→ 直接问它「你现在要存到哪个完整路径」，
+ *      逐个候选试到**对话框自己的答案**匹配为止（最严格）；
+ *   ② 不支持（易模块这个 Vista 风格框就是这样，恒返回空）→ 用**几何位置**：
+ *      同一个框里「保存位置」在上、「文件名」在下，取**最靠下的宽编辑框**
+ *      （实测坐标见 CollectEditProc 上方注释），再用控件回读自证。
+ *   → 2026-09-24 之前用的是「第 N 个编辑框」，两种布局下都会摇摆，正是
+ *     产物偶发落到上一次目录的根因。
+ * -------------------------------------------------------------------------- */
+#ifndef CDM_FIRST
+#define CDM_FIRST (WM_USER + 0x0064)
+#endif
+#define KIT_CDM_GETFILEPATH    (CDM_FIRST + 0x0001)
+#define KIT_CDM_SETCONTROLTEXT (CDM_FIRST + 0x0004)
+
+/* comdlg32 的「文件名」编辑框控件号。Vista 风格下未必真是它，但 CDM_* 由对话框
+   自己解释，先走这条官方路线成本最低。 */
+#define KIT_EDT1 0x0480
+
+/* 问保存框：你现在的完整目标路径是什么？返回 TRUE = 拿到了非空答案。 */
+static BOOL QueryDlgFilePath(HWND hDlg, char *pszOut, DWORD dwCap)
+{
+    DWORD dwLen;
+
+    if (pszOut == NULL || dwCap == 0)
+        return FALSE;
+    pszOut[0] = '\0';
+    dwLen = (DWORD)SendMessageA(hDlg, KIT_CDM_GETFILEPATH, (WPARAM)dwCap,
+                                (LPARAM)pszOut);
+    pszOut[dwCap - 1] = '\0';
+    return (dwLen > 0 && pszOut[0] != '\0');
+}
+
+/* 路径比较：忽略大小写、`/` 与 `\` 等价（用户传的路径两种都有）。 */
+static BOOL PathEquals(const char *pszA, const char *pszB)
+{
+    while (*pszA != '\0' && *pszB != '\0')
+    {
+        char ca = *pszA++;
+        char cb = *pszB++;
+        if (ca == '/') ca = '\\';
+        if (cb == '/') cb = '\\';
+        if (ca >= 'A' && ca <= 'Z') ca = (char)(ca - 'A' + 'a');
+        if (cb >= 'A' && cb <= 'Z') cb = (char)(cb - 'A' + 'a');
+        if (ca != cb)
+            return FALSE;
+    }
+    return (*pszA == '\0' && *pszB == '\0');
+}
+
+#define DLG_MAX_EDIT 12
+
+typedef struct
+{
+    HWND hEdit;
+    HWND hCombo;            /* 父 ComboBox（ComboBox 型文件名框要连它一起写） */
+    int  nTop;              /* 屏幕 y：越大越靠下。对话框被挪到 -32000 也保持相对次序 */
+    int  nWidth;
+    char szOrig[600];       /* 原文本，试错后要还原 */
+} DLG_CAND;
+
+typedef struct
+{
+    DLG_CAND a[DLG_MAX_EDIT];
+    int      n;
+} DLG_CANDS;
+
+/* 收集候选编辑框。判据的关键是**位置**：同一个保存框里，「保存位置（目录）」框
+   在上、「文件名」框在下，两者类名与父类完全一样（实测见 dlg_watch）。
+   实测坐标（对话框被挪到 -32000 后仍保持相对次序）：
+
+       地址栏 Edit                y=-31956  宽 52    ← 最上，排除
+       目录框 ComboBox → Edit     y=-31641  宽 518
+       文件名框 ComboBox → Edit   y=-31619  宽 518   ← 最下 ⇒ 就是它
+       存檔 / 取消 按钮           y=-31541
+
+   太小的框（地址栏、搜索框）直接跳过，避免被 y 排序选中。 */
+static BOOL CALLBACK CollectEditProc(HWND hChild, LPARAM lp)
+{
+    DLG_CANDS *p = (DLG_CANDS *)lp;
+    char       szCls[64] = { 0 };
+    char       szPar[64] = { 0 };
+    HWND       hPar;
+    RECT       rc;
+
+    if (p->n >= DLG_MAX_EDIT)
+        return FALSE;
+    GetClassNameA(hChild, szCls, sizeof(szCls));
+    if (_stricmp(szCls, "Edit") != 0)
         return TRUE;
-    SendMessageA(hChild, WM_SETTEXT, 0,
-                 (LPARAM)(const char *)g_szCompileOutPath);
-    return FALSE;                                       /* 填完第一个可见 Edit 就停 */
+    if (!GetWindowRect(hChild, &rc))
+        return TRUE;
+    if ((rc.right - rc.left) < 40 || (rc.bottom - rc.top) < 8)
+        return TRUE;
+
+    hPar = GetParent(hChild);
+    if (hPar != NULL)
+        GetClassNameA(hPar, szPar, sizeof(szPar));
+
+    p->a[p->n].hEdit  = hChild;
+    p->a[p->n].hCombo = (_stricmp(szPar, "ComboBox") == 0 ||
+                         _stricmp(szPar, "ComboBoxEx32") == 0) ? hPar : NULL;
+    p->a[p->n].nTop   = (int)rc.top;
+    p->a[p->n].nWidth = (int)(rc.right - rc.left);
+    GetWindowTextA(hChild, p->a[p->n].szOrig, sizeof(p->a[p->n].szOrig));
+    ++p->n;
+    return TRUE;
+}
+
+/* 把一个候选控件（及其父 ComboBox）写掉并还原。 */
+static void WriteCand(const DLG_CAND *p, const char *pszPath)
+{
+    SendMessageA(p->hEdit, WM_SETTEXT, 0, (LPARAM)pszPath);
+    if (p->hCombo != NULL)
+        SendMessageA(p->hCombo, WM_SETTEXT, 0, (LPARAM)pszPath);
+}
+
+static void RestoreCand(const DLG_CAND *p)
+{
+    SendMessageA(p->hEdit, WM_SETTEXT, 0, (LPARAM)p->szOrig);
+    if (p->hCombo != NULL)
+        SendMessageA(p->hCombo, WM_SETTEXT, 0, (LPARAM)p->szOrig);
+}
+
+/* 成功返回 TRUE，把最终写进去的文本回填 pszVerify，并把生效控件回填 *phTarget。 */
+static BOOL TrySetSavePath(HWND hDlg, const char *pszPath,
+                          char *pszVerify, size_t cbVerify, HWND *phTarget)
+{
+    DLG_CANDS cd;
+    char      szFile[MAX_PATH * 2] = { 0 };
+    char      szBack[600] = { 0 };
+    BOOL      blCdm = FALSE;
+    int       i, j;
+
+    memset(&cd, 0, sizeof(cd));
+    EnumChildWindows(hDlg, CollectEditProc, (LPARAM)&cd);
+    if (cd.n == 0)
+    {
+        Trace("COMPILE dlg 没有任何候选编辑框");
+        return FALSE;
+    }
+
+    /* 按屏幕 y 从下往上排（插入排序，n ≤ 12） */
+    for (i = 1; i < cd.n; ++i)
+    {
+        DLG_CAND t = cd.a[i];
+        j = i - 1;
+        while (j >= 0 && cd.a[j].nTop < t.nTop)
+        {
+            cd.a[j + 1] = cd.a[j];
+            --j;
+        }
+        cd.a[j + 1] = t;
+    }
+
+    Trace("COMPILE dlg 候选 %d 个（从下往上）:", cd.n);
+    for (i = 0; i < cd.n; ++i)
+        Trace("COMPILE   #%d y=%-7d w=%-5d combo=%d txt='%s'", i, cd.a[i].nTop,
+              cd.a[i].nWidth, cd.a[i].hCombo != NULL ? 1 : 0, cd.a[i].szOrig);
+
+    /* 有的保存框不实现 CDM_GETFILEPATH（易模块这个就不实现，恒返回空），
+       就退回几何启发式：**最靠下的宽编辑框**就是文件名框。 */
+    blCdm = QueryDlgFilePath(hDlg, szFile, sizeof(szFile));
+
+    for (i = 0; i < cd.n; ++i)
+    {
+        WriteCand(&cd.a[i], pszPath);
+
+        if (blCdm)
+        {
+            szFile[0] = '\0';
+            if (QueryDlgFilePath(hDlg, szFile, sizeof(szFile)) &&
+                PathEquals(szFile, pszPath))
+            {
+                snprintf(pszVerify, cbVerify, "%s", szFile);
+                if (phTarget != NULL) *phTarget = cd.a[i].hEdit;
+                Trace("COMPILE dlg 命中 #%d（GETFILEPATH='%s'）", i, szFile);
+                return TRUE;
+            }
+            RestoreCand(&cd.a[i]);
+            continue;
+        }
+
+        /* 无 CDM：写进去 + 回读自证。第一个成功的就是文件名框（已按 y 从下往上排） */
+        if (SetCtlTextVerified(cd.a[i].hEdit, pszPath, szBack, sizeof(szBack)) ||
+            (cd.a[i].hCombo != NULL &&
+             SetCtlTextVerified(cd.a[i].hCombo, pszPath, szBack, sizeof(szBack))))
+        {
+            snprintf(pszVerify, cbVerify, "%s", szBack);
+            if (phTarget != NULL) *phTarget = cd.a[i].hEdit;
+            Trace("COMPILE dlg 几何选中 #%d（y=%d w=%d，回读成功）CDM=%d",
+                  i, cd.a[i].nTop, cd.a[i].nWidth, blCdm ? 1 : 0);
+            return TRUE;
+        }
+
+        /* 候选全试完仍失败：不作标记，交给上层决定是否点确定 */
+    }
+
+    Trace("COMPILE dlg CDM=%d，所有候选都写不进去", blCdm ? 1 : 0);
+    return FALSE;
+}
+
+/* 「另存新檔 / 另存为 / Confirm Save As」覆盖确认框。
+   ⚠️ 必须排除真正的编译保存框（标题含「请输入欲编译到」），否则会点错。 */
+static BOOL CALLBACK FindConfirmDlgProc(HWND hWnd, LPARAM lp)
+{
+    DWORD dwPid = 0;
+    char  szCls[64]   = { 0 };
+    char  szTitle[256] = { 0 };
+
+    GetWindowThreadProcessId(hWnd, &dwPid);
+    if (dwPid != GetCurrentProcessId())
+        return TRUE;
+    GetClassNameA(hWnd, szCls, sizeof(szCls));
+    if (strcmp(szCls, "#32770") != 0)
+        return TRUE;
+    GetWindowTextA(hWnd, szTitle, sizeof(szTitle));
+    if (strstr(szTitle, "请输入欲编译到") != NULL)
+        return TRUE;
+    if (strstr(szTitle, "另存") != NULL || strstr(szTitle, "Save As") != NULL ||
+        strstr(szTitle, "覆盖") != NULL || strstr(szTitle, "覆蓋") != NULL ||
+        strstr(szTitle, "已存在") != NULL)
+    {
+        *(HWND *)lp = hWnd;
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/* 对一个模态按钮「三连点」：WM_COMMAND(IDOK) + BM_CLICK。 */
+static void PressDlgButton(HWND hDlg, int nId)
+{
+    HWND hBtn = GetDlgItem(hDlg, nId);
+    DWORD dwCmd;
+
+    if (hBtn == NULL)
+        return;
+    dwCmd = (DWORD)((WORD)nId | ((DWORD)BN_CLICKED << 16));
+    SendMessageA(hDlg, WM_COMMAND, (WPARAM)dwCmd, (LPARAM)hBtn);
+    PostMessageA(hBtn, BM_CLICK, 0, 0);
+}
+
+/* 点掉所有挡路的覆盖确认框。返回 TRUE=至少处理过一个。 */
+static BOOL AnswerConfirmDialogs(void)
+{
+    BOOL blAny = FALSE;
+    int  n;
+
+    for (n = 0; n < 4; ++n)                 /* 实测一次能连弹 2 个 */
+    {
+        HWND hDlg = NULL;
+        EnumWindows(FindConfirmDlgProc, (LPARAM)&hDlg);
+        if (hDlg == NULL)
+            break;
+        {
+            char szTitle[256] = { 0 };
+            GetWindowTextA(hDlg, szTitle, sizeof(szTitle));
+            Trace("COMPILE confirm dialog '%s' -> press YES", szTitle);
+            CapWrite("COMPILE-CONFIRM", szTitle);
+        }
+        PressDlgButton(hDlg, IDYES);
+        PressDlgButton(hDlg, IDOK);
+        blAny = TRUE;
+        Sleep(80);
+    }
+    return blAny;
 }
 
 /* 返回 TRUE=找到并确认了保存对话框 */
@@ -1066,34 +1588,132 @@ static BOOL TryFillCompileSaveDialog(void)
     EnumWindows(FindCompileSaveDlgProc, (LPARAM)&hDlg);
     if (hDlg == NULL)
         return FALSE;
-    EnumChildWindows(hDlg, FillSaveDlgChildProc, 0);
+    /* ⚠️ 无头模式下这个模态框可能已被 SW_HIDE / 挪到 -32000。需要把它恢复成
+       「可见但仍在屏幕外」再填再点 —— 实测（2026-09-22）对话框处于隐藏状态时
+       `BM_CLICK` 不会被正常处理，模态框不消，触发线程的 IdeRunFunc 永远不返回，
+       真编译表现为「保存框填了、然后什么都不发生、超时」。
+
+       ⚠️⚠️ 必须**一步完成「移到屏幕外 + 显示」**：先 `ShowWindow` 再 `SetWindowPos`
+       会让对话框在原位置先显示一帧。
+
+       另注（同日晚些时候的实测，`re/win_probe/probe_wfp.py`）：真正造成露脸的
+       一帧**不是这里**，而是**易语言自己把模态框建在 (0,0) 并显示**，
+       我们的填充器还没跑到。现在由 `HideWinEventProc`（事件驱动）在
+       `EVENT_OBJECT_SHOW` 触发的**同一毫秒内**处理掉，这一帧才消失。 */
+    SetWindowPos(hDlg, NULL, -32000, -32000, 0, 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW);
     {
-        HWND hOk = GetDlgItem(hDlg, IDOK);
+        static int  s_nScan       = 0;
+        static int  s_nScanEdit   = 0;   /* 其中「含编辑框」的次数 */
+        static BOOL s_blDlgOnly   = FALSE;
+        static BOOL s_blDlgOnlySet = FALSE;
+
+        SAVEDLG_SCAN sc;
+        HWND   hTarget = NULL;
+        char   szBack[600] = { 0 };
+        BOOL   blOk;
+
+        /* 先把挡路的覆盖确认框点掉 —— 它不消，保存框就永远不会真正生效 */
+        AnswerConfirmDialogs();
+
+        if (!s_blDlgOnlySet)
+        {
+            char szEnv[8] = { 0 };
+            s_blDlgOnlySet = TRUE;
+            if (GetEnvStr("ELANG_AI_DLG_ONLY", szEnv, sizeof(szEnv)))
+                s_blDlgOnly = (szEnv[0] == '1');
+        }
+
+        memset(&sc, 0, sizeof(sc));
+        sc.hDlg = hDlg;
+        EnumChildWindows(hDlg, ScanSaveDlgChildProc, (LPARAM)&sc);
+
+        /* 落盘策略：**含编辑框的**前 3 次 + 之后每 50 次。
+           （只看「前 3 次扫描」是上一版的做法，结果 3 次都发生在编辑框还没创建的
+           时刻，dump 里 edits=0，等于什么都没抓到 —— 见 `re/opt/dlg_watch.py` 的实证。） */
+        if ((sc.nEdit > 0 && s_nScanEdit < 3) || (s_nScan > 0 && (s_nScan % 50) == 0))
+        {
+            Trace("DLG-DUMP#%d hwnd=%p edits=%d combos=%d btns=%d",
+                  s_nScan + 1, (void *)hDlg, sc.nEdit, sc.nCombo, sc.nBtn);
+            DlgDumpTrace("DLG-DUMP", sc.szDump);
+            if (sc.nEdit > 0)
+                ++s_nScanEdit;
+        }
+        ++s_nScan;
+
+        if (s_blDlgOnly)
+            return FALSE;                   /* 取证模式：只看不填 */
+
+        if (sc.nEdit == 0)
+        {
+            /* Vista 风格保存框刚弹出时文件名编辑框还没创建 —— 此时**绝不能**
+               点「存檔」，否则等于拿空文件名去存（见本函数上方长注释）。 */
+            Trace("COMPILE save dialog has NO Edit control");
+            CapWrite("COMPILE-DIALOG-FAIL", "no-edit-control");
+            return FALSE;
+        }
+
+        /* 选目标 + 写入 + 自证，全在 TrySetSavePath 里；它同时把真正生效的那个
+           编辑框回填到 hTarget，供下面投 VK_RETURN 用。 */
+        blOk = TrySetSavePath(hDlg, g_szCompileOutPath, szBack, sizeof(szBack),
+                              &hTarget);
+        if (!blOk)
+        {
+            CapWrite("COMPILE-DIALOG-FAIL", "set-path-failed");
+            return FALSE;
+        }
+
+        Trace("COMPILE fill ok: 控件文本='%s'（期望 '%s'）", szBack, g_szCompileOutPath);
+        if (hTarget == NULL)
+            hTarget = GetDlgItem(hDlg, KIT_EDT1);
+        if (hTarget == NULL)
+            hTarget = sc.hEditLast;
+
         CapWrite("COMPILE-DIALOG", "fill+confirm");
-        Trace("COMPILE save dialog filled path='%s'", g_szCompileOutPath);
-        if (hOk != NULL && IsWindowEnabled(hOk))
-            PostMessageA(hOk, BM_CLICK, 0, 0);
-        else
-            Trace("COMPILE IDOK missing/disabled");
+        {
+            HWND hOk = GetDlgItem(hDlg, IDOK);
+            if (hOk != NULL && IsWindowEnabled(hOk))
+            {
+                /* 三连：WM_COMMAND(IDOK) + BM_CLICK + 向输入框投回车
+                   （回车由模态循环的 IsDialogMessage 转成「默认按钮」= 保存） */
+                PressDlgButton(hDlg, IDOK);
+                PostMessageA(hTarget, WM_KEYDOWN, VK_RETURN, 1);
+                PostMessageA(hTarget, WM_KEYUP,   VK_RETURN, 1);
+            }
+            else
+                Trace("COMPILE IDOK missing/disabled");
+        }
     }
     return TRUE;
 }
 
 /* ⚠️ 关键：触发线程调 NES_RUN_FUNC(FN_COMPILE_STATIC…) 时，IDE 在**同一线程**里弹
- * 模态保存对话框，调用不返回 → 触发线程无法自己填框。必须另起线程专职填框。 */
+ * 模态保存对话框，调用不返回 → 触发线程无法自己填框。必须另起线程专职填框。
+ *
+ * 重试策略：**只要那个对话框还在，就再填再点一次**（限速 300ms）。
+ * 只点一次的版本踩过坑 —— 无头模式下第一次 `BM_CLICK` 可能没被处理，对话框留在那里，
+ * 而 `blFilled` 已经置位，于是再也没人管它，编译静默卡到超时。 */
 static DWORD __stdcall DialogFillerProc(LPVOID lp)
 {
     DWORD t0 = GetTickCount();
-    BOOL  blFilled = FALSE;
+    DWORD tLastFill = 0;
+    int   nFill = 0;
+    BOOL  blOutSeen = FALSE;
     (void)lp;
 
     while ((GetTickCount() - t0) < 600000)
     {
-        if (!blFilled)
+        if (!blOutSeen && (GetTickCount() - tLastFill) >= 300)
         {
-            blFilled = TryFillCompileSaveDialog();   /* 只填一次，防重复点击已确认对话框 */
+            if (TryFillCompileSaveDialog())
+            {
+                tLastFill = GetTickCount();
+                ++nFill;
+                if (nFill > 1 && (nFill % 10) == 0)
+                    Trace("COMPILE save dialog still present, re-filled %d times", nFill);
+            }
         }
-        else
+        if (nFill > 0 && !blOutSeen)
         {
             /* 填完之后盯产物：出现即记录，再陪 3 秒让面板刷完，然后退出 */
             DWORD dwAttr = GetFileAttributesA(g_szCompileOutPath);
@@ -1101,13 +1721,14 @@ static DWORD __stdcall DialogFillerProc(LPVOID lp)
             {
                 CapWrite("COMPILE-OUT-SEEN", g_szCompileOutPath);
                 Trace("COMPILE output seen: %s", g_szCompileOutPath);
+                blOutSeen = TRUE;
                 Sleep(3000);
                 break;
             }
         }
-        Sleep(100);
+        Sleep(50);
     }
-    Trace("DIALOG-FILLER exit");
+    Trace("DIALOG-FILLER exit (fills=%d)", nFill);
     return 0;
 }
 
@@ -1120,10 +1741,12 @@ static void DoCompileTask(HWND hMain)
     DWORD t0;
     int   nIter = 0;
     BOOL  blOutSeen = FALSE;
+    BOOL  blPre;                            /* TRUE = 预编译（只检查，无产物无保存框） */
 
     dwFn = CompileFuncNoFromEnv();
     if (dwFn == 0)
         return;
+    blPre = (dwFn == FN_PRE_COMPILE);
 
     /* 捕获文件（与 RUN 同一路径约定） */
     if (GetEnvStr(CAP_ENV_VAR, g_szCapturePath, MAX_PATH) == FALSE)
@@ -1152,20 +1775,68 @@ static void DoCompileTask(HWND hMain)
     Sleep((DWORD)(nDelay > 0 ? nDelay : 0));
 
     Trace("COMPILE trigger 0x%08X ...", (unsigned)dwFn);
-    CapWrite("COMPILE-TRIGGER", "send");
+    CapWrite("COMPILE-TRIGGER", blPre ? "pre-compile" : "send");
     {
         HANDLE hFiller = NULL;
         BOOL   blHandled;
-        if (g_szCompileOutPath[0])
+        if (!blPre && g_szCompileOutPath[0])
             hFiller = CreateThread(NULL, 0, DialogFillerProc, NULL, 0, NULL);
-        blHandled = IdeRunFunc(dwFn, 0, 0);   /* 模态保存对话框在此阻塞，由 filler 解掉 */
-        Trace("COMPILE handled=%d", blHandled ? 1 : 0);
-        CapWrite("COMPILE-TRIGGER-RET", blHandled ? "handled=1" : "handled=0");
+        if (blPre)
+        {
+            /* FN_PRE_COMPILE 的功能参数1 = BOOL*，返回「是否预编译成功」。
+               我们在 IDE 进程内，直接用本栈上的 BOOL 变量接结果即可。 */
+            BOOL blPreOk = FALSE;
+            blHandled = IdeRunFunc(FN_PRE_COMPILE, (DWORD)(size_t)&blPreOk, 0);
+            Trace("COMPILE pre-compile handled=%d ok=%d", blHandled ? 1 : 0, blPreOk ? 1 : 0);
+            {
+                char szB[64];
+                snprintf(szB, sizeof(szB), "handled=%d ok=%d",
+                         blHandled ? 1 : 0, blPreOk ? 1 : 0);
+                CapWrite("COMPILE-PRE-RET", szB);
+            }
+        }
+        else
+        {
+            blHandled = IdeRunFunc(dwFn, 0, 0);   /* 模态保存对话框在此阻塞，由 filler 解掉 */
+            Trace("COMPILE handled=%d", blHandled ? 1 : 0);
+            CapWrite("COMPILE-TRIGGER-RET", blHandled ? "handled=1" : "handled=0");
+        }
         if (hFiller != NULL)
         {
             WaitForSingleObject(hFiller, 30000);
             CloseHandle(hFiller);
         }
+    }
+
+    if (blPre)
+    {
+        /* 预编译：无产物、无保存框。调用返回时结果已在手，剩下的只是把**报错原文**
+           从输出面板落下来 —— 轮询到面板静默 1.5 秒即收（编译输出是一次性刷完的，
+           不排空就会把错误丢了）。 */
+        int nQuiet = 0;
+        t0 = GetTickCount();
+        while ((GetTickCount() - t0) < 30000)
+        {
+            if (PanelPollOnce() > 0)
+            {
+                PanelDumpTails("DELTA");
+                nQuiet = 0;
+            }
+            else if (++nQuiet >= 15)
+            {
+                break;
+            }
+            Sleep(100);
+        }
+        PanelDumpTails("FINAL");
+        CapWrite("=== COMPILE END ===", "pre-compile");
+        Trace("COMPILE pre-compile capture done (file=%s)", g_szCapturePath);
+        if (g_hCapture != INVALID_HANDLE_VALUE)
+        {
+            CloseHandle(g_hCapture);
+            g_hCapture = INVALID_HANDLE_VALUE;
+        }
+        return;
     }
 
     /* 最多观察 600 秒；每 100ms 轮询面板增量；发现期望产物出现即记录
@@ -1217,6 +1888,402 @@ static void DoCompileTask(HWND hMain)
 }
 
 /* ==========================================================================
+ * 6c. 无头：把本进程（e.exe）的顶层窗口挪到屏幕外
+ * --------------------------------------------------------------------------
+ * 外部的 elaunch.py 已经有一层「启动即 SW_HIDE + 2ms 轮询」；这里再放一层，
+ * 好处是**不依赖任何外部脚本**也能做到不开窗口，并且能在窗口被 IDE 自己重新
+ * 显示之后继续把它推回屏幕外。
+ *
+ * 为什么是「移出屏幕」而不是「SW_HIDE」（2026-09-22 实测）：
+ *   把窗口 SW_HIDE 会让 `IsWindowVisible` 全变 FALSE；本库的保存框填充器原本
+ *   带这个过滤，于是找不到那个模态框 ⇒ 编译静默卡死到超时。填充器已改为不看
+ *   可见性，但「移出屏幕但保持可见」对 IDE 侧更接近原生状态，风险更低，
+ *   用户侧的效果完全一样（看不见）。轮询间隔取 20ms —— 快路径由 elaunch.py 的
+ *   2ms 轮询负责，这里只做兜底。
+ *
+ * 只动**本进程**（GetCurrentProcessId）且**没有 owner** 的顶层窗口：
+ *   - 调试运行时，被调试程序是另一个进程 → 它的窗口不受影响（用户可以正常看见）；
+ *   - 本库自己的隐藏工具窗口（owner 非空）不动，免得节外生枝。
+ * ========================================================================== */
+/* --------------------------------------------------------------------------
+ * 6a. 无头守护（HideGuard）
+ * --------------------------------------------------------------------------
+ * 2026-09-22 重写。三条硬教训（都由 `re/win_probe/` 的逐像素取证逼出来）：
+ *
+ * 1) **绝不能过滤「有 owner 的窗口」**。保存框 `#32770`、启动对话框
+ *    `Afx:400000:0:10003:0:0`、启动闪屏阴影 `shadow_window` **全都是 own=1**。
+ *    老实现 `if (GetWindow(hWnd, GW_OWNER) != NULL) return TRUE;` 把它们全放过去了。
+ * 2) **必须尽早起线程**。旧实现挂在 `WorkerProc`（`NL_IDE_READY`）里，比宿主库
+ *    自身加载还晚约 5 秒；而 `Afx:…` 启动对话框恰好在 `NL_IDE_READY` 前一瞬显示。
+ *    现在改在 `EnsureInit()`（`GetNewInf` 里）就起。
+ * 3) **必须 1ms 级**。DWM 约 16ms 合成一帧，只要在窗口显示后 ~1ms 内挪走，
+ *    屏幕上就不会出现任何一帧。默认 `Sleep()` 精度 15.6ms ⇒ 必须 `timeBeginPeriod(1)`。
+ *
+ * 动作 = 「可见 且 与虚拟屏幕相交」的顶层窗口 → `SW_HIDE`（仅 hide 档）+ 移到 -32000。
+ * 因为 hide 后窗口不可见、park 后不再与屏幕相交，下一轮自然跳过 ⇒ 单次动作即可，
+ * 不产生反复调用。
+ * -------------------------------------------------------------------------- */
+
+/* `ELANG_AI_HIDE` 取值语义（Python 侧传真实 mode 字符串；`1` 为历史兼容）：
+ *   "0" / "off"          → 关闭守护
+ *   "park" / "shide"     → 只移出屏幕（保持可见）
+ *   其它非空（"1"/"hide"） → 额外 SW_HIDE
+ * 返回：0=关闭 1=park 2=hide */
+static int HideModeFromEnv(void)
+{
+    char sz[32] = { 0 };
+    if (!GetEnvStr(HIDE_ENV_VAR, sz, sizeof(sz)))
+        return 0;
+    if (sz[0] == '\0' || strcmp(sz, "0") == 0 || strcmp(sz, "off") == 0)
+        return 0;
+    if (strcmp(sz, "park") == 0 || strcmp(sz, "shide") == 0)
+        return 1;
+    return 2;
+}
+
+static volatile LONG g_nHideActions = 0;    /* 累计动作次数（诊断） */
+
+/* 把系统定时器精度提到 0.5ms。**不做这一步，`Sleep(1)` 实际会睡 15.6ms**
+ * （Windows 默认精度），守护就跟不上 DWM 的 16ms 合成节拍。
+ * 走 ntdll 动态解析，避免为 `timeBeginPeriod` 引入 winmm 依赖 / 改链接参数。
+ *
+ * ⚠️⚠️ **`typedef` 里绝不能写 `WINAPI`**（2026-09-22 血案）：
+ *   `sdk_compat.h` 已把 `WINAPI` `#define` 成**空宏**（为兼容官方 SDK 的 VC6 __cdecl 约定），
+ *   所以 `(WINAPI *)` 在这里等于 `(__cdecl *)`；而 `NtSetTimerResolution` 实际是
+ *   `__stdcall`。callee 清栈 + caller 再清一次 ⇒ **ESP 偏移 12 字节**。
+ *   又因为 `-O2` 隐含 `-fomit-frame-pointer`，本函数及**调用者**的局部变量全靠 ESP 寻址
+ *   ⇒ `HideGuardProc` 里的 `nMode` 直接读成一段系统 DLL 地址（实测 `0x77E5D81B`），
+ *   而日志照样打印、功能"看着还行"，极难发现。
+ *   ⇒ 凡指向 Win32 / ntdll 导出函数的函数指针，**一律显式写 `__stdcall`**。 */
+static void RaiseTimerResolution(void)
+{
+    typedef LONG (__stdcall *PFN_NtSetTimerResolution)(ULONG, BOOLEAN, PULONG);
+    HMODULE h = GetModuleHandleA("ntdll.dll");
+    PFN_NtSetTimerResolution pfn;
+    ULONG ulCur = 0;
+
+    if (h == NULL) h = LoadLibraryA("ntdll.dll");
+    if (h == NULL) return;
+    pfn = (PFN_NtSetTimerResolution)GetProcAddress(h, "NtSetTimerResolution");
+    if (pfn != NULL)
+    {
+        if (pfn(5000, TRUE, &ulCur) >= 0)     /* 5000 × 100ns = 0.5ms */
+            Trace("HIDEGUARD timer resolution -> %lu (x100ns)", (unsigned long)ulCur);
+    }
+}
+
+/* 无头守护的当前档位（1=park 2=hide）。事件回调与轮询回调共用。 */
+static volatile LONG g_nHideMode = 0;
+
+static LONG g_nCloak = 0;         /* 成功贴上的斗篷数（诊断） */
+static LONG g_nCloakFail = 0;     /* 贴失败的次数（诊断） */
+static LONG g_nClkNewWin = 0;     /* 对 cls='NewWindow' 的贴斗篷尝试次数（诊断） */
+
+/* 提前给窗口"披隐形斗篷"：`WS_EX_LAYERED` + 透明度 0 + `WS_EX_TRANSPARENT`。
+ *
+ * ⚠️⚠️ **这一步必须发生在窗口"第一次被显示"之前**（2026-09-22 实测）：
+ *   只在 `EVENT_OBJECT_SHOW` / 轮询里处理，总会漏掉"显示→我们动手"之间的那一帧 ——
+ *   `probe_wfp.py` 稳定抓到 `NewWindow` 有 30~80ms 露脸。
+ *   挂在 `EVENT_OBJECT_CREATE` 上（窗口已建好、尚未显示）就能把**第一帧**也消灭。
+ *
+ * 为什么加 `WS_EX_LAYERED` 而不是只 `SW_HIDE`：
+ *   "隐藏"和"位置"都是易语言自己的状态，它随时能写回去（实测它确实会）；
+ *   而 `WS_EX_LAYERED` + alpha 0 是**窗口属性**，易语言只改可见性/位置动不了它，
+ *   于是无论它怎么重新显示都画不出一个像素。顺带 `WindowFromPoint` 会跳过它，
+ *   使「能不能被采样到」恰好等价于「用户能不能看到」。
+ *
+ * 只处理**顶层窗口**：子窗口随父窗口一起不绘制，逐个贴反而可能干扰控件行为。 */
+static void CloakWindow(HWND hWnd)
+{
+    DWORD dwPid = 0;
+    LONG  ex;
+    LONG  st;
+    int   bWatch;
+
+    if (hWnd == NULL || !IsWindow(hWnd))
+        return;
+    GetWindowThreadProcessId(hWnd, &dwPid);
+    if (dwPid != GetCurrentProcessId())
+        return;
+    st = GetWindowLongA(hWnd, GWL_STYLE);
+    ex = GetWindowLongA(hWnd, GWL_EXSTYLE);
+    {
+        char szC[64] = { 0 };
+        GetClassNameA(hWnd, szC, sizeof(szC));
+        bWatch = (strcmp(szC, "NewWindow") == 0);
+        if (bWatch && InterlockedIncrement(&g_nClkNewWin) <= 40)
+            Trace("HIDEGUARD cloak NewWindow try#%ld style=0x%08X ex=0x%08X vis=%d",
+                  (long)g_nClkNewWin, (unsigned)st, (unsigned)ex,
+                  IsWindowVisible(hWnd) ? 1 : 0);
+    }
+    if (st & WS_CHILD)
+    {
+        if (bWatch && g_nClkNewWin <= 40)
+            Trace("HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)");
+        return;
+    }
+    if ((ex & WS_EX_LAYERED) == 0)
+    {
+        /* ⚠️ `SetWindowLong` 光改 ex-style 还不够：窗口**已可见**时不会立刻生效，
+           文档要求随后 `SetWindowPos` 带 `SWP_FRAMECHANGED`。
+           但窗口**还没显示**时（也就是我们在 `EVENT_OBJECT_CREATE` 里最常遇到的情形）
+           完全不需要它 —— 分层属性会在它第一次被显示时自动生效。跳过这一次调用
+           可以少一次可能阻塞的窗口操作。
+           ⚠️ 另注：`SetWindowLong` 会**同步**向窗口线程发 `WM_STYLECHANGING`，
+           主线程忙时会把我们卡住 —— 所以只在"还没披过"时才调（这里已经是）。 */
+        SetWindowLongA(hWnd, GWL_EXSTYLE, ex | WS_EX_LAYERED | WS_EX_TRANSPARENT);
+        if (IsWindowVisible(hWnd))
+            SetWindowPos(hWnd, NULL, 0, 0, 0, 0,
+                         SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE |
+                         SWP_FRAMECHANGED | SWP_ASYNCWINDOWPOS);
+    }
+    if (SetLayeredWindowAttributes(hWnd, 0, 0, LWA_ALPHA))
+    {
+        if (bWatch && g_nClkNewWin <= 40)
+            Trace("HIDEGUARD cloak NewWindow OK (ex=0x%08X)", (unsigned)ex);
+        else if (InterlockedIncrement(&g_nCloak) <= 40)
+        {
+            char szCls[64] = { 0 };
+            GetClassNameA(hWnd, szCls, sizeof(szCls));
+            Trace("HIDEGUARD cloak#%ld cls='%s' ex=0x%08X", (long)g_nCloak, szCls, (unsigned)ex);
+        }
+    }
+    else if (InterlockedIncrement(&g_nCloakFail) <= 12)
+    {
+        char szCls[64] = { 0 };
+        GetClassNameA(hWnd, szCls, sizeof(szCls));
+        Trace("HIDEGUARD cloak FAILED cls='%s' err=%lu", szCls, (unsigned long)GetLastError());
+    }
+}
+
+/* 单个窗口的隐藏动作。返回 TRUE 表示真的动了它。
+ * 判据：「属于本进程」且「可见」且「与虚拟屏幕相交」——三个都满足才动，
+ * 所以 hide 之后窗口不可见、park 之后不再相交，下一轮自然跳过，不会反复调用。 */
+static BOOL ActOnWindow(HWND hWnd, int nMode)
+{
+    DWORD dwPid = 0;
+    RECT  rc;
+
+    if (hWnd == NULL || !IsWindow(hWnd))
+        return FALSE;
+    GetWindowThreadProcessId(hWnd, &dwPid);
+    if (dwPid != GetCurrentProcessId())
+        return FALSE;                       /* 只动自己的窗口 */
+    if (!IsWindowVisible(hWnd))
+        return FALSE;                       /* 不可见的既看不到、也不用挪（热路径，先判它） */
+    if (!GetWindowRect(hWnd, &rc))
+        return FALSE;
+
+    {   /* 与虚拟屏幕求交，完全在屏幕外就放过。数值即 SM_X/Y/CXVIRTUALSCREEN/CYVIRTUALSCREEN。 */
+        int vx = GetSystemMetrics(76);
+        int vy = GetSystemMetrics(77);
+        int vw = GetSystemMetrics(78);
+        int vh = GetSystemMetrics(79);
+        if (rc.right <= vx || rc.left >= vx + vw || rc.bottom <= vy || rc.top >= vy + vh)
+            return FALSE;
+    }
+
+    if (InterlockedIncrement(&g_nHideActions) <= 32)
+    {
+        char szCls[64] = { 0 };
+        GetClassNameA(hWnd, szCls, sizeof(szCls));
+        Trace("HIDEGUARD act#%ld mode=%d cls='%s' rect=(%ld,%ld,%ld,%ld)",
+              (long)g_nHideActions, nMode, szCls,
+              (long)rc.left, (long)rc.top, (long)rc.right, (long)rc.bottom);
+    }
+
+    if (nMode >= 2)
+        CloakWindow(hWnd);                   /* 持久隐身（详见其注释） */
+
+    /* ⚠️ `SWP_ASYNCWINDOWPOS` + `SWP_HIDEWINDOW`：把「移出屏幕 + 隐藏」合成**一个
+       post 出去**的请求，既不阻塞我们，也不用再调同步的 `ShowWindow`。
+       少了 `SWP_HIDEWINDOW` 就得靠 `ShowWindow`，而同步版 `ShowWindow` 一样会
+       等窗口线程 —— 易语言主线程忙时把我们的钩子线程卡死 3 秒（实测
+       `poll iter=1 enumMs=2953`），钩子事件随之积压丢弃。 */
+    SetWindowPos(hWnd, NULL, -32000, -32000, 0, 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSENDCHANGING |
+                 SWP_ASYNCWINDOWPOS | SWP_HIDEWINDOW);
+    return TRUE;
+}
+
+/* --- 事件驱动：系统「窗口显示 / 位置变化」时主动叫我们，零轮询延迟 ----------------
+ * 轮询兜底在实测里抓不住 16ms 的一帧（`EnumWindows` 走完全系统窗口要几十毫秒，
+ * 再加上 `Sleep` 粒度），所以必须让系统在窗口**刚显示的那一刻**就通知我们。
+ *
+ * `WINEVENT_OUTOFCONTEXT` 的回调**运行在调用 `SetWinEventHook` 的那个线程上**
+ * （即守护线程，且它必须处于取消息状态）。所以 `g_hq` 只有守护线程会读写，
+ * **不需要加锁**。回调里只入队、不做窗口操作 —— 避免在钩子回调里做可能引发
+ * 重入/阻塞的动作。 */
+#define HQ_MAX 64
+static HWND g_hq[HQ_MAX];
+static int  g_nHq = 0;
+static volatile LONG g_nEvtAll = 0;     /* 回调被系统调用的总次数（诊断：钩子通不通） */
+static volatile LONG g_nEvtQueued = 0;  /* 通过过滤、真正入队的次数（诊断） */
+static volatile LONG g_nEvtAct = 0;     /* 在回调里当场处理掉的次数（诊断） */
+static LONG g_nEvtKind[4] = { 0, 0, 0, 0 };  /* 0=CREATE 1=DESTROY 2=SHOW 3=LOCATIONCHANGE */
+static LONG g_nEvtNewWin = 0;           /* 回调里见到 cls='NewWindow' 的次数（诊断） */
+
+/* ⚠️ 在回调里**当场处理**，而不是只入队等主循环（2026-09-22 实测）：
+ *   入队→主循环 还有几毫秒延迟，实测 `_EL_PicWnd` 那次就因此晚了 88ms 才按住。
+ *   回调运行在本守护线程上（`WINEVENT_OUTOFCONTEXT`），直接操作窗口是安全的；
+ *   我们自己 `SetWindowPos` 引发的后续事件会被投进消息队列，**在本回调返回后**才派发，
+ *   所以不会重入。 */
+static void CALLBACK HideWinEventProc(HWINEVENTHOOK hHook, DWORD dwEvent, HWND hWnd,
+                                      LONG idObject, LONG idChild,
+                                      DWORD dwThread, DWORD dwTime)
+{
+    (void)hHook; (void)dwThread; (void)dwTime;
+    InterlockedIncrement(&g_nEvtAll);
+    if (dwEvent >= EVENT_OBJECT_CREATE && dwEvent <= EVENT_OBJECT_SHOW)
+        InterlockedIncrement(&g_nEvtKind[dwEvent - EVENT_OBJECT_CREATE]);
+    else if (dwEvent == EVENT_OBJECT_LOCATIONCHANGE)
+        InterlockedIncrement(&g_nEvtKind[3]);
+    if (hWnd == NULL)
+        return;
+    if (idObject != OBJID_WINDOW || idChild != 0)
+        return;                             /* 只要"窗口本身"，不要里面的子控件 */
+    InterlockedIncrement(&g_nEvtQueued);
+    {
+        char szC[64] = { 0 };
+        GetClassNameA(hWnd, szC, sizeof(szC));
+        if (strcmp(szC, "NewWindow") == 0)
+        {
+            LONG n = InterlockedIncrement(&g_nEvtNewWin);
+            if (n <= 24)
+                Trace("HIDEGUARD evt NewWindow#%ld event=0x%04X child=%d vis=%d",
+                      (long)n, (unsigned)dwEvent, (int)idChild,
+                      IsWindowVisible(hWnd) ? 1 : 0);
+        }
+    }
+
+    /* ⭐ 先披斗篷**再**判可见性：`EVENT_OBJECT_CREATE` 时窗口还没显示，
+       `ActOnWindow` 会因"不可见"而放行，但斗篷必须此刻就贴上 —— 否则第一次
+       显示的那一帧照样看得见。这是消灭"第一帧"的关键顺序。 */
+    if (g_nHideMode >= 2)
+        CloakWindow(hWnd);
+
+    if (ActOnWindow(hWnd, (int)g_nHideMode))
+        InterlockedIncrement(&g_nEvtAct);
+    /* 兜底：万一当场没按住（比如窗口此刻还没"可见"），交给主循环再过一遍 */
+    else if (g_nHq < HQ_MAX)
+        g_hq[g_nHq++] = hWnd;
+}
+
+static BOOL CALLBACK ParkTopWindowsProc(HWND hWnd, LPARAM lp)
+{
+    int nMode = (int)lp;
+    /* 无条件披斗篷（**不管可见与否**）：钩子事件有投递延迟，总有窗口在我们收到
+       `EVENT_OBJECT_CREATE` 之前就已经被显示；靠这一路"每轮补披"把它们兜住。
+       对已披过的窗口，这里只剩 `GetWindowLong` + `SetLayeredWindowAttributes` 两次调用。 */
+    if (nMode >= 2)
+        CloakWindow(hWnd);
+    ActOnWindow(hWnd, nMode);
+    return TRUE;
+}
+
+static DWORD __stdcall HideGuardProc(LPVOID lp)
+{
+    int nMode = (int)(size_t)lp;
+    int nIter = 0;
+    HWINEVENTHOOK hkShow = NULL;
+    HWINEVENTHOOK hkMove = NULL;
+
+    /* ⚠️ 栈自检：`RaiseTimerResolution` 若把调用约定写错（见其注释），
+       `nMode` 会在它返回后变成垃圾 —— 这两行一目了然。 */
+    Trace("HIDEGUARD start (raw lp=0x%08X mode=%d; 1=park 2=hide)",
+          (unsigned)(size_t)lp, nMode);
+
+    RaiseTimerResolution();
+    Trace("HIDEGUARD after timer-resolve: mode=%d raw lp=0x%08X (若与上面不同 = 栈已被破坏!)",
+          nMode, (unsigned)(size_t)lp);
+
+    g_nHideMode = nMode;
+
+    /* 事件驱动：只订阅**本进程**窗口，避免全系统事件洪流（`EVENT_OBJECT_LOCATIONCHANGE`
+       在别的进程上是每秒上千次）。`idProcess` 由系统侧过滤。
+       三个事件各司其职：
+         CREATE  —— 窗口"创建时就是可见"(WS_VISIBLE) 的情况，不一定会再发 SHOW；
+         SHOW    —— 常规的"由隐转显"；
+         LOCATIONCHANGE —— IDE 把已经藏好的窗口**又摆回屏幕**（实测会发生）。 */
+    hkShow = SetWinEventHook(EVENT_OBJECT_CREATE, EVENT_OBJECT_SHOW, NULL,
+                             HideWinEventProc, GetCurrentProcessId(), 0,
+                             WINEVENT_OUTOFCONTEXT);
+    hkMove = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, NULL,
+                             HideWinEventProc, GetCurrentProcessId(), 0,
+                             WINEVENT_OUTOFCONTEXT);
+    Trace("HIDEGUARD hook create+show=0x%08X move=0x%08X",
+          (unsigned)(size_t)hkShow, (unsigned)(size_t)hkMove);
+
+    /* ⚠️ 必须把优先级抬到 TIME_CRITICAL（2026-09-22 实测）：e.exe 主线程一旦忙起来，
+       普通优先级的守护线程会被饿到**每轮 140ms**（`iter=10` 花了 1.4 秒），
+       等于完全失去守护作用。本线程绝大多数时间在 MsgWait 上睡觉，不会抢 CPU。 */
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+
+    for (;;)
+    {
+        /* ⚠️⚠️ 本循环里**绝不允许出现 `EnumWindows`**（2026-09-22 血的教训）：
+           `WINEVENT_OUTOFCONTEXT` 的事件**只有在本线程处于"取消息状态"时**才会被投递，
+           而 `EnumWindows` 是同步枚举、可能一卡就是**2.4 秒**（实测 `iter=1 enumMs=2375`）。
+           把兜底轮询放在这里 ⇒ 每轮都把自己的钩子堵死 ⇒ 事件永远迟到几十毫秒，
+           表现为"斗篷贴了也没用、`NewWindow` 稳定露 30~80ms"。
+           现在兜底轮询挪到独立线程 `HidePollProc`，本循环只做消息泵，延迟 ~1ms。 */
+        DWORD dwR = MsgWaitForMultipleObjectsEx(0, NULL, 1, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+        if (dwR == WAIT_OBJECT_0)
+        {
+            MSG msg;
+            while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessageW(&msg);
+            }
+        }
+
+        /* 事件队列里是"回调当场没按住"的窗口，再过一遍 */
+        if (g_nHq > 0)
+        {
+            int n = g_nHq;
+            int i;
+            g_nHq = 0;                       /* 只有本线程写，无需加锁 */
+            for (i = 0; i < n; i++)
+                ActOnWindow(g_hq[i], nMode);
+        }
+
+        if ((++nIter % 2000) == 0)
+            Trace("HIDEGUARD iter=%d evtAll=%ld(C%d D%d S%d L%d) newWinEvt=%ld evtAct=%ld cloak=%ld/%ld acts=%ld",
+                  nIter, (long)g_nEvtAll,
+                  (int)g_nEvtKind[0], (int)g_nEvtKind[1],
+                  (int)g_nEvtKind[2], (int)g_nEvtKind[3],
+                  (long)g_nEvtNewWin,
+                  (long)g_nEvtAct, (long)g_nCloak, (long)g_nCloakFail,
+                  (long)g_nHideActions);
+    }
+    /* not reached */
+}
+
+/* 兜底轮询线程：定期全量扫一遍本进程窗口，补披斗篷 + 挪出屏幕。
+ * ⚠️ 它**必须独立于钩子线程**（见 `HideGuardProc` 里那段注释）——
+ *    `EnumWindows` 会长时间阻塞"取消息状态"，和钩子共线程等于自废武功。
+ * 频率刻意取 50ms：钩子才是主力，这里只兜"易语言偷偷把 ex-style 改回来"这类漏网。 */
+static DWORD __stdcall HidePollProc(LPVOID lp)
+{
+    int nMode = (int)(size_t)lp;
+    int nIter = 0;
+
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL);
+    for (;;)
+    {
+        DWORD dwT0 = GetTickCount();
+        EnumWindows(ParkTopWindowsProc, (LPARAM)(size_t)nMode);
+        if (++nIter == 1 || (nIter % 400) == 0)
+            Trace("HIDEGUARD poll iter=%d enumMs=%lu", nIter,
+                  (unsigned long)(GetTickCount() - dwT0));
+        Sleep(3);
+    }
+    /* not reached */
+}
+
+
+/* ==========================================================================
  * 7. 工作线程：第 2/3 步
  * ========================================================================== */
 
@@ -1228,7 +2295,9 @@ static DWORD __stdcall WorkerProc(LPVOID lParam)
     char szSrc[64] = { 0 };
     (void)lParam;
 
-    Trace("WORKER start (thread created on NL_IDE_READY)");
+    /* 无头守护**不在这里起** —— 已提前到 `EnsureInit()`（宿主库加载那一刻）。
+       这里只留一行说明，避免以后有人又把它挪回来（那会晚 ~5 秒、漏掉启动对话框）。 */
+    Trace("WORKER start (hide-guard 已在 EnsureInit 里起，早于本线程约 5s)");
 
     /* 第 2 步：读取 AI 工具提交的参数 */
     if (!ReadAiTask(szTask, sizeof(szTask), szSrc, sizeof(szSrc)))
@@ -1488,6 +2557,32 @@ static void EnsureInit(void)
         Trace("LIBINFO state=0x%08X (LBS_IDE_PLUGIN=%d) name='%s' guid=%s",
               (unsigned)s_LibInfo.m_dwState, LBS_IDE_PLUGIN, LI_LIB_NAME, LI_LIB_GUID_STR);
         Trace("LIBINFO pfnNotify=0x%08X", (unsigned)(size_t)s_LibInfo.m_pfnNotify);
+
+        /* 无头守护：**这里是本库最早能跑代码的地方**，必须在这儿起线程。
+           曾经挂在 `WorkerProc`（NL_IDE_READY）里 —— 那比宿主库加载还晚约 5 秒，
+           而 `Afx:…` 启动对话框正好卡在 NL_IDE_READY 前显示，于是漏了一帧。
+           详见 HideGuardProc 上方注释。 */
+        {
+            int nMode = HideModeFromEnv();
+            if (nMode > 0)
+            {
+                /* 两条线程，各司其职（见两个 Proc 的注释）：
+                     HideGuardProc —— 装 `SetWinEventHook` + 纯消息泵，**绝不阻塞**，
+                                      事件驱动、延迟 ~1ms；
+                     HidePollProc  —— 独立兜底轮询（50ms），
+                                      `EnumWindows` 可能卡几秒，绝不能和钩子共线程。 */
+                HANDLE hG = CreateThread(NULL, 0, HideGuardProc, (LPVOID)(size_t)nMode, 0, NULL);
+                HANDLE hP = CreateThread(NULL, 0, HidePollProc, (LPVOID)(size_t)nMode, 0, NULL);
+                if (hG != NULL) CloseHandle(hG);
+                else Trace("HIDEGUARD CreateThread FAILED err=%lu", GetLastError());
+                if (hP != NULL) CloseHandle(hP);
+                else Trace("HIDEGUARD poll CreateThread FAILED err=%lu", GetLastError());
+            }
+            else
+            {
+                Trace("HIDEGUARD disabled (ELANG_AI_HIDE=0/off)");
+            }
+        }
     }
 }
 

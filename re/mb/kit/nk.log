@@ -1,0 +1,30 @@
+========== MbKit 转发+拦截 端到端验证 ==========
+内核路径 : C:\Users\MadeSpark\Desktop\����\main\corn\node.dll
+
+-- step 1: 业务模块经转发桩建窗 + 载入（首调触发内核懒加载） --
+   [PASS] Attach 成功（转发桩 + 懒加载工作）
+   [PASS] 页面载入完成
+   title 回调命中 = 7   live 登记 = 1
+   [PASS] 回调经 MbKit wrapper 转发成功（拦截层未误杀）
+
+-- step 2: 热重载 3 轮（v1/v2 交替，image-base 不同） --
+   轮 1 [nk_v2.dll] 载入完成, title 命中=5, 内核路径=C:\Users\MadeSpark\Desktop\����\main\corn\node.dll
+   [PASS] 本轮回调可用
+   轮 2 [nk_v1.dll] 载入完成, title 命中=5, 内核路径=C:\Users\MadeSpark\Desktop\����\main\corn\node.dll
+   [PASS] 本轮回调可用
+   轮 3 [nk_v2.dll] 载入完成, title 命中=5, 内核路径=C:\Users\MadeSpark\Desktop\����\main\corn\node.dll
+   [PASS] 本轮回调可用
+
+-- step 3: 故障注入 —— 业务「忘记解绑」就卸载，之后仍持续触发回调 --
+   卸载前：回调命中=5  挡下=0
+   FreeLibrary(业务模块)，**不 DetachAll**
+   [PASS] 卸载后持续触发 2.5s：进程存活，未踩空指针
+   卸载后：挡下 = 27（增量 27）
+   [PASS] 野回调被实际挡下 —— 保护生效，且这是可数的证据
+
+-- step 4: 清残留后换新模块继续工作（证明内核未被上一轮污染） --
+   载入完成，title 命中=5
+   [PASS] 新一轮照常工作
+
+汇总：登记中的回调=0  累计命中=0  挡下=27  抑制计数=27
+SUMMARY: ALL PASS  (fail=0)

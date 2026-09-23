@@ -1,0 +1,4766 @@
+[
+ {
+  "cmd": "_DLL命令0A010004_wkeCreateWebWindow",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeCreateWebWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数6",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01001C_wkeDestroyWebWindow",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeDestroyWebWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010020_wkeGetWindowHandle",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetWindowHandle",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010026_wkeShowWindow",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeShowWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010031_wkeEnableWindow",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEnableWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010034_wkeMoveWindow",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeMoveWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01003E_wkeMoveToCenter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeMoveToCenter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010042_wkeResizeWindow",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeResizeWindow",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010048_wkeSetWindowTitleW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetWindowTitleW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01010B_wkeInitialize",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeInitialize",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010113_wkeIsInitialize",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsInitialize",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010115_wkeInitializeEx",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeInitializeEx",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010123_wkeFinalize",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFinalize",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010125_wkeUpdate",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeUpdate",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010128_wkeGetVersion",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetVersion",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01012B_wkeGetVersionString",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetVersionString",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010138_wkeOnWindowClosing",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnWindowClosing",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010142_wkeOnWindowDestroy",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnWindowDestroy",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010185_wkeSetNavigationToNewWindowEnable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetNavigationToNewWindowEnable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01018F_wkeLoadW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0101A0_wkeSetProxy",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetProxy",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0101D4_wkeSetViewProxy",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetViewProxy",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0101EA_wkeGetName",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetName",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0101F0_wkeSetName",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetName",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0101FB_wkeSetHandle",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetHandle",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010202_wkeSetHandleOffset",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetHandleOffset",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01020D_wkeSetUserAgentW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetUserAgentW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F55_wkeSetUserAgent",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetUserAgent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01021C_wkeLoadURLW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadURLW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F47_wkeLoadURL",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadURL",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01022A_wkeLoadHTMLW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadHTMLW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F4C_wkeLoadHTML",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadHTML",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010239_wkeLoadFileW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadFileW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E6C_wkePostURLW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkePostURLW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E88_wkePostURL",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkePostURL",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010246_wkeGetURL",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetURL",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01025B_wkeIsLoading",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsLoading",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010261_wkeIsLoadingSucceeded",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsLoadingSucceeded",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010264_wkeIsLoadingFailed",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsLoadingFailed",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010266_wkeIsLoadingCompleted",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsLoadingCompleted",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01026E_wkeIsDocumentReady",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsDocumentReady",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01026C_wkeStopLoading",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeStopLoading",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010272_wkeReload",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeReload",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010274_wkeGetTitleW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetTitleW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F3D_wkeGetTitle",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetTitle",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01028E_wkeResize",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeResize",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01028F_wkeGetWidth",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetWidth",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010290_wkeGetHeight",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetHeight",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010291_wkeGetContentWidth",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetContentWidth",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010292_wkeGetContentHeight",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetContentHeight",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010977_wkeRepaintIfNeeded",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeRepaintIfNeeded",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01097B_wkeSetDirty",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDirty",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010986_wkeIsDirty",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsDirty",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010982_wkeAddDirtyArea",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeAddDirtyArea",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010995_wkeLayoutIfNeeded",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLayoutIfNeeded",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01028D_wkePaint2",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkePaint2",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数6",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数7",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数8",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数9",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数10",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数11",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102C3_wkePaint",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkePaint",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102C9_wkeGetViewDC",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetViewDC",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0110B1_wkeGC",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGC",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010999_wkeGetHostHWND",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetHostHWND",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0110BC_wkeGetSource",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetSource",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102D0_wkeCanGoBack",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeCanGoBack",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102D1_wkeGoBack",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGoBack",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102D2_wkeCanGoForward",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeCanGoForward",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102D3_wkeGoForward",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGoForward",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102E4_wkeEditorSelectAll",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorSelectAll",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102E6_wkeEditorUnSelect",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorUnSelect",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102E8_wkeEditorCopy",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorCopy",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102EA_wkeEditorCut",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorCut",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102EC_wkeEditorPaste",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorPaste",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102EE_wkeEditorDelete",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorDelete",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102F0_wkeEditorUndo",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorUndo",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0102CF_wkeEditorRedo",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeEditorRedo",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010302_wkeGetCookieW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetCookieW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F39_wkeGetCookie",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetCookie",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010FE2_wkeSetCookie",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetCookie",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010313_wkeSetCookieEnabled",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetCookieEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01031A_wkeIsCookieEnabled",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsCookieEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01031F_wkeSetCookieJarPath",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetCookieJarPath",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010325_wkeSetCookieJarFullPath",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetCookieJarFullPath",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010348_wkeSetMediaVolume",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetMediaVolume",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "小数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01034E_wkeGetMediaVolume",
+  "ret": "小数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetMediaVolume",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010359_wkeSetFocus",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetFocus",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01035D_wkeKillFocus",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeKillFocus",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010364_wkeRunJSW",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeRunJSW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01085C_wkeRunJS",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeRunJS",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010373_wkeGlobalExec",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGlobalExec",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010380_wkeSleep",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSleep",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010382_wkeWake",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeWake",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01037C_wkeIsAwake",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsAwake",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0109BB_wkeSetTransparent",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetTransparent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01038B_wkeSetZoomFactor",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetZoomFactor",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "小数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010385_wkeGetZoomFactor",
+  "ret": "小数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetZoomFactor",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01038F_wkeSetEditable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetEditable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01039F_wkeGetStringW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010ED4_wkeGetString",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetString",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0103A5_wkeSetStringW",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0103AF_wkeGetWebViewForCurrentContext",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetWebViewForCurrentContext",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A0103B2_wkeSetUserKeyValue",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetUserKeyValue",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0103B3_wkeGetUserKeyValue",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetUserKeyValue",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010FB4_wkeSetDragFiles",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDragFiles",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "_结构41010A14",
+    ""
+   ],
+   [
+    "_参数3",
+    "_结构41010A14",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    "数组"
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0103D7_wkeOnTitleChanged",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnTitleChanged",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010403_wkeOnURLChanged",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnURLChanged",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01041C_wkeOnURLChanged2",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnURLChanged2",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01042D_wkeOnAlertBox",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnAlertBox",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010449_wkeOnConfirmBox",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnConfirmBox",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01044E_wkeOnPromptBox",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnPromptBox",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010462_wkeOnNavigation",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnNavigation",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010479_wkeOnCreateView",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnCreateView",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01048D_wkeOnDocumentReady",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDocumentReady",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010492_wkeOnDocumentReady2",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDocumentReady2",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104AF_wkeOnLoadingFinish",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnLoadingFinish",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104C4_wkeOnDownload",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDownload",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104D7_wkeOnConsole",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnConsole",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0109EF_wkeOnPaintUpdated",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnPaintUpdated",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011104_wkeOnWillMediaLoad",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnWillMediaLoad",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B28_wkeFireMouseEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireMouseEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B2E_wkeFireContextMenuEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireContextMenuEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B36_wkeFireMouseWheelEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireMouseWheelEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B3F_wkeFireKeyUpEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireKeyUpEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B18_wkeFireKeyDownEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireKeyDownEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B4A_wkeFireKeyPressEvent",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireKeyPressEvent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010B45_wkeFireWindowsMessage",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeFireWindowsMessage",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数6",
+    "整数型",
+    "传址"
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104FD_wkeIsMainFrame",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsMainFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010503_wkeIsWebRemoteFrame",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsWebRemoteFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010505_wkeWebFrameGetMainFrame",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeWebFrameGetMainFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010517_wkeNetSetMIMEType",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetSetMIMEType",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01051E_wkeNetSetHTTPHeaderField",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetSetHTTPHeaderField",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ],
+   [
+    "_参数3",
+    "字节集",
+    ""
+   ],
+   [
+    "_参数4",
+    "逻辑型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01144C_wkeNetGetHTTPHeaderField",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetHTTPHeaderField",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010527_wkeNetSetURL",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetSetURL",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01052D_wkeNetSetData",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetSetData",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E05_wkeGetCursorInfoType",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetCursorInfoType",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E0F_wkeSetCspCheckEnable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetCspCheckEnable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E15_wkeSetViewNetInterface",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetViewNetInterface",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E0B_wkeNetHookRequest",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetHookRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010561_wkeOnLoadUrlBegin",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnLoadUrlBegin",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010578_wkeOnLoadUrlEnd",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnLoadUrlEnd",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01058A_wkeOnDidCreateScriptContext",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDidCreateScriptContext",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01058F_wkeOnWillReleaseScriptContext",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnWillReleaseScriptContext",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010EAD_wkeNetOnResponse",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetOnResponse",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010EB1_wkeNetGetMIMEType",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetMIMEType",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010D78_wkeWebFrameGetMainWorldScriptContext",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeWebFrameGetMainWorldScriptContext",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010D7F_wkeGetBlinkMainThreadIsolate",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetBlinkMainThreadIsolate",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010EC0_wkeCreateStringW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeCreateStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010EC9_wkeDeleteString",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeDeleteString",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010EE0_wkeSetLocalStorageFullPath",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetLocalStorageFullPath",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010594_wkeJsBindFunction",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeJsBindFunction",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010825_jsBindFunction",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsBindFunction",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105A5_wkeJsBindGetter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeJsBindGetter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01082C_JsBindGetter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "JsBindGetter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105A0_wkeJsBindSetter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeJsBindSetter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010831_JsBindSetter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "JsBindSetter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105D5_jsArgCount",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsArgCount",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105DC_jsArgType",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsArgType",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105E9_jsArg",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsArg",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105F6_jsTypeOf",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsTypeOf",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105F9_jsIsNumber",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsNumber",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105FB_jsIsString",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsString",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105FD_jsIsBoolean",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsBoolean",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105FF_jsIsObject",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsObject",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010601_jsIsFunction",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsFunction",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010603_jsIsUndefined",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsUndefined",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010605_jsIsNull",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsNull",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010607_jsIsArray",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsArray",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010609_jsIsTrue",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsTrue",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0105F1_jsIsFalse",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsFalse",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010649_jsToInt",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToInt",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01064D_jsToFloat",
+  "ret": "小数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToFloat",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010651_jsToDouble",
+  "ret": "双精度小数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToDouble",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010655_jsToBoolean",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToBoolean",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010641_jsToTempStringW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToTempStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01065E_jsInt",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsInt",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010661_jsFloat",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsFloat",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "小数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010664_jsDouble",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsDouble",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "双精度小数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010659_jsBoolean",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsBoolean",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010668_jsUndefined",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsUndefined",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01066C_jsNull",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsNull",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01066D_jsTrue",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsTrue",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01066B_jsFalse",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsFalse",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01066E_jsStringW",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01067A_jsEmptyObject",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsEmptyObject",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010675_jsEmptyArray",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsEmptyArray",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01067C_jsObject",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsObject",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010685_jsFunction",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsFunction",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010688_jsGetData",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetData",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010690_jsGet",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGet",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010699_jsSet",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsSet",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数4",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106A0_jsGetAt",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetAt",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106A8_jsSetAt",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsSetAt",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106AF_jsGetLength",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetLength",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106BE_jsSetLength",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsSetLength",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106C3_jsGlobalObject",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGlobalObject",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106B8_jsGetWebView",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetWebView",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106CC_jsEvalW",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsEvalW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106C5_jsEvalExW",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsEvalExW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ],
+   [
+    "_参数3",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106E0_jsCall",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsCall",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "长整数型",
+    "数组"
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106E6_jsCallGlobal",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsCallGlobal",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "长整数型",
+    "数组"
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106EC_jsGetGlobal",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetGlobal",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106D2_jsSetGlobal",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsSetGlobal",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0106F1_jsGC",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGC",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A01081D_jsToStringW",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsToStringW",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011127_jsArrayBuffer",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsArrayBuffer",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0108AE_wkeSetFileSystem",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetFileSystem",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010954_wkeCreateWebView",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeCreateWebView",
+  "conv": "cdecl",
+  "params": []
+ },
+ {
+  "cmd": "_DLL命令0A010958_wkeGetWebView",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetWebView",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010C3C_wkeGetCaretRect",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetCaretRect",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "_结构41010C40",
+    "传址"
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01095D_wkeDestroyWebView",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeDestroyWebView",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E3F_wkeVisitAllCookie",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeVisitAllCookie",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010E47_wkePerformCookieCommand",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkePerformCookieCommand",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A010F22_wkeRunJsByFrame",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeRunJsByFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数4",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011008_wkeSetNpapiPluginsEnabled",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetNpapiPluginsEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01100E_wkeSetHeadlessEnabled",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetHeadlessEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011007_wkeSetTouchEnabled",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetTouchEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011017_wkeSetDragEnable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDragEnable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01101A_wkeSetMemoryCacheEnable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetMemoryCacheEnable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01101E_wkeOnMouseOverUrlChanged",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnMouseOverUrlChanged",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011048_wkeSetDebugConfig",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDebugConfig",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01113B_wkeSetDeviceParameter",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDeviceParameter",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数5",
+    "小数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011162_wkeAddPluginDirectory",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeAddPluginDirectory",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01117A_wkeSetMouseEnabled",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetMouseEnabled",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01117D_wkeSetDragDropEnable",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetDragDropEnable",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011187_wkeGetGlobalExecByFrame",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetGlobalExecByFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01118A_wkeShowDevtools",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeShowDevtools",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "字节集",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111B2_wkeNetGetRequestMethod",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetRequestMethod",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111BF_wkeNetContinueJob",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetContinueJob",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111C0_wkeNetGetUrlByJob",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetUrlByJob",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111C1_wkeNetCancelRequest",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetCancelRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111C2_wkeNetChangeRequestUrl",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetChangeRequestUrl",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0111C3_wkeNetHoldJobToAsynCommit",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetHoldJobToAsynCommit",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011458_wkeNetCreateWebUrlRequest",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetCreateWebUrlRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01152B_wkeNetAddHTTPHeaderFieldToUrlRequest",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetAddHTTPHeaderFieldToUrlRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011533_wkeNetStartUrlRequest",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetStartUrlRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数4",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011558_wkeNetGetHttpStatusCode",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetHttpStatusCode",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011552_wkeNetGetExpectedContentLength",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetExpectedContentLength",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01155C_wkeNetGetResponseUrl",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetResponseUrl",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011560_wkeNetCancelWebUrlRequest",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetCancelWebUrlRequest",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0115BA_wkeNetGetPostBody",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetPostBody",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0112DD_wkeInsertCSSByFrame",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeInsertCSSByFrame",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0112ED_jsDeleteObjectProp",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsDeleteObjectProp",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0112FD_jsIsJsValueValid",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsJsValueValid",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011306_jsIsValidExecState",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsIsValidExecState",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011315_wkeLoadHtmlWithBaseUrl",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeLoadHtmlWithBaseUrl",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ],
+   [
+    "_参数3",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011328_wkeSetResourceGc",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeSetResourceGc",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011333_wkeGetUserAgent",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetUserAgent",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01133B_wkeGetFrameUrl",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeGetFrameUrl",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01134A_jsGetArrayBuffer",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetArrayBuffer",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011385_jsGetLastErrorIfException",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetLastErrorIfException",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A01139D_jsThrowException",
+  "ret": "长整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsThrowException",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0113AF_wkeNetGetFavicon",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeNetGetFavicon",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0113D1_jsGetKeys",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "jsGetKeys",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "长整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0113ED_wkeIsProcessingUserGesture",
+  "ret": "字节型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeIsProcessingUserGesture",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A011461_wkeUtilSerializeToMHTML",
+  "ret": "整数型",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeUtilSerializeToMHTML",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ]
+  ]
+ }
+]

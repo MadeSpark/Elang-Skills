@@ -1,0 +1,1364 @@
+﻿.版本 2
+
+.DLL命令 _DLL命令0A010004_wkeCreateWebWindow, 整数型, "main\corn\node.dll", "@wkeCreateWebWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A01001C_wkeDestroyWebWindow, , "main\corn\node.dll", "@wkeDestroyWebWindow"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010020_wkeGetWindowHandle, 整数型, "main\corn\node.dll", "@wkeGetWindowHandle"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010026_wkeShowWindow, , "main\corn\node.dll", "@wkeShowWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A010031_wkeEnableWindow, , "main\corn\node.dll", "@wkeEnableWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A010034_wkeMoveWindow, , "main\corn\node.dll", "@wkeMoveWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A01003E_wkeMoveToCenter, , "main\corn\node.dll", "@wkeMoveToCenter"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010042_wkeResizeWindow, , "main\corn\node.dll", "@wkeResizeWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010048_wkeSetWindowTitleW, , "main\corn\node.dll", "@wkeSetWindowTitleW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A01010B_wkeInitialize, , "main\corn\node.dll", "@wkeInitialize"
+
+.DLL命令 _DLL命令0A010113_wkeIsInitialize, 字节型, "main\corn\node.dll", "@wkeIsInitialize"
+
+.DLL命令 _DLL命令0A010115_wkeInitializeEx, , "main\corn\node.dll", "@wkeInitializeEx"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010123_wkeFinalize, , "main\corn\node.dll", "@wkeFinalize"
+
+.DLL命令 _DLL命令0A010125_wkeUpdate, , "main\corn\node.dll", "@wkeUpdate"
+
+.DLL命令 _DLL命令0A010128_wkeGetVersion, 整数型, "main\corn\node.dll", "@wkeGetVersion"
+
+.DLL命令 _DLL命令0A01012B_wkeGetVersionString, 整数型, "main\corn\node.dll", "@wkeGetVersionString"
+
+.DLL命令 _DLL命令0A010138_wkeOnWindowClosing, , "main\corn\node.dll", "@wkeOnWindowClosing"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010142_wkeOnWindowDestroy, , "main\corn\node.dll", "@wkeOnWindowDestroy"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010185_wkeSetNavigationToNewWindowEnable, , "main\corn\node.dll", "@wkeSetNavigationToNewWindowEnable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01018F_wkeLoadW, , "main\corn\node.dll", "@wkeLoadW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A0101A0_wkeSetProxy, , "main\corn\node.dll", "@wkeSetProxy"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0101D4_wkeSetViewProxy, , "main\corn\node.dll", "@wkeSetViewProxy"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0101EA_wkeGetName, 整数型, "main\corn\node.dll", "@wkeGetName"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0101F0_wkeSetName, , "main\corn\node.dll", "@wkeSetName"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A0101FB_wkeSetHandle, , "main\corn\node.dll", "@wkeSetHandle"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010202_wkeSetHandleOffset, , "main\corn\node.dll", "@wkeSetHandleOffset"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01020D_wkeSetUserAgentW, , "main\corn\node.dll", "@wkeSetUserAgentW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010F55_wkeSetUserAgent, , "main\corn\node.dll", "@wkeSetUserAgent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A01021C_wkeLoadURLW, , "main\corn\node.dll", "@wkeLoadURLW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010F47_wkeLoadURL, , "main\corn\node.dll", "@wkeLoadURL"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A01022A_wkeLoadHTMLW, , "main\corn\node.dll", "@wkeLoadHTMLW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010F4C_wkeLoadHTML, , "main\corn\node.dll", "@wkeLoadHTML"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010239_wkeLoadFileW, , "main\corn\node.dll", "@wkeLoadFileW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010E6C_wkePostURLW, , "main\corn\node.dll", "@wkePostURLW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010E88_wkePostURL, , "main\corn\node.dll", "@wkePostURL"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010246_wkeGetURL, 整数型, "main\corn\node.dll", "@wkeGetURL"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01025B_wkeIsLoading, 字节型, "main\corn\node.dll", "@wkeIsLoading"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010261_wkeIsLoadingSucceeded, 字节型, "main\corn\node.dll", "@wkeIsLoadingSucceeded"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010264_wkeIsLoadingFailed, 字节型, "main\corn\node.dll", "@wkeIsLoadingFailed"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010266_wkeIsLoadingCompleted, 字节型, "main\corn\node.dll", "@wkeIsLoadingCompleted"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01026E_wkeIsDocumentReady, 字节型, "main\corn\node.dll", "@wkeIsDocumentReady"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01026C_wkeStopLoading, , "main\corn\node.dll", "@wkeStopLoading"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010272_wkeReload, , "main\corn\node.dll", "@wkeReload"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010274_wkeGetTitleW, 整数型, "main\corn\node.dll", "@wkeGetTitleW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010F3D_wkeGetTitle, 整数型, "main\corn\node.dll", "@wkeGetTitle"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01028E_wkeResize, , "main\corn\node.dll", "@wkeResize"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01028F_wkeGetWidth, 整数型, "main\corn\node.dll", "@wkeGetWidth"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010290_wkeGetHeight, 整数型, "main\corn\node.dll", "@wkeGetHeight"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010291_wkeGetContentWidth, 整数型, "main\corn\node.dll", "@wkeGetContentWidth"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010292_wkeGetContentHeight, 整数型, "main\corn\node.dll", "@wkeGetContentHeight"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010977_wkeRepaintIfNeeded, , "main\corn\node.dll", "@wkeRepaintIfNeeded"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01097B_wkeSetDirty, , "main\corn\node.dll", "@wkeSetDirty"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A010986_wkeIsDirty, 字节型, "main\corn\node.dll", "@wkeIsDirty"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010982_wkeAddDirtyArea, , "main\corn\node.dll", "@wkeAddDirtyArea"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010995_wkeLayoutIfNeeded, , "main\corn\node.dll", "@wkeLayoutIfNeeded"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01028D_wkePaint2, , "main\corn\node.dll", "@wkePaint2"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+    .参数 _参数9, 整数型
+    .参数 _参数10, 整数型
+    .参数 _参数11, 字节型
+
+.DLL命令 _DLL命令0A0102C3_wkePaint, , "main\corn\node.dll", "@wkePaint"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0102C9_wkeGetViewDC, 整数型, "main\corn\node.dll", "@wkeGetViewDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0110B1_wkeGC, , "main\corn\node.dll", "@wkeGC"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010999_wkeGetHostHWND, 整数型, "main\corn\node.dll", "@wkeGetHostHWND"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0110BC_wkeGetSource, 整数型, "main\corn\node.dll", "@wkeGetSource"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102D0_wkeCanGoBack, 字节型, "main\corn\node.dll", "@wkeCanGoBack"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102D1_wkeGoBack, 字节型, "main\corn\node.dll", "@wkeGoBack"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102D2_wkeCanGoForward, 字节型, "main\corn\node.dll", "@wkeCanGoForward"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102D3_wkeGoForward, 字节型, "main\corn\node.dll", "@wkeGoForward"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102E4_wkeEditorSelectAll, , "main\corn\node.dll", "@wkeEditorSelectAll"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102E6_wkeEditorUnSelect, , "main\corn\node.dll", "@wkeEditorUnSelect"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102E8_wkeEditorCopy, , "main\corn\node.dll", "@wkeEditorCopy"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102EA_wkeEditorCut, , "main\corn\node.dll", "@wkeEditorCut"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102EC_wkeEditorPaste, , "main\corn\node.dll", "@wkeEditorPaste"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102EE_wkeEditorDelete, , "main\corn\node.dll", "@wkeEditorDelete"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102F0_wkeEditorUndo, , "main\corn\node.dll", "@wkeEditorUndo"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0102CF_wkeEditorRedo, , "main\corn\node.dll", "@wkeEditorRedo"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010302_wkeGetCookieW, 整数型, "main\corn\node.dll", "@wkeGetCookieW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010F39_wkeGetCookie, 整数型, "main\corn\node.dll", "@wkeGetCookie"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010FE2_wkeSetCookie, , "main\corn\node.dll", "@wkeSetCookie"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A010313_wkeSetCookieEnabled, , "main\corn\node.dll", "@wkeSetCookieEnabled"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01031A_wkeIsCookieEnabled, 字节型, "main\corn\node.dll", "@wkeIsCookieEnabled"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01031F_wkeSetCookieJarPath, , "main\corn\node.dll", "@wkeSetCookieJarPath"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010325_wkeSetCookieJarFullPath, , "main\corn\node.dll", "@wkeSetCookieJarFullPath"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010348_wkeSetMediaVolume, , "main\corn\node.dll", "@wkeSetMediaVolume"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 小数型
+
+.DLL命令 _DLL命令0A01034E_wkeGetMediaVolume, 小数型, "main\corn\node.dll", "@wkeGetMediaVolume"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010359_wkeSetFocus, , "main\corn\node.dll", "@wkeSetFocus"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01035D_wkeKillFocus, , "main\corn\node.dll", "@wkeKillFocus"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010364_wkeRunJSW, 长整数型, "main\corn\node.dll", "@wkeRunJSW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A01085C_wkeRunJS, 长整数型, "main\corn\node.dll", "@wkeRunJS"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010373_wkeGlobalExec, 整数型, "main\corn\node.dll", "@wkeGlobalExec"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010380_wkeSleep, , "main\corn\node.dll", "@wkeSleep"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010382_wkeWake, , "main\corn\node.dll", "@wkeWake"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01037C_wkeIsAwake, 字节型, "main\corn\node.dll", "@wkeIsAwake"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0109BB_wkeSetTransparent, , "main\corn\node.dll", "@wkeSetTransparent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01038B_wkeSetZoomFactor, , "main\corn\node.dll", "@wkeSetZoomFactor"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 小数型
+
+.DLL命令 _DLL命令0A010385_wkeGetZoomFactor, 小数型, "main\corn\node.dll", "@wkeGetZoomFactor"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01038F_wkeSetEditable, , "main\corn\node.dll", "@wkeSetEditable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01039F_wkeGetStringW, 整数型, "main\corn\node.dll", "@wkeGetStringW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010ED4_wkeGetString, 整数型, "main\corn\node.dll", "@wkeGetString"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0103A5_wkeSetStringW, , "main\corn\node.dll", "@wkeSetStringW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0103AF_wkeGetWebViewForCurrentContext, 整数型, "main\corn\node.dll", "@wkeGetWebViewForCurrentContext"
+
+.DLL命令 _DLL命令0A0103B2_wkeSetUserKeyValue, , "main\corn\node.dll", "@wkeSetUserKeyValue"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0103B3_wkeGetUserKeyValue, 整数型, "main\corn\node.dll", "@wkeGetUserKeyValue"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010FB4_wkeSetDragFiles, , "main\corn\node.dll", "@wkeSetDragFiles"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A14
+    .参数 _参数3, _结构41010A14
+    .参数 _参数4, 整数型, 数组
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A0103D7_wkeOnTitleChanged, , "main\corn\node.dll", "@wkeOnTitleChanged"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010403_wkeOnURLChanged, , "main\corn\node.dll", "@wkeOnURLChanged"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01041C_wkeOnURLChanged2, , "main\corn\node.dll", "@wkeOnURLChanged2"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01042D_wkeOnAlertBox, , "main\corn\node.dll", "@wkeOnAlertBox"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010449_wkeOnConfirmBox, , "main\corn\node.dll", "@wkeOnConfirmBox"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01044E_wkeOnPromptBox, , "main\corn\node.dll", "@wkeOnPromptBox"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010462_wkeOnNavigation, , "main\corn\node.dll", "@wkeOnNavigation"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010479_wkeOnCreateView, , "main\corn\node.dll", "@wkeOnCreateView"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01048D_wkeOnDocumentReady, , "main\corn\node.dll", "@wkeOnDocumentReady"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010492_wkeOnDocumentReady2, , "main\corn\node.dll", "@wkeOnDocumentReady2"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0104AF_wkeOnLoadingFinish, , "main\corn\node.dll", "@wkeOnLoadingFinish"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0104C4_wkeOnDownload, , "main\corn\node.dll", "@wkeOnDownload"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0104D7_wkeOnConsole, , "main\corn\node.dll", "@wkeOnConsole"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0109EF_wkeOnPaintUpdated, , "main\corn\node.dll", "@wkeOnPaintUpdated"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A011104_wkeOnWillMediaLoad, , "main\corn\node.dll", "@wkeOnWillMediaLoad"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010B28_wkeFireMouseEvent, 字节型, "main\corn\node.dll", "@wkeFireMouseEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010B2E_wkeFireContextMenuEvent, 字节型, "main\corn\node.dll", "@wkeFireContextMenuEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010B36_wkeFireMouseWheelEvent, 字节型, "main\corn\node.dll", "@wkeFireMouseWheelEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010B3F_wkeFireKeyUpEvent, 字节型, "main\corn\node.dll", "@wkeFireKeyUpEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 字节型
+
+.DLL命令 _DLL命令0A010B18_wkeFireKeyDownEvent, 字节型, "main\corn\node.dll", "@wkeFireKeyDownEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 字节型
+
+.DLL命令 _DLL命令0A010B4A_wkeFireKeyPressEvent, 字节型, "main\corn\node.dll", "@wkeFireKeyPressEvent"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 字节型
+
+.DLL命令 _DLL命令0A010B45_wkeFireWindowsMessage, 字节型, "main\corn\node.dll", "@wkeFireWindowsMessage"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型, 传址
+
+.DLL命令 _DLL命令0A0104FD_wkeIsMainFrame, 字节型, "main\corn\node.dll", "@wkeIsMainFrame"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010503_wkeIsWebRemoteFrame, 字节型, "main\corn\node.dll", "@wkeIsWebRemoteFrame"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010505_wkeWebFrameGetMainFrame, 整数型, "main\corn\node.dll", "@wkeWebFrameGetMainFrame"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010517_wkeNetSetMIMEType, , "main\corn\node.dll", "@wkeNetSetMIMEType"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A01051E_wkeNetSetHTTPHeaderField, , "main\corn\node.dll", "@wkeNetSetHTTPHeaderField"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+    .参数 _参数3, 字节集
+    .参数 _参数4, 逻辑型
+
+.DLL命令 _DLL命令0A01144C_wkeNetGetHTTPHeaderField, 整数型, "main\corn\node.dll", "@wkeNetGetHTTPHeaderField"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010527_wkeNetSetURL, , "main\corn\node.dll", "@wkeNetSetURL"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A01052D_wkeNetSetData, , "main\corn\node.dll", "@wkeNetSetData"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010E05_wkeGetCursorInfoType, 整数型, "main\corn\node.dll", "@wkeGetCursorInfoType"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010E0F_wkeSetCspCheckEnable, , "main\corn\node.dll", "@wkeSetCspCheckEnable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A010E15_wkeSetViewNetInterface, , "main\corn\node.dll", "@wkeSetViewNetInterface"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010E0B_wkeNetHookRequest, , "main\corn\node.dll", "@wkeNetHookRequest"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010561_wkeOnLoadUrlBegin, , "main\corn\node.dll", "@wkeOnLoadUrlBegin"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010578_wkeOnLoadUrlEnd, , "main\corn\node.dll", "@wkeOnLoadUrlEnd"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01058A_wkeOnDidCreateScriptContext, , "main\corn\node.dll", "@wkeOnDidCreateScriptContext"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01058F_wkeOnWillReleaseScriptContext, , "main\corn\node.dll", "@wkeOnWillReleaseScriptContext"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010EAD_wkeNetOnResponse, , "main\corn\node.dll", "@wkeNetOnResponse"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010EB1_wkeNetGetMIMEType, , "main\corn\node.dll", "@wkeNetGetMIMEType"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010D78_wkeWebFrameGetMainWorldScriptContext, , "main\corn\node.dll", "@wkeWebFrameGetMainWorldScriptContext"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010D7F_wkeGetBlinkMainThreadIsolate, 整数型, "main\corn\node.dll", "@wkeGetBlinkMainThreadIsolate"
+
+.DLL命令 _DLL命令0A010EC0_wkeCreateStringW, 整数型, "main\corn\node.dll", "@wkeCreateStringW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010EC9_wkeDeleteString, , "main\corn\node.dll", "@wkeDeleteString"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010EE0_wkeSetLocalStorageFullPath, , "main\corn\node.dll", "@wkeSetLocalStorageFullPath"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A010594_wkeJsBindFunction, , "main\corn\node.dll", "@wkeJsBindFunction"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010825_jsBindFunction, , "main\corn\node.dll", "@jsBindFunction"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0105A5_wkeJsBindGetter, , "main\corn\node.dll", "@wkeJsBindGetter"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01082C_JsBindGetter, , "main\corn\node.dll", "@JsBindGetter"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0105A0_wkeJsBindSetter, , "main\corn\node.dll", "@wkeJsBindSetter"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010831_JsBindSetter, , "main\corn\node.dll", "@JsBindSetter"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0105D5_jsArgCount, 整数型, "main\corn\node.dll", "@jsArgCount"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0105DC_jsArgType, 整数型, "main\corn\node.dll", "@jsArgType"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0105E9_jsArg, 长整数型, "main\corn\node.dll", "@jsArg"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0105F6_jsTypeOf, 整数型, "main\corn\node.dll", "@jsTypeOf"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A0105F9_jsIsNumber, 字节型, "main\corn\node.dll", "@jsIsNumber"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A0105FB_jsIsString, 字节型, "main\corn\node.dll", "@jsIsString"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A0105FD_jsIsBoolean, 字节型, "main\corn\node.dll", "@jsIsBoolean"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A0105FF_jsIsObject, 字节型, "main\corn\node.dll", "@jsIsObject"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010601_jsIsFunction, 字节型, "main\corn\node.dll", "@jsIsFunction"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010603_jsIsUndefined, 字节型, "main\corn\node.dll", "@jsIsUndefined"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010605_jsIsNull, 字节型, "main\corn\node.dll", "@jsIsNull"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010607_jsIsArray, 字节型, "main\corn\node.dll", "@jsIsArray"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010609_jsIsTrue, 字节型, "main\corn\node.dll", "@jsIsTrue"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A0105F1_jsIsFalse, 字节型, "main\corn\node.dll", "@jsIsFalse"
+    .参数 _参数1, 长整数型
+
+.DLL命令 _DLL命令0A010649_jsToInt, 整数型, "main\corn\node.dll", "@jsToInt"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A01064D_jsToFloat, 小数型, "main\corn\node.dll", "@jsToFloat"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A010651_jsToDouble, 双精度小数型, "main\corn\node.dll", "@jsToDouble"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A010655_jsToBoolean, 字节型, "main\corn\node.dll", "@jsToBoolean"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A010641_jsToTempStringW, 整数型, "main\corn\node.dll", "@jsToTempStringW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A01065E_jsInt, 长整数型, "main\corn\node.dll", "@jsInt"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010661_jsFloat, 长整数型, "main\corn\node.dll", "@jsFloat"
+    .参数 _参数1, 小数型
+
+.DLL命令 _DLL命令0A010664_jsDouble, 长整数型, "main\corn\node.dll", "@jsDouble"
+    .参数 _参数1, 双精度小数型
+
+.DLL命令 _DLL命令0A010659_jsBoolean, 长整数型, "main\corn\node.dll", "@jsBoolean"
+    .参数 _参数1, 字节型
+
+.DLL命令 _DLL命令0A010668_jsUndefined, 长整数型, "main\corn\node.dll", "@jsUndefined"
+
+.DLL命令 _DLL命令0A01066C_jsNull, 长整数型, "main\corn\node.dll", "@jsNull"
+
+.DLL命令 _DLL命令0A01066D_jsTrue, 长整数型, "main\corn\node.dll", "@jsTrue"
+
+.DLL命令 _DLL命令0A01066B_jsFalse, 长整数型, "main\corn\node.dll", "@jsFalse"
+
+.DLL命令 _DLL命令0A01066E_jsStringW, 长整数型, "main\corn\node.dll", "@jsStringW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A01067A_jsEmptyObject, 长整数型, "main\corn\node.dll", "@jsEmptyObject"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010675_jsEmptyArray, 长整数型, "main\corn\node.dll", "@jsEmptyArray"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01067C_jsObject, 长整数型, "main\corn\node.dll", "@jsObject"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010685_jsFunction, 长整数型, "main\corn\node.dll", "@jsFunction"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010688_jsGetData, 整数型, "main\corn\node.dll", "@jsGetData"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A010690_jsGet, 长整数型, "main\corn\node.dll", "@jsGet"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A010699_jsSet, , "main\corn\node.dll", "@jsSet"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 文本型
+    .参数 _参数4, 长整数型
+
+.DLL命令 _DLL命令0A0106A0_jsGetAt, 长整数型, "main\corn\node.dll", "@jsGetAt"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0106A8_jsSetAt, , "main\corn\node.dll", "@jsSetAt"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 长整数型
+
+.DLL命令 _DLL命令0A0106AF_jsGetLength, 整数型, "main\corn\node.dll", "@jsGetLength"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A0106BE_jsSetLength, 整数型, "main\corn\node.dll", "@jsSetLength"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0106C3_jsGlobalObject, 长整数型, "main\corn\node.dll", "@jsGlobalObject"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0106B8_jsGetWebView, 长整数型, "main\corn\node.dll", "@jsGetWebView"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0106CC_jsEvalW, 长整数型, "main\corn\node.dll", "@jsEvalW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A0106C5_jsEvalExW, 长整数型, "main\corn\node.dll", "@jsEvalExW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+    .参数 _参数3, 字节型
+
+.DLL命令 _DLL命令0A0106E0_jsCall, 长整数型, "main\corn\node.dll", "@jsCall"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 长整数型
+    .参数 _参数4, 长整数型, 数组
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A0106E6_jsCallGlobal, 长整数型, "main\corn\node.dll", "@jsCallGlobal"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 长整数型, 数组
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0106EC_jsGetGlobal, 长整数型, "main\corn\node.dll", "@jsGetGlobal"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A0106D2_jsSetGlobal, 长整数型, "main\corn\node.dll", "@jsSetGlobal"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 长整数型
+
+.DLL命令 _DLL命令0A0106F1_jsGC, , "main\corn\node.dll", "@jsGC"
+
+.DLL命令 _DLL命令0A01081D_jsToStringW, 整数型, "main\corn\node.dll", "@jsToStringW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A011127_jsArrayBuffer, 长整数型, "main\corn\node.dll", "@jsArrayBuffer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0108AE_wkeSetFileSystem, , "main\corn\node.dll", "@wkeSetFileSystem"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010954_wkeCreateWebView, 整数型, "main\corn\node.dll", "@wkeCreateWebView"
+
+.DLL命令 _DLL命令0A010958_wkeGetWebView, 整数型, "main\corn\node.dll", "@wkeGetWebView"
+    .参数 _参数1, 文本型
+
+.DLL命令 _DLL命令0A010C3C_wkeGetCaretRect, , "main\corn\node.dll", "@wkeGetCaretRect"
+    .参数 _参数1, _结构41010C40, 传址
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A01095D_wkeDestroyWebView, , "main\corn\node.dll", "@wkeDestroyWebView"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010E3F_wkeVisitAllCookie, , "main\corn\node.dll", "@wkeVisitAllCookie"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010E47_wkePerformCookieCommand, , "main\corn\node.dll", "@wkePerformCookieCommand"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010F22_wkeRunJsByFrame, 长整数型, "main\corn\node.dll", "@wkeRunJsByFrame"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 文本型
+    .参数 _参数4, 字节型
+
+.DLL命令 _DLL命令0A011008_wkeSetNpapiPluginsEnabled, , "main\corn\node.dll", "@wkeSetNpapiPluginsEnabled"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01100E_wkeSetHeadlessEnabled, , "main\corn\node.dll", "@wkeSetHeadlessEnabled"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A011007_wkeSetTouchEnabled, , "main\corn\node.dll", "@wkeSetTouchEnabled"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A011017_wkeSetDragEnable, , "main\corn\node.dll", "@wkeSetDragEnable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01101A_wkeSetMemoryCacheEnable, , "main\corn\node.dll", "@wkeSetMemoryCacheEnable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01101E_wkeOnMouseOverUrlChanged, , "main\corn\node.dll", "@wkeOnMouseOverUrlChanged"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A011048_wkeSetDebugConfig, , "main\corn\node.dll", "@wkeSetDebugConfig"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A01113B_wkeSetDeviceParameter, , "main\corn\node.dll", "@wkeSetDeviceParameter"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 小数型
+
+.DLL命令 _DLL命令0A0100BB_MultiByteToWideChar, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 文本型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 字节集
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A0100BC_WideCharToMultiByte, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 字节集
+    .参数 _参数4, 整数型
+    .参数 _参数5, 文本型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+
+.DLL命令 _DLL命令0A0100BD_WideCharToMultiByte, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 文本型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+
+.DLL命令 _DLL命令0A0100BE_MultiByteToWideChar, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 字节集
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A0100BF_VirtualAlloc, 整数型, "kernel32.dll", "VirtualAlloc"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0100C0_VirtualFree, 整数型, "kernel32.dll", "VirtualFree"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0100C1_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017B_HeapFree, 整数型, "kernel32.dll", "HeapFree"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017C_HeapAlloc, 整数型, "kernel32.dll", "HeapAlloc"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017D_GetProcessHeap, 整数型, "kernel32.dll", "GetProcessHeap"
+
+.DLL命令 _DLL命令0A010253_lstrlenW, 整数型, "kernel32.dll", "lstrlenW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010813_lstrlenA, 整数型, "kernel32.dll", "lstrlenA"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010875_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010862
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010876_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010861
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0108DB_PathRemoveFileSpecA, 整数型, "shlwapi.dll", "PathRemoveFileSpecA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _DLL命令0A0108DC_PathCombineA, 整数型, "shlwapi.dll", "PathCombineA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A0108DD_PathIsRelativeA, 整数型, "shlwapi.dll", "PathIsRelativeA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _DLL命令0A0108DE_SetWindowsHookExW, 整数型, "user32.dll", "SetWindowsHookExW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 子程序指针
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0108DF_CallNextHookEx, 整数型, "user32.dll", "CallNextHookEx"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0108E0_GetCurrentThreadId, 整数型, "kernel32.dll", "GetCurrentThreadId"
+
+.DLL命令 _DLL命令0A0108E1_TranslateMessage, 整数型, "user32.dll", "TranslateMessage"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0108E2_DispatchMessageW, 整数型, "user32.dll", "DispatchMessageW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0108E3_UnhookWindowsHookEx, 整数型, "user32.dll", "UnhookWindowsHookEx"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01092A_UrlUnescapeA, 整数型, "shlwapi.dll", "UrlUnescapeA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A01092B_UrlEscapeA, 整数型, "shlwapi.dll", "UrlEscapeA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010941_wvsprintfA, 整数型, "user32.dll", "wvsprintfA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+
+.DLL命令 _DLL命令0A0109A6_IsWindow, 整数型, "user32.dll", "IsWindow"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0109C2_GetWindowLongW, 整数型, "user32.dll", "GetWindowLongW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0109C3_SetWindowLongW, 整数型, "user32.dll", "SetWindowLongW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0109C4_CallWindowProcW, 整数型, "user32.dll", "CallWindowProcW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A0109F7_GetWindowRect, 整数型, "user32.dll", "GetWindowRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+
+.DLL命令 _DLL命令0A0109F8_OffsetRect, 整数型, "user32.dll", "OffsetRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0109F9_GetDC, 整数型, "user32.dll", "GetDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0109FA_UpdateLayeredWindow, 整数型, "user32.dll", "UpdateLayeredWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, _结构41010C5C
+    .参数 _参数5, 整数型
+    .参数 _参数6, _结构41010A14
+    .参数 _参数7, 整数型
+    .参数 _参数8, _结构41010A20
+    .参数 _参数9, 整数型
+
+.DLL命令 _DLL命令0A0109FB_ReleaseDC, 整数型, "user32.dll", "ReleaseDC"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010A43_SetPropA, 整数型, "user32.dll", "SetPropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010A56_GetPropA, 整数型, "user32.dll", "GetPropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010A59_DefWindowProcA, 整数型, "user32.dll", "DefWindowProcA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010B00_BeginPaint, 整数型, "user32.dll", "BeginPaint"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010B08
+
+.DLL命令 _DLL命令0A010B01_EndPaint, 整数型, "user32.dll", "EndPaint"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010B08
+
+.DLL命令 _DLL命令0A010B6F_SetTimer, 整数型, "user32.dll", "SetTimer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010B70_KillTimer, 整数型, "user32.dll", "KillTimer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010B8B_GetClientRect, 整数型, "user32.dll", "GetClientRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+
+.DLL命令 _DLL命令0A010B92_IntersectRect, 整数型, "user32.dll", "IntersectRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, _结构41010A13
+    .参数 _参数3, _结构41010A13
+
+.DLL命令 _DLL命令0A010BA6_BitBlt, 整数型, "gdi32.dll", "BitBlt"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+    .参数 _参数9, 整数型
+
+.DLL命令 _DLL命令0A010C3A_GetFocus, 整数型, "user32.dll", "GetFocus"
+
+.DLL命令 _DLL命令0A010C4C_ImmGetContext, 整数型, "imm32.dll", "ImmGetContext"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C4D_ImmSetCandidateWindow, 整数型, "imm32.dll", "ImmSetCandidateWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010C45
+
+.DLL命令 _DLL命令0A010C4E_ImmReleaseContext, 整数型, "imm32.dll", "ImmReleaseContext"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010C55_RemovePropA, 整数型, "user32.dll", "RemovePropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010C58_DestroyWindow, 整数型, "user32.dll", "DestroyWindow"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C5A_SetFocus, 整数型, "user32.dll", "SetFocus"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C5F_ReleaseCapture, 整数型, "user32.dll", "ReleaseCapture"
+
+.DLL命令 _DLL命令0A010C60_SetCapture, 整数型, "user32.dll", "SetCapture"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C68_ScreenToClient, 整数型, "user32.dll", "ScreenToClient"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A14
+
+.DLL命令 _DLL命令0A010C8D_GetCurrentObject, 整数型, "gdi32.dll", "GetCurrentObject"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010C8E_GetObjectA, 整数型, "gdi32.dll", "GetObjectA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, _结构41010C83
+
+.DLL命令 _DLL命令0A010CA8_CreateCompatibleDC, 整数型, "gdi32.dll", "CreateCompatibleDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CA9_CreateCompatibleBitmap, 整数型, "gdi32.dll", "CreateCompatibleBitmap"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010CAA_SelectObject, 整数型, "gdi32.dll", "SelectObject"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010CAB_DeleteObject, 整数型, "gdi32.dll", "DeleteObject"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CAC_DeleteDC, 整数型, "gdi32.dll", "DeleteDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CBB_InvalidateRect, 整数型, "user32.dll", "InvalidateRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010CDD_PeekMessageW, 整数型, "user32.dll", "PeekMessageW"
+    .参数 _参数1, _结构41010934
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010CDE_IsIconic, 整数型, "user32.dll", "IsIconic"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CE8_CreateThread, 整数型, "kernel32.dll", "CreateThread"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 子程序指针
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A010CE6_CloseHandle, 整数型, "kernel32.dll", "CloseHandle"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CF0_Sleep, , "kernel32.dll", "Sleep"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CF2_SendMessageA, 整数型, "user32.dll", "SendMessageA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010D2E_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, _结构41010D27
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010D2F_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010D27
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010D3D_IsRectEmpty, 整数型, "user32.dll", "IsRectEmpty"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010D40_IsZoomed, 整数型, "user32.dll", "IsZoomed"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010D42_PtInRect, 逻辑型, "user32.dll", "PtInRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010DD1_GetAncestor, 整数型, "user32.dll", "GetAncestor"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A011152_ImmSetCompositionWindow, 整数型, "imm32.dll", "ImmSetCompositionWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41011156
+
+.DLL命令 _DLL命令0A011162_wkeAddPluginDirectory, , "main\corn\node.dll", "@wkeAddPluginDirectory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+
+.DLL命令 _DLL命令0A01117A_wkeSetMouseEnabled, , "main\corn\node.dll", "@wkeSetMouseEnabled"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A01117D_wkeSetDragDropEnable, , "main\corn\node.dll", "@wkeSetDragDropEnable"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节型
+
+.DLL命令 _DLL命令0A011187_wkeGetGlobalExecByFrame, 整数型, "main\corn\node.dll", "@wkeGetGlobalExecByFrame"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A01118A_wkeShowDevtools, , "main\corn\node.dll", "@wkeShowDevtools"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 字节集
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0111B2_wkeNetGetRequestMethod, 整数型, "main\corn\node.dll", "@wkeNetGetRequestMethod"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0111BF_wkeNetContinueJob, , "main\corn\node.dll", "@wkeNetContinueJob"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0111C0_wkeNetGetUrlByJob, 整数型, "main\corn\node.dll", "@wkeNetGetUrlByJob"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0111C1_wkeNetCancelRequest, 整数型, "main\corn\node.dll", "@wkeNetCancelRequest"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0111C2_wkeNetChangeRequestUrl, , "main\corn\node.dll", "@wkeNetChangeRequestUrl"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A0111C3_wkeNetHoldJobToAsynCommit, , "main\corn\node.dll", "@wkeNetHoldJobToAsynCommit"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A011458_wkeNetCreateWebUrlRequest, 整数型, "main\corn\node.dll", "@wkeNetCreateWebUrlRequest"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A01152B_wkeNetAddHTTPHeaderFieldToUrlRequest, , "main\corn\node.dll", "@wkeNetAddHTTPHeaderFieldToUrlRequest"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A011533_wkeNetStartUrlRequest, 整数型, "main\corn\node.dll", "@wkeNetStartUrlRequest"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A011558_wkeNetGetHttpStatusCode, 整数型, "main\corn\node.dll", "@wkeNetGetHttpStatusCode"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A011552_wkeNetGetExpectedContentLength, 长整数型, "main\corn\node.dll", "@wkeNetGetExpectedContentLength"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01155C_wkeNetGetResponseUrl, 整数型, "main\corn\node.dll", "@wkeNetGetResponseUrl"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A011560_wkeNetCancelWebUrlRequest, 整数型, "main\corn\node.dll", "@wkeNetCancelWebUrlRequest"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0115BA_wkeNetGetPostBody, 整数型, "main\corn\node.dll", "@wkeNetGetPostBody"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0112DD_wkeInsertCSSByFrame, , "main\corn\node.dll", "@wkeInsertCSSByFrame"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A0112ED_jsDeleteObjectProp, , "main\corn\node.dll", "@jsDeleteObjectProp"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A0112FD_jsIsJsValueValid, 字节型, "main\corn\node.dll", "@jsIsJsValueValid"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A011306_jsIsValidExecState, 字节型, "main\corn\node.dll", "@jsIsValidExecState"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A011315_wkeLoadHtmlWithBaseUrl, , "main\corn\node.dll", "@wkeLoadHtmlWithBaseUrl"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A011328_wkeSetResourceGc, , "main\corn\node.dll", "@wkeSetResourceGc"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A011333_wkeGetUserAgent, 整数型, "main\corn\node.dll", "@wkeGetUserAgent"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01133B_wkeGetFrameUrl, 整数型, "main\corn\node.dll", "@wkeGetFrameUrl"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A01134A_jsGetArrayBuffer, 整数型, "main\corn\node.dll", "@jsGetArrayBuffer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A011385_jsGetLastErrorIfException, 整数型, "main\corn\node.dll", "@jsGetLastErrorIfException"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01139D_jsThrowException, 长整数型, "main\corn\node.dll", "@jsThrowException"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A0113AF_wkeNetGetFavicon, 整数型, "main\corn\node.dll", "@wkeNetGetFavicon"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0113D1_jsGetKeys, 整数型, "main\corn\node.dll", "@jsGetKeys"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 长整数型
+
+.DLL命令 _DLL命令0A0113ED_wkeIsProcessingUserGesture, 字节型, "main\corn\node.dll", "@wkeIsProcessingUserGesture"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0113FB_IsCharAlphaNumericA, 整数型, "user32.dll", "IsCharAlphaNumericA"
+    .参数 _参数1, 字节型
+
+.DLL命令 _DLL命令0A011461_wkeUtilSerializeToMHTML, 整数型, "main\corn\node.dll", "@wkeUtilSerializeToMHTML"
+    .参数 _参数1, 整数型
+

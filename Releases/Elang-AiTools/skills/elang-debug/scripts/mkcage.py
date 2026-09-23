@@ -217,9 +217,20 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
     try:
         say("[1/4] e2t: %s -> <tmp>/text" % user_e)
         rc, so, se = run_e2txt(e2txt, "e2t", user_e, txt_dir, ["-enc", "UTF-8"])
-        if rc != 0 or "[错误]" in se or not os.path.isdir(txt_dir):
+        # 成败判据（2026-09-23 修正）：只看 rc / SUCC: / 文本目录是否实产。
+        # 旧判据是「stderr 里出现 [错误] 就算失败」，但工程一旦引用了**本机未安装的支持库**，
+        # e2t 就会往 stderr 刷一堆
+        #   「解析【类型】名称 失败！[支持库] 20994 ...」
+        # 那是**非致命**的表达降级：stdout 照常打 SUCC:，文本目录也写得完整。
+        # 按旧判据，这类工程会一律「加壳失败」，等于整条无头编译链路对它们不可用。
+        has_txt = (os.path.isdir(os.path.join(txt_dir, "代码"))
+                   or os.path.isdir(os.path.join(txt_dir, "class")))
+        if rc != 0 or "SUCC:" not in so or not os.path.isdir(txt_dir) or not has_txt:
             raise SystemExit("e2t 失败 rc=%s\nSTDOUT:%s\nSTDERR:%s"
                              % (rc, so[-400:], se[-400:]))
+        n_err = sum(1 for ln in se.splitlines() if "[错误]" in ln)
+        if n_err:
+            say("      (e2t 提示 %d 条，非致命：工程引用了本机未安装的支持库)" % n_err)
 
         cfg = find_cfg(txt_dir)
         if not cfg:
