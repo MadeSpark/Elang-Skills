@@ -59,9 +59,9 @@ def split_args(text):
         elif c == "”":
             in_q = False
         elif not in_q:
-            if c in "([":
+            if c in "([{":
                 depth += 1
-            elif c in ")]":
+            elif c in ")]}":
                 depth -= 1
             elif c == "," and depth == 0:
                 out.append(cur)
@@ -74,11 +74,32 @@ def split_args(text):
     return out, depth != 0
 
 
+def mask_quoted(line):
+    """把**全角引号字符串内部**的字符换成 \\x01（保持长度不变）。
+
+    用途：命令识别必须**跳过字符串字面量**，否则一句说明文字
+    `报告 (“12 GetModuleHandleA(expld.dll) = 0x”)` 会被当成真的调用了
+    `GetModuleHandleA`，报「命令不在支持库清单里」这种噪音警告。
+    保持等长是为了让匹配偏移仍能用来切**原始行**（取参数要看原文）。"""
+    out, in_q = [], False
+    for c in line:
+        if c == "“":
+            in_q = True
+            out.append(c)
+        elif c == "”":
+            in_q = False
+            out.append(c)
+        else:
+            out.append("\x01" if in_q else c)
+    return "".join(out)
+
+
 def parse_calls(line):
     """提取一行里的命令调用：[(名字, 参数字段列表)]"""
     res, i, n = [], 0, len(line)
+    masked = mask_quoted(line)          # 只用来定位，切片仍取原始 line
     while i < n:
-        m = CALL_RE.search(line, i)
+        m = CALL_RE.search(masked, i)
         if not m:
             break
         name, j = m.group(1), m.end()
@@ -90,9 +111,13 @@ def parse_calls(line):
             elif c == "”":
                 in_q = False
             elif not in_q:
-                if c == "(":
+                # ⚠️ 必须把 {} 也算进深度：`置入代码 ({ 139, 69, 8 })` 里的大括号是
+                #    **字节集字面量**，里面的逗号不是参数分隔符。只算圆括号会让它被
+                #    切成 N 个参数，误报「最多 1 个参数，给了 N 个」（踩过：一个
+                #    手写机器码模块会一次报 7 个 ✗，把真问题淹掉）。
+                if c in "([{":
                     depth += 1
-                elif c == ")":
+                elif c in ")]}":
                     depth -= 1
             k += 1
         inner = line[j:k - 1] if depth == 0 else line[j:]
@@ -177,6 +202,34 @@ def collect_subs(lines, subs):
         subs[cur] = cnt
 
 
+DLLCMD_RE = re.compile(r"^\.(?:DLL|Dll|dll)命令\s+([^\s,，]+)")
+
+
+def collect_dllcmds(lines, subs):
+    """把 `.DLL命令` 声明的名字也收成「已知命令」（带参数个数）。
+
+    它们的实现在外部 DLL 里，**不在支持库清单里**；不单独收的话，工程里每一处
+    调用都会报「命令不在支持库清单里」的噪音警告（踩过：一个 12 条声明的探针
+    报出 6 个警告，把真问题淹掉）。"""
+    cur, cnt = None, 0
+    for raw in lines:
+        line = strip_comment(raw)
+        m = DLLCMD_RE.match(line)
+        if m:
+            if cur:
+                subs[cur] = cnt
+            cur, cnt = m.group(1), 0
+            continue
+        if cur:
+            if re.match(r"^\s*\.参数\b", line):
+                cnt += 1
+            elif not DECL_RE.match(line):
+                subs[cur] = cnt
+                cur = None
+    if cur:
+        subs[cur] = cnt
+
+
 def check_one_call(path, ln, name, args, subs, lib, errs, warns):
     if "." in name:
         return  # 对象方法调用（如 文档.解析）不在支持库清单里，无法静态校验
@@ -245,6 +298,7 @@ def main():
             lines = fh.read().replace("\r\n", "\n").split("\n")
         texts[rel] = lines
         collect_subs(lines, subs)
+        collect_dllcmds(lines, subs)
 
     for rel, lines in texts.items():
         check_blocks(rel, lines, errs, warns)

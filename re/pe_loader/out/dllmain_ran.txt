@@ -1,0 +1,4 @@
+DllMain ATTACH  base=02800000
+DllMain ATTACH  base=7B060000
+DllMain DETACH
+DllMain DETACH

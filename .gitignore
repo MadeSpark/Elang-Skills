@@ -76,3 +76,23 @@ __pycache__/
 /re/opt/*/
 !/re/opt/evidence/
 
+# ---------------------------------------------------------------------------
+# re/pe_loader/ —— 「手写机器码内存加载 PE」的实验目录（2026-09-24）。
+# 结论见 docs/分析-内存加载PE与内核共用（2026-09-24）.md。
+#
+# 入库：顶层 *.py 实验脚本、exp/*.c 与 lock/*.c 源码、用户样本（PE加载器.e / test.*）、
+#       txt/（样本的 e2t 文本 —— 机器码字节的唯一引用源）与全部小型证据日志。
+# 忽略：内核副本（33.6 MB）、一切编译产物、以及可由脚本再生的中间工程。
+#       proj/ 由 build_probe.py 生成；work/ 是逐次探针工程的落盘；三者都能重跑出来。
+# ---------------------------------------------------------------------------
+/re/pe_loader/share/kernel/
+/re/pe_loader/work/
+/re/pe_loader/proj/
+/re/pe_loader/exp/*.dll
+/re/pe_loader/exp/*.a
+/re/pe_loader/lock/holder.exe
+/re/pe_loader/out/probe_pe.exe
+/re/pe_loader/out/expdll.dll
+/re/pe_loader/share/*/probe.exe
+/re/pe_loader/share/*/MbKit.dll
+

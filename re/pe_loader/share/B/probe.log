@@ -1,0 +1,38 @@
+01 启动；宿主程序目录 = C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B
+02 内嵌 MbKit 资源长度 = 56320
+03 释放内嵌宿主库 -> C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B\MbKit.dll ；写到文件 = 真
+04 落盘文件尺寸 = 56320
+05 LoadLibraryA(完整路径) 句柄 = 2051342336
+06 [裸名命令] 预载后自检：
+MbKit 自检
+  内核状态     : 尚未加载
+  内核路径     : (未解析)
+  内核模块     : 0x00000000
+  自定义路径   : (未设置 → 默认: 宿主程序根目录)
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B
+  内核缺失导出 : 0（其中被真正调用过 0 次）
+  缺失清单     : (无)
+  加载期错误   : (无)
+
+07 环境变量 MBKIT_TEST_NODE = [C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\kernel\node.dll]
+08 SetNodePath 返回 = 1
+09 配置回读 ConfigNodePath = [C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\kernel\node.dll]
+10 加载前 KernelLoaded = 0
+11 [裸名命令] wkeIsInitialize = 0
+12 已调用 wkeInitialize；wkeIsInitialize = 1
+13 [裸名命令] wkeGetVersion = 258
+14 KernelPath = C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\kernel\node.dll
+15 加载后自检：
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\kernel\node.dll
+  内核模块     : 0x781E0000
+  自定义路径   : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\kernel\node.dll
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\re\pe_loader\share\B
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+
+== 探测结束 ==
