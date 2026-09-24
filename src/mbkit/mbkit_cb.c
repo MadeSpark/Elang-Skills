@@ -14,20 +14,31 @@
  *   - 正常路径：业务先 DetachAll 再卸载 —— 干净注销；
  *   - 异常路径：忘了解绑直接卸载 —— 也只会被静默挡下，不崩。
  *
- * 【存活判据为何是两路】
+ * 【存活判据为何是三路】（2026-09-25 修：加第 ③ 路，事故级）
  * 业务回调有两种形态，不能一刀切：
  *   ① 真实的模块内函数  -> 直接用 GetModuleHandleEx(FROM_ADDRESS, cb) 查该模块；
  *   ② VirtualAlloc 出来的 thunk（本模块的 _stdcall_to_cdecl 就是这种）
  *      -> 它**不属于任何模块**，永远"可读"，FROM_ADDRESS 查不到；
  *         真正会失效的是 thunk 内嵌的业务子程序地址，无法从外部直接取用，
  *         所以改用「注册那一刻调用点的返回地址」所属模块来代表业务身份。
- *      —— 这一点若判错，会导致「所有回调都被误丢弃」，功能全废。
+ *   ③ **两条路都查不到时，绝不能再「保守丢弃」**。
+ *      实测事故（2026-09-25）：宿主「小栗子虚拟机」是**手工映射**加载插件 DLL 的
+ *      （插件 DLL 不在进程加载器链表里，`EnumProcessModules` 里查不到），
+ *      于是 ② 的 regRet 也落在一段"不属于任何模块"的映像里 ⇒ 两条路全返回 0
+ *      ⇒ 每一个回调都被静默丢掉 ⇒ **事件全哑、而且不崩**（
+ *      `wkeOnPaintUpdated` 一起丢 ⇒ 窗口缩放后新暴露区域永不重绘 ⇒ 画面撕裂）。
+ *      用户完全看不出是回调被挡了。
+ *      ⇒ 判不出来 ≠ 已经失效。此时**放行**，另用「注册点那段内存是否还在」
+ *        （VirtualQuery，见 region_ok）兜底；确实被释放了才丢弃。
+ *      放行的代价只是失去自动保护（业务方仍可显式 DetachAll），
+ *      而「保守丢弃」的代价是功能全废 —— 两者不对称。
  * ==========================================================================*/
 #include <windows.h>
 #include <string.h>
 
 #include "gen_fwd.h"
 #include "mbkit_api.h"
+#include "mbk_marshal.h"
 
 #define MBK_CB_MAX 256
 
@@ -89,7 +100,20 @@ static int addr_same_module(void* addr, unsigned expect)
     return (unsigned)(UINT_PTR)hm == expect;
 }
 
-static int entry_alive(const MBCB* e)
+/* 一条地址所处内存区是否还在（可读）。
+ * 用途：业务模块查不到时（手工映射加载的插件 DLL），这是唯一还看得见的信号 ——
+ * 宿主一旦释放那段映像，State 会变成 MEM_FREE。 */
+static int region_ok(void* addr)
+{
+    MEMORY_BASIC_INFORMATION mbi;
+    if (!addr) return 0;
+    if (VirtualQuery(addr, &mbi, sizeof(mbi)) != sizeof(mbi)) return 0;
+    if (mbi.State != MEM_COMMIT) return 0;                 /* 已被释放/未提交 */
+    if (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) return 0;
+    return 1;
+}
+
+static int entry_alive(MBCB* e)
 {
     if (!e || !e->used) return 0;
 
@@ -99,7 +123,11 @@ static int entry_alive(const MBCB* e)
     if (e->regMod)                                    /* ② thunk：看注册者 */
         return addr_same_module((void*)(UINT_PTR)e->regRet, e->regMod);
 
-    return 0;                                         /* 两条路都判不出来 => 保守丢弃 */
+    /* ③ 两条路都判不出业务身份（业务 DLL 不在加载器链表里，如宿主手工映射加载）。
+     *    —— 放行！判不出来 ≠ 已失效。只做「那段内存还在不在」的兜底，
+     *    且 VirtualQuery 不便宜 ⇒ 每 128 次才真查一次。 */
+    if (e->hits % 128) return 1;
+    return region_ok((void*)(UINT_PTR)e->regRet);
 }
 
 static void note_blocked(MBCB* e)
@@ -126,9 +154,15 @@ static void cb_release(MBCB* e)
     e->cbMod = e->regMod = e->regRet = 0;
 }
 
-typedef int (__cdecl *p_on)(void*, void*, void*);
 typedef int (__cdecl *mb_cb10)(void*, void*, void*, void*, void*, void*,
                                void*, void*, void*, void*);
+
+/* 内核调用统一走导出边界编组（mbk_marshal_3）—— 内核永远在常驻线程 K 上，
+ * 回调登记/注销若直调内核（旧版 MBK_REAL 直通），跨线程必挂死（实测）。 */
+static int cb_real_reg(int idx, void* wv, void* cb, void* param)
+{
+    return (int)mbk_marshal_3(idx, (unsigned)wv, (unsigned)cb, (unsigned)param);
+}
 
 /* 统一登记：复用同 (idx, wv) 的槽位，避免表被反复注册撑爆 */
 static int cb_adopt(int idx, void* wv, void* cb, void* param, void* wrap)
@@ -152,7 +186,7 @@ static int cb_adopt(int idx, void* wv, void* cb, void* param, void* wrap)
     if (!e) {                                         /* 表满：退回「不代理」，
                                                        * 功能不受影响，只是失去保护 */
         cb_unlock();
-        return ((p_on)MBK_REAL(idx))(wv, cb, param);
+        return cb_real_reg(idx, wv, cb, param);
     }
 
     e->used     = 1;
@@ -166,7 +200,7 @@ static int cb_adopt(int idx, void* wv, void* cb, void* param, void* wrap)
     e->regMod   = mod_of((void*)(UINT_PTR)e->regRet);
     cb_unlock();
 
-    r = ((p_on)MBK_REAL(idx))(wv, wrap, e);
+    r = cb_real_reg(idx, wv, wrap, e);
     return r;
 }
 
@@ -199,7 +233,7 @@ int __cdecl fn(void* wv, void* cb, void* param)                               \
     mbk_ensure();                                                            \
     if (!cb) {                                                                \
         cb_forget(MBK_IDX_##fn, wv);                                          \
-        return ((p_on)MBK_REAL(MBK_IDX_##fn))(wv, NULL, NULL);                \
+        return cb_real_reg(MBK_IDX_##fn, wv, NULL, NULL);                     \
     }                                                                         \
     return cb_adopt(MBK_IDX_##fn, wv, cb, param, (void*)&mbwrap_##fn);        \
 }
@@ -248,10 +282,8 @@ void mb_cb_detach_all(void)
     }
     cb_unlock();
 
-    for (i = 0; i < n; i++) {
-        void* real = MBK_REAL(pend[i].idx);
-        if (real) ((p_on)real)(pend[i].wv, NULL, NULL);
-    }
+    for (i = 0; i < n; i++)
+        cb_real_reg(pend[i].idx, pend[i].wv, NULL, NULL);
 }
 
 /* 只解绑某一个 view 上的全部代理回调 —— 多浏览器实例场景下比 DetachAll 精准 */
@@ -272,10 +304,8 @@ int __stdcall MbKit_DetachView(void* wv)
     }
     cb_unlock();
 
-    for (i = 0; i < n; i++) {
-        void* real = MBK_REAL(pend[i].idx);
-        if (real) ((p_on)real)(pend[i].wv, NULL, NULL);
-    }
+    for (i = 0; i < n; i++)
+        cb_real_reg(pend[i].idx, pend[i].wv, NULL, NULL);
     return n;
 }
 

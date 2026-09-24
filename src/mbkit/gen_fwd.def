@@ -255,22 +255,47 @@ EXPORTS
     wkeWebFrameGetMainWorldScriptContext
     MbKit_Init
     MbKit_IsReady
-    MbKit_DetachAll
-    MbKit_LastError
-    MbKit_SuppressedCount
-    MbKit_CbHits
-    MbKit_FwdIndex
-    MbKit_KernelPath
-    MbKit_KernelModule
-    MbKit_FwdError
-    MbKit_CbCount
-    MbKit_CbBlocked
-    MbKit_CbLive
-    MbKit_DetachView
-    MbKit_MissingCount
-    MbKit_MissingHits
-    MbKit_MissingList
     MbKit_SetNodePath
     MbKit_ConfigNodePath
     MbKit_KernelLoaded
     MbKit_Diag
+    MbKit_NodePath
+    MbKit_Version
+    MbKit_LastError
+    MbKit_Create
+    MbKit_Destroy
+    MbKit_DetachAll
+    MbKit_LiveCount
+    MbKit_LoadUrl
+    MbKit_LoadHtml
+    MbKit_RunJs
+    MbKit_Resize
+    MbKit_SetZoom
+    MbKit_SetHeadless
+    MbKit_IsLoaded
+    MbKit_GetTitle
+    MbKit_ForcePaint
+    MbKit_LoadUrlA
+    MbKit_LoadHtmlA
+    MbKit_RunJsA
+    MbKit_GetTitleA
+    MbKit_Pump
+    MbKit_NodeModule
+    MbKit_SelfModule
+    MbKit_KernelInitCount
+    MbKit_Pinned
+    MbKit_SuppressedCount
+    MbKit_CbCount
+    MbKit_CbLive
+    MbKit_CbHits
+    MbKit_CbBlocked
+    MbKit_DetachView
+    MbKit_AliveModule
+    MbKit_KernelPath
+    MbKit_FwdError
+    MbKit_EnsureKernelInit
+    MbKit_FwdIndex
+    MbKit_KernelModule
+    MbKit_MissingCount
+    MbKit_MissingHits
+    MbKit_MissingList

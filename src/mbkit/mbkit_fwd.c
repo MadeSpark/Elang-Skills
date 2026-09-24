@@ -19,6 +19,8 @@
 
 #include "gen_fwd.h"
 #include "mbkit_api.h"
+#include "mbk_marshal.h"
+#include "mbk_thread.h"
 
 /* 内核导出地址表：与 gen_fwd.h 的 MBK_IDX_* 一一对应 */
 void* mbk_slots[MBK_ALL_COUNT];
@@ -291,9 +293,160 @@ static void fill_safe_stubs(void)
     for (i = 0; i < MBK_ALL_COUNT; i++) mbk_slots[i] = (void*)&mbk_missing_stub;
 }
 
-static void bind_all(void)
+/* ==========================================================================
+ * 导出边界编组（2026-09-25 重做 —— 取代已实测否定的「内核代际」机制）
+ *
+ * 为什么必须把编组做在 252 个 wke* / js* 导出上：
+ *   内核线程亲和（属主不可迁移、finalize 空实现、换拷贝停摆，全部实测）。
+ *   旧版导出是纯 jmp 直通 —— 调用线程直接闯内核；业务线程（.ec 模块的
+ *   MB浏览框.绑定 路径）一旦换了线程（DLL 重载后），就是挂死或 0xC0000005。
+ *   只有把**每一个**内核调用都收进编组，内核才能永久落在常驻线程 K 上，
+ *   业务线程的生死与内核归属彻底解耦（marshal_probe r1 实测全链路成立；
+ *   r2/r3/r4 证明不存在可以直通的子集 —— 任何直调都挂）。
+ *
+ * 结构（gen_fwd.py 生成 gen_thunk.c）：
+ *   公开导出 = 调用线程侧 thunk：按**真实签名**收参 → 打包 MBKCALL
+ *              → mbk_marshal_exec（本文件）→ 带回返回值；
+ *   K 侧执行体 tr_xxx：按**真实签名**解包 → 调内核真函数 → 回填返回值。
+ *   被接管的 22 个回调登记类（mbkit_cb.c）同样经 mbk_marshal_3 编组。
+ * ========================================================================*/
+static volatile LONG g_liveViews = 0;
+
+void mbk_live_add(long d)
+{
+    LONG v = InterlockedExchangeAdd(&g_liveViews, d) + d;
+    if (v < 0) InterlockedExchange(&g_liveViews, 0);
+}
+long mbk_live_get(void) { return g_liveViews; }
+
+/* ---- 编组执行层（实现 mbk_marshal.h 的契约）--------------------------
+ * 编组计数（MbKit_Diag 可见）：
+ *   total = 经导出边界进来的内核调用总数
+ *   cross = 其中从非 K 线程发起（真正走了 PostThreadMessage 编组）的次数
+ *   fail  = 被拒绝的次数（兼容模式跨线程 / 内核初始化失败 / 非法载荷）
+ * --------------------------------------------------------------------*/
+static LONG g_marshalTotal = 0;
+static LONG g_marshalCross = 0;
+static LONG g_marshalFail  = 0;
+
+/* mbkit.c：内核属主三态与「当前线程能否碰内核」判定（K 模式/兼容模式） */
+extern int   mbk_can_kernel(void);
+extern int   mbk_owner_mode(void);       /* 1=K 模式 0=兼容模式（属主=业务线程） */
+extern DWORD mbk_owner_tid(void);
+
+/* mbkit.c【导出】：确保内核已落在常驻线程 K 上（幂等）。MBKIT_OK == 0 */
+extern int __stdcall MbKit_EnsureKernelInit(void);
+
+/* K 侧统一跳板（mbk_kernel_run 的任务形态）：
+ * 取内核真地址 → 交由 gen_thunk.c 生成的签名化执行体。
+ * 真地址缺失 = 内核没导出这个 API（fill_slots 已填安全桩）→ 返回 0，
+ * 与旧版「安全桩」语义逐位一致，绝不 jmp 0。 */
+static void marshal_trampoline(void* p)
+{
+    MBKCALL* c = (MBKCALL*)p;
+    c->real = mbk_slots[c->idx];
+    if (!c->real || c->real == (void*)&mbk_missing_stub) {
+        c->ret.u = 0;
+        return;
+    }
+    c->tramp(c);
+}
+
+void mbk_marshal_exec(MBKCALL* c)
+{
+    InterlockedIncrement(&g_marshalTotal);
+
+    if (!c || c->idx < 0 || c->idx >= MBK_ALL_COUNT || !c->tramp) {
+        InterlockedIncrement(&g_marshalFail);
+        if (c) c->ret.u = 0;
+        return;
+    }
+
+    mbk_ensure();        /* 槽表懒加载（首次调用在此 LoadLibrary node.dll） */
+
+    /* 兼容模式（内核被某业务线程裸初始化绑死、无法迁移）且当前是别的线程：
+     * 明确失败 —— 返回 0，绝不跨线程硬闯（硬约束：宁可降级不可崩宿主）。 */
+    if (!mbk_can_kernel()) {
+        InterlockedIncrement(&g_marshalFail);
+        c->ret.u = 0;
+        return;
+    }
+
+    /* 内核尚未初始化：首个内核调用即把内核落到常驻线程 K。
+     * （wkeInitialize 导出本身也已改为同一语义 —— 见 gen_thunk.c 特例。） */
+    if (!mbk_owner_tid() && MbKit_EnsureKernelInit() != 0 /* MBKIT_OK */) {
+        InterlockedIncrement(&g_marshalFail);
+        c->ret.u = 0;
+        return;
+    }
+
+    if (GetCurrentThreadId() != mbk_kernel_tid())
+        InterlockedIncrement(&g_marshalCross);
+
+    /* 属主线程上调用 → 就地执行（回调重入安全）；否则投递到 K 同步等待 */
+    mbk_kernel_run(marshal_trampoline, c);
+}
+
+/* 三参便捷版：签名 (void*,void*,void*) -> 整数 —— 回调登记类（mbkit_cb.c）
+ * 与大量内核 API 的公共形态。执行体从 mbk_tramps[]（gen_thunk.c）按 idx 取。 */
+unsigned mbk_marshal_3(int idx, unsigned a0, unsigned a1, unsigned a2)
+{
+    MBKCALL c;
+    ZeroMemory(&c, sizeof(c));
+    c.idx   = idx;
+    c.tramp = mbk_tramps[idx];
+    c.kind  = 1;
+    c.a[0]  = (long long)a0;
+    c.a[1]  = (long long)a1;
+    c.a[2]  = (long long)a2;
+    mbk_marshal_exec(&c);
+    return c.ret.u;
+}
+
+/* 当前内核实际路径（供诊断 / MbKit_KernelPath 用） */
+const char* mbk_current_kernel_path(void)
+{
+    return g_nodePath;
+}
+
+/* 把内核 h 的全部导出填进 mbk_slots[]（不含 LoadLibrary 与路径解析） */
+static void fill_slots(HMODULE h)
 {
     int i, miss = 0, critMiss = 0;
+
+    g_missingList[0] = 0;
+    for (i = 0; i < MBK_ALL_COUNT; i++) {
+        void* p = (void*)GetProcAddress(h, mbk_fwd_names[i]);
+        if (p) { mbk_slots[i] = p; continue; }
+
+        miss++;
+        mbk_slots[i] = (void*)&mbk_missing_stub;
+        {   /* 记账（供 MbKit_MissingList 诊断） */
+            size_t used = strlen(g_missingList);
+            if (used + strlen(mbk_fwd_names[i]) + 2 < sizeof(g_missingList))
+                _snprintf(g_missingList + used, sizeof(g_missingList) - used,
+                          "%s ", mbk_fwd_names[i]);
+        }
+        {
+            int k;
+            for (k = 0; k < (int)(sizeof(k_critical) / sizeof(k_critical[0])); k++)
+                if (strcmp(mbk_fwd_names[i], k_critical[k]) == 0) critMiss++;
+        }
+    }
+    InterlockedExchange(&g_missingCount, miss);
+
+    if (miss) {
+        OutputDebugStringA("[MbKit] 内核未导出（已填安全桩）：");
+        OutputDebugStringA(g_missingList);
+        OutputDebugStringA("\n");
+    }
+    (void)critMiss;
+}
+
+static void bind_all(void)
+{
+    int critMiss = 0;
+    int i;
 
     if (!resolve_node(g_nodePath)) {
         if (g_cfgMiss) {
@@ -326,43 +479,29 @@ static void bind_all(void)
         }
     }
 
-    g_missingList[0] = 0;
+    fill_slots(g_hNode);
+
+    /* 关键 API 缺失 -> 致命（这个模块不可能工作） */
     for (i = 0; i < MBK_ALL_COUNT; i++) {
-        void* p = (void*)GetProcAddress(g_hNode, mbk_fwd_names[i]);
-        if (p) { mbk_slots[i] = p; continue; }
-
-        miss++;
-        mbk_slots[i] = (void*)&mbk_missing_stub;
-        {   /* 记账（供 MbKit_MissingList 诊断） */
-            size_t used = strlen(g_missingList);
-            if (used + strlen(mbk_fwd_names[i]) + 2 < sizeof(g_missingList))
-                _snprintf(g_missingList + used, sizeof(g_missingList) - used,
-                          "%s ", mbk_fwd_names[i]);
-        }
-        {
-            int k;
-            for (k = 0; k < (int)(sizeof(k_critical) / sizeof(k_critical[0])); k++)
-                if (strcmp(mbk_fwd_names[i], k_critical[k]) == 0) critMiss++;
-        }
+        int k;
+        if (mbk_slots[i] != (void*)&mbk_missing_stub) continue;
+        for (k = 0; k < (int)(sizeof(k_critical) / sizeof(k_critical[0])); k++)
+            if (strcmp(mbk_fwd_names[i], k_critical[k]) == 0) critMiss++;
     }
-    InterlockedExchange(&g_missingCount, miss);
-
     if (critMiss) {
         fatal("内核 %s 缺少 %d 个**关键** API —— 该模块无法工作。缺失清单：%s",
               g_nodePath, critMiss, g_missingList);
         fill_safe_stubs();
         return;
     }
-    if (miss && strict_mode()) {
-        fatal("严格模式：内核缺少 %d 个导出：%s", miss, g_missingList);
+    if (g_missingCount && strict_mode()) {
+        fatal("严格模式：内核缺少 %d 个导出：%s", (int)g_missingCount, g_missingList);
         fill_safe_stubs();
         return;
     }
-    if (miss) {
-        OutputDebugStringA("[MbKit] 内核未导出（已填安全桩）：");
-        OutputDebugStringA(g_missingList);
-        OutputDebugStringA("\n");
-    }
+
+    /* （旧版此处安装 create/destroy/initialize 拦截桩 —— 已随「内核代际」机制
+     *  废弃：252 个导出现在全部是 gen_thunk.c 的编组 thunk，无需再改槽表。） */
 }
 
 int mbk_ensure(void)
@@ -402,7 +541,7 @@ HMODULE mbk_node(void)
 const char* __stdcall MbKit_KernelPath(void)
 {
     mbk_ensure();
-    return g_nodePath;
+    return mbk_current_kernel_path();
 }
 
 unsigned int __stdcall MbKit_KernelModule(void)
@@ -465,12 +604,17 @@ int __stdcall MbKit_KernelLoaded(void)
  * 返回静态缓冲，调用方不要释放、不要长期持有。 */
 const char* __stdcall MbKit_Diag(void)
 {
-    static char buf[1400];
+    static char buf[1600];
     char exeDir[MAX_PATH], cwd[MAX_PATH];
     const char* stateTxt =
         (g_state == 1) ? "已加载" :
         (g_state == 2) ? "加载失败" :
         (g_state == 0x7FFFFFFF) ? "正在加载" : "尚未加载";
+    /* 内核属主模式：1=K 模式（编组，重载安全） 0=兼容模式（内核绑在业务线程） */
+    DWORD ownerTid = mbk_owner_tid();
+    const char* modeTxt = ownerTid
+        ? (mbk_owner_mode() ? "K 模式（编组，重载安全）" : "兼容模式（内核绑业务线程）")
+        : "未初始化";
 
     exeDir[0] = cwd[0] = 0;
     host_exe_dir(exeDir);
@@ -479,6 +623,7 @@ const char* __stdcall MbKit_Diag(void)
     _snprintf(buf, sizeof(buf) - 1,
         "MbKit 自检\n"
         "  内核状态     : %s\n"
+        "  内核属主     : 线程 %lu（%s）\n"
         "  内核路径     : %s\n"
         "  内核模块     : 0x%08X\n"
         "  自定义路径   : %s\n"
@@ -486,8 +631,16 @@ const char* __stdcall MbKit_Diag(void)
         "  当前工作目录 : %s\n"
         "  内核缺失导出 : %d（其中被真正调用过 %d 次）\n"
         "  缺失清单     : %s\n"
-        "  加载期错误   : %s\n",
+        "  加载期错误   : %s\n"
+        "  编组调用     : 共 %ld 次（跨线程 %ld，失败 %ld）\n"
+        /* ★ 2026-09-25：把回调层的编号并进自检 —— 这是「事件为什么没反应 / 缩放为什么
+         *   不重绘（撕裂）」唯一能在**用户真机**里读到的直接指标。
+         *   被挡 > 0 说明仍有回调被存活校验拦下；正常应为 0。 */
+        "  回调登记     : %d 个（存活 %d）  命中 %d  被挡 %d\n"
+        "  说明         : 被挡 > 0 表示有回调因「业务身份判不出/已失效」被拦；\n"
+        "                 正常应为 0。若持续增长，请把本行反馈给维护者。\n",
         stateTxt,
+        (unsigned long)ownerTid, modeTxt,
         g_nodePath[0] ? g_nodePath : "(未解析)",
         (unsigned)(UINT_PTR)g_hNode,
         g_cfgSet ? g_cfgPath : "(未设置 → 默认: 宿主程序根目录)",
@@ -495,7 +648,9 @@ const char* __stdcall MbKit_Diag(void)
         cwd[0] ? cwd : "(?)",
         (int)g_missingCount, (int)g_missingHits,
         g_missingList[0] ? g_missingList : "(无)",
-        g_fwdErr[0] ? g_fwdErr : "(无)");
+        g_fwdErr[0] ? g_fwdErr : "(无)",
+        (long)g_marshalTotal, (long)g_marshalCross, (long)g_marshalFail,
+        MbKit_CbCount(), MbKit_CbLive(), MbKit_CbHits(), MbKit_CbBlocked());
     buf[sizeof(buf) - 1] = 0;
     return buf;
 }

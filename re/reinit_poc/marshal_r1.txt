@@ -1,0 +1,31 @@
+======================================================================
+ marshal_probe —— persistent kernel thread + marshaling feasibility
+ mode : r1
+======================================================================
+   raw_load cand[0]="..\..\..\main\corn\node.dll" -> 78940000 err=0
+   裸 node.dll = 0x78940000
+   [K] 内核线程就绪 tid=39968
+   业务线程（主）创建 hwnd=0x000B0E1A tid=46064 原生WndProc=0x002F1580
+
+== r1  all_on_K : init/create/sethandle/resize/loadhtml/轮询 全在 K ==
+   [K] wkeInitialize ...
+   [K] isInit=1  ver="wke version 1.02
+blink build 98096
+build time Wed Mar 10 09:29:26 2021
+"
+   [K] wkeCreateWebView -> 03D02878
+   [K] sethandle 前 WndProc=0x002F1580（业务原生=0x002F1580）
+   [K] wkeSetHandle(view, 0x000B0E1A) 完成；sethandle 后 WndProc=0x002F1580（未被子类化）
+   [K] wkeResize(800,600) 完成
+   [K] wkeLoadHTMLW(R-1) 完成
+   -- monitor(r1) 16s（轮询在 K 上，主线程并发泵）--
+   [r1] t= 0s loaded=0 title="" paints=0
+   [r1] t= 5s loaded=1 title="R-1" paints=1
+   [r1] t=10s loaded=1 title="R-1" paints=1
+   [r1] t=15s loaded=1 title="R-1" paints=1
+   [r1] FINAL loaded=1 title="R-1" paints=1
+   [r1] colors=1（主线程 PrintWindow 统计）
+   RESULT(r1 all_on_K): PASS —— 跨线程 SetHandle 可行，页面载入正常
+   [K] wkeDestroyWebView 完成
+
+== done ==

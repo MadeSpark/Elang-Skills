@@ -39,6 +39,7 @@
 #include <string.h>
 
 #include "mbkit_api.h"
+#include "mbk_thread.h"
 
 /* --------------------------------------------------------------------------
  * 由 mbkit_fwd.c / mbkit_cb.c 提供：
@@ -53,6 +54,9 @@ extern const char*  __stdcall MbKit_KernelPath(void);
 extern const char*  __stdcall MbKit_FwdError(void);
 extern void         mb_cb_detach_all(void);
 extern int          __stdcall MbKit_CbBlocked(void);
+/* 常驻内核线程 K + 同步编组（mbk_thread.c）—— 跨线程/跨 DLL 会话的唯一通路 */
+extern void         mbk_live_add(long d);
+extern long         mbk_live_get(void);
 
 /* ==========================================================================
  * 1. miniblink 导出（全部 __cdecl —— 与易语言 "@wkeXXX" 的 @ 前缀一致）
@@ -145,6 +149,30 @@ typedef struct {
 static MBG              G;
 static CRITICAL_SECTION G_lock;
 static int              G_lockReady = 0;
+
+/* ==========================================================================
+ * 内核属主与调用模式（2026-09-25 重做 —— 「常驻内核线程 K + 编组」）
+ *
+ * 事实链（全部实测，物证见 re/reinit_poc/）：
+ *   ① miniblink 内核线程亲和：wkeInitialize 在哪条线程执行，内核就归哪条；
+ *      跨线程碰内核 = 挂死（只读 API 也挂）或 0xC0000005（V8 线程局部区空解引用）。
+ *   ② 内核属主**不可迁移**：finalize 是空实现、FreeLibrary 会段错误、
+ *      换独立拷贝的加载管线彻底停摆（A 实例 init 过 ⇒ 拷贝 90s loaded=0）。
+ *   ③ 唯一通路：让 MbKit 自有的一条**常驻线程 K** 持有内核（wkeInitialize 只在
+ *      K 上执行），其它线程的内核调用全部同步编组到 K（marshal_probe r1 实测
+ *      跨线程 SetHandle/载入/渲染全部成立，且 wkeSetHandle 不做跨线程子类化）。
+ *
+ * g_ownerTid 三态：
+ *   0            —— 内核尚未初始化；
+ *   =K 的 tid    —— 「K 模式」：内核由 MbKit_Init 在 K 上初始化，所有内核调用
+ *                   经 mbk_kernel_run 编组（跨线程 / 跨 DLL 会话都成立）；
+ *   =业务线程 tid —— 「兼容模式」：业务侧绕过 MbKit 直接裸调了 wkeInitialize
+ *                   （转发桩 passthrough + 记账，见 mbkit_fwd.c），内核已绑在
+ *                   该线程上，无法迁移 —— 属主线程内的调用直通（与旧版逐位
+ *                   一致），跨线程调用返回明确失败码而不是崩（硬约束 5）。
+ * ========================================================================*/
+static DWORD g_ownerTid = 0;      /* 内核属主线程（0=未初始化） */
+static int   g_kMode    = 0;      /* 1=K 模式（编组）  0=兼容模式（属主直通） */
 
 static void lock(void)   { if (G_lockReady) EnterCriticalSection(&G_lock); }
 static void unlock(void) { if (G_lockReady) LeaveCriticalSection(&G_lock); }
@@ -385,11 +413,174 @@ static int bind_symbols(void)
 #undef BIND_REQ
 #undef BIND_OPT
 
+/* ==========================================================================
+ * 5b. 内核属主管理 + 内核调用编组（2026-09-25 重做）
+ * ========================================================================*/
+/* 属主线程是否还活着（兼容模式判断用；K 永不退出，不走这里） */
+static int owner_thread_alive(DWORD tid)
+{
+    HANDLE h;
+    DWORD  code = 0;
+    int    alive = 0;
+
+    if (!tid) return 0;
+    h = OpenThread(THREAD_QUERY_LIMITED_INFORMATION, FALSE, tid);
+    if (!h) return 0;                        /* 打不开 = 线程已不存在 */
+    if (GetExitCodeThread(h, &code)) alive = (code == STILL_ACTIVE);
+    CloseHandle(h);
+    return alive;
+}
+
+/* 内核启动任务：在属主线程上执行（K 模式=由 mbk_kernel_run 编组到 K；
+ * 兼容模式=就地）。加载 node.dll + 绑符号 + wkeInitialize（只此一次）。 */
+static void k_boot(void* unused)
+{
+    (void)unused;
+    if (!mbk_ensure()) return;            /* 转发层：解析路径 + 加载 node.dll + 填槽 */
+    {   /* 钉住内核：从此 node.dll 常驻进程，内核全局状态由本层独占管理 */
+        HMODULE pin = NULL;
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_PIN, "node.dll", &pin);
+    }
+    G.hNode = mbk_node();
+    _snprintf(G.nodePath, sizeof(G.nodePath) - 1, "%s", MbKit_KernelPath());
+    G.nodePath[sizeof(G.nodePath) - 1] = 0;
+    if (bind_symbols() != MBKIT_OK) return;
+    if (!G.IsInitialize || !G.IsInitialize()) {   /* 幂等：已初始化就不再 initialize */
+        G.Initialize();
+        G.initCount++;
+    }
+    {   /* 版本串（GetVersionString 必须在 initialize 之后调用，否则崩） */
+        const char* vs = G.GetVersionString ? G.GetVersionString() : NULL;
+        _snprintf(G.version, sizeof(G.version) - 1,
+                  "MbKit/1.2 (export-marshal)  node.dll  wke%d  %s",
+                  G.GetVersion ? G.GetVersion() : 0, vs ? vs : "(?)");
+        G.version[sizeof(G.version) - 1] = 0;
+    }
+}
+
+/* 在 tid 线程上初始化内核（幂等：已有属主则直接成功）。
+ * onK=1：tid 必须是常驻线程 K（mbk_kernel_run 编组过去执行）；
+ * onK=0：在**当前线程**就地初始化（兼容模式）。 */
+static int init_kernel_on(DWORD tid, int onK)
+{
+    if (g_ownerTid) return MBKIT_OK;         /* 已有属主：不重复初始化 */
+
+    if (onK) {
+        if (!mbk_kernel_start()) {
+            seterr("无法启动常驻内核线程 K");
+            return MBKIT_E_GENERIC;
+        }
+        mbk_kernel_run(k_boot, NULL);
+        /* ★ K 的真实线程 id 要在 start 之后再取：调用方传进来的 tid 在
+         *   K 尚未启动时是 0（mbk_kernel_tid 的未启动语义），照抄会把
+         *   属主永久记成 0，导致每次调用都误判「内核未初始化」。 */
+        tid = mbk_kernel_tid();
+    } else {
+        k_boot(NULL);
+    }
+    if (!G.hNode || !G.Initialize) {
+        seterr("内核初始化失败：%s", MbKit_FwdError());
+        return MBKIT_E_NODLL;
+    }
+    g_ownerTid = tid;
+    g_kMode    = onK;
+    return MBKIT_OK;
+}
+
+/* 【导出】确保内核已初始化。由 MbKit_Init 调用；gen_fwd.py 生成的初始化类
+ * 导出（wkeInitialize/wkeInitializeEx）与导出边界编组（mbkit_fwd.c 的
+ * mbk_marshal_exec）也走本函数 —— 内核从第一天起就落在常驻线程 K 上。
+ * 幂等；加锁串行化（防两线程同时看到未初始化而双启动）；返回 MBKIT_OK/失败码。 */
+int __stdcall MbKit_EnsureKernelInit(void)
+{
+    int rc;
+    if (g_ownerTid) return MBKIT_OK;
+    lock();
+    if (g_ownerTid) { unlock(); return MBKIT_OK; }   /* 双检：等锁期间别人已启动 */
+    rc = init_kernel_on(mbk_kernel_tid(), 1);
+    unlock();
+    return rc;
+}
+
+/* —— 供 mbkit_fwd.c（导出边界编组 / MbKit_Diag）使用的状态小口 ——
+ * 注意：k_boot 在 K 上执行时 kernel_tid 已就绪；属主 tid 在 init 成功后才记账。 */
+static int can_kernel(void);                 /* 定义在本节下方（见 5b 末尾） */
+int   mbk_can_kernel(void)  { return can_kernel(); }
+int   mbk_owner_mode(void)  { return g_kMode; }      /* 1=K 模式 0=兼容模式 */
+DWORD mbk_owner_tid(void)   { return g_ownerTid; }
+
+/* 当前线程此刻能否安全碰内核：
+ *   未初始化            → 可（MbKit_Create 会先走 MbKit_Init）；
+ *   K 模式              → 可（mbk_kernel_run 会编组到 K）；
+ *   兼容模式 + 属主线程 → 可（直通，与旧版一致）；
+ *   兼容模式 + 其它线程 → 不可 —— 返回失败码，绝不跨线程硬闯（硬约束 5）。 */
+static int can_kernel(void)
+{
+    if (!g_ownerTid) return 1;
+    if (g_kMode) return 1;
+    return GetCurrentThreadId() == g_ownerTid;
+}
+
+/* --------------------------------------------------------------------------
+ * 内核调用编组的统一载荷：一个 KOP 结构 + 一个执行器，覆盖全部「操作类」API
+ * （导航 / JS / 尺寸 / 缩放 / 状态查询 / 取标题）。带 view 生命周期的
+ * Create / Destroy / DetachAll 各自有专门任务（见下）。
+ * ------------------------------------------------------------------------*/
+enum {
+    KOP_LOADURLW = 1, KOP_LOADHTMLW, KOP_RUNJSW, KOP_RESIZE, KOP_SETZOOM,
+    KOP_SETHEADLESS, KOP_ISLOADED, KOP_GETTITLEW
+};
+
+typedef struct {
+    int          op;
+    void*        wv;
+    const void*  p1;          /* 字符串参数（URL / HTML / JS） */
+    long long    a, b;        /* 整型参数（宽高 / 开关） */
+    float        f;           /* 浮点参数（缩放） */
+    long long    ret;         /* 返回值 */
+    wchar_t*     tbuf;        /* KOP_GETTITLEW 的出参缓冲 */
+    int          cch;
+} KOP;
+
+static void k_exec(void* p)
+{
+    KOP* k = (KOP*)p;
+    switch (k->op) {
+    case KOP_LOADURLW:    G.LoadURLW(k->wv, (const wchar_t*)k->p1);  k->ret = MBKIT_OK;    break;
+    case KOP_LOADHTMLW:   G.LoadHTMLW(k->wv, (const wchar_t*)k->p1); k->ret = MBKIT_OK;    break;
+    case KOP_RUNJSW:      k->ret = G.RunJSW(k->wv, (const wchar_t*)k->p1);                  break;
+    case KOP_RESIZE:      G.Resize(k->wv, (int)k->a, (int)k->b);     k->ret = MBKIT_OK;    break;
+    case KOP_SETZOOM:     G.SetZoomFactor(k->wv, k->f);              k->ret = MBKIT_OK;    break;
+    case KOP_SETHEADLESS: if (G.SetHeadlessEnabled)
+                              G.SetHeadlessEnabled(k->wv, k->a ? TRUE : FALSE);
+                          k->ret = G.SetHeadlessEnabled ? MBKIT_OK : MBKIT_E_GENERIC;        break;
+    case KOP_ISLOADED:    k->ret = G.IsLoadingCompleted(k->wv) ? 1 : 0;                    break;
+    case KOP_GETTITLEW: {
+        const wchar_t* t = G.GetTitleW(k->wv);
+        if (!t) { if (k->tbuf && k->cch > 0) k->tbuf[0] = 0; k->ret = 1; }
+        else    { lstrcpynW(k->tbuf, t, k->cch); k->ret = 0; }
+        break;
+    }
+    default: k->ret = MBKIT_E_GENERIC; break;
+    }
+}
+
+/* 同步把一个 KOP 编组到属主线程执行，返回 k.ret。
+ * 不可碰内核（兼容模式跨线程）时返回 fallback，绝不碰内核。 */
+static long long mbk_kcall(int op, void* wv, const void* p1,
+                           long long a, long long b, float f,
+                           long long fallback)
+{
+    KOP k;
+    if (!can_kernel()) return fallback;
+    ZeroMemory(&k, sizeof(k));
+    k.op = op; k.wv = wv; k.p1 = p1; k.a = a; k.b = b; k.f = f;
+    mbk_kernel_run(k_exec, &k);
+    return k.ret;
+}
+
 int __stdcall MbKit_Init(const char* nodeDllPathOrNull)
 {
-    HMODULE pin = NULL;
-    int rc;
-
     /* 2026-09-24：显式传入的路径现在**真的生效**了（此前被 (void) 忽略）。
      * 语义与易语言的 `WKE设置node路径` 完全一致：目录 或 node.dll 完整文件名；
      * 空/NULL = 用默认链（宿主程序根目录优先）。
@@ -398,37 +589,25 @@ int __stdcall MbKit_Init(const char* nodeDllPathOrNull)
         mbk_set_node_path(nodeDllPathOrNull);
 
     lock();
-    if (G.ready) { unlock(); return MBKIT_OK; }
+    if (G.ready) {
+        int live = 0, i;
+        for (i = 0; i < MB_MAX_VIEW; i++) if (G.views[i].used) live++;
+        unlock();
+
+        /* 会话语义（硬约束 4，重载场景）：biz DLL 换代时重新 Init 进来，
+         * 上个实例可能没来得及销毁 view 就被 FreeLibrary 了 —— 残留 view
+         * 全部清理，保证新实例拿到干净状态。内核与线程 K 原样复用。 */
+        if (live > 0) MbKit_DetachAll();
+        return MBKIT_OK;
+    }
     unlock();
 
-    /* ★ 内核在进程内**只能被加载一次**。
-     *   本层若自行 LoadLibrary，就可能出现「两份 node.dll、两套内核状态」——
-     *   症状是莫名奇妙的"初始化过了却不动"，且 wkeIsInitialize 还会骗人。
-     *   所以统一走转发层的单一持有者。 */
-    if (!mbk_ensure()) {
-        seterr("内核加载失败：%s", MbKit_FwdError());
-        return MBKIT_E_NODLL;
-    }
-    G.hNode = mbk_node();
-    _snprintf(G.nodePath, sizeof(G.nodePath) - 1, "%s", MbKit_KernelPath());
-    G.nodePath[sizeof(G.nodePath) - 1] = 0;
-
-    /* 钉住内核：从此 node.dll 常驻进程，内核全局状态由本层独占管理 */
-    GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_PIN, "node.dll", &pin);
-
-    rc = bind_symbols();
-    if (rc != MBKIT_OK) return rc;
-
-    /* 真正的内核初始化：本层是整个进程里**唯一**会调 initialize 的地方 */
-    G.Initialize();
-    G.initCount++;
-
-    {   /* 版本串（注意：GetVersionString 必须在 initialize 之后调用，否则崩） */
-        const char* vs = G.GetVersionString ? G.GetVersionString() : NULL;
-        _snprintf(G.version, sizeof(G.version) - 1,
-                  "MbKit/1.0  node.dll  wke%d  %s",
-                  G.GetVersion ? G.GetVersion() : 0, vs ? vs : "(?)");
-        G.version[sizeof(G.version) - 1] = 0;
+    /* ★ 内核从第一天起就落在 MbKit 自有的常驻线程 K 上（业务线程生死无关）。
+     *   例外：业务侧已裸调 wkeInitialize（转发桩已把属主记账成调用线程，
+     *   兼容模式）—— 此时内核绑在该业务线程上无法迁移，保持不动作旧版语义。 */
+    {
+        int rc = MbKit_EnsureKernelInit();
+        if (rc != MBKIT_OK) return rc;
     }
 
     lock();
@@ -468,11 +647,34 @@ static void remember_owner(MBVIEW* v)
     }
 }
 
+/* Create 的内核侧任务：在属主线程上执行（K 模式=编组到 K）。
+ * 建 view + 绑窗口/无窗口 + 尺寸 + 注册两层回调，一次编组全部做完。 */
+typedef struct { MBVIEW* v; HWND hwnd; int x, y, w, h; int ok; } CARG;
+
+static void k_create(void* p)
+{
+    CARG* a = (CARG*)p;
+    void* wv = G.CreateWebView();
+
+    if (!wv) return;
+    a->v->wv = wv;
+    if (a->hwnd) {
+        G.SetHandle(wv, a->hwnd);
+        if (G.SetHandleOffset && (a->x || a->y)) G.SetHandleOffset(wv, a->x, a->y);
+    } else if (G.SetHeadlessEnabled) {
+        G.SetHeadlessEnabled(wv, TRUE);
+    }
+    G.Resize(wv, a->w, a->h);
+    set_paint_cb(a->v);
+    set_load_cb(a->v);
+    a->ok = 1;
+}
+
 void* __stdcall MbKit_Create(void* hwnd, int x, int y, int w, int h,
                              MbEventCb cb, void* user)
 {
     MBVIEW* v;
-    void*   wv;
+    CARG    a;
 
     if (!G.ready) {
         int rc = MbKit_Init(NULL);
@@ -481,13 +683,9 @@ void* __stdcall MbKit_Create(void* hwnd, int x, int y, int w, int h,
     if (w <= 0) w = 400;
     if (h <= 0) h = 300;
 
-    wv = G.CreateWebView();
-    if (!wv) { seterr("wkeCreateWebView 返回 NULL"); return NULL; }
-
     lock();
     v = alloc_view();
-    if (!v) { unlock(); G.DestroyWebView(wv); seterr("view 槽位已满"); return NULL; }
-    v->wv    = wv;
+    if (!v) { unlock(); seterr("view 槽位已满"); return NULL; }
     v->hwnd  = (HWND)hwnd;
     v->cb    = cb;
     v->user  = user;
@@ -495,18 +693,37 @@ void* __stdcall MbKit_Create(void* hwnd, int x, int y, int w, int h,
     v->ownerPath[0] = 0;
     if (cb) remember_owner(v);
     v->used  = 1;
+    v->wv    = NULL;
     unlock();
 
-    if (hwnd) {
-        G.SetHandle(wv, (HWND)hwnd);
-        if (G.SetHandleOffset && (x || y)) G.SetHandleOffset(wv, x, y);
-    } else if (G.SetHeadlessEnabled) {
-        G.SetHeadlessEnabled(wv, TRUE);
+    ZeroMemory(&a, sizeof(a));
+    a.v = v; a.hwnd = (HWND)hwnd; a.x = x; a.y = y; a.w = w; a.h = h;
+
+    if (!can_kernel()) {
+        /* 兼容模式 + 跨线程：内核绑在别的（业务）线程上无法迁移。
+         * 明确失败，绝不跨线程硬闯 —— 返回 NULL 而不是 0xC0000005。 */
+        lock(); v->used = 0; unlock();
+        seterr("内核属于线程 %lu（兼容模式，非编组），当前线程 %lu 无法建 view",
+               (unsigned long)g_ownerTid, (unsigned long)GetCurrentThreadId());
+        return NULL;
     }
-    G.Resize(wv, w, h);
-    set_paint_cb(v);
-    set_load_cb(v);
+    mbk_kernel_run(k_create, &a);
+    if (!a.ok) {
+        lock(); v->used = 0; unlock();
+        seterr("wkeCreateWebView 返回 NULL");
+        return NULL;
+    }
+    mbk_live_add(+1);                    /* 与转发路径统一口径的活跃 view 计数 */
     return v;
+}
+
+/* Destroy 的内核侧任务（在属主线程上执行 —— 跨线程直调会挂死，实测） */
+static void k_destroy_one(void* p)
+{
+    void* wv = *(void**)p;
+    clear_view_cbs(wv);
+    G.SetHandle(wv, NULL);
+    G.DestroyWebView(wv);
 }
 
 int __stdcall MbKit_Destroy(void* view)
@@ -524,11 +741,26 @@ int __stdcall MbKit_Destroy(void* view)
     unlock();
 
     if (wv) {
-        clear_view_cbs(wv);
-        G.SetHandle(wv, NULL);
-        G.DestroyWebView(wv);
+        /* ★ 必须经 mbk_kernel_run 编组到属主线程（K 模式下就是 K）——
+         *   跨线程直调 wkeDestroyWebView 会挂死（fix_same/fix_cross 实测）。 */
+        if (can_kernel()) mbk_kernel_run(k_destroy_one, &wv);
+        /* 不可碰内核时（兼容模式跨线程）：只放弃记账 —— 内核对象随属主会话
+         * 结束由 MbKit_DetachAll 兜底回收，绝不跨线程硬闯。 */
+        mbk_live_add(-1);
     }
     return MBKIT_OK;
+}
+
+/* DetachAll 的内核侧批量销毁任务（在属主线程上执行） */
+static void k_destroy_batch(void* p)
+{
+    void** killed = (void**)p;
+    int    i;
+    for (i = 0; i < MB_MAX_VIEW && killed[i]; i++) {
+        clear_view_cbs(killed[i]);
+        G.SetHandle(killed[i], NULL);
+        G.DestroyWebView(killed[i]);
+    }
 }
 
 int __stdcall MbKit_DetachAll(void)
@@ -554,13 +786,12 @@ int __stdcall MbKit_DetachAll(void)
     }
     unlock();
 
-    /* 锁外做内核调用，避免与内核内部线程互等 */
-    for (i = 0; i < n; i++) {
-        if (!killed[i]) continue;
-        clear_view_cbs(killed[i]);
-        G.SetHandle(killed[i], NULL);
-        G.DestroyWebView(killed[i]);
+    /* 内核侧批量销毁：一次编组做完（锁外执行，避免与内核内部线程互等） */
+    if (n > 0 && can_kernel()) {
+        mbk_kernel_run(k_destroy_batch, killed);
+        mbk_live_add(-(long)n);
     }
+    /* 不可碰内核时（兼容模式跨线程）：只放弃记账，内核对象由属主会话兜底 */
     return n;
 }
 
@@ -580,39 +811,35 @@ int __stdcall MbKit_LoadUrl(void* view, const wchar_t* url)
 {
     MBVIEW* v = as_view(view);
     if (!v || !url) return MBKIT_E_PARAM;
-    G.LoadURLW(v->wv, url);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_LOADURLW, v->wv, url, 0, 0, 0, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_LoadHtml(void* view, const wchar_t* html)
 {
     MBVIEW* v = as_view(view);
     if (!v || !html) return MBKIT_E_PARAM;
-    G.LoadHTMLW(v->wv, html);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_LOADHTMLW, v->wv, html, 0, 0, 0, MBKIT_E_STATE);
 }
 
 long long __stdcall MbKit_RunJs(void* view, const wchar_t* js)
 {
     MBVIEW* v = as_view(view);
     if (!v || !js) return 0;
-    return G.RunJSW(v->wv, js);
+    return mbk_kcall(KOP_RUNJSW, v->wv, js, 0, 0, 0, 0);
 }
 
 int __stdcall MbKit_Resize(void* view, int w, int h)
 {
     MBVIEW* v = as_view(view);
     if (!v) return MBKIT_E_PARAM;
-    G.Resize(v->wv, w, h);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_RESIZE, v->wv, NULL, w, h, 0, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_SetZoom(void* view, float factor)
 {
     MBVIEW* v = as_view(view);
     if (!v) return MBKIT_E_PARAM;
-    G.SetZoomFactor(v->wv, factor);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_SETZOOM, v->wv, NULL, 0, 0, factor, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_SetHeadless(void* view, int on)
@@ -620,26 +847,26 @@ int __stdcall MbKit_SetHeadless(void* view, int on)
     MBVIEW* v = as_view(view);
     if (!v) return MBKIT_E_PARAM;
     if (!G.SetHeadlessEnabled) return MBKIT_E_GENERIC;
-    G.SetHeadlessEnabled(v->wv, on ? TRUE : FALSE);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_SETHEADLESS, v->wv, NULL, on, 0, 0, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_IsLoaded(void* view)
 {
     MBVIEW* v = as_view(view);
     if (!v) return -1;
-    return G.IsLoadingCompleted(v->wv) ? 1 : 0;
+    return (int)mbk_kcall(KOP_ISLOADED, v->wv, NULL, 0, 0, 0, -1);
 }
 
 int __stdcall MbKit_GetTitle(void* view, wchar_t* buf, int cch)
 {
     MBVIEW* v = as_view(view);
-    const wchar_t* t;
+    KOP k;
     if (!v || !buf || cch <= 0) return MBKIT_E_PARAM;
-    t = G.GetTitleW(v->wv);
-    if (!t) { buf[0] = 0; return 1; }
-    lstrcpynW(buf, t, cch);
-    return 0;
+    if (!can_kernel()) return MBKIT_E_STATE;   /* 兼容模式跨线程：明确失败 */
+    ZeroMemory(&k, sizeof(k));
+    k.op = KOP_GETTITLEW; k.wv = v->wv; k.tbuf = buf; k.cch = cch;
+    mbk_kernel_run(k_exec, &k);
+    return (int)k.ret;
 }
 
 int __stdcall MbKit_ForcePaint(void* view)
@@ -685,8 +912,7 @@ int __stdcall MbKit_LoadUrlA(void* view, const char* url)
     wchar_t w[8192];
     if (!v || !url) return MBKIT_E_PARAM;
     if (!ansi2wide(url, w, 8192)) return MBKIT_E_PARAM;
-    G.LoadURLW(v->wv, w);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_LOADURLW, v->wv, w, 0, 0, 0, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_LoadHtmlA(void* view, const char* html)
@@ -704,8 +930,7 @@ int __stdcall MbKit_LoadHtmlA(void* view, const char* html)
         w = heap;
     }
     MultiByteToWideChar(CP_ACP, 0, html, -1, w, need > 4096 ? need : 4096);
-    G.LoadHTMLW(v->wv, w);
-    return MBKIT_OK;
+    return (int)mbk_kcall(KOP_LOADHTMLW, v->wv, w, 0, 0, 0, MBKIT_E_STATE);
 }
 
 int __stdcall MbKit_RunJsA(void* view, const char* js)
@@ -714,17 +939,25 @@ int __stdcall MbKit_RunJsA(void* view, const char* js)
     wchar_t w[8192];
     if (!v || !js) return MBKIT_E_PARAM;
     if (!ansi2wide(js, w, 8192)) return MBKIT_E_PARAM;
-    return (int)G.RunJSW(v->wv, w);
+    return (int)mbk_kcall(KOP_RUNJSW, v->wv, w, 0, 0, 0, 0);
 }
 
 int __stdcall MbKit_GetTitleA(void* view, char* buf, int cch)
 {
     MBVIEW* v = as_view(view);
-    const wchar_t* t;
+    wchar_t wbuf[1024];
     if (!v || !buf || cch <= 0) return MBKIT_E_PARAM;
-    t = G.GetTitleW(v->wv);
-    if (!t) { buf[0] = 0; return 1; }
-    if (!WideCharToMultiByte(CP_ACP, 0, t, -1, buf, cch, NULL, NULL)) buf[0] = 0;
+    {
+        KOP k;
+        int rc;
+        if (!can_kernel()) return MBKIT_E_STATE;   /* 兼容模式跨线程：明确失败 */
+        ZeroMemory(&k, sizeof(k));
+        k.op = KOP_GETTITLEW; k.wv = v->wv; k.tbuf = wbuf; k.cch = 1024;
+        mbk_kernel_run(k_exec, &k);
+        rc = (int)k.ret;
+        if (rc != 0) { buf[0] = 0; return rc; }
+    }
+    if (!WideCharToMultiByte(CP_ACP, 0, wbuf, -1, buf, cch, NULL, NULL)) buf[0] = 0;
     buf[cch - 1] = 0;
     return 0;
 }
@@ -760,12 +993,24 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
         InitializeCriticalSection(&G_lock);
         G_lockReady = 1;
 
-        /* ★ 把自己钉在进程里：业务 DLL 任意卸载/重载都动不了本层 */
+        /* ★ 把自己钉在进程里：业务 DLL 任意卸载/重载都动不了本层。
+         *   ⚠️ 手工映射边界（小栗子 PE 加载器）：MbKit 不在加载器链表时
+         *   GetModuleHandleExA(PIN) 会失败 —— 退化路径 = 用自身路径主动
+         *   LoadLibrary 一次拉高引用计数（同样达成「biz FreeLibrary 不卸载我」）。
+         *   G.pinned：1=PIN 成功  2=引用计数兜底  0=两种都失败（Diag 可见） */
         if (GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
                              | GET_MODULE_HANDLE_EX_FLAG_PIN,
                                (LPCSTR)hInst, &self)) {
             G.pinned = 1;
             G.hSelf = self;
+        } else {
+            char selfPath[MAX_PATH];
+            if (GetModuleFileNameA(hInst, selfPath, MAX_PATH) &&
+                LoadLibraryA(selfPath)) {
+                G.pinned = 2;
+                G.hSelf = hInst;
+                OutputDebugStringA("[MbKit] 自 PIN 失败（疑似手工映射），已用引用计数兜底\n");
+            }
         }
     } else if (reason == DLL_PROCESS_DETACH) {
         if (!reserved) {

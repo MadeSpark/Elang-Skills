@@ -7,7 +7,9 @@ gen_fwd.py —— 由「易语言 .DLL命令 声明表」生成 MbKit 的兼容�
     { "name": "wkeCreateWebView", "ret": "整数型"|"", "params": [[名,类型,标志], ...] }
 
 输出（默认写入脚本同目录）：
-    gen_fwd.S    每个 API 一个汇编 stub —— 纯跳板，不碰栈、不碰寄存器（除 eax）
+    gen_thunk.c  每个 API 一个「编组 thunk」+ K 侧签名化执行体（2026-09-25 起
+                 取代 gen_fwd.S 的纯 jmp 直通 —— 内核线程亲和要求全部内核调用
+                 编组到常驻线程 K，见 mbk_marshal.h）
     gen_fwd.def  导出名表（含被 C 侧接管的拦截项）
     gen_fwd.h    名字表，供 C 侧 lazily 解析 node.dll 导出
 
@@ -21,9 +23,44 @@ gen_fwd.py —— 由「易语言 .DLL命令 声明表」生成 MbKit 的兼容�
 import io
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def mbkit_api_exports():
+    """抽出全部需要导出的 `MbKit_*` 名字（保序去重）。
+
+    数据来源 = **声明与实现两处取并集**：
+      * mbkit_api.h                 —— 对外契约（声明）
+      * mbkit.c / mbkit_fwd.c / mbkit_cb.c —— 实际实现（有些内部工具接口只写在 .c 里，
+                                              从没进过头文件，例如 MbKit_CbHits、
+                                              MbKit_KernelPath、MbKit_MissingList）
+    只扫头文件会漏掉后者 —— 2026-09-25 实测漏了 12 个，会让既有导出凭空消失。
+    两边一起扫，才能保证「旧的不丢、新的一件不漏」。
+
+    ★ 背景：此处原先是**手工硬编码**的 21 个名字，漏了
+      Create / Destroy / LoadUrl / LoadHtml / RunJs / Resize / SetZoom /
+      SetHeadless / IsLoaded / GetTitle / ForcePaint / Pump / Version /
+      NodePath / NodeModule / SelfModule / KernelInitCount / Pinned /
+      AliveModule 共 19 个 —— 于是 host_reload.exe 侧 mbk_load() 的
+      GetProcAddress 必定失败，host_reload 直接报「加载 MbKit.dll 失败」，
+      run_tests.sh 整条回归链**静默失效**（最坏的那种坏：看起来在跑）。
+    """
+    srcs = ["mbkit_api.h", "mbkit.c", "mbkit_fwd.c", "mbkit_cb.c"]
+    seen, out = set(), []
+    for name in srcs:
+        p = os.path.join(HERE, name)
+        if not os.path.exists(p):
+            continue
+        txt = io.open(p, encoding="utf-8", errors="replace").read()
+        for m in re.finditer(r"__stdcall\s+(MbKit_[A-Za-z0-9_]+)\s*\(", txt):
+            n = m.group(1)
+            if n not in seen:
+                seen.add(n)
+                out.append(n)
+    return out
 
 # 这些 API 由 C 侧接管（关心登记/存活校验），不做透明转发
 INTERCEPT = set([
@@ -57,21 +94,142 @@ def main():
     itc = [n for n in names if n in INTERCEPT]
     idx = {n: i for i, n in enumerate(names)}   # 全量索引（含被接管项）
 
-    # ---------- gen_fwd.S ----------
-    s = [HEADER, "\t.text\n"]
+    # ---------- gen_thunk.c（2026-09-25 取代 gen_fwd.S）----------
+    # 每个转发导出生成一个「编组 thunk」+ 一个 K 侧执行体（tramp）：
+    #   thunk（调用线程）：按**真实签名**收参 → 打包进 MBKCALL → mbk_marshal_exec
+    #   tramp（属主线程）：按**真实签名**解包 → 调内核真函数 → 回填返回值
+    # 为什么必须逐 API 生成而不是盲抄栈：参数宽度不同（长整数 8 字节、小数型
+    # 4 字节位型、双精度 8 字节），且返回值宽度不同（wkeRunJSW 返回 64 位）。
+    # 签名来源 = fwd_list.json（.DLL命令 声明表，与 gen_module.py 同源）。
+    #
+    # 语义特例（2026-09-25 团队定案）：
+    #   wkeInitialize / wkeInitializeEx 不再 passthrough —— 改为「确保内核已在
+    #   常驻线程 K 上启动」（等价 MbKit_EnsureKernelInit）。自此内核**永远**落 K，
+    #   业务线程生死与内核归属彻底解耦（这正是修「重载 DLL 无法二次初始化」的核心）。
+    #   ⚠️ wkeInitializeEx 的配置参数被忽略（如需透传，后续在 k_boot 里接）。
+    # ----------------------------------------------------------------
+    RET_KIND = {"": 0, "整数型": 1, "逻辑型": 1, "文本型": 1, "字节集": 1,
+                "短整数型": 1, "字节型": 1, "长整数型": 2, "小数型": 3,
+                "双精度小数型": 4}
+
+    def c_type(t):
+        """易语言类型 -> (C 类型, 打包方式)  4 字节一律 unsigned；8 字节见名"""
+        if t == "长整数型":     return "long long"
+        if t == "双精度小数型": return "double"
+        if t == "小数型":       return "float"
+        return "unsigned"       # 整数型/字节型/逻辑型/文本型/字节集/短整数型/结构(指针)
+
+    def ret_access(t):
+        """tramp 内回填返回值的左值 —— 直接写进 MBKCALL 的 ret 成员（K 侧）"""
+        k = RET_KIND[t]
+        return {0: None, 1: "c->ret.u", 2: "c->ret.l",
+                3: "c->ret.f", 4: "c->ret.d"}[k]
+
+    # 位型打包/解包助手（小数型按 4 字节位型搬运，避免经过浮点寄存器失真）
+    c = [HEADER,
+         "/* 编组 thunk —— 本文件由 gen_fwd.py 自动生成，请勿手改。\n"
+         " * 每个导出 = 调用线程侧收参打包(tramp 指针+参数包) + K 侧签名化执行体。\n"
+         " * 详见 mbk_marshal.h 与 mbkit_fwd.c 的 mbk_marshal_exec。\n"
+         " */\n",
+         "#define WIN32_LEAN_AND_MEAN\n",
+         "#include <windows.h>\n",
+         "#include \"gen_fwd.h\"\n",
+         "#include \"mbk_marshal.h\"\n\n",
+         "/* 小数型按位型搬运（4/8 字节，不经浮点寄存器；memcpy 免严格别名问题） */\n",
+         "static long long mbk_f32bits(float f)  { unsigned u; memcpy(&u, &f, 4); return (long long)u; }\n",
+         "static float     mbk_bitsf32(long long v) { unsigned u = (unsigned)(unsigned long long)v; float f; memcpy(&f, &u, 4); return f; }\n",
+         "static long long mbk_f64bits(double d) { long long r; memcpy(&r, &d, 8); return r; }\n",
+         "static double    mbk_bitsf64(long long v){ double d; memcpy(&d, &v, 8); return d; }\n\n"]
+
+    # 被接管的 22 个回调登记类不生成公开 thunk（导出由 mbkit_cb.c 实现），
+    # 但**必须**生成 K 侧执行体（tr_xxx）：mbkit_cb.c 的登记/注销也要过编组 ——
+    # 否则它们对内核的直调在跨线程时会挂死（marshal_probe r2/r3/r4 实测）。
+    gen_thunk = []      # (name, is_intercept)
     for n in fwd:
-        sym = "_" + n
-        off = idx[n] * 4
-        s.append("\t.globl %s\n" % sym)
-        s.append("%s:\n" % sym)
-        s.append(f"\tmovl\t_mbk_slots+{off}, %eax\n")
-        s.append("\ttestl\t%eax, %eax\n")
-        s.append("\tjne\t1f\n")
-        s.append("\tcall\t_mbk_ensure\n")
-        s.append(f"\tmovl\t_mbk_slots+{off}, %eax\n")
-        s.append("1:\n")
-        s.append("\tjmp\t*%eax\n")
-    io.open(os.path.join(HERE, "gen_fwd.S"), "w", encoding="utf-8", newline="\n").write("".join(s))
+        if n in ("wkeInitialize", "wkeInitializeEx"):
+            continue                     # 语义特例，文件尾单独生成
+        gen_thunk.append((n, False))
+    for n in itc:
+        gen_thunk.append((n, True))
+
+    table_entries = []                  # mbk_tramps[] 的 designated initializer
+    for n, is_itc in gen_thunk:
+        info = by[n]
+        ps = info.get("params", [])
+        rt = info.get("ret", "")
+        rct = c_type(rt) if rt else "void"
+        pcts = [c_type(p[1]) for p in ps]
+
+        # ---- K 侧执行体：按真实签名解包并调用真函数 ----
+        arglist = ", ".join("%s a%d" % (t, i) for i, t in enumerate(pcts))
+        if not arglist:
+            arglist = "void"
+        proto = "%s (*fn)(%s)" % (rct, arglist) if arglist != "void" else "%s (*fn)(void)" % rct
+        cast  = "(%s (__cdecl *)(%s))c->real" % (rct, arglist if arglist != "void" else "void")
+        call_args = []
+        for i, t in enumerate(pcts):
+            if t == "unsigned":      call_args.append("(unsigned)c->a[%d]" % i)
+            elif t == "long long":   call_args.append("c->a[%d]" % i)
+            elif t == "float":       call_args.append("mbk_bitsf32(c->a[%d])" % i)
+            elif t == "double":      call_args.append("mbk_bitsf64(c->a[%d])" % i)
+        c.append("static void tr_%s(MBKCALL* c)\n{\n" % n)
+        c.append("    %s = %s;\n" % (proto, cast))
+        c.append("    %sfn(%s);\n" % (
+            ("%s = " % ret_access(rt)) if rt else "", ", ".join(call_args)))
+        c.append("}\n\n")
+        table_entries.append((idx[n], n))
+
+        if is_itc:
+            continue                     # 被接管项：只要执行体，不要公开 thunk
+
+        # ---- 调用线程侧 thunk：按真实签名收参打包（返回类型也用真实类型） ----
+        if arglist == "void":
+            pub = "%s __cdecl %s(void)" % (rct, n)
+        else:
+            pub = "%s __cdecl %s(%s)" % (rct, n, ", ".join(
+                "%s a%d" % (t, i) for i, t in enumerate(pcts)))
+        c.append("%s\n{\n" % pub)
+        c.append("    MBKCALL c;\n")
+        c.append("    ZeroMemory(&c, sizeof(c));\n")
+        c.append("    c.idx = MBK_IDX_%s; c.tramp = tr_%s; c.kind = %d;\n"
+                 % (n, n, RET_KIND[rt]))
+        for i, t in enumerate(pcts):
+            if t == "unsigned":    c.append("    c.a[%d] = (long long)(unsigned)a%d;\n" % (i, i))
+            elif t == "long long": c.append("    c.a[%d] = a%d;\n" % (i, i))
+            elif t == "float":     c.append("    c.a[%d] = mbk_f32bits(a%d);\n" % (i, i))
+            elif t == "double":    c.append("    c.a[%d] = mbk_f64bits(a%d);\n" % (i, i))
+        if rt:
+            c.append("    mbk_marshal_exec(&c);\n")
+            acc = ret_access(rt)             # 形如 c->ret.u；调用线程侧改用点号
+            if rt == "字节型":
+                c.append("    return (unsigned char)%s;\n" % acc.replace("->", "."))
+            else:
+                c.append("    return %s;\n" % acc.replace("->", "."))
+        else:
+            c.append("    mbk_marshal_exec(&c);\n")
+        c.append("}\n\n")
+
+    # ---- 语义特例：初始化类导出改为「确保内核落 K」 ----
+    c.append("/* ---- 语义特例（2026-09-25）：初始化不再绑定调用线程 ---- */\n")
+    c.append("void __cdecl wkeInitialize(void)\n{\n")
+    c.append("    extern int __stdcall MbKit_EnsureKernelInit(void);\n")
+    c.append("    MbKit_EnsureKernelInit();   /* 内核落常驻线程 K，调用线程从此无关 */\n")
+    c.append("}\n\n")
+    c.append("void __cdecl wkeInitializeEx(unsigned a0)\n{\n")
+    c.append("    extern int __stdcall MbKit_EnsureKernelInit(void);\n")
+    c.append("    (void)a0;                    /* 配置参数暂被忽略（见文件头说明） */\n")
+    c.append("    MbKit_EnsureKernelInit();\n")
+    c.append("}\n\n")
+
+    # ---- K 侧执行体分发表：mbkit_fwd.c 的 mbk_marshal_exec / mbk_marshal_3
+    #      按 MBK_IDX_* 取执行体。初始化特例两项目为 NULL（不经编组）。 ----
+    c.append("/* K 侧执行体分发表（下标 = MBK_IDX_*；NULL = 不经编组的特例） */\n")
+    c.append("const mbk_tramp_fn mbk_tramps[MBK_ALL_COUNT] = {\n")
+    for i, n in sorted(table_entries):
+        c.append("    [%d] = tr_%s,\n" % (i, n))
+    c.append("};\n\n")
+
+    io.open(os.path.join(HERE, "gen_thunk.c"), "w", encoding="utf-8", newline="\n").write("".join(c))
 
     # ---------- gen_fwd.def ----------
     # 注意：DEF 文件的注释符是 ';'，写成 /* */ 会让 ld 把整个文件当链接脚本解析
@@ -81,14 +239,12 @@ def main():
     for n in names:
         d.append("    %s\n" % n)
     # 也导出 MbKit 自己的接口（由 mbkit.c / mbkit_fwd.c / mbkit_cb.c 提供）
-    d.append("    MbKit_Init\n    MbKit_IsReady\n    MbKit_DetachAll\n"
-             "    MbKit_LastError\n    MbKit_SuppressedCount\n    MbKit_CbHits\n"
-             "    MbKit_FwdIndex\n    MbKit_KernelPath\n    MbKit_KernelModule\n"
-             "    MbKit_FwdError\n    MbKit_CbCount\n    MbKit_CbBlocked\n"
-             "    MbKit_CbLive\n"
-             "    MbKit_DetachView\n    MbKit_MissingCount\n    MbKit_MissingHits\n    MbKit_MissingList\n"
-             "    MbKit_SetNodePath\n    MbKit_ConfigNodePath\n"
-             "    MbKit_KernelLoaded\n    MbKit_Diag\n")
+    # —— ★ 由 mbkit_api.h 自动抽取（见 mbkit_api_exports 的说明），不再手写清单
+    api = mbkit_api_exports()
+    if not api:
+        raise SystemExit("gen_fwd.py: 没能从 mbkit_api.h 抽出任何 MbKit_* 导出，生成中止")
+    for n in api:
+        d.append("    %s\n" % n)
     io.open(os.path.join(HERE, "gen_fwd.def"), "w", encoding="utf-8", newline="\n").write("".join(d))
 
     # ---------- gen_fwd.h ----------
@@ -114,7 +270,7 @@ def main():
     io.open(os.path.join(HERE, "gen_fwd.h"), "w", encoding="utf-8", newline="\n").write("".join(h))
 
     print("生成完毕：")
-    print("  转发 %d 项 -> gen_fwd.S / gen_fwd.h" % len(fwd))
+    print("  编组 %d 项 -> gen_thunk.c（含 K 侧执行体；gen_fwd.S 已废弃）" % len(fwd))
     print("  接管 %d 项 -> 由 mbkit_cb.c 实现：" % len(itc))
     for n in itc:
         print("      ", n)

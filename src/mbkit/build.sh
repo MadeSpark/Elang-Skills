@@ -40,15 +40,35 @@ EXEFLAGS=(-static -s -luser32 -lgdi32)
 
 echo "[build] gcc -> $("$GCC" --version | head -1)"
 
+PY="${PY:-C:/Users/MadeSpark/.workbuddy/binaries/python/versions/3.13.12/python.exe}"
+
+echo "[build] 0/5 重新生成转发层（gen_thunk.c/.def/.h）"
+# ★ 必须重生成：gen_fwd.def 决定导出表。2026-09-25 发现它漏导出 19 个 MbKit_* 接口，
+#   导致 host_reload.exe 的 GetProcAddress 失败、run_tests.sh 整条回归链静默失效。
+#   重生成后立刻核对「mbkit_api.h 里声明的每个 MbKit_* 都在 .def 里」，漏一个就中止。
+"$PY" gen_fwd.py >/dev/null
+missing="$(sed -n 's/.*__stdcall[[:space:]]\{1,\}\(MbKit_[A-Za-z0-9_]*\)[[:space:]]*(.*/\1/p' \
+             mbkit_api.h mbkit.c mbkit_fwd.c mbkit_cb.c 2>/dev/null | sort -u \
+           | while read -r n; do grep -qx "    $n" gen_fwd.def || echo "$n"; done)"
+if [ -n "$missing" ]; then
+  echo "!! gen_fwd.def 缺少以下导出（应从 mbkit_api.h 自动抽取）："
+  echo "$missing" | sed 's/^/     /'
+  exit 1
+fi
+# 导出边界编组自检：gen_thunk.c 必须已生成且执行体表非空，否则中止
+[ -s gen_thunk.c ] || { echo "!! gen_fwd.py 没有产出 gen_thunk.c"; exit 1; }
+grep -q "mbk_tramps" gen_thunk.c || { echo "!! gen_thunk.c 缺少 mbk_tramps 执行体表"; exit 1; }
+
 echo "[build] 1/5 MbKit.dll"
-# 三个 C 单元 + 一个汇编转发层：
-#   mbkit.c      常驻层与高层接口（view 管理、事件转发、自 PIN）
-#   mbkit_fwd.c  透明转发层：懒加载 node.dll、填 _mbk_slots[]（进程内唯一持有内核）
+# 四个 C 单元 + 一个生成的编组层：
+#   mbkit.c      常驻层与高层接口（view 管理、事件转发、自 PIN、内核落 K）
+#   mbkit_fwd.c  转发层：懒加载 node.dll、填 _mbk_slots[] + mbk_marshal_exec 编组执行
 #   mbkit_cb.c   22 个回调注册类的拦截：内核只见 MbKit 的 wrapper，业务 thunk 只作数据
-#   gen_fwd.S    230 个同签名转发桩（纯 jmp，不碰栈）
+#   mbk_thread.c 常驻内核线程 K + 同步任务编组（内核亲和的唯一解）
+#   gen_thunk.c  252 个 wke*/js* 的编组 thunk（真实签名收参打包 + K 侧签名化执行体）
 # 导出名由 gen_fwd.def 显式指定 —— 易语言 .DLL命令 依赖朴素名（无 _ 前缀、无 @N）
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -o MbKit.dll \
-    mbkit.c mbkit_fwd.c mbkit_cb.c gen_fwd.S gen_fwd.def
+    mbkit.c mbkit_fwd.c mbkit_cb.c mbk_thread.c gen_thunk.c gen_fwd.def
 
 echo "[build] 2/5 biz_v1.dll / biz_v2.dll"
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -Wl,--image-base,0x62000000 -o biz_v1.dll mb_biz.c
@@ -67,7 +87,6 @@ ls -la MbKit.dll biz_v1.dll biz_v2.dll legacy_v1.dll legacy_v2.dll host_reload.e
 
 echo
 echo "[build] 导出名核对（应为朴素名，不带 @N）"
-PY="${PY:-C:/Users/MadeSpark/.workbuddy/binaries/python/versions/3.13.12/python.exe}"
 if [ -x "$PY" ]; then
   "$PY" ../../re/mb/pe_exports.py MbKit.dll 2>/dev/null | head -6 || true
 fi

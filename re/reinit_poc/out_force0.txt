@@ -1,0 +1,11 @@
+== cross-thread diagnosis (force=0) ==
+[T1 tid=20788] LoadLibrary ...
+[T1] wkeIsInitialize = 0
+[T1] called wkeInitialize
+[T1] calling wkeCreateWebView ...
+[T1] wkeCreateWebView -> 02bb36d8
+[T1] destroy done. now start T2.
+
+[T2 tid=17372] ---- worker start (force=0) ----
+[T2] wkeIsInitialize = 1
+[T2] calling wkeCreateWebView ...

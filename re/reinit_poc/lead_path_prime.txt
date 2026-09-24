@@ -1,0 +1,20 @@
+======================================================================
+ mb_reinit ¡ª¡ª window-handle rebind + reinit minimal repro
+======================================================================
+ mode : raw_path_prime
+ exe  : C:\Users\MadeSpark\Desktop\²âÊÔ\src\mbkit\mb_reinit.exe
+
+== RAW : single instance loaded from gen2/node.dll (prime=1) ==
+   prime: LoadLibrary(..\..\main\corn\node.dll) -> 78940000 err=0
+   LoadLibrary(gen2/node.dll) = 0x033A0000
+   isInit(before)=0
+   isInit(after)=1
+   [raw r1] wkeCreateWebView...
+   [raw r1] -> 05604458
+   [raw r1] wkeSetHandle(05604458,0x0012149C)...
+   [raw r1] wkeSetHandle Íê³É
+   [raw r1] loaded=1 title="R-1"
+
+   RESULT(path_only): loaded=1 title="R-1"
+
+== done ==

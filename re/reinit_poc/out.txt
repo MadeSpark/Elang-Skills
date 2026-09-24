@@ -1,0 +1,12 @@
+== kernel restart feasibility ==
+node.dll = C:/Users/MadeSpark/Desktop/²âÊÔ/main/corn/node.dll
+
+---------- round 1 ----------
+  LoadLibrary -> h=0x78940000
+  exports: init=78f00ed8 isinit=78f01076 create=78effdba finalize=78f03400
+  wkeIsInitialize = 0
+  called wkeInitialize
+  wkeCreateWebView -> 02fa3020
+  wkeDestroyWebView done
+  wkeFinalize done; wkeIsInitialize now = 1
+  calling FreeLibrary ...

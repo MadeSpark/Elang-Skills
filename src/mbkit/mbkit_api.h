@@ -150,6 +150,18 @@ int          __stdcall MbKit_KernelInitCount(void); /* 真正执行 initialize �
 int          __stdcall MbKit_Pinned(void);          /* MbKit 是否已自 PIN */
 int          __stdcall MbKit_SuppressedCount(void); /* 被存活校验挡下的野回调次数 ★保护生效的直证 */
 
+/* 回调登记层（mbkit_cb.c）逐项计数。
+ * ★ 2026-09-25：这几个函数以前只在 mbkit_cb.c 里定义、**头文件没有声明** ——
+ *   直接后果是 gen_fwd.py 的导出清单（当时靠手写）漏了它们，
+ *   而且任何其它 .c 想调用都编译不过。此处补齐声明，头文件即导出契约。
+ * 排查「事件没反应 / 缩放不重绘（撕裂）」时看这四个数：
+ *   被挡 = 0 表示没有回调被拦下（正常）；被挡持续增长即为异常。 */
+int          __stdcall MbKit_CbCount(void);    /* 当前登记条数 */
+int          __stdcall MbKit_CbLive(void);     /* 其中「业务身份仍然有效」的条数 */
+int          __stdcall MbKit_CbHits(void);     /* 累计成功转发次数 */
+int          __stdcall MbKit_CbBlocked(void);  /* 累计被挡下次数 */
+int          __stdcall MbKit_DetachView(void* view);  /* 只解绑某一个 view 上的代理回调 */
+
 /* 模块存活校验（业务事件函数指针是否仍指向已加载模块）
  * 供测试与业务侧自检使用：cbAddr 是函数地址，hOwner 是注册时的模块句柄（可为 0） */
 int          __stdcall MbKit_AliveModule(unsigned int cbAddr, unsigned int hOwner);

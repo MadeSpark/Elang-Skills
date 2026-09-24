@@ -1,0 +1,20 @@
+Init rc=0
+Version: MbKit/1.1  node.dll  wke258  wke version 1.02
+blink build 98096
+build time Wed Mar 10 09:29:26 2021
+
+FwdError: 
+MbKit 自检
+  内核状态     : 已加载
+  内核路径     : C:\Users\MadeSpark\Desktop\测试\main\corn\node.dll
+  内核模块     : 0x78940000
+  自定义路径   : (未设置 → 默认: 宿主程序根目录)
+  宿主程序目录 : C:\Users\MadeSpark\Desktop\测试\re\reinit_poc
+  当前工作目录 : C:\Users\MadeSpark\Desktop\测试\src\mbkit
+  内核缺失导出 : 4（其中被真正调用过 0 次）
+  缺失清单     : JsBindGetter JsBindSetter wkeGetWebView wkeNetSetURL 
+  加载期错误   : (无)
+  回调登记     : 0 个（存活 0）  命中 0  被挡 0
+  说明         : 被挡 > 0 表示有回调因「业务身份判不出/已失效」被拦；
+                 正常应为 0。若持续增长，请把本行反馈给维护者。
+

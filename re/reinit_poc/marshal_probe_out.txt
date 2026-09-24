@@ -1,0 +1,20 @@
+======================================================================
+ marshal_probe —— persistent kernel thread + marshaling feasibility
+======================================================================
+   raw_load cand[0]="..\..\..\main\corn\node.dll" -> 78940000 err=0
+   裸 node.dll = 0x78940000
+   [K] 内核线程就绪 tid=47044
+   K created tid=47044
+   业务线程（主）创建 hwnd=0x00080E1A tid=45952
+
+== r1  all_on_K : init/create/sethandle/resize/loadhtml 全在 K ==
+   [K] wkeInitialize ...
+   [K] isInit=1  ver="wke version 1.02
+blink build 98096
+build time Wed Mar 10 09:29:26 2021
+"
+   [K] wkeCreateWebView -> 03A538D8
+   [K] wkeSetHandle(view, 0x00080E1A) 完成（hwnd 属主线程 tid=47044）
+   [K] wkeResize(800,600) 完成
+   [K] wkeLoadHTMLW(R-1) 完成
+   -- monitor(r1) 16s --

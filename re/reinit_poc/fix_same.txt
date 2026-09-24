@@ -1,0 +1,27 @@
+======================================================================
+ mb_reinit —— window-handle rebind + reinit minimal repro
+======================================================================
+ mode : same
+ exe  : C:\Users\MadeSpark\Desktop\测试\src\mbkit\mb_reinit.exe
+
+== MbKit path : init_on_thread=0 t1_ends=0 r2_where=main-thread ==
+   
+   MbKit_Init OK initCount=1 node=0x78940000
+   [r1] make_window  -> hwnd=0x00470CF2
+   [r1] MbKit_Create(hwnd)...
+   [r1] MbKit_Create  -> view=71F0F4AC  (OK)
+   [r1] loaded=1  title="R-1"
+   [r1] MbKit_Destroy(view)...
+   [r1] MbKit_Destroy 完成
+   [r1] DestroyWindow(hwnd=0x00470CF2)...
+   [r1] DestroyWindow 完成
+
+   —— 现在建 round2（主线程）——
+   [r2] make_window  -> hwnd=0x001A170C
+   [r2] MbKit_Create(hwnd)...
+   [r2] MbKit_Create  -> view=71F0F4AC  (OK)
+   [r2] loaded=1  title="R-2"
+
+   RESULT: PASS —— 第二个窗口能正常二次绑定并载入
+
+== done ==
