@@ -1,0 +1,8 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\reloadtest\_wk_staticexe\reloadbiz_ai.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\.agents\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\reloadtest\_wk_staticexe\reloadbiz_ai.debug.log
+   tag     = reloadbiz_ai_144019
+   timeout = 300.0s   stop-after = None
+   install-dir 新文件: （无）

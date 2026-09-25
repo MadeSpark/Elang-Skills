@@ -1,0 +1,11 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\reloadtest\_wk\reloadbiz_ai.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\.workbuddy\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\reloadtest\_wk\reloadbiz_ai.debug.log
+   tag     = reloadbiz_ai_141617
+   timeout = 300.0s   stop-after = None
+   已投放 lib\elang_addin.fne (78336 B)
+   e.exe pid = 59248
+   无头模式 = hide
+   观测: runStart=False runEnd=False weSent=False e_self_exit=143

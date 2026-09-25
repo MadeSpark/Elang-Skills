@@ -1,0 +1,449 @@
+[14:16:23.064][tid=53892] ===== elang_addin loaded into e.exe (pid=59248) =====
+[14:16:23.065][tid=53892] LIBINFO state=0xE0000104 (LBS_IDE_PLUGIN=256) name='AIµ÷ÊÔËÞÖ÷' guid=7A1E4F22C3B0499E8D6A0011223344FE
+[14:16:23.065][tid=53892] LIBINFO pfnNotify=0x524B5DF0
+[14:16:23.066][tid=53892] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[14:16:23.067][tid=53892] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[14:16:23.066][tid=44400] HIDEGUARD start (raw lp=0x00000002 mode=2; 1=park 2=hide)
+[14:16:23.067][tid=44400] HIDEGUARD timer resolution -> 10000 (x100ns)
+[14:16:23.067][tid=44400] HIDEGUARD after timer-resolve: mode=2 raw lp=0x00000002 (ÈôÓëÉÏÃæ²»Í¬ = Õ»ÒÑ±»ÆÆ»µ!)
+[14:16:23.070][tid=52948] HIDEGUARD cloak#1 cls='LayeredWindow' ex=0x000800A8
+[14:16:23.070][tid=44400] HIDEGUARD hook create+show=0x07331A07 move=0x0273271B
+[14:16:23.072][tid=52948] HIDEGUARD cloak#2 cls='GDI+ Hook Window Class' ex=0x00000000
+[14:16:23.118][tid=53892] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[14:16:23.119][tid=53892] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[14:16:51.457][tid=52948] HIDEGUARD cloak#3 cls='tooltips_class32' ex=0x00000080
+[14:16:51.484][tid=44400] HIDEGUARD cloak#4 cls='ENewFrame' ex=0x00000110
+[14:16:51.507][tid=52948] HIDEGUARD cloak#5 cls='tooltips_class32' ex=0x00000080
+[14:16:51.701][tid=52948] HIDEGUARD cloak#6 cls='tooltips_class32' ex=0x00000080
+[14:16:51.717][tid=52948] HIDEGUARD cloak#7 cls='tooltips_class32' ex=0x00000080
+[14:16:51.731][tid=52948] HIDEGUARD cloak#8 cls='tooltips_class32' ex=0x00000080
+[14:16:51.743][tid=52948] HIDEGUARD cloak#9 cls='tooltips_class32' ex=0x00000080
+[14:16:51.749][tid=52948] HIDEGUARD cloak#10 cls='Afx:400000:0:10003:ea10398a:0' ex=0x00000080
+[14:16:51.774][tid=52948] HIDEGUARD cloak#11 cls='tooltips_class32' ex=0x00000080
+[14:16:51.803][tid=52948] HIDEGUARD cloak#12 cls='tooltips_class32' ex=0x00000080
+[14:16:51.823][tid=52948] HIDEGUARD cloak#13 cls='tooltips_class32' ex=0x00000080
+[14:16:51.840][tid=52948] HIDEGUARD cloak#14 cls='tooltips_class32' ex=0x00000080
+[14:16:51.871][tid=52948] HIDEGUARD cloak#15 cls='tooltips_class32' ex=0x00000080
+[14:16:51.882][tid=52948] HIDEGUARD cloak#16 cls='tooltips_class32' ex=0x00000080
+[14:16:51.889][tid=52948] HIDEGUARD cloak#17 cls='_EL_HideOwner' ex=0x00000180
+[14:16:51.900][tid=52948] HIDEGUARD cloak#18 cls='_EL_HideOwner' ex=0x00000180
+[14:16:51.911][tid=52948] HIDEGUARD cloak#19 cls='ColorMade' ex=0x00000000
+[14:16:51.922][tid=52948] HIDEGUARD cloak#20 cls='ColorMade' ex=0x00000080
+[14:16:51.926][tid=52948] HIDEGUARD cloak#21 cls='Menulwy' ex=0x00000000
+[14:16:51.937][tid=52948] HIDEGUARD cloak#22 cls='Menulwy' ex=0x00000000
+[14:16:51.944][tid=52948] HIDEGUARD cloak#23 cls='tooltips_class32' ex=0x00000080
+[14:16:51.955][tid=52948] HIDEGUARD cloak#24 cls='Setfd' ex=0x00000000
+[14:16:51.991][tid=52948] HIDEGUARD cloak#25 cls='_EL_HideOwner' ex=0x00000180
+[14:16:51.993][tid=52948] HIDEGUARD cloak#26 cls='shadow_window' ex=0x000800A0
+[14:16:51.997][tid=52948] HIDEGUARD cloak#27 cls='ENewFrame' ex=0x00080130
+[14:16:52.006][tid=52948] HIDEGUARD cloak#28 cls='IME' ex=0x00000000
+[14:16:52.020][tid=52948] HIDEGUARD cloak#29 cls='MSCTFIME UI' ex=0x00000000
+[14:16:52.035][tid=52948] HIDEGUARD cloak#30 cls='IME' ex=0x00000000
+[14:16:52.035][tid=52948] HIDEGUARD poll iter=1 enumMs=28969
+[14:16:52.049][tid=52948] HIDEGUARD cloak#31 cls='LayeredWindow' ex=0x000800A8
+[14:16:52.053][tid=52948] HIDEGUARD cloak#32 cls='GDI+ Hook Window Class' ex=0x00080020
+[14:16:52.054][tid=52948] HIDEGUARD cloak#33 cls='tooltips_class32' ex=0x000800A0
+[14:16:52.056][tid=52948] HIDEGUARD cloak#34 cls='tooltips_class32' ex=0x000800A0
+[14:16:52.056][tid=52948] HIDEGUARD cloak#35 cls='_EL_HideOwner' ex=0x000801A0
+[14:16:52.058][tid=52948] HIDEGUARD cloak#36 cls='_EL_HideOwner' ex=0x000801A0
+[14:16:52.063][tid=52948] HIDEGUARD cloak#37 cls='ColorMade' ex=0x00080020
+[14:16:52.065][tid=52948] HIDEGUARD cloak#38 cls='Menulwy' ex=0x00080020
+[14:16:52.065][tid=52948] HIDEGUARD cloak#39 cls='tooltips_class32' ex=0x000800A0
+[14:16:52.070][tid=52948] HIDEGUARD cloak#40 cls='_EL_HideOwner' ex=0x000801A0
+[14:16:53.103][tid=53892] NOTIFY nMsg=18 (0x12) p1=0x00000000 p2=0x00000000
+[14:16:53.103][tid=53892] HOOK NL_IDE_READY (ai_mode=1)
+[14:16:53.104][tid=53748] WORKER start (hide-guard ÒÑÔÚ EnsureInit ÀïÆð£¬ÔçÓÚ±¾Ïß³ÌÔ¼ 5s)
+[14:16:53.104][tid=53748] STEP2 AI task param -> 'C:\Users\MadeSpark\Desktop\²âÊÔ\re\reloadtest\_wk\reloadbiz_ai.e' (source=env:ELANG_AI_TASK)
+[14:16:53.105][tid=53748] STEP3 read-only probe begin
+[14:16:53.105][tid=53748] MACRO FN_COMPILE_AND_RUN = 0x05020002 (expect 0x05020002)
+[14:16:53.106][tid=53748] MACRO FN_END_RUN         = 0x05020003
+[14:16:53.106][tid=53748] MACRO FN_OPEN_FILE2      = 0x03010008 (expect 0x03010008)
+[14:16:53.106][tid=53748] MACRO FN_ADD_TAB         = 0x05030001 (expect 0x05030001)
+[14:16:53.107][tid=53748] MACRO FN_SWITCH_OUTPUT_BAR = 0x04020003 (expect 0x04020003)
+[14:16:53.107][tid=53748] MACRO FN_IS_FUNC_ENABLED = 0x05030004 (expect 0x05030004)
+[14:16:53.107][tid=53748] MACRO FN_STEP_INTO       = 0x05010001 (expect 0x05010001)
+[14:16:53.107][tid=53748] MACRO FN_SET_BREAK_POINTER = 0x05010006 (expect 0x05010006)
+[14:16:53.108][tid=53748] MACRO NL_SYS_NOTIFY_FUNCTION = 1 / NL_IDE_READY = 18 / NL_RIGHT_POPUP_MENU_SHOW = 19
+[14:16:53.108][tid=53748] MACRO LBS_IDE_PLUGIN = 0x100 / NES_GET_MAIN_HWND = 1 / NES_RUN_FUNC = 2
+[14:16:53.108][tid=53748] MACRO LIB_FORMAT_VER = 20000101
+[14:16:53.108][tid=53748] STruct sizeof(LIB_INFO)=144  offsetof m_dwState=48 m_nCmdCount=100 m_pCmdsFunc=108 m_pfnNotify=120 m_pLibConst=136
+[14:16:53.108][tid=53748] STruct sizeof(LIB_INFO2)=160 (LIB_INFO=144 + 4 ptrs)
+[14:16:53.111][tid=53748] PROBE NES_GET_MAIN_HWND -> hwnd=0x00A92488 class='ENewFrame' visible=0 (expect class ENewFrame)
+[14:16:53.112][tid=53748] PROBE GetCommandLineA    = 'D:\ides\e\e.exe C:\Users\MadeSpark\Desktop\²âÊÔ\re\reloadtest\_wk\reloadbiz_ai.e'
+[14:16:53.112][tid=53748] PROBE GetModuleFileNameA(nullptr) = 'D:\ides\e\e.exe'
+[14:16:53.112][tid=53748] PROBE FN_IS_FUNC_ENABLED table (nMsg=2 func=0x05030004):
+[14:16:53.113][tid=53748]    func 0x05020002 FN_COMPILE_AND_RUN           -> handled=1 enabled=1
+[14:16:53.113][tid=53748]    func 0x05020003 FN_END_RUN                   -> handled=1 enabled=0
+[14:16:53.113][tid=53748]    func 0x05020001 FN_COMPILE                   -> handled=1 enabled=1
+[14:16:53.114][tid=53748]    func 0x03010008 FN_OPEN_FILE2                -> handled=1 enabled=1
+[14:16:53.114][tid=53748]    func 0x05030001 FN_ADD_TAB                   -> handled=1 enabled=1
+[14:16:53.114][tid=53748]    func 0x04020003 FN_SWITCH_OUTPUT_BAR         -> handled=1 enabled=1
+[14:16:53.114][tid=53748]    func 0x05030004 FN_IS_FUNC_ENABLED           -> handled=1 enabled=1
+[14:16:53.115][tid=53748]    func 0x05010001 FN_STEP_INTO                 -> handled=1 enabled=0
+[14:16:53.115][tid=53748]    func 0x05010002 FN_STEP                      -> handled=1 enabled=0
+[14:16:53.115][tid=53748]    func 0x05010003 FN_STEP_OUT                  -> handled=1 enabled=0
+[14:16:53.116][tid=53748]    func 0x05010004 FN_RUN_TO_CURSOR             -> handled=1 enabled=1
+[14:16:53.116][tid=53748]    func 0x05010006 FN_SET_BREAK_POINTER         -> handled=1 enabled=1
+[14:16:53.117][tid=53748]    func 0x05010007 FN_CLEAR_ALL_BREAK_POINTER   -> handled=1 enabled=1
+[14:16:53.117][tid=53748]    func 0x05010008 FN_SHOW_NEXT_STATMENT        -> handled=1 enabled=0
+[14:16:53.117][tid=53748]    func 0x0503000A FN_GET_PRG_TEXT              -> handled=1 enabled=1
+[14:16:53.118][tid=53748]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[14:16:53.118][tid=53748]    func 0x01010042 FN_MOVE_CARET                -> handled=1 enabled=1
+[14:16:53.118][tid=53748]    func 0x0202006D FN_INSERT_TEXT               -> handled=1 enabled=1
+[14:16:53.118][tid=53748]    func 0x02020070 FN_PRE_COMPILE               -> handled=1 enabled=1
+[14:16:53.118][tid=53748]    func 0x05020005 FN_PUBLISH                   -> handled=1 enabled=0
+[14:16:53.119][tid=53748]    func 0x05020006 FN_COMPILE_STANDARD          -> handled=1 enabled=0
+[14:16:53.119][tid=53748]    func 0x05020007 FN_COMPILE_STATIC            -> handled=1 enabled=1
+[14:16:53.119][tid=53748]    func 0x05020008 FN_COMPILE_EPACKAGE          -> handled=1 enabled=0
+[14:16:53.120][tid=53748]    func 0x0502000D FN_COMPILE_WINDOWS_EXE       -> handled=1 enabled=1
+[14:16:53.121][tid=53748]    func 0x0502000E FN_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[14:16:53.121][tid=53748]    func 0x0502000F FN_COMPILE_WINDOWS_DLL       -> handled=1 enabled=1
+[14:16:53.121][tid=53748]    func 0x05020010 FN_COMPILE_WINDOWS_ECOM      -> handled=1 enabled=1
+[14:16:53.122][tid=53748]    func 0x05020011 FN_STATIC_COMPILE_WINDOWS_EXE -> handled=1 enabled=1
+[14:16:53.123][tid=53748]    func 0x05020012 FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[14:16:53.123][tid=53748]    func 0x05020013 FN_STATIC_COMPILE_WINDOWS_DLL -> handled=1 enabled=1
+[14:16:53.124][tid=53748]    func 0x02020037 FN_INSERT_NEW_WIN_FORM       -> handled=1 enabled=1
+[14:16:53.124][tid=53748]    func 0x02020055 FN_MENU_MODI                 -> handled=1 enabled=1
+[14:16:53.126][tid=53748]    func 0x0202003E FN_REMOVE_SPEC_UNIT          -> handled=1 enabled=1
+[14:16:53.126][tid=53748]    func 0x0202003F FN_MOVE_LEFT_ONE             -> handled=1 enabled=1
+[14:16:53.127][tid=53748]    func 0x02020040 FN_MOVE_RIGHT_ONE            -> handled=1 enabled=1
+[14:16:53.127][tid=53748]    func 0x02020041 FN_MOVE_UP_ONE               -> handled=1 enabled=1
+[14:16:53.128][tid=53748]    func 0x02020042 FN_MOVE_DOWN_ONE             -> handled=1 enabled=1
+[14:16:53.129][tid=53748]    func 0x02020043 FN_MOVE_LEFT_ONE_GRID        -> handled=1 enabled=1
+[14:16:53.129][tid=53748]    func 0x02020044 FN_MOVE_RIGHT_ONE_GRID       -> handled=1 enabled=1
+[14:16:53.130][tid=53748]    func 0x02020045 FN_MOVE_UP_ONE_GRID          -> handled=1 enabled=1
+[14:16:53.130][tid=53748]    func 0x02020046 FN_MOVE_DOWN_ONE_GRID        -> handled=1 enabled=1
+[14:16:53.131][tid=53748]    func 0x02020047 FN_RESIZE_LEFT_ONE           -> handled=1 enabled=1
+[14:16:53.131][tid=53748]    func 0x02020048 FN_RESIZE_RIGHT_ONE          -> handled=1 enabled=1
+[14:16:53.132][tid=53748]    func 0x02020049 FN_RESIZE_UP_ONE             -> handled=1 enabled=1
+[14:16:53.133][tid=53748]    func 0x0202004A FN_RESIZE_DOWN_ONE           -> handled=1 enabled=1
+[14:16:53.133][tid=53748]    func 0x0202004B FN_RESIZE_LEFT_ONE_GRID      -> handled=1 enabled=1
+[14:16:53.134][tid=53748]    func 0x0202004C FN_RESIZE_RIGHT_ONE_GRID     -> handled=1 enabled=1
+[14:16:53.134][tid=53748]    func 0x0202004D FN_RESIZE_UP_ONE_GRID        -> handled=1 enabled=1
+[14:16:53.134][tid=53748]    func 0x0202004E FN_RESIZE_DOWN_ONE_GRID      -> handled=1 enabled=1
+[14:16:53.135][tid=53748]    func 0x0202004F FN_HORZ_CENTER               -> handled=1 enabled=1
+[14:16:53.135][tid=53748]    func 0x02020050 FN_VERT_CENTER               -> handled=1 enabled=1
+[14:16:53.136][tid=53748]    func 0x02020052 FN_UNIT_GO_TOP               -> handled=1 enabled=1
+[14:16:53.136][tid=53748]    func 0x02020053 FN_UNIT_GO_BOTTOM            -> handled=1 enabled=1
+[14:16:53.137][tid=53748]    func 0x0202007F FN_HORZ_UNIT_MIDDLE          -> handled=1 enabled=1
+[14:16:53.137][tid=53748]    func 0x02020080 FN_VERT_UNIT_MIDDLE          -> handled=1 enabled=1
+[14:16:53.137][tid=53748]    func 0x0202005D FN_LEFT_ALIGN                -> handled=1 enabled=1
+[14:16:53.138][tid=53748]    func 0x0202005E FN_TOP_ALIGN                 -> handled=1 enabled=1
+[14:16:53.138][tid=53748]    func 0x0202005F FN_RIGHT_ALIGN               -> handled=1 enabled=1
+[14:16:53.139][tid=53748]    func 0x02020060 FN_BOTTOM_ALIGN              -> handled=1 enabled=1
+[14:16:53.139][tid=53748]    func 0x02020061 FN_HORZ_MIDDLE               -> handled=1 enabled=1
+[14:16:53.140][tid=53748]    func 0x02020062 FN_VERT_MIDDLE               -> handled=1 enabled=1
+[14:16:53.140][tid=53748]    func 0x02020063 FN_HORZ_AVG                  -> handled=1 enabled=1
+[14:16:53.141][tid=53748]    func 0x02020064 FN_VERT_AVG                  -> handled=1 enabled=1
+[14:16:53.141][tid=53748]    func 0x02020065 FN_EQU_WIDTH                 -> handled=1 enabled=1
+[14:16:53.142][tid=53748]    func 0x02020066 FN_EQU_HEIGHT                -> handled=1 enabled=1
+[14:16:53.142][tid=53748]    func 0x02020067 FN_EQU_WIDTHHEIGHT           -> handled=1 enabled=1
+[14:16:53.142][tid=53748]    func 0x02020076 FN_LOCK_UNIT                 -> handled=1 enabled=1
+[14:16:53.143][tid=53748]    func 0x02020077 FN_UNLOCK_UNIT               -> handled=1 enabled=1
+[14:16:53.143][tid=53748]    func 0x0202006A FN_INSERT_NEW_CLASS_MOD      -> handled=1 enabled=1
+[14:16:53.144][tid=53748]    func 0x0202000F FN_INSERT_NEW_LOCAL_VAR      -> handled=1 enabled=1
+[14:16:53.145][tid=53748]    func 0x02020010 FN_INSERT_NEW_CONST_RES      -> handled=1 enabled=1
+[14:16:53.146][tid=53748]    func 0x02020011 FN_INSERT_NEW_PIC_RES        -> handled=1 enabled=1
+[14:16:53.146][tid=53748]    func 0x02020012 FN_INSERT_NEW_SOUND_RES      -> handled=1 enabled=1
+[14:16:53.147][tid=53748]    func 0x0202007E FN_INSERT_NEW_LONGTEXT       -> handled=1 enabled=1
+[14:16:53.147][tid=53748]    func 0x04020031 FN_GOTO_SPEC_UNIT_DATA_TYPE  -> handled=1 enabled=1
+[14:16:53.148][tid=53748]    func 0x04020032 FN_RELINK                    -> handled=1 enabled=1
+[14:16:53.149][tid=53748]    func 0x04020038 FN_EVA_DESIGNER              -> handled=1 enabled=1
+[14:16:53.150][tid=53748]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[14:16:53.151][tid=53748]    func 0x05030003 FN_INPUT_ECOM                -> handled=1 enabled=1
+[14:16:53.151][tid=53748]    func 0x05030005 FN_CLIP_GET_EPRG_DATA_SIZE   -> handled=1 enabled=1
+[14:16:53.152][tid=53748]    func 0x05030006 FN_CLIP_GET_EPRG_DATA        -> handled=1 enabled=1
+[14:16:53.152][tid=53748]    func 0x05030007 FN_CLIP_SET_EPRG_DATA        -> handled=1 enabled=1
+[14:16:53.153][tid=53748]    func 0x05030008 FN_GET_CARET_ROW_INDEX       -> handled=1 enabled=1
+[14:16:53.154][tid=53748]    func 0x05030009 FN_GET_CARET_COL_INDEX       -> handled=1 enabled=1
+[14:16:53.154][tid=53748]    func 0x0503000B FN_GET_PRG_HELP              -> handled=1 enabled=1
+[14:16:53.155][tid=53748]    func 0x0503000C FN_GET_NUM_ECOM              -> handled=1 enabled=1
+[14:16:53.156][tid=53748]    func 0x0503000D FN_GET_ECOM_FILE_NAME        -> handled=1 enabled=1
+[14:16:53.156][tid=53748]    func 0x0503000E FN_GET_NUM_LIB               -> handled=1 enabled=1
+[14:16:53.157][tid=53748]    func 0x0503000F FN_GET_LIB_INFO_TEXT         -> handled=1 enabled=1
+[14:16:53.157][tid=53748]    func 0x02020087 FN_ADD_NEW_ECOM2             -> handled=1 enabled=1
+[14:16:53.157][tid=53748]    func 0x02020085 FN_INPUT_PRG2                -> handled=1 enabled=1
+[14:16:53.159][tid=53748]    func 0x02020071 FN_SET_AND_COMPILE_PRG_ITEM_TEXT -> handled=1 enabled=1
+[14:16:53.160][tid=53748]    func 0x02020086 FN_REPLACE_ALL2              -> handled=1 enabled=1
+[14:16:53.160][tid=53748]    func 0x02020036 FN_FORCE_PROCESS             -> handled=1 enabled=1
+[14:16:53.161][tid=53748]    func 0x04020033 FN_GOTO_LAST_MODI_PLACE      -> handled=1 enabled=0
+[14:16:53.161][tid=53748]    func 0x02020032 FN_UNDO                      -> handled=1 enabled=0
+[14:16:53.162][tid=53748]    func 0x02020033 FN_REDO                      -> handled=1 enabled=0
+[14:16:53.162][tid=53748] PROBE EnumChildWindows of main window begin:
+[14:16:53.169][tid=53748]   child#1 hwnd=0x000923C6 class='AfxControlBar42s' text='×´Ì¬¼Ð' rect=(-3,705,1694,1006) visible=0
+[14:16:53.181][tid=53748]   child#2 hwnd=0x000A247C class='Afx:400000:8:10003:900015:0' text='×´Ì¬¼Ð' rect=(0,831,1268,1019) visible=0
+[14:16:53.202][tid=53748]   child#3 hwnd=0x000923F4 class='#32770' text='' rect=(17,837,1265,1016) visible=0
+[14:16:53.223][tid=53748]   child#4 hwnd=0x000924A0 class='SysTabControl32' text='×´Ì¬¼ÐÓÒ±ß' rect=(17,837,17,837) visible=0
+[14:16:53.234][tid=53748]   child#5 hwnd=0x0009248C class='SysTabControl32' text='×´Ì¬¼Ð×ó±ß' rect=(17,837,17,837) visible=0
+[14:16:53.240][tid=53748]   child#6 hwnd=0x000D2470 class='ScintillaForEIDETools' text='
+¡ï ÄÚÁª»ã±à²å¼þ:µ±Ç°Ò×ÓïÑÔ°æ±¾ [593] Ö§³Öµ±Ç°°æ±¾(¿ÉÒÔÔÚ²Ëµ¥ÖÐÑ¡Ôñ¡°¹¤¾ß->ÄÚÁª»ã±àÉèÖÃ¡±ÐÞ¸ÄÉèÖÃ; ×÷Õß: yecate qq: 869443499)
+¡ï µ±Ç°°æ±¾Îª v3.59(20250727) ¿ª·¢Î¬»¤²»Ò×, Èç¹û´Ë²å¼þ¶ÔÄã¿ª·¢ÓÐ°ïÖú,ÇëÔÞÖúÖ§³ÖÏÂ, Ð»Ð»!
+
+
+¡ô
+¨‹¨‹¨‹¨‹¨‹²å¼þÕýÔÚ¼ÓÔØÖÐ£¬Çë' rect=(18,837,18,837) visible=0
+[14:16:53.246][tid=53748]   child#7 hwnd=0x000A2440 class='Edit' text='¡ôÕýÔÚ¼ÓÔØ²å¼þ...
+' rect=(18,837,18,837) visible=0
+[14:16:53.250][tid=53748]   child#8 hwnd=0x000A238E class='Edit' text='--- ³ÌÐòµÄÊäÈë·½·¨£º
+    ÎªÁË±ãÓÚÊäÈë³ÌÐò£¬Ò×ÓïÑÔÄÚÖÃËÄÖÖÃû³ÆÊäÈë·¨£ºÊ×Æ´¡¢È«Æ´¡¢Ë«Æ´¡¢Ó¢ÎÄ¡£ÈýÖÖÆ´ÒôÊäÈë·¨¾ùÖ§³ÖÄÏ·½Òô¼°¶àÒô×Ö¡£Ê×Æ´ÊäÈë·¨¼°È«Æ´ÊäÈë·¨ÔÚÏµÍ³ÖÐ±»ºÏ²¢Îª¡°Ê×Æ´¼°È«Æ´ÊäÈë·¨¡±£¬ÏµÍ³×Ô¶¯ÅÐ±ðËùÊäÈëµÄÆ´ÒôÊÇÊ×Æ´·½Ê½»¹ÊÇÈ«Æ´·½Ê½¡£Ë«Æ´ÊäÈë·¨µÄ±àÂë' rect=(21,863,1255,1005) visible=0
+[14:16:53.258][tid=53748]   child#9 hwnd=0x000A23C8 class='SysTreeView32' text='Tree1' rect=(21,863,1255,1005) visible=0
+[14:16:53.274][tid=53748]   child#10 hwnd=0x000A2364 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[14:16:53.281][tid=53748]   child#11 hwnd=0x000A2368 class='SysHeader32' text='' rect=(23,865,175,883) visible=0
+[14:16:53.286][tid=53748]   child#12 hwnd=0x00092306 class='Static' text=' ' rect=(482,885,1255,906) visible=0
+[14:16:53.297][tid=53748]   child#13 hwnd=0x000923AA class='Edit' text='' rect=(433,908,1255,1005) visible=0
+[14:16:53.306][tid=53748]   child#14 hwnd=0x000A243C class='SysTreeView32' text='Tree1' rect=(21,863,431,1005) visible=0
+[14:16:53.309][tid=53748]   child#15 hwnd=0x000C23FC class='ComboBox' text='' rect=(433,863,1255,883) visible=0
+[14:16:53.317][tid=53748]   child#16 hwnd=0x0010234E class='Button' text='Ð´Èë' rect=(433,885,477,906) visible=0
+[14:16:53.322][tid=53748]   child#17 hwnd=0x000923AE class='Static' text='--- ½öµ÷ÊÔÖÐ¶Ï×´Ì¬ÏÂÓÐÐ§ ---' rect=(21,863,1255,1005) visible=0
+[14:16:53.323][tid=53748]   child#18 hwnd=0x000B241C class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[14:16:53.332][tid=53748]   child#19 hwnd=0x000B2410 class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[14:16:53.338][tid=53748]   child#20 hwnd=0x000A2394 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[14:16:53.343][tid=53748]   child#21 hwnd=0x000A2452 class='SysTabControl32' text='Tab1' rect=(397,914,502,1006) visible=0
+[14:16:53.349][tid=53748]   child#22 hwnd=0x000A2458 class='SysTabControl32' text='Tab1' rect=(20,840,1262,1013) visible=0
+[14:16:53.351][tid=53748]   child#23 hwnd=0x00251256 class='MDIClient' text='' rect=(343,97,1694,705) visible=0
+[14:16:53.375][tid=53748]   child#24 hwnd=0x000D237E class='CCustomTabCtrl' text='' rect=(0,43,0,43) visible=0
+[14:16:53.379][tid=53748]   child#25 hwnd=0x0009233A class='AfxControlBar42s' text='²Ëµ¥Ìõ' rect=(-3,27,897,53) visible=0
+[14:16:53.386][tid=53748]   child#26 hwnd=0x000E24BA class='ToolbarWindow32' text='¶ÔÆë¹¤¾ßÌõ' rect=(-187,464,170,489) visible=0
+[14:16:53.392][tid=53748]   child#27 hwnd=0x000B231C class='ToolbarWindow32' text='±ê×¼¹¤¾ßÌõ' rect=(-3,27,897,48) visible=0
+[14:16:53.400][tid=53748]   child#28 hwnd=0x0009235E class='Afx:400000:b:10003:10:0' text='²Ëµ¥Ìõ' rect=(-2,43,1721,73) visible=0
+[14:16:53.404][tid=53748]   child#29 hwnd=0x000A232C class='ToolbarWindow32' text='¶¨Î»¹¤¾ßÌõ' rect=(-5000,-4955,-4481,-4930) visible=0
+[14:16:53.419][tid=53748]   child#30 hwnd=0x000D24BC class='AfxControlBar42s' text='¹¤×÷¼Ð' rect=(-3,53,343,705) visible=0
+[14:16:53.422][tid=53748]   child#31 hwnd=0x00092480 class='Afx:400000:8:10003:900015:0' text='¹¤×÷Óë×´Ì¬×éºÏ¼Ð' rect=(44,1131,652,1135) visible=0
+[14:16:53.431][tid=53748]   child#32 hwnd=0x00092478 class='Afx:400000:8:10003:900015:0' text='¹¤×÷¼Ð' rect=(-3,77,335,705) visible=0
+[14:16:53.439][tid=53748]   child#33 hwnd=0x00092498 class='#32770' text='' rect=(-3,77,335,705) visible=0
+[14:16:53.449][tid=53748]   child#34 hwnd=0x0009249A class='SysTabControl32' text='Tab1' rect=(-3,77,335,705) visible=0
+[14:16:53.454][tid=53748]   child#35 hwnd=0x000923A4 class='Afx:400000:b:10003:900015:0' text='' rect=(1,101,211,404) visible=0
+[14:16:53.467][tid=53748]   child#36 hwnd=0x00092476 class='ComboBox' text='--- ÎÞ¶ÔÓ¦ÊÂ¼þ ---' rect=(1,405,211,425) visible=0
+[14:16:53.469][tid=53748]   child#37 hwnd=0x000B2438 class='ComboBox' text='' rect=(1,81,211,101) visible=0
+[14:16:53.482][tid=53748]   child#38 hwnd=0x0047253A class='SysTreeView32' text='Tree1' rect=(1,81,211,425) visible=0
+[14:16:53.492][tid=53748]   child#39 hwnd=0x001A2352 class='SysTreeView32' text='Tree1' rect=(-2,77,334,685) visible=0
+[14:16:53.498][tid=53748]   child#40 hwnd=0x0011239C class='SysTabControl32' text='Tab1' rect=(12,172,198,306) visible=0
+[14:16:53.500][tid=53748]   child#41 hwnd=0x000C24BE class='AfxControlBar42s' text='´°¿Ú×é¼þÏä' rect=(1707,94,1707,833) visible=0
+[14:16:53.501][tid=53748]   child#42 hwnd=0x00092496 class='Afx:400000:8:10003:900015:0' text='´°¿Ú×é¼þÏä' rect=(1716,118,1716,828) visible=0
+[14:16:53.519][tid=53748]   child#43 hwnd=0x00092494 class='#32770' text='' rect=(1716,118,1716,828) visible=0
+[14:16:53.521][tid=53748]   child#44 hwnd=0x003D270C class='Button' text='»ù±¾×é¼þ2' rect=(1716,802,1716,822) visible=0
+[14:16:53.526][tid=53748]   child#45 hwnd=0x000C26F4 class='Button' text='»ù±¾×é¼þ1' rect=(1716,123,1716,143) visible=0
+[14:16:53.532][tid=53748]   child#46 hwnd=0x00092328 class='SysTreeView32' text='Tree1' rect=(1733,148,1840,291) visible=0
+[14:16:53.543][tid=53748]   child#47 hwnd=0x0009246A class='SysTabControl32' text='' rect=(1722,137,1723,138) visible=0
+[14:16:53.546][tid=53748]   child#48 hwnd=0x000B26EC class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.554][tid=53748]   child#49 hwnd=0x000D26DC class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.555][tid=53748]   child#50 hwnd=0x00092690 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.570][tid=53748]   child#51 hwnd=0x0009269A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.576][tid=53748]   child#52 hwnd=0x0009269C class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.587][tid=53748]   child#53 hwnd=0x000A2698 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.594][tid=53748]   child#54 hwnd=0x000A2694 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.596][tid=53748]   child#55 hwnd=0x000926B0 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.606][tid=53748]   child#56 hwnd=0x0009269E class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.609][tid=53748]   child#57 hwnd=0x00092552 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.618][tid=53748]   child#58 hwnd=0x000926BC class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.621][tid=53748]   child#59 hwnd=0x000926A2 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.626][tid=53748]   child#60 hwnd=0x000926B4 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.639][tid=53748]   child#61 hwnd=0x000926B6 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.647][tid=53748]   child#62 hwnd=0x000926AE class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.662][tid=53748]   child#63 hwnd=0x000926A8 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.664][tid=53748]   child#64 hwnd=0x000A2706 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.668][tid=53748]   child#65 hwnd=0x00132702 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.674][tid=53748]   child#66 hwnd=0x000A2704 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[14:16:53.680][tid=53748]   child#67 hwnd=0x000926BE class='Button' text='' rect=(1721,152,1749,180) visible=0
+[14:16:53.683][tid=53748]   child#68 hwnd=0x000926C0 class='Button' text='' rect=(1721,181,1749,209) visible=0
+[14:16:53.688][tid=53748]   child#69 hwnd=0x000B2738 class='Button' text='' rect=(1721,210,1749,238) visible=0
+[14:16:53.692][tid=53748]   child#70 hwnd=0x000A2734 class='Button' text='' rect=(1721,239,1749,267) visible=0
+[14:16:53.700][tid=53748]   child#71 hwnd=0x000A2732 class='Button' text='' rect=(1721,268,1749,296) visible=0
+[14:16:53.705][tid=53748]   child#72 hwnd=0x000B2746 class='Button' text='' rect=(1721,297,1749,325) visible=0
+[14:16:53.726][tid=53748]   child#73 hwnd=0x001C2730 class='Button' text='' rect=(1721,326,1749,354) visible=0
+[14:16:53.731][tid=53748]   child#74 hwnd=0x000D22EC class='Button' text='' rect=(1721,355,1749,383) visible=0
+[14:16:53.743][tid=53748]   child#75 hwnd=0x000F2754 class='Button' text='' rect=(1721,384,1749,412) visible=0
+[14:16:53.746][tid=53748]   child#76 hwnd=0x000A275E class='Button' text='' rect=(1721,413,1749,441) visible=0
+[14:16:53.748][tid=53748]   child#77 hwnd=0x000D275C class='Button' text='' rect=(1721,442,1749,470) visible=0
+[14:16:53.753][tid=53748]   child#78 hwnd=0x000F272E class='Button' text='' rect=(1721,471,1749,499) visible=0
+[14:16:53.755][tid=53748]   child#79 hwnd=0x000C272C class='Button' text='' rect=(1721,500,1749,528) visible=0
+[14:16:53.758][tid=53748]   child#80 hwnd=0x000B2728 class='Button' text='' rect=(1721,529,1749,557) visible=0
+[14:16:53.762][tid=53748]   child#81 hwnd=0x0043271C class='Button' text='' rect=(1721,558,1749,586) visible=0
+[14:16:53.768][tid=53748]   child#82 hwnd=0x000A272A class='Button' text='' rect=(1721,587,1749,615) visible=0
+[14:16:53.774][tid=53748]   child#83 hwnd=0x000E2752 class='Button' text='' rect=(1721,616,1749,644) visible=0
+[14:16:53.781][tid=53748]   child#84 hwnd=0x000F2756 class='Button' text='' rect=(1721,645,1749,673) visible=0
+[14:16:53.786][tid=53748]   child#85 hwnd=0x000B2758 class='Button' text='' rect=(1721,674,1749,702) visible=0
+[14:16:53.799][tid=53748]   child#86 hwnd=0x000A274E class='Button' text='' rect=(1721,703,1749,731) visible=0
+[14:16:53.803][tid=53748]   child#87 hwnd=0x000C2736 class='Button' text='' rect=(1721,732,1749,760) visible=0
+[14:16:53.833][tid=53748]   child#88 hwnd=0x000A26CA class='Button' text='' rect=(1721,761,1749,789) visible=0
+[14:16:53.840][tid=53748]   child#89 hwnd=0x00092492 class='ToolbarWindow32' text='' rect=(897,27,966,48) visible=0
+[14:16:53.843][tid=53748]   child#90 hwnd=0x000A2442 class='msctls_statusbar32' text='--- ³ÌÐòµÄÊäÈë·½·¨£º £ü  ÎªÁË±ãÓÚÊäÈë³ÌÐò£¬Ò×ÓïÑÔÄÚÖÃËÄÖÖÃû³ÆÊäÈë·¨£ºÊ×Æ´¡¢È«Æ´¡¢Ë«Æ´¡¢Ó¢ÎÄ¡£ÈýÖÖÆ´ÒôÊäÈë·¨¾ùÖ§³ÖÄÏ·½Òô¼°¶àÒô×Ö¡£Ê×Æ´ÊäÈë·¨¼°È«Æ´ÊäÈë·¨ÔÚÏµÍ³ÖÐ±»ºÏ²¢Îª¡°Ê×Æ´¼°È«Æ´ÊäÈë·¨¡±£¬ÏµÍ³×Ô¶¯ÅÐ±ðËùÊäÈëµÄÆ´ÒôÊÇÊ×Æ´·½Ê½»¹ÊÇÈ«Æ´·½Ê½¡£Ë«Æ´ÊäÈë·¨µÄ±àÂë¹' rect=(353,655,1684,675) visible=0
+[14:16:53.852][tid=53748]   child#91 hwnd=0x000A2454 class='msctls_progress32' text='' rect=(353,658,553,674) visible=0
+[14:16:53.862][tid=53748]   child#92 hwnd=0x00092460 class='Button' text='' rect=(1541,658,1557,674) visible=0
+[14:16:53.867][tid=53748]   child#93 hwnd=0x00092386 class='ComboBox' text='²âÊÔ´°¿Ú *' rect=(343,77,883,97) visible=0
+[14:16:53.869][tid=53748]   child#94 hwnd=0x00092426 class='ComboBox' text='²âÊÔ´°¿Ú' rect=(883,77,1694,97) visible=0
+[14:16:53.870][tid=53748] PROBE EnumChildWindows end: total=94
+[14:16:53.870][tid=53748] PROBE hide=2 -> ShowWindow(hwnd=0x00A92488, SW_HIDE) (visible before=0)
+[14:16:53.890][tid=53748] PROBE hide=2 -> visible after=0
+[14:16:53.891][tid=53748] STEP3 read-only probe end
+[14:16:53.891][tid=53748] STEP4 skipped (ELANG_AI_RUN != 1)
+[14:16:53.892][tid=53748] COMPILE func=0x05020013 handled=1 enabled=1 delay=2500ms
+[14:16:53.931][tid=53748] RUN panel snapshot: 4 ¸öÎÄ±¾Àà×Ó´°¿Ú
+[14:16:53.931][tid=53748] RUN   panel[0] hwnd=0x000D2470 class='ScintillaForEIDETools' len=301
+[14:16:53.932][tid=53748] RUN   panel[1] hwnd=0x000A2440 class='Edit' len=19
+[14:16:53.932][tid=53748] RUN   panel[2] hwnd=0x000A238E class='Edit' len=3906
+[14:16:53.932][tid=53748] RUN   panel[3] hwnd=0x000923AA class='Edit' len=0
+[14:16:53.933][tid=53748] RUN BEFORE hwnd=0x000D2470 class='ScintillaForEIDETools' | prev='¡ôÕýÔÚ¼ÓÔØ²å¼þ...  ' | last=''
+[14:16:53.933][tid=53748] RUN BEFORE hwnd=0x000A2440 class='Edit' | prev='¡ôÕýÔÚ¼ÓÔØ²å¼þ...  ' | last=''
+[14:16:53.933][tid=53748] RUN BEFORE hwnd=0x000A238E class='Edit' | prev='    10¡¢ÔÙÏÂÒÆÒ»ÐÐ¹â±êºóÊäÈë¡°fh (sz2)¡±¡£  ' | last=''
+[14:16:56.434][tid=53748] COMPILE trigger 0x05020013 ...
+[14:16:57.584][tid=52948] HIDEGUARD cloak NewWindow try#1 style=0x84000000 ex=0x00000000 vis=0
+[14:16:57.587][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[14:16:57.601][tid=44400] HIDEGUARD evt NewWindow#1 event=0x8000 child=0 vis=0
+[14:16:57.601][tid=44400] HIDEGUARD cloak NewWindow try#2 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.602][tid=44400] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.603][tid=44400] HIDEGUARD evt NewWindow#2 event=0x8000 child=0 vis=0
+[14:16:57.603][tid=44400] HIDEGUARD cloak NewWindow try#3 style=0x86010000 ex=0x00000000 vis=0
+[14:16:57.605][tid=44400] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[14:16:57.608][tid=44400] HIDEGUARD evt NewWindow#3 event=0x8000 child=0 vis=0
+[14:16:57.608][tid=44400] HIDEGUARD cloak NewWindow try#4 style=0x52000000 ex=0x00010000 vis=0
+[14:16:57.608][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.608][tid=52948] HIDEGUARD cloak NewWindow try#5 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.609][tid=44400] HIDEGUARD evt NewWindow#4 event=0x800B child=0 vis=0
+[14:16:57.609][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.609][tid=44400] HIDEGUARD cloak NewWindow try#6 style=0x52000000 ex=0x00010000 vis=0
+[14:16:57.610][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.628][tid=44400] HIDEGUARD evt NewWindow#5 event=0x8000 child=0 vis=0
+[14:16:57.629][tid=44400] HIDEGUARD cloak NewWindow try#7 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.629][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.630][tid=44400] HIDEGUARD evt NewWindow#6 event=0x800B child=0 vis=0
+[14:16:57.630][tid=44400] HIDEGUARD cloak NewWindow try#8 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.631][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.638][tid=52948] HIDEGUARD cloak NewWindow try#9 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.639][tid=44400] HIDEGUARD evt NewWindow#7 event=0x8000 child=0 vis=0
+[14:16:57.639][tid=44400] HIDEGUARD cloak NewWindow try#10 style=0x52000000 ex=0x00010000 vis=0
+[14:16:57.640][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.639][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.644][tid=44400] HIDEGUARD evt NewWindow#8 event=0x8000 child=0 vis=0
+[14:16:57.644][tid=44400] HIDEGUARD cloak NewWindow try#11 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.645][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.648][tid=44400] HIDEGUARD evt NewWindow#9 event=0x8000 child=0 vis=0
+[14:16:57.648][tid=44400] HIDEGUARD cloak NewWindow try#12 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.649][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.653][tid=52948] HIDEGUARD cloak NewWindow try#13 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.654][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.654][tid=44400] HIDEGUARD evt NewWindow#10 event=0x8000 child=0 vis=0
+[14:16:57.656][tid=44400] HIDEGUARD cloak NewWindow try#14 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.656][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.661][tid=44400] HIDEGUARD evt NewWindow#11 event=0x8000 child=0 vis=0
+[14:16:57.662][tid=44400] HIDEGUARD cloak NewWindow try#15 style=0x42000000 ex=0x00010000 vis=0
+[14:16:57.662][tid=44400] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[14:16:57.664][tid=44400] HIDEGUARD evt NewWindow#12 event=0x800B child=0 vis=0
+[14:16:57.665][tid=44400] HIDEGUARD cloak NewWindow try#16 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.665][tid=44400] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.666][tid=44400] HIDEGUARD evt NewWindow#13 event=0x8002 child=0 vis=0
+[14:16:57.667][tid=44400] HIDEGUARD cloak NewWindow try#17 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.668][tid=44400] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.669][tid=44400] HIDEGUARD evt NewWindow#14 event=0x800B child=0 vis=0
+[14:16:57.670][tid=44400] HIDEGUARD cloak NewWindow try#18 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.670][tid=52948] HIDEGUARD cloak NewWindow try#19 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.671][tid=44400] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.671][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.680][tid=52948] HIDEGUARD cloak NewWindow try#20 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.681][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.695][tid=52948] HIDEGUARD cloak NewWindow try#21 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.696][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.707][tid=52948] HIDEGUARD cloak NewWindow try#22 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.707][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.720][tid=52948] HIDEGUARD cloak NewWindow try#23 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.721][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.732][tid=52948] HIDEGUARD cloak NewWindow try#24 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.732][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.747][tid=52948] HIDEGUARD cloak NewWindow try#25 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.747][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.756][tid=52948] HIDEGUARD cloak NewWindow try#26 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.757][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.773][tid=52948] HIDEGUARD cloak NewWindow try#27 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.773][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.783][tid=52948] HIDEGUARD cloak NewWindow try#28 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.783][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.797][tid=52948] HIDEGUARD cloak NewWindow try#29 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.797][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.805][tid=52948] HIDEGUARD cloak NewWindow try#30 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.806][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.818][tid=52948] HIDEGUARD cloak NewWindow try#31 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.818][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.828][tid=52948] HIDEGUARD cloak NewWindow try#32 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.829][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.843][tid=52948] HIDEGUARD cloak NewWindow try#33 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.844][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.851][tid=52948] HIDEGUARD cloak NewWindow try#34 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.852][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.864][tid=52948] HIDEGUARD cloak NewWindow try#35 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.865][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.873][tid=52948] HIDEGUARD cloak NewWindow try#36 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.873][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.889][tid=52948] HIDEGUARD cloak NewWindow try#37 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.889][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.897][tid=52948] HIDEGUARD cloak NewWindow try#38 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.898][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.912][tid=52948] HIDEGUARD cloak NewWindow try#39 style=0x84000000 ex=0x00080020 vis=0
+[14:16:57.913][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:57.920][tid=52948] HIDEGUARD cloak NewWindow try#40 style=0x86010000 ex=0x00080020 vis=0
+[14:16:57.921][tid=52948] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[14:16:58.087][tid=44400] HIDEGUARD cloak FAILED cls='CicMarshalWndClass' err=87
+[14:16:58.098][tid=44400] HIDEGUARD act#1 mode=2 cls='#32770' rect=(712,457,1000,614)
+[14:16:58.101][tid=52948] HIDEGUARD act#2 mode=2 cls='#32770' rect=(712,457,1000,614)
+[14:16:58.139][tid=52948] HIDEGUARD act#3 mode=2 cls='#32770' rect=(712,457,1000,614)
+[14:17:00.871][tid=44400] HIDEGUARD iter=2000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=10018/1 acts=3
+[14:17:04.075][tid=44400] HIDEGUARD iter=4000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=17924/1 acts=3
+[14:17:04.762][tid=52948] HIDEGUARD poll iter=400 enumMs=16
+[14:17:07.186][tid=44400] HIDEGUARD iter=6000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=25842/1 acts=3
+[14:17:10.327][tid=44400] HIDEGUARD iter=8000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=33730/1 acts=3
+[14:17:13.160][tid=52948] HIDEGUARD poll iter=800 enumMs=31
+[14:17:13.414][tid=44400] HIDEGUARD iter=10000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=41497/1 acts=3
+[14:17:16.521][tid=44400] HIDEGUARD iter=12000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=49300/1 acts=3
+[14:17:19.896][tid=44400] HIDEGUARD iter=14000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=57392/1 acts=3
+[14:17:21.917][tid=52948] HIDEGUARD poll iter=1200 enumMs=16
+[14:17:23.427][tid=44400] HIDEGUARD iter=16000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=65624/1 acts=3
+[14:17:27.000][tid=44400] HIDEGUARD iter=18000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=73861/1 acts=3
+[14:17:30.496][tid=44400] HIDEGUARD iter=20000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=82204/1 acts=3
+[14:17:30.939][tid=52948] HIDEGUARD poll iter=1600 enumMs=31
+[14:17:33.777][tid=44400] HIDEGUARD iter=22000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=90084/1 acts=3
+[14:17:36.941][tid=44400] HIDEGUARD iter=24000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=98009/1 acts=3
+[14:17:39.509][tid=52948] HIDEGUARD poll iter=2000 enumMs=16
+[14:17:40.031][tid=44400] HIDEGUARD iter=26000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=105859/1 acts=3
+[14:17:43.160][tid=44400] HIDEGUARD iter=28000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=113695/1 acts=3
+[14:17:46.336][tid=44400] HIDEGUARD iter=30000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=121645/1 acts=3
+[14:17:47.928][tid=52948] HIDEGUARD poll iter=2400 enumMs=16
+[14:17:49.456][tid=44400] HIDEGUARD iter=32000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=129633/1 acts=3
+[14:17:52.453][tid=44400] HIDEGUARD iter=34000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=137785/1 acts=3
+[14:17:55.529][tid=44400] HIDEGUARD iter=36000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=145765/1 acts=3
+[14:17:55.963][tid=52948] HIDEGUARD poll iter=2800 enumMs=16
+[14:17:58.577][tid=44400] HIDEGUARD iter=38000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=153668/1 acts=3
+[14:18:01.707][tid=44400] HIDEGUARD iter=40000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=161861/1 acts=3
+[14:18:04.185][tid=52948] HIDEGUARD poll iter=3200 enumMs=32
+[14:18:05.099][tid=44400] HIDEGUARD iter=42000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=170231/1 acts=3
+[14:18:08.592][tid=44400] HIDEGUARD iter=44000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=178818/1 acts=3
+[14:18:12.119][tid=44400] HIDEGUARD iter=46000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=187305/1 acts=3
+[14:18:12.910][tid=52948] HIDEGUARD poll iter=3600 enumMs=16
+[14:18:15.365][tid=44400] HIDEGUARD iter=48000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=195507/1 acts=3
+[14:18:18.517][tid=44400] HIDEGUARD iter=50000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=203408/1 acts=3
+[14:18:21.451][tid=52948] HIDEGUARD poll iter=4000 enumMs=15
+[14:18:21.761][tid=44400] HIDEGUARD iter=52000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=211241/1 acts=3
+[14:18:24.987][tid=44400] HIDEGUARD iter=54000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=219500/1 acts=3
+[14:18:28.634][tid=44400] HIDEGUARD iter=56000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=228097/1 acts=3
+[14:18:30.155][tid=52948] HIDEGUARD poll iter=4400 enumMs=15
+[14:18:32.133][tid=44400] HIDEGUARD iter=58000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=236407/1 acts=3
+[14:18:35.492][tid=44400] HIDEGUARD iter=60000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=245188/1 acts=3
+[14:18:38.613][tid=52948] HIDEGUARD poll iter=4800 enumMs=31
+[14:18:38.746][tid=44400] HIDEGUARD iter=62000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=253191/1 acts=3
+[14:18:41.830][tid=44400] HIDEGUARD iter=64000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=261156/1 acts=3
+[14:18:45.027][tid=44400] HIDEGUARD iter=66000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=269091/1 acts=3
+[14:18:46.974][tid=52948] HIDEGUARD poll iter=5200 enumMs=15
+[14:18:48.318][tid=44400] HIDEGUARD iter=68000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=277390/1 acts=3
+[14:18:51.858][tid=44400] HIDEGUARD iter=70000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=285697/1 acts=3
+[14:18:55.282][tid=44400] HIDEGUARD iter=72000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=294216/1 acts=3
+[14:18:55.674][tid=52948] HIDEGUARD poll iter=5600 enumMs=16
+[14:18:58.824][tid=44400] HIDEGUARD iter=74000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=302896/1 acts=3
+[14:19:02.799][tid=44400] HIDEGUARD iter=76000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=310888/1 acts=3
+[14:19:05.433][tid=52948] HIDEGUARD poll iter=6000 enumMs=16
+[14:19:06.624][tid=44400] HIDEGUARD iter=78000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=318964/1 acts=3
+[14:19:10.393][tid=44400] HIDEGUARD iter=80000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=327251/1 acts=3
+[14:19:13.893][tid=44400] HIDEGUARD iter=82000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=335410/1 acts=3
+[14:19:14.708][tid=52948] HIDEGUARD poll iter=6400 enumMs=16
+[14:19:16.878][tid=44400] HIDEGUARD iter=84000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=343483/1 acts=3
+[14:19:19.891][tid=44400] HIDEGUARD iter=86000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=351666/1 acts=3
+[14:19:22.794][tid=52948] HIDEGUARD poll iter=6800 enumMs=16
+[14:19:23.053][tid=44400] HIDEGUARD iter=88000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=359519/1 acts=3
+[14:19:26.039][tid=44400] HIDEGUARD iter=90000 evtAll=10460(C285 D10007 S5 L163) newWinEvt=14 evtAct=1 cloak=367870/1 acts=3

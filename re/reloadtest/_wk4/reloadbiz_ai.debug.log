@@ -1,0 +1,7 @@
+[14:31:54.238][=== COMPILE BEGIN ===] 
+[14:31:54.238][COMPILE-CHECK] enabled=1
+[14:31:54.257][PANEL-TAIL] BEFORE hwnd=0x00012D9E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[14:31:54.257][PANEL-TAIL] BEFORE hwnd=0x00012CE8 class='ScintillaForEIDETools' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[14:31:54.258][PANEL-TAIL] BEFORE hwnd=0x00012CA2 class='Edit' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[14:31:54.258][PANEL-TAIL] BEFORE hwnd=0x00012CA0 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[14:31:56.769][COMPILE-TRIGGER] send
