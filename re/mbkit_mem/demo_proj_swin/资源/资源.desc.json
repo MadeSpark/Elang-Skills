@@ -1,0 +1,10 @@
+﻿{
+    "MbKit": {
+        "Comment": "MbKit 宿主层（内嵌验证）",
+        "IsPublic": false
+    },
+    "Mapper": {
+        "Comment": "PE 手工映射器机器码（1952 B，运行时拷到固定 VA 池）",
+        "IsPublic": false
+    }
+}

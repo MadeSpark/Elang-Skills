@@ -600,6 +600,15 @@ int __stdcall MbKit_KernelLoaded(void)
     return (g_state == 1) ? 1 : 0;
 }
 
+/* 内核原始状态字：0=尚未加载 1=已就绪 2=已失败 0x7FFFFFFF=正在加载。
+ * ★ 2026-09-25：给易语言 `WKE设置node路径` 的「失败原因」参数用 ——
+ *   g_state≠0 时 SetNodePath 会被拒绝，但「已就绪常驻」（重载 DLL 后的正常现象）
+ *   和「上次加载失败被卡死」是两种完全不同的问题，必须能区分。 */
+int __stdcall MbKit_KernelState(void)
+{
+    return (int)g_state;
+}
+
 /* 一行式自检：把「为什么内核没进来 / 从哪儿进来的」一次说清。
  * 返回静态缓冲，调用方不要释放、不要长期持有。 */
 const char* __stdcall MbKit_Diag(void)

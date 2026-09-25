@@ -1,0 +1,14 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\wk_d2\demo_ai.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\.workbuddy\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\wk_d2\demo_ai.debug.log
+   tag     = demo_ai_203442
+   timeout = 300.0s   stop-after = None
+   已投放 lib\elang_addin.fne (78336 B)
+   e.exe pid = 116732
+   无头模式 = hide
+   观测: runStart=False runEnd=False weSent=False e_self_exit=3221225477
+   install-dir 新文件: （无）
+   无头观测: mode=hide 动作 6 次（事件通道 2 / 轮询 4；轮询 2429 次见到可见窗口 4 个）；采样到「可见且与屏幕相交」3 次
+   无头最坏露脸矩形: [(-18, -18, 1725, 1037), (653, 369, 1053, 649), (400, 226, 1290, 776)]

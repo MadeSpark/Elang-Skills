@@ -1,0 +1,14 @@
+== elaunch ==
+   ai.e    = C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\out_mem\_wk\miniblink_ai.e
+   ELANG   = D:\ides\e
+   fne     = C:\Users\MadeSpark\.agents\skills\elang-debug\assets\elang_addin.fne
+   log     = C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\out_mem\_wk\miniblink_ai.debug.log
+   tag     = miniblink_ai_003953
+   timeout = 300.0s   stop-after = None
+   已投放 lib\elang_addin.fne (78336 B)
+   e.exe pid = 1432
+   无头模式 = hide
+   观测: runStart=False runEnd=False weSent=False e_self_exit=None
+   install-dir 新文件: （无）
+   无头观测: mode=hide 动作 15 次（事件通道 7 / 轮询 8；轮询 2586 次见到可见窗口 8 个）；采样到「可见且与屏幕相交」4 次
+   无头最坏露脸矩形: [(-18, -18, 1725, 1037), (653, 369, 1053, 649), (400, 226, 1290, 776), (0, 0, 889, 547)]

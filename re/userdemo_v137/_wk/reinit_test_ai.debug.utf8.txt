@@ -1,0 +1,14 @@
+[01:46:54.545][=== COMPILE BEGIN ===] 
+[01:46:54.546][COMPILE-CHECK] enabled=1
+[01:46:54.614][PANEL-TAIL] BEFORE hwnd=0x000A171C class='ScintillaForEIDETools' | prev='◆正在加载插件...  ' | last=''
+[01:46:54.614][PANEL-TAIL] BEFORE hwnd=0x0007174A class='Edit' | prev='◆正在加载插件...  ' | last=''
+[01:46:54.615][PANEL-TAIL] BEFORE hwnd=0x000A1706 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[01:46:57.117][COMPILE-TRIGGER] send
+[01:47:03.281][COMPILE-DIALOG-FAIL] no-edit-control
+[01:47:04.164][COMPILE-DIALOG-FAIL] no-edit-control
+[01:47:05.035][COMPILE-DIALOG-FAIL] no-edit-control
+[01:47:05.228][COMPILE-DIALOG-FAIL] set-path-failed
+[01:47:06.894][COMPILE-DIALOG] fill+confirm
+[01:47:08.010][COMPILE-DIALOG-FAIL] set-path-failed
+[01:47:08.882][COMPILE-OUT-SEEN] C:\Users\MadeSpark\Desktop\测试\re\userdemo_v137\bin\reinit_test.exe
+[01:47:10.481][COMPILE-TRIGGER-RET] handled=1

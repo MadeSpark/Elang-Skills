@@ -1,0 +1,46 @@
+[
+  {
+    "from": 28696,
+    "to": 30686,
+    "max": 2547,
+    "e": [
+      49560,
+      149872,
+      136508,
+      75448
+    ],
+    "top": "rclone.exe(134088)=3% | rclone.exe(57904)=3% | WorkBuddy.exe(84404)=1%",
+    "jmax": 0.6,
+    "cursor0": [
+      576,
+      676
+    ],
+    "active_before_ms": 0,
+    "cursor": [
+      592,
+      676
+    ]
+  },
+  {
+    "from": 31835,
+    "to": 180091,
+    "max": 148922,
+    "e": [
+      49560,
+      149872,
+      136508,
+      75448
+    ],
+    "top": "WorkBuddy.exe(84404)=2% | rclone.exe(57904)=2% | WorkBuddy.exe(60508)=1%",
+    "jmax": 5.8,
+    "cursor0": [
+      669,
+      672
+    ],
+    "active_before_ms": 0,
+    "cursor": [
+      669,
+      672
+    ]
+  }
+]

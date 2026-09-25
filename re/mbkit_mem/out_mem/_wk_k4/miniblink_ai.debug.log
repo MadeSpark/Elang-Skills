@@ -1,0 +1,14 @@
+[11:49:10.275][=== COMPILE BEGIN ===] 
+[11:49:10.276][COMPILE-CHECK] enabled=1
+[11:49:10.282][PANEL-TAIL] BEFORE hwnd=0x001E11A4 class='ScintillaForEIDETools' | prev='◆正在加载插件...  ' | last=''
+[11:49:10.282][PANEL-TAIL] BEFORE hwnd=0x001B1424 class='Edit' | prev='◆正在加载插件...  ' | last=''
+[11:49:10.283][PANEL-TAIL] BEFORE hwnd=0x001C142C class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[11:49:12.783][COMPILE-TRIGGER] send
+[11:49:13.163][COMPILE-DIALOG-FAIL] no-edit-control
+[11:49:13.374][COMPILE-DIALOG-FAIL] no-edit-control
+[11:49:13.567][COMPILE-DIALOG-FAIL] no-edit-control
+[11:49:13.952][COMPILE-DIALOG-FAIL] set-path-failed
+[11:49:14.381][COMPILE-DIALOG] fill+confirm
+[11:49:15.295][COMPILE-DIALOG-FAIL] set-path-failed
+[11:49:15.388][COMPILE-TRIGGER-RET] handled=1
+[11:49:15.397][COMPILE-OUT-SEEN] C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\out_mem\miniblink.ec

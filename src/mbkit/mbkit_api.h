@@ -89,6 +89,8 @@ int          __stdcall MbKit_IsReady(void);
 int          __stdcall MbKit_SetNodePath(const char* pathOrDirOrNull);
 const char*  __stdcall MbKit_ConfigNodePath(void);
 int          __stdcall MbKit_KernelLoaded(void);
+/* 内核原始状态字：0=尚未加载 1=已就绪 2=已失败 0x7FFFFFFF=正在加载（诊断用） */
+int          __stdcall MbKit_KernelState(void);
 const char*  __stdcall MbKit_Diag(void);
 
 /* 实际使用的内核全路径 / 版本串 / 最近一次错误 */

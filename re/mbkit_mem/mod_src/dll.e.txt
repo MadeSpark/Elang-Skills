@@ -1,0 +1,367 @@
+﻿.版本 2
+
+.DLL命令 _DLL命令0A0100BB_MultiByteToWideChar, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 文本型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 字节集
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A0100BC_WideCharToMultiByte, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 字节集
+    .参数 _参数4, 整数型
+    .参数 _参数5, 文本型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+
+.DLL命令 _DLL命令0A0100BD_WideCharToMultiByte, 整数型, "kernel32.dll", "WideCharToMultiByte"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 文本型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+
+.DLL命令 _DLL命令0A0100BE_MultiByteToWideChar, 整数型, "kernel32.dll", "MultiByteToWideChar"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 字节集
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A0100BF_VirtualAlloc, 整数型, "kernel32.dll", "VirtualAlloc"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0100C0_VirtualFree, 整数型, "kernel32.dll", "VirtualFree"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0100C1_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017B_HeapFree, 整数型, "kernel32.dll", "HeapFree"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017C_HeapAlloc, 整数型, "kernel32.dll", "HeapAlloc"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A01017D_GetProcessHeap, 整数型, "kernel32.dll", "GetProcessHeap"
+
+.DLL命令 _DLL命令0A010253_lstrlenW, 整数型, "kernel32.dll", "lstrlenW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010813_lstrlenA, 整数型, "kernel32.dll", "lstrlenA"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010875_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010862
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010876_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010861
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0108DB_PathRemoveFileSpecA, 整数型, "shlwapi.dll", "PathRemoveFileSpecA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _DLL命令0A0108DC_PathCombineA, 整数型, "shlwapi.dll", "PathCombineA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 文本型
+
+.DLL命令 _DLL命令0A0108DD_PathIsRelativeA, 整数型, "shlwapi.dll", "PathIsRelativeA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _DLL命令0A0108DE_SetWindowsHookExW, 整数型, "user32.dll", "SetWindowsHookExW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 子程序指针
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0108DF_CallNextHookEx, 整数型, "user32.dll", "CallNextHookEx"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A0108E0_GetCurrentThreadId, 整数型, "kernel32.dll", "GetCurrentThreadId"
+
+.DLL命令 _DLL命令0A0108E1_TranslateMessage, 整数型, "user32.dll", "TranslateMessage"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0108E2_DispatchMessageW, 整数型, "user32.dll", "DispatchMessageW"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0108E3_UnhookWindowsHookEx, 整数型, "user32.dll", "UnhookWindowsHookEx"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A01092A_UrlUnescapeA, 整数型, "shlwapi.dll", "UrlUnescapeA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A01092B_UrlEscapeA, 整数型, "shlwapi.dll", "UrlEscapeA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010941_wvsprintfA, 整数型, "user32.dll", "wvsprintfA"
+    .参数 _参数1, 文本型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型, 传址
+
+.DLL命令 _DLL命令0A0109A6_IsWindow, 整数型, "user32.dll", "IsWindow"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0109C2_GetWindowLongW, 整数型, "user32.dll", "GetWindowLongW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A0109C3_SetWindowLongW, 整数型, "user32.dll", "SetWindowLongW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0109C4_CallWindowProcW, 整数型, "user32.dll", "CallWindowProcW"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A0109F7_GetWindowRect, 整数型, "user32.dll", "GetWindowRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+
+.DLL命令 _DLL命令0A0109F8_OffsetRect, 整数型, "user32.dll", "OffsetRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A0109F9_GetDC, 整数型, "user32.dll", "GetDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A0109FA_UpdateLayeredWindow, 整数型, "user32.dll", "UpdateLayeredWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, _结构41010C5C
+    .参数 _参数5, 整数型
+    .参数 _参数6, _结构41010A14
+    .参数 _参数7, 整数型
+    .参数 _参数8, _结构41010A20
+    .参数 _参数9, 整数型
+
+.DLL命令 _DLL命令0A0109FB_ReleaseDC, 整数型, "user32.dll", "ReleaseDC"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010A43_SetPropA, 整数型, "user32.dll", "SetPropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010A56_GetPropA, 整数型, "user32.dll", "GetPropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010A59_DefWindowProcA, 整数型, "user32.dll", "DefWindowProcA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010B00_BeginPaint, 整数型, "user32.dll", "BeginPaint"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010B08
+
+.DLL命令 _DLL命令0A010B01_EndPaint, 整数型, "user32.dll", "EndPaint"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010B08
+
+.DLL命令 _DLL命令0A010B6F_SetTimer, 整数型, "user32.dll", "SetTimer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010B70_KillTimer, 整数型, "user32.dll", "KillTimer"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010B8B_GetClientRect, 整数型, "user32.dll", "GetClientRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+
+.DLL命令 _DLL命令0A010B92_IntersectRect, 整数型, "user32.dll", "IntersectRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, _结构41010A13
+    .参数 _参数3, _结构41010A13
+
+.DLL命令 _DLL命令0A010BA6_BitBlt, 整数型, "gdi32.dll", "BitBlt"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+    .参数 _参数7, 整数型
+    .参数 _参数8, 整数型
+    .参数 _参数9, 整数型
+
+.DLL命令 _DLL命令0A010C3A_GetFocus, 整数型, "user32.dll", "GetFocus"
+
+.DLL命令 _DLL命令0A010C4C_ImmGetContext, 整数型, "imm32.dll", "ImmGetContext"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C4D_ImmSetCandidateWindow, 整数型, "imm32.dll", "ImmSetCandidateWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010C45
+
+.DLL命令 _DLL命令0A010C4E_ImmReleaseContext, 整数型, "imm32.dll", "ImmReleaseContext"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010C55_RemovePropA, 整数型, "user32.dll", "RemovePropA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型
+
+.DLL命令 _DLL命令0A010C58_DestroyWindow, 整数型, "user32.dll", "DestroyWindow"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C5A_SetFocus, 整数型, "user32.dll", "SetFocus"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C5F_ReleaseCapture, 整数型, "user32.dll", "ReleaseCapture"
+
+.DLL命令 _DLL命令0A010C60_SetCapture, 整数型, "user32.dll", "SetCapture"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010C68_ScreenToClient, 整数型, "user32.dll", "ScreenToClient"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A14
+
+.DLL命令 _DLL命令0A010C8D_GetCurrentObject, 整数型, "gdi32.dll", "GetCurrentObject"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010C8E_GetObjectA, 整数型, "gdi32.dll", "GetObjectA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, _结构41010C83
+
+.DLL命令 _DLL命令0A010CA8_CreateCompatibleDC, 整数型, "gdi32.dll", "CreateCompatibleDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CA9_CreateCompatibleBitmap, 整数型, "gdi32.dll", "CreateCompatibleBitmap"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010CAA_SelectObject, 整数型, "gdi32.dll", "SelectObject"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A010CAB_DeleteObject, 整数型, "gdi32.dll", "DeleteObject"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CAC_DeleteDC, 整数型, "gdi32.dll", "DeleteDC"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CBB_InvalidateRect, 整数型, "user32.dll", "InvalidateRect"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010A13
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010CDD_PeekMessageW, 整数型, "user32.dll", "PeekMessageW"
+    .参数 _参数1, _结构41010934
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+
+.DLL命令 _DLL命令0A010CDE_IsIconic, 整数型, "user32.dll", "IsIconic"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CE8_CreateThread, 整数型, "kernel32.dll", "CreateThread"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 子程序指针
+    .参数 _参数4, 整数型
+    .参数 _参数5, 整数型
+    .参数 _参数6, 整数型
+
+.DLL命令 _DLL命令0A010CE6_CloseHandle, 整数型, "kernel32.dll", "CloseHandle"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CF0_Sleep, , "kernel32.dll", "Sleep"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010CF2_SendMessageA, 整数型, "user32.dll", "SendMessageA"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+    .参数 _参数4, 整数型
+
+.DLL命令 _DLL命令0A010D2E_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, _结构41010D27
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010D2F_RtlMoveMemory, , "kernel32.dll", "RtlMoveMemory"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41010D27
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010D3D_IsRectEmpty, 整数型, "user32.dll", "IsRectEmpty"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010D40_IsZoomed, 整数型, "user32.dll", "IsZoomed"
+    .参数 _参数1, 整数型
+
+.DLL命令 _DLL命令0A010D42_PtInRect, 逻辑型, "user32.dll", "PtInRect"
+    .参数 _参数1, _结构41010A13
+    .参数 _参数2, 整数型
+    .参数 _参数3, 整数型
+
+.DLL命令 _DLL命令0A010DD1_GetAncestor, 整数型, "user32.dll", "GetAncestor"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 整数型
+
+.DLL命令 _DLL命令0A011152_ImmSetCompositionWindow, 整数型, "imm32.dll", "ImmSetCompositionWindow"
+    .参数 _参数1, 整数型
+    .参数 _参数2, _结构41011156
+
+.DLL命令 _DLL命令0A0113FB_IsCharAlphaNumericA, 整数型, "user32.dll", "IsCharAlphaNumericA"
+    .参数 _参数1, 字节型
+
+.DLL命令 _MbKit_LoadLibraryA, 整数型, "kernel32.dll", "LoadLibraryA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _内存_GetModuleHandleA, 整数型, "kernel32.dll", "GetModuleHandleA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _内存_GetProcAddress, 整数型, "kernel32.dll", "GetProcAddress"
+    .参数 _参数1, 整数型
+    .参数 _参数2, 文本型

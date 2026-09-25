@@ -1,0 +1,31 @@
+﻿.版本 2
+
+.DLL命令 参考_strlen, 整数型, "msvcrt.dll", "@strlen"
+    .参数 文本, 文本型
+
+.DLL命令 参考_strlen集, 整数型, "msvcrt.dll", "@strlen"
+    .参数 数据, 字节集
+
+.DLL命令 参考_memset, 整数型, "msvcrt.dll", "@memset"
+    .参数 目标, 整数型, 传址
+    .参数 值, 整数型
+    .参数 长度, 整数型
+
+.DLL命令 _VirtualAlloc, 整数型, "kernel32.dll", "VirtualAlloc"
+    .参数 地址, 整数型
+    .参数 长度, 整数型
+    .参数 类型, 整数型
+    .参数 保护, 整数型
+
+.DLL命令 _GetModuleHandleA, 整数型, "kernel32.dll", "GetModuleHandleA"
+    .参数 模块名, 文本型
+
+.DLL命令 _GetProcAddress, 整数型, "kernel32.dll", "GetProcAddress"
+    .参数 模块句柄, 整数型
+    .参数 函数名, 文本型
+
+.DLL命令 参考_atoi64, 长整数型, "msvcrt.dll", "@_atoi64"
+    .参数 文本, 文本型
+
+.DLL命令 参考_atof, 双精度小数型, "msvcrt.dll", "@atof"
+    .参数 文本, 文本型

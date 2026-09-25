@@ -1,0 +1,496 @@
+[21:46:49.655][tid=128540] ===== elang_addin loaded into e.exe (pid=43148) =====
+[21:46:49.655][tid=128540] LIBINFO state=0xE0000104 (LBS_IDE_PLUGIN=256) name='AI调试宿主' guid=7A1E4F22C3B0499E8D6A0011223344FE
+[21:46:49.655][tid=128540] LIBINFO pfnNotify=0x19C15DF0
+[21:46:49.656][tid=128540] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[21:46:49.656][tid=135384] HIDEGUARD start (raw lp=0x00000002 mode=2; 1=park 2=hide)
+[21:46:49.656][tid=128540] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[21:46:49.657][tid=135384] HIDEGUARD timer resolution -> 5000 (x100ns)
+[21:46:49.657][tid=135384] HIDEGUARD after timer-resolve: mode=2 raw lp=0x00000002 (若与上面不同 = 栈已被破坏!)
+[21:46:49.660][tid=11952] HIDEGUARD cloak#1 cls='LayeredWindow' ex=0x000800A8
+[21:46:49.660][tid=135384] HIDEGUARD hook create+show=0x28C30607 move=0x05C819B9
+[21:46:49.662][tid=128540] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[21:46:49.662][tid=128540] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[21:46:49.667][tid=11952] HIDEGUARD cloak#2 cls='GDI+ Hook Window Class' ex=0x00000000
+[21:47:12.162][tid=11952] HIDEGUARD cloak#3 cls='tooltips_class32' ex=0x00000080
+[21:47:12.169][tid=135384] HIDEGUARD cloak#4 cls='ENewFrame' ex=0x00000110
+[21:47:12.180][tid=11952] HIDEGUARD cloak#5 cls='tooltips_class32' ex=0x00000080
+[21:47:12.634][tid=11952] HIDEGUARD cloak#6 cls='tooltips_class32' ex=0x00000080
+[21:47:12.641][tid=11952] HIDEGUARD cloak#7 cls='tooltips_class32' ex=0x00000080
+[21:47:12.650][tid=11952] HIDEGUARD cloak#8 cls='tooltips_class32' ex=0x00000080
+[21:47:12.661][tid=11952] HIDEGUARD cloak#9 cls='tooltips_class32' ex=0x00000080
+[21:47:12.672][tid=11952] HIDEGUARD cloak#10 cls='Afx:400000:0:10003:d8107340:0' ex=0x00000080
+[21:47:12.679][tid=11952] HIDEGUARD cloak#11 cls='tooltips_class32' ex=0x00000080
+[21:47:12.690][tid=11952] HIDEGUARD cloak#12 cls='tooltips_class32' ex=0x00000080
+[21:47:12.704][tid=11952] HIDEGUARD cloak#13 cls='tooltips_class32' ex=0x00000080
+[21:47:12.718][tid=11952] HIDEGUARD cloak#14 cls='tooltips_class32' ex=0x00000080
+[21:47:12.724][tid=11952] HIDEGUARD cloak#15 cls='tooltips_class32' ex=0x00000080
+[21:47:12.732][tid=11952] HIDEGUARD cloak#16 cls='tooltips_class32' ex=0x00000080
+[21:47:12.742][tid=11952] HIDEGUARD cloak#17 cls='_EL_HideOwner' ex=0x00000180
+[21:47:12.751][tid=11952] HIDEGUARD cloak#18 cls='_EL_HideOwner' ex=0x00000180
+[21:47:12.758][tid=11952] HIDEGUARD cloak#19 cls='ColorMade' ex=0x00000000
+[21:47:12.763][tid=11952] HIDEGUARD cloak#20 cls='ColorMade' ex=0x00000080
+[21:47:12.772][tid=11952] HIDEGUARD cloak#21 cls='Menulwy' ex=0x00000000
+[21:47:12.786][tid=11952] HIDEGUARD cloak#22 cls='Menulwy' ex=0x00000000
+[21:47:12.791][tid=11952] HIDEGUARD cloak#23 cls='tooltips_class32' ex=0x00000080
+[21:47:12.799][tid=11952] HIDEGUARD cloak#24 cls='Setfd' ex=0x00000000
+[21:47:12.806][tid=11952] HIDEGUARD cloak#25 cls='_EL_HideOwner' ex=0x00000180
+[21:47:12.808][tid=11952] HIDEGUARD cloak#26 cls='shadow_window' ex=0x000800A0
+[21:47:12.808][tid=11952] HIDEGUARD cloak#27 cls='ENewFrame' ex=0x00080130
+[21:47:12.819][tid=11952] HIDEGUARD cloak#28 cls='IME' ex=0x00000000
+[21:47:12.826][tid=11952] HIDEGUARD cloak#29 cls='MSCTFIME UI' ex=0x00000000
+[21:47:13.100][tid=128540] NOTIFY nMsg=18 (0x12) p1=0x00000000 p2=0x00000000
+[21:47:13.100][tid=128540] HOOK NL_IDE_READY (ai_mode=1)
+[21:47:13.101][tid=15952] WORKER start (hide-guard 已在 EnsureInit 里起，早于本线程约 5s)
+[21:47:13.101][tid=15952] STEP2 AI task param -> 'C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\stage_logs\wk_wke_214636\demo_proj_swke_base_ai.e' (source=env:ELANG_AI_TASK)
+[21:47:13.101][tid=15952] STEP3 read-only probe begin
+[21:47:13.102][tid=15952] MACRO FN_COMPILE_AND_RUN = 0x05020002 (expect 0x05020002)
+[21:47:13.102][tid=15952] MACRO FN_END_RUN         = 0x05020003
+[21:47:13.102][tid=15952] MACRO FN_OPEN_FILE2      = 0x03010008 (expect 0x03010008)
+[21:47:13.102][tid=15952] MACRO FN_ADD_TAB         = 0x05030001 (expect 0x05030001)
+[21:47:13.102][tid=15952] MACRO FN_SWITCH_OUTPUT_BAR = 0x04020003 (expect 0x04020003)
+[21:47:13.103][tid=15952] MACRO FN_IS_FUNC_ENABLED = 0x05030004 (expect 0x05030004)
+[21:47:13.103][tid=15952] MACRO FN_STEP_INTO       = 0x05010001 (expect 0x05010001)
+[21:47:13.103][tid=15952] MACRO FN_SET_BREAK_POINTER = 0x05010006 (expect 0x05010006)
+[21:47:13.103][tid=15952] MACRO NL_SYS_NOTIFY_FUNCTION = 1 / NL_IDE_READY = 18 / NL_RIGHT_POPUP_MENU_SHOW = 19
+[21:47:13.104][tid=15952] MACRO LBS_IDE_PLUGIN = 0x100 / NES_GET_MAIN_HWND = 1 / NES_RUN_FUNC = 2
+[21:47:13.104][tid=15952] MACRO LIB_FORMAT_VER = 20000101
+[21:47:13.104][tid=15952] STruct sizeof(LIB_INFO)=144  offsetof m_dwState=48 m_nCmdCount=100 m_pCmdsFunc=108 m_pfnNotify=120 m_pLibConst=136
+[21:47:13.104][tid=15952] STruct sizeof(LIB_INFO2)=160 (LIB_INFO=144 + 4 ptrs)
+[21:47:13.106][tid=11952] HIDEGUARD cloak#30 cls='IME' ex=0x00000000
+[21:47:13.106][tid=11952] HIDEGUARD poll iter=1 enumMs=23453
+[21:47:13.106][tid=15952] PROBE NES_GET_MAIN_HWND -> hwnd=0x00920484 class='ENewFrame' visible=0 (expect class ENewFrame)
+[21:47:13.107][tid=15952] PROBE GetCommandLineA    = 'D:\ides\e\e.exe C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\stage_logs\wk_wke_214636\demo_proj_swke_base_ai.e'
+[21:47:13.107][tid=15952] PROBE GetModuleFileNameA(nullptr) = 'D:\ides\e\e.exe'
+[21:47:13.107][tid=15952] PROBE FN_IS_FUNC_ENABLED table (nMsg=2 func=0x05030004):
+[21:47:13.108][tid=15952]    func 0x05020002 FN_COMPILE_AND_RUN           -> handled=1 enabled=1
+[21:47:13.108][tid=15952]    func 0x05020003 FN_END_RUN                   -> handled=1 enabled=0
+[21:47:13.108][tid=15952]    func 0x05020001 FN_COMPILE                   -> handled=1 enabled=1
+[21:47:13.108][tid=15952]    func 0x03010008 FN_OPEN_FILE2                -> handled=1 enabled=1
+[21:47:13.109][tid=15952]    func 0x05030001 FN_ADD_TAB                   -> handled=1 enabled=1
+[21:47:13.109][tid=15952]    func 0x04020003 FN_SWITCH_OUTPUT_BAR         -> handled=1 enabled=1
+[21:47:13.109][tid=15952]    func 0x05030004 FN_IS_FUNC_ENABLED           -> handled=1 enabled=1
+[21:47:13.109][tid=15952]    func 0x05010001 FN_STEP_INTO                 -> handled=1 enabled=0
+[21:47:13.110][tid=15952]    func 0x05010002 FN_STEP                      -> handled=1 enabled=0
+[21:47:13.110][tid=15952]    func 0x05010003 FN_STEP_OUT                  -> handled=1 enabled=0
+[21:47:13.110][tid=15952]    func 0x05010004 FN_RUN_TO_CURSOR             -> handled=1 enabled=1
+[21:47:13.110][tid=15952]    func 0x05010006 FN_SET_BREAK_POINTER         -> handled=1 enabled=1
+[21:47:13.111][tid=11952] HIDEGUARD cloak#31 cls='LayeredWindow' ex=0x000800A8
+[21:47:13.111][tid=15952]    func 0x05010007 FN_CLEAR_ALL_BREAK_POINTER   -> handled=1 enabled=1
+[21:47:13.111][tid=15952]    func 0x05010008 FN_SHOW_NEXT_STATMENT        -> handled=1 enabled=0
+[21:47:13.111][tid=11952] HIDEGUARD cloak#32 cls='GDI+ Hook Window Class' ex=0x00080020
+[21:47:13.112][tid=15952]    func 0x0503000A FN_GET_PRG_TEXT              -> handled=1 enabled=1
+[21:47:13.113][tid=15952]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[21:47:13.113][tid=11952] HIDEGUARD cloak#33 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.113][tid=15952]    func 0x01010042 FN_MOVE_CARET                -> handled=1 enabled=1
+[21:47:13.114][tid=15952]    func 0x0202006D FN_INSERT_TEXT               -> handled=1 enabled=1
+[21:47:13.114][tid=11952] HIDEGUARD cloak#34 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.114][tid=15952]    func 0x02020070 FN_PRE_COMPILE               -> handled=1 enabled=1
+[21:47:13.115][tid=15952]    func 0x05020005 FN_PUBLISH                   -> handled=1 enabled=1
+[21:47:13.115][tid=11952] HIDEGUARD cloak#35 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.115][tid=15952]    func 0x05020006 FN_COMPILE_STANDARD          -> handled=1 enabled=1
+[21:47:13.116][tid=15952]    func 0x05020007 FN_COMPILE_STATIC            -> handled=1 enabled=1
+[21:47:13.116][tid=15952]    func 0x05020008 FN_COMPILE_EPACKAGE          -> handled=1 enabled=1
+[21:47:13.116][tid=15952]    func 0x0502000D FN_COMPILE_WINDOWS_EXE       -> handled=1 enabled=1
+[21:47:13.116][tid=15952]    func 0x0502000E FN_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[21:47:13.116][tid=15952]    func 0x0502000F FN_COMPILE_WINDOWS_DLL       -> handled=1 enabled=1
+[21:47:13.117][tid=15952]    func 0x05020010 FN_COMPILE_WINDOWS_ECOM      -> handled=1 enabled=1
+[21:47:13.117][tid=15952]    func 0x05020011 FN_STATIC_COMPILE_WINDOWS_EXE -> handled=1 enabled=1
+[21:47:13.117][tid=15952]    func 0x05020012 FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[21:47:13.117][tid=15952]    func 0x05020013 FN_STATIC_COMPILE_WINDOWS_DLL -> handled=1 enabled=1
+[21:47:13.117][tid=15952]    func 0x02020037 FN_INSERT_NEW_WIN_FORM       -> handled=1 enabled=1
+[21:47:13.118][tid=15952]    func 0x02020055 FN_MENU_MODI                 -> handled=1 enabled=1
+[21:47:13.118][tid=15952]    func 0x0202003E FN_REMOVE_SPEC_UNIT          -> handled=1 enabled=1
+[21:47:13.118][tid=15952]    func 0x0202003F FN_MOVE_LEFT_ONE             -> handled=1 enabled=1
+[21:47:13.118][tid=15952]    func 0x02020040 FN_MOVE_RIGHT_ONE            -> handled=1 enabled=1
+[21:47:13.118][tid=15952]    func 0x02020041 FN_MOVE_UP_ONE               -> handled=1 enabled=1
+[21:47:13.119][tid=15952]    func 0x02020042 FN_MOVE_DOWN_ONE             -> handled=1 enabled=1
+[21:47:13.119][tid=15952]    func 0x02020043 FN_MOVE_LEFT_ONE_GRID        -> handled=1 enabled=1
+[21:47:13.119][tid=15952]    func 0x02020044 FN_MOVE_RIGHT_ONE_GRID       -> handled=1 enabled=1
+[21:47:13.119][tid=15952]    func 0x02020045 FN_MOVE_UP_ONE_GRID          -> handled=1 enabled=1
+[21:47:13.119][tid=11952] HIDEGUARD cloak#36 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.119][tid=15952]    func 0x02020046 FN_MOVE_DOWN_ONE_GRID        -> handled=1 enabled=1
+[21:47:13.120][tid=15952]    func 0x02020047 FN_RESIZE_LEFT_ONE           -> handled=1 enabled=1
+[21:47:13.120][tid=15952]    func 0x02020048 FN_RESIZE_RIGHT_ONE          -> handled=1 enabled=1
+[21:47:13.120][tid=15952]    func 0x02020049 FN_RESIZE_UP_ONE             -> handled=1 enabled=1
+[21:47:13.121][tid=15952]    func 0x0202004A FN_RESIZE_DOWN_ONE           -> handled=1 enabled=1
+[21:47:13.120][tid=11952] HIDEGUARD cloak#37 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.121][tid=15952]    func 0x0202004B FN_RESIZE_LEFT_ONE_GRID      -> handled=1 enabled=1
+[21:47:13.122][tid=15952]    func 0x0202004C FN_RESIZE_RIGHT_ONE_GRID     -> handled=1 enabled=1
+[21:47:13.122][tid=11952] HIDEGUARD cloak#38 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.122][tid=15952]    func 0x0202004D FN_RESIZE_UP_ONE_GRID        -> handled=1 enabled=1
+[21:47:13.122][tid=15952]    func 0x0202004E FN_RESIZE_DOWN_ONE_GRID      -> handled=1 enabled=1
+[21:47:13.122][tid=15952]    func 0x0202004F FN_HORZ_CENTER               -> handled=1 enabled=1
+[21:47:13.122][tid=11952] HIDEGUARD cloak#39 cls='Afx:400000:0:10003:d8107340:0' ex=0x000800A0
+[21:47:13.123][tid=15952]    func 0x02020050 FN_VERT_CENTER               -> handled=1 enabled=1
+[21:47:13.123][tid=15952]    func 0x02020052 FN_UNIT_GO_TOP               -> handled=1 enabled=1
+[21:47:13.123][tid=11952] HIDEGUARD cloak#40 cls='tooltips_class32' ex=0x000800A0
+[21:47:13.124][tid=15952]    func 0x02020053 FN_UNIT_GO_BOTTOM            -> handled=1 enabled=1
+[21:47:13.124][tid=15952]    func 0x0202007F FN_HORZ_UNIT_MIDDLE          -> handled=1 enabled=1
+[21:47:13.124][tid=15952]    func 0x02020080 FN_VERT_UNIT_MIDDLE          -> handled=1 enabled=1
+[21:47:13.125][tid=15952]    func 0x0202005D FN_LEFT_ALIGN                -> handled=1 enabled=1
+[21:47:13.125][tid=15952]    func 0x0202005E FN_TOP_ALIGN                 -> handled=1 enabled=1
+[21:47:13.125][tid=15952]    func 0x0202005F FN_RIGHT_ALIGN               -> handled=1 enabled=1
+[21:47:13.125][tid=15952]    func 0x02020060 FN_BOTTOM_ALIGN              -> handled=1 enabled=1
+[21:47:13.125][tid=15952]    func 0x02020061 FN_HORZ_MIDDLE               -> handled=1 enabled=1
+[21:47:13.126][tid=15952]    func 0x02020062 FN_VERT_MIDDLE               -> handled=1 enabled=1
+[21:47:13.126][tid=15952]    func 0x02020063 FN_HORZ_AVG                  -> handled=1 enabled=1
+[21:47:13.126][tid=15952]    func 0x02020064 FN_VERT_AVG                  -> handled=1 enabled=1
+[21:47:13.126][tid=15952]    func 0x02020065 FN_EQU_WIDTH                 -> handled=1 enabled=1
+[21:47:13.127][tid=15952]    func 0x02020066 FN_EQU_HEIGHT                -> handled=1 enabled=1
+[21:47:13.127][tid=15952]    func 0x02020067 FN_EQU_WIDTHHEIGHT           -> handled=1 enabled=1
+[21:47:13.127][tid=15952]    func 0x02020076 FN_LOCK_UNIT                 -> handled=1 enabled=1
+[21:47:13.127][tid=15952]    func 0x02020077 FN_UNLOCK_UNIT               -> handled=1 enabled=1
+[21:47:13.128][tid=15952]    func 0x0202006A FN_INSERT_NEW_CLASS_MOD      -> handled=1 enabled=1
+[21:47:13.128][tid=15952]    func 0x0202000F FN_INSERT_NEW_LOCAL_VAR      -> handled=1 enabled=1
+[21:47:13.128][tid=15952]    func 0x02020010 FN_INSERT_NEW_CONST_RES      -> handled=1 enabled=1
+[21:47:13.128][tid=15952]    func 0x02020011 FN_INSERT_NEW_PIC_RES        -> handled=1 enabled=1
+[21:47:13.129][tid=15952]    func 0x02020012 FN_INSERT_NEW_SOUND_RES      -> handled=1 enabled=1
+[21:47:13.129][tid=15952]    func 0x0202007E FN_INSERT_NEW_LONGTEXT       -> handled=1 enabled=1
+[21:47:13.129][tid=15952]    func 0x04020031 FN_GOTO_SPEC_UNIT_DATA_TYPE  -> handled=1 enabled=1
+[21:47:13.129][tid=15952]    func 0x04020032 FN_RELINK                    -> handled=1 enabled=1
+[21:47:13.130][tid=15952]    func 0x04020038 FN_EVA_DESIGNER              -> handled=1 enabled=1
+[21:47:13.130][tid=15952]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[21:47:13.130][tid=15952]    func 0x05030003 FN_INPUT_ECOM                -> handled=1 enabled=1
+[21:47:13.130][tid=15952]    func 0x05030005 FN_CLIP_GET_EPRG_DATA_SIZE   -> handled=1 enabled=1
+[21:47:13.131][tid=15952]    func 0x05030006 FN_CLIP_GET_EPRG_DATA        -> handled=1 enabled=1
+[21:47:13.131][tid=15952]    func 0x05030007 FN_CLIP_SET_EPRG_DATA        -> handled=1 enabled=1
+[21:47:13.131][tid=15952]    func 0x05030008 FN_GET_CARET_ROW_INDEX       -> handled=1 enabled=1
+[21:47:13.131][tid=15952]    func 0x05030009 FN_GET_CARET_COL_INDEX       -> handled=1 enabled=1
+[21:47:13.132][tid=15952]    func 0x0503000B FN_GET_PRG_HELP              -> handled=1 enabled=1
+[21:47:13.132][tid=15952]    func 0x0503000C FN_GET_NUM_ECOM              -> handled=1 enabled=1
+[21:47:13.132][tid=15952]    func 0x0503000D FN_GET_ECOM_FILE_NAME        -> handled=1 enabled=1
+[21:47:13.132][tid=15952]    func 0x0503000E FN_GET_NUM_LIB               -> handled=1 enabled=1
+[21:47:13.133][tid=15952]    func 0x0503000F FN_GET_LIB_INFO_TEXT         -> handled=1 enabled=1
+[21:47:13.133][tid=15952]    func 0x02020087 FN_ADD_NEW_ECOM2             -> handled=1 enabled=1
+[21:47:13.133][tid=15952]    func 0x02020085 FN_INPUT_PRG2                -> handled=1 enabled=1
+[21:47:13.133][tid=15952]    func 0x02020071 FN_SET_AND_COMPILE_PRG_ITEM_TEXT -> handled=1 enabled=1
+[21:47:13.134][tid=15952]    func 0x02020086 FN_REPLACE_ALL2              -> handled=1 enabled=1
+[21:47:13.134][tid=15952]    func 0x02020036 FN_FORCE_PROCESS             -> handled=1 enabled=1
+[21:47:13.134][tid=15952]    func 0x04020033 FN_GOTO_LAST_MODI_PLACE      -> handled=1 enabled=0
+[21:47:13.134][tid=15952]    func 0x02020032 FN_UNDO                      -> handled=1 enabled=0
+[21:47:13.135][tid=15952]    func 0x02020033 FN_REDO                      -> handled=1 enabled=0
+[21:47:13.135][tid=15952] PROBE EnumChildWindows of main window begin:
+[21:47:13.137][tid=15952]   child#1 hwnd=0x003A0676 class='AfxControlBar42s' text='状态夹' rect=(-3,781,1694,1006) visible=0
+[21:47:13.138][tid=15952]   child#2 hwnd=0x00540300 class='Afx:400000:8:10003:900015:0' text='状态夹' rect=(0,831,1268,1019) visible=0
+[21:47:13.139][tid=15952]   child#3 hwnd=0x00720350 class='#32770' text='' rect=(17,837,1265,1016) visible=0
+[21:47:13.141][tid=15952]   child#4 hwnd=0x0134045E class='SysTabControl32' text='状态夹右边' rect=(17,837,17,837) visible=0
+[21:47:13.145][tid=15952]   child#5 hwnd=0x006403AC class='SysTabControl32' text='状态夹左边' rect=(17,837,17,837) visible=0
+[21:47:13.151][tid=15952]   child#6 hwnd=0x015E035C class='ScintillaForEIDETools' text='
+★ 内联汇编插件:当前易语言版本 [593] 支持当前版本(可以在菜单中选择“工具->内联汇编设置”修改设置; 作者: yecate qq: 869443499)
+★ 当前版本为 v3.59(20250727) 开发维护不易, 如果此插件对你开发有帮助,请赞助支持下, 谢谢!
+
+
+◆
+▼▼▼▼▼插件正在加载中，请' rect=(18,837,18,837) visible=0
+[21:47:13.156][tid=15952]   child#7 hwnd=0x003E0342 class='Edit' text='◆正在加载插件...
+' rect=(18,837,18,837) visible=0
+[21:47:13.157][tid=15952]   child#8 hwnd=0x00570570 class='Edit' text='--- 程序的输入方法：
+    为了便于输入程序，易语言内置四种名称输入法：首拼、全拼、双拼、英文。三种拼音输入法均支持南方音及多音字。首拼输入法及全拼输入法在系统中被合并为“首拼及全拼输入法”，系统自动判别所输入的拼音是首拼方式还是全拼方式。双拼输入法的编码' rect=(21,863,1255,1005) visible=0
+[21:47:13.164][tid=15952]   child#9 hwnd=0x009D0428 class='SysTreeView32' text='Tree1' rect=(21,863,1255,1005) visible=0
+[21:47:13.168][tid=15952]   child#10 hwnd=0x009705F2 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[21:47:13.173][tid=15952]   child#11 hwnd=0x00C80548 class='SysHeader32' text='' rect=(23,865,175,883) visible=0
+[21:47:13.174][tid=15952]   child#12 hwnd=0x018D0498 class='Static' text=' ' rect=(482,885,1255,906) visible=0
+[21:47:13.175][tid=15952]   child#13 hwnd=0x00710308 class='Edit' text='' rect=(433,908,1255,1005) visible=0
+[21:47:13.176][tid=15952]   child#14 hwnd=0x00400280 class='SysTreeView32' text='Tree1' rect=(21,863,431,1005) visible=0
+[21:47:13.180][tid=15952]   child#15 hwnd=0x00300296 class='ComboBox' text='' rect=(433,863,1255,883) visible=0
+[21:47:13.182][tid=15952]   child#16 hwnd=0x00B80518 class='Button' text='写入' rect=(433,885,477,906) visible=0
+[21:47:13.186][tid=15952]   child#17 hwnd=0x005402A8 class='Static' text='--- 仅调试中断状态下有效 ---' rect=(21,863,1255,1005) visible=0
+[21:47:13.188][tid=15952]   child#18 hwnd=0x016D050A class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[21:47:13.191][tid=15952]   child#19 hwnd=0x002B01FE class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[21:47:13.193][tid=15952]   child#20 hwnd=0x00790488 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[21:47:13.200][tid=15952]   child#21 hwnd=0x00BB025E class='SysTabControl32' text='Tab1' rect=(397,914,502,1006) visible=0
+[21:47:13.204][tid=15952]   child#22 hwnd=0x01370562 class='SysTabControl32' text='Tab1' rect=(20,840,1262,1013) visible=0
+[21:47:13.209][tid=15952]   child#23 hwnd=0x00E4017C class='MDIClient' text='' rect=(343,97,1694,781) visible=0
+[21:47:13.214][tid=15952]   child#24 hwnd=0x01F002C0 class='CCustomTabCtrl' text='' rect=(0,43,0,43) visible=0
+[21:47:13.229][tid=15952]   child#25 hwnd=0x008D05A2 class='AfxControlBar42s' text='菜单条' rect=(-3,27,897,53) visible=0
+[21:47:13.234][tid=15952]   child#26 hwnd=0x02890480 class='ToolbarWindow32' text='对齐工具条' rect=(-117,324,240,349) visible=0
+[21:47:13.242][tid=15952]   child#27 hwnd=0x00780380 class='ToolbarWindow32' text='标准工具条' rect=(-3,27,897,48) visible=0
+[21:47:13.247][tid=15952]   child#28 hwnd=0x005C0622 class='Afx:400000:b:10003:10:0' text='菜单条' rect=(-2,43,1721,73) visible=0
+[21:47:13.251][tid=15952]   child#29 hwnd=0x004D04FC class='ToolbarWindow32' text='定位工具条' rect=(-5000,-4955,-4481,-4930) visible=0
+[21:47:13.259][tid=15952]   child#30 hwnd=0x005A0684 class='AfxControlBar42s' text='工作夹' rect=(-3,53,343,781) visible=0
+[21:47:13.262][tid=15952]   child#31 hwnd=0x009C030E class='Afx:400000:8:10003:900015:0' text='工作与状态组合夹' rect=(114,945,722,949) visible=0
+[21:47:13.264][tid=15952]   child#32 hwnd=0x00A40290 class='Afx:400000:8:10003:900015:0' text='工作夹' rect=(-3,77,335,781) visible=0
+[21:47:13.265][tid=15952]   child#33 hwnd=0x006D05CE class='#32770' text='' rect=(-3,77,335,781) visible=0
+[21:47:13.271][tid=15952]   child#34 hwnd=0x003D03B8 class='SysTabControl32' text='Tab1' rect=(-3,77,335,781) visible=0
+[21:47:13.275][tid=15952]   child#35 hwnd=0x005B027A class='Afx:400000:b:10003:900015:0' text='' rect=(1,101,211,404) visible=0
+[21:47:13.280][tid=15952]   child#36 hwnd=0x00380444 class='ComboBox' text='--- 无对应事件 ---' rect=(1,405,211,425) visible=0
+[21:47:13.283][tid=15952]   child#37 hwnd=0x00730414 class='ComboBox' text='' rect=(1,81,211,101) visible=0
+[21:47:13.289][tid=15952]   child#38 hwnd=0x00A60558 class='SysTreeView32' text='Tree1' rect=(1,81,211,425) visible=0
+[21:47:13.292][tid=15952]   child#39 hwnd=0x004E0340 class='SysTreeView32' text='Tree1' rect=(-2,77,334,761) visible=0
+[21:47:13.296][tid=15952]   child#40 hwnd=0x00680416 class='SysTabControl32' text='Tab1' rect=(12,172,198,306) visible=0
+[21:47:13.299][tid=15952]   child#41 hwnd=0x024B067A class='AfxControlBar42s' text='窗口组件箱' rect=(1707,94,1707,833) visible=0
+[21:47:13.306][tid=15952]   child#42 hwnd=0x00C00190 class='Afx:400000:8:10003:900015:0' text='窗口组件箱' rect=(1716,118,1716,828) visible=0
+[21:47:13.308][tid=15952]   child#43 hwnd=0x00660490 class='#32770' text='' rect=(1716,118,1716,828) visible=0
+[21:47:13.315][tid=15952]   child#44 hwnd=0x00580D4C class='Button' text='基本组件2' rect=(1716,802,1716,822) visible=0
+[21:47:13.317][tid=15952]   child#45 hwnd=0x00440D54 class='Button' text='基本组件1' rect=(1716,123,1716,143) visible=0
+[21:47:13.321][tid=15952]   child#46 hwnd=0x02B20474 class='SysTreeView32' text='Tree1' rect=(1733,148,1840,291) visible=0
+[21:47:13.322][tid=15952]   child#47 hwnd=0x004203FA class='SysTabControl32' text='' rect=(1722,137,1723,138) visible=0
+[21:47:13.322][tid=15952]   child#48 hwnd=0x00790CD6 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.323][tid=15952]   child#49 hwnd=0x00940CD8 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.324][tid=15952]   child#50 hwnd=0x00690CE0 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.325][tid=15952]   child#51 hwnd=0x00FB0CE8 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.327][tid=15952]   child#52 hwnd=0x00680CF4 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.338][tid=15952]   child#53 hwnd=0x005E0CF6 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.339][tid=15952]   child#54 hwnd=0x006C0CFC class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.339][tid=15952]   child#55 hwnd=0x00800D02 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.340][tid=15952]   child#56 hwnd=0x006B0D0E class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.342][tid=15952]   child#57 hwnd=0x00790D1C class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.345][tid=15952]   child#58 hwnd=0x00860D2A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.350][tid=15952]   child#59 hwnd=0x00790D2C class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.353][tid=15952]   child#60 hwnd=0x00610D3A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.355][tid=15952]   child#61 hwnd=0x009A0D3C class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.358][tid=15952]   child#62 hwnd=0x00AE0D74 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.363][tid=15952]   child#63 hwnd=0x00850D8A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.365][tid=15952]   child#64 hwnd=0x006C0D9A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.367][tid=15952]   child#65 hwnd=0x00860D40 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.369][tid=15952]   child#66 hwnd=0x029C0D80 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[21:47:13.372][tid=15952]   child#67 hwnd=0x028A0A04 class='Button' text='' rect=(1721,152,1749,180) visible=0
+[21:47:13.496][tid=15952]   child#68 hwnd=0x00AA0A16 class='Button' text='' rect=(1721,181,1749,209) visible=0
+[21:47:13.502][tid=15952]   child#69 hwnd=0x00330A3C class='Button' text='' rect=(1721,210,1749,238) visible=0
+[21:47:13.504][tid=15952]   child#70 hwnd=0x00690A6A class='Button' text='' rect=(1721,239,1749,267) visible=0
+[21:47:13.510][tid=15952]   child#71 hwnd=0x00460A6C class='Button' text='' rect=(1721,268,1749,296) visible=0
+[21:47:13.513][tid=15952]   child#72 hwnd=0x00660A6E class='Button' text='' rect=(1721,297,1749,325) visible=0
+[21:47:13.518][tid=15952]   child#73 hwnd=0x00450A70 class='Button' text='' rect=(1721,326,1749,354) visible=0
+[21:47:13.520][tid=15952]   child#74 hwnd=0x01BD0BC0 class='Button' text='' rect=(1721,355,1749,383) visible=0
+[21:47:13.522][tid=15952]   child#75 hwnd=0x008E0BE0 class='Button' text='' rect=(1721,384,1749,412) visible=0
+[21:47:13.534][tid=15952]   child#76 hwnd=0x00DF0C08 class='Button' text='' rect=(1721,413,1749,441) visible=0
+[21:47:13.536][tid=15952]   child#77 hwnd=0x007A0C22 class='Button' text='' rect=(1721,442,1749,470) visible=0
+[21:47:13.539][tid=15952]   child#78 hwnd=0x00530C30 class='Button' text='' rect=(1721,471,1749,499) visible=0
+[21:47:13.541][tid=15952]   child#79 hwnd=0x004B0C32 class='Button' text='' rect=(1721,500,1749,528) visible=0
+[21:47:13.542][tid=15952]   child#80 hwnd=0x00580C7C class='Button' text='' rect=(1721,529,1749,557) visible=0
+[21:47:13.543][tid=15952]   child#81 hwnd=0x007D0C86 class='Button' text='' rect=(1721,558,1749,586) visible=0
+[21:47:13.555][tid=15952]   child#82 hwnd=0x00470CA6 class='Button' text='' rect=(1721,587,1749,615) visible=0
+[21:47:13.572][tid=15952]   child#83 hwnd=0x005A0CA8 class='Button' text='' rect=(1721,616,1749,644) visible=0
+[21:47:13.582][tid=15952]   child#84 hwnd=0x007E0CAE class='Button' text='' rect=(1721,645,1749,673) visible=0
+[21:47:13.586][tid=15952]   child#85 hwnd=0x00980CB4 class='Button' text='' rect=(1721,674,1749,702) visible=0
+[21:47:13.589][tid=15952]   child#86 hwnd=0x00910CBC class='Button' text='' rect=(1721,703,1749,731) visible=0
+[21:47:13.593][tid=15952]   child#87 hwnd=0x00760CC6 class='Button' text='' rect=(1721,732,1749,760) visible=0
+[21:47:13.598][tid=15952]   child#88 hwnd=0x00650CD2 class='Button' text='' rect=(1721,761,1749,789) visible=0
+[21:47:13.602][tid=15952]   child#89 hwnd=0x005E052C class='ToolbarWindow32' text='' rect=(897,27,966,48) visible=0
+[21:47:13.607][tid=15952]   child#90 hwnd=0x00360674 class='msctls_statusbar32' text='--- 程序的输入方法： ｜  为了便于输入程序，易语言内置四种名称输入法：首拼、全拼、双拼、英文。三种拼音输入法均支持南方音及多音字。首拼输入法及全拼输入法在系统中被合并为“首拼及全拼输入法”，系统自动判别所输入的拼音是首拼方式还是全拼方式。双拼输入法的编码�' rect=(353,731,1684,751) visible=0
+[21:47:13.612][tid=15952]   child#91 hwnd=0x0089068A class='msctls_progress32' text='' rect=(353,734,553,750) visible=0
+[21:47:13.616][tid=15952]   child#92 hwnd=0x00950032 class='Button' text='' rect=(1541,734,1557,750) visible=0
+[21:47:13.619][tid=15952]   child#93 hwnd=0x00620552 class='ComboBox' text='程序集1' rect=(343,77,883,97) visible=0
+[21:47:13.620][tid=15952]   child#94 hwnd=0x00970670 class='ComboBox' text='_DLL命令0A010004_wkeCreateWebWindow' rect=(883,77,1694,97) visible=0
+[21:47:13.620][tid=15952] PROBE EnumChildWindows end: total=94
+[21:47:13.620][tid=15952] PROBE hide=2 -> ShowWindow(hwnd=0x00920484, SW_HIDE) (visible before=0)
+[21:47:13.625][tid=15952] PROBE hide=2 -> visible after=0
+[21:47:13.625][tid=15952] STEP3 read-only probe end
+[21:47:13.625][tid=15952] STEP4 skipped (ELANG_AI_RUN != 1)
+[21:47:13.627][tid=15952] COMPILE func=0x05020012 handled=1 enabled=1 delay=2500ms
+[21:47:13.644][tid=15952] RUN panel snapshot: 4 个文本类子窗口
+[21:47:13.645][tid=15952] RUN   panel[0] hwnd=0x015E035C class='ScintillaForEIDETools' len=301
+[21:47:13.645][tid=15952] RUN   panel[1] hwnd=0x003E0342 class='Edit' len=19
+[21:47:13.645][tid=15952] RUN   panel[2] hwnd=0x00570570 class='Edit' len=3906
+[21:47:13.645][tid=15952] RUN   panel[3] hwnd=0x00710308 class='Edit' len=0
+[21:47:13.646][tid=15952] RUN BEFORE hwnd=0x015E035C class='ScintillaForEIDETools' | prev='◆正在加载插件...  ' | last=''
+[21:47:13.646][tid=15952] RUN BEFORE hwnd=0x003E0342 class='Edit' | prev='◆正在加载插件...  ' | last=''
+[21:47:13.646][tid=15952] RUN BEFORE hwnd=0x00570570 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:47:14.764][tid=11952] HIDEGUARD cloak NewWindow try#1 style=0x84000000 ex=0x00000000 vis=0
+[21:47:14.767][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[21:47:14.786][tid=135384] HIDEGUARD evt NewWindow#1 event=0x8000 child=0 vis=0
+[21:47:14.787][tid=135384] HIDEGUARD cloak NewWindow try#2 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.789][tid=135384] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.789][tid=135384] HIDEGUARD evt NewWindow#2 event=0x8000 child=0 vis=0
+[21:47:14.790][tid=135384] HIDEGUARD cloak NewWindow try#3 style=0x86010000 ex=0x00000000 vis=0
+[21:47:14.801][tid=135384] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[21:47:14.805][tid=135384] HIDEGUARD evt NewWindow#3 event=0x8000 child=0 vis=0
+[21:47:14.806][tid=135384] HIDEGUARD cloak NewWindow try#4 style=0x52000000 ex=0x00010000 vis=0
+[21:47:14.806][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.806][tid=135384] HIDEGUARD evt NewWindow#4 event=0x800B child=0 vis=0
+[21:47:14.807][tid=135384] HIDEGUARD cloak NewWindow try#5 style=0x52000000 ex=0x00010000 vis=0
+[21:47:14.807][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.808][tid=11952] HIDEGUARD cloak NewWindow try#6 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.808][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.823][tid=135384] HIDEGUARD evt NewWindow#5 event=0x8000 child=0 vis=0
+[21:47:14.823][tid=135384] HIDEGUARD cloak NewWindow try#7 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.824][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.825][tid=135384] HIDEGUARD evt NewWindow#6 event=0x800B child=0 vis=0
+[21:47:14.826][tid=135384] HIDEGUARD cloak NewWindow try#8 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.826][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.828][tid=135384] HIDEGUARD evt NewWindow#7 event=0x8000 child=0 vis=0
+[21:47:14.828][tid=135384] HIDEGUARD cloak NewWindow try#9 style=0x52000000 ex=0x00010000 vis=0
+[21:47:14.828][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.831][tid=135384] HIDEGUARD evt NewWindow#8 event=0x8000 child=0 vis=0
+[21:47:14.831][tid=135384] HIDEGUARD cloak NewWindow try#10 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.831][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.834][tid=135384] HIDEGUARD evt NewWindow#9 event=0x8000 child=0 vis=0
+[21:47:14.835][tid=135384] HIDEGUARD cloak NewWindow try#11 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.835][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.836][tid=11952] HIDEGUARD cloak NewWindow try#12 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.836][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.840][tid=135384] HIDEGUARD evt NewWindow#10 event=0x8000 child=0 vis=0
+[21:47:14.840][tid=135384] HIDEGUARD cloak NewWindow try#13 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.840][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.849][tid=11952] HIDEGUARD cloak NewWindow try#14 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.849][tid=135384] HIDEGUARD evt NewWindow#11 event=0x8000 child=0 vis=0
+[21:47:14.850][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.850][tid=135384] HIDEGUARD cloak NewWindow try#15 style=0x42000000 ex=0x00010000 vis=0
+[21:47:14.850][tid=135384] HIDEGUARD cloak NewWindow SKIPPED: 是子窗口(WS_CHILD)
+[21:47:14.853][tid=135384] HIDEGUARD evt NewWindow#12 event=0x800B child=0 vis=0
+[21:47:14.853][tid=135384] HIDEGUARD cloak NewWindow try#16 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.854][tid=135384] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.854][tid=135384] HIDEGUARD evt NewWindow#13 event=0x8002 child=0 vis=0
+[21:47:14.855][tid=135384] HIDEGUARD cloak NewWindow try#17 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.855][tid=135384] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.856][tid=135384] HIDEGUARD evt NewWindow#14 event=0x800B child=0 vis=0
+[21:47:14.856][tid=135384] HIDEGUARD cloak NewWindow try#18 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.857][tid=135384] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.863][tid=11952] HIDEGUARD cloak NewWindow try#19 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.864][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.874][tid=11952] HIDEGUARD cloak NewWindow try#20 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.874][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.888][tid=11952] HIDEGUARD cloak NewWindow try#21 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.889][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.897][tid=11952] HIDEGUARD cloak NewWindow try#22 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.898][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.912][tid=11952] HIDEGUARD cloak NewWindow try#23 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.913][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.927][tid=11952] HIDEGUARD cloak NewWindow try#24 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.927][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.941][tid=11952] HIDEGUARD cloak NewWindow try#25 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.941][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.949][tid=11952] HIDEGUARD cloak NewWindow try#26 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.951][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.964][tid=11952] HIDEGUARD cloak NewWindow try#27 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.965][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.974][tid=11952] HIDEGUARD cloak NewWindow try#28 style=0x86010000 ex=0x00080020 vis=0
+[21:47:14.975][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:14.988][tid=11952] HIDEGUARD cloak NewWindow try#29 style=0x84000000 ex=0x00080020 vis=0
+[21:47:14.988][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.001][tid=11952] HIDEGUARD cloak NewWindow try#30 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.002][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.016][tid=11952] HIDEGUARD cloak NewWindow try#31 style=0x84000000 ex=0x00080020 vis=0
+[21:47:15.017][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.024][tid=11952] HIDEGUARD cloak NewWindow try#32 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.025][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.044][tid=11952] HIDEGUARD cloak NewWindow try#33 style=0x84000000 ex=0x00080020 vis=0
+[21:47:15.045][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.055][tid=11952] HIDEGUARD cloak NewWindow try#34 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.056][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.072][tid=11952] HIDEGUARD cloak NewWindow try#35 style=0x84000000 ex=0x00080020 vis=0
+[21:47:15.073][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.090][tid=11952] HIDEGUARD cloak NewWindow try#36 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.091][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.105][tid=11952] HIDEGUARD cloak NewWindow try#37 style=0x84000000 ex=0x00080020 vis=0
+[21:47:15.105][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.114][tid=11952] HIDEGUARD cloak NewWindow try#38 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.115][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.126][tid=11952] HIDEGUARD cloak NewWindow try#39 style=0x84000000 ex=0x00080020 vis=0
+[21:47:15.126][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:15.134][tid=11952] HIDEGUARD cloak NewWindow try#40 style=0x86010000 ex=0x00080020 vis=0
+[21:47:15.134][tid=11952] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[21:47:16.148][tid=15952] COMPILE trigger 0x05020012 ...
+[21:47:16.868][tid=135384] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[21:47:16.885][tid=135384] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[21:47:16.891][tid=135384] HIDEGUARD cloak FAILED cls='CicMarshalWndClass' err=87
+[21:47:16.893][tid=135384] HIDEGUARD cloak FAILED cls='Tablet Programmability Message Window' err=87
+[21:47:16.895][tid=135384] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[21:47:16.907][tid=88156] COMPILE save dialog has NO Edit control
+[21:47:17.489][tid=135384] HIDEGUARD cloak FAILED cls='UIAInvokeHelperWndClass' err=87
+[21:47:17.493][tid=135384] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[21:47:17.497][tid=135384] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[21:47:17.511][tid=88156] COMPILE save dialog has NO Edit control
+[21:47:17.635][tid=88156] COMPILE save dialog has NO Edit control
+[21:47:17.637][tid=135384] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[21:47:17.691][tid=11952] HIDEGUARD cloak FAILED cls='' err=1400
+[21:47:17.811][tid=135384] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[21:47:17.959][tid=11952] HIDEGUARD cloak FAILED cls='' err=1400
+[21:47:18.122][tid=88156] DLG-DUMP#4 hwnd=00a60d3e edits=1 combos=1 btns=3
+[21:47:18.123][tid=88156] DLG-DUMP   id=0     cls=DUIViewWndClassName par=#32770         en=1 vis=0 txt=''
+[21:47:18.123][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=DUIViewWndClassName en=1 vis=0 txt=''
+[21:47:18.124][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.124][tid=88156] DLG-DUMP   id=0     cls=NamespaceTreeControl par=CtrlNotifySink en=1 vis=0 txt='命名空間樹狀目錄控制項'
+[21:47:18.124][tid=88156] DLG-DUMP   id=0     cls=Static           par=NamespaceTreeControl en=1 vis=0 txt='命名空間樹狀目錄控制項'
+[21:47:18.124][tid=88156] DLG-DUMP   id=100   cls=SysTreeView32    par=NamespaceTreeControl en=1 vis=0 txt='瀏覽窗格'
+[21:47:18.124][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.125][tid=88156] DLG-DUMP   id=1121  cls=SHELLDLL_DefView par=CtrlNotifySink en=1 vis=0 txt='ShellView'
+[21:47:18.125][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=SHELLDLL_DefView en=1 vis=0 txt=''
+[21:47:18.125][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.126][tid=88156] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[21:47:18.126][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.126][tid=88156] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[21:47:18.126][tid=88156] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.126][tid=88156] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt=''
+[21:47:18.127][tid=88156] DLG-DUMP   id=1001  cls=Edit             par=ComboBox       en=1 vis=0 txt=''
+[21:47:18.127][tid=88156] DLG-DUMP   id=1092  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.127][tid=88156] DLG-DUMP   id=1091  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.127][tid=88156] DLG-DUMP   id=1093  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.128][tid=88156] DLG-DUMP   id=1120  cls=ListBox          par=#32770         en=1 vis=0 txt=''
+[21:47:18.128][tid=88156] DLG-DUMP   id=1095  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.128][tid=88156] DLG-DUMP   id=1     cls=Button           par=#32770         en=1 vis=0 txt='存檔(&S)'
+[21:47:18.128][tid=88156] DLG-DUMP   id=2     cls=Button           par=#32770         en=1 vis=0 txt='取消'
+[21:47:18.128][tid=88156] DLG-DUMP   id=1038  cls=Button           par=#32770         en=0 vis=0 txt='說明(&H)'
+[21:47:18.129][tid=88156] DLG-DUMP   id=-1    cls=ScrollBar        par=#32770         en=1 vis=0 txt=''
+[21:47:18.129][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=#32770         en=1 vis=0 txt=''
+[21:47:18.129][tid=88156] DLG-DUMP   id=0     cls=WorkerW          par=#32770         en=1 vis=0 txt=''
+[21:47:18.129][tid=88156] DLG-DUMP   id=40965 cls=ReBarWindow32    par=WorkerW        en=1 vis=0 txt=''
+[21:47:18.130][tid=88156] DLG-DUMP   id=0     cls=TravelBand       par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.130][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=TravelBand     en=1 vis=0 txt='瀏覽按鈕'
+[21:47:18.130][tid=88156] DLG-DUMP   id=0     cls=UpBand           par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.130][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=UpBand         en=1 vis=0 txt='上頻帶'
+[21:47:18.131][tid=88156] DLG-DUMP   id=41477 cls=Address Band Root par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.131][tid=88156] DLG-DUMP   id=0     cls=msctls_progress32 par=Address Band Root en=1 vis=0 txt=''
+[21:47:18.131][tid=88156] DLG-DUMP   id=0     cls=Breadcrumb Parent par=msctls_progress32 en=1 vis=0 txt=''
+[21:47:18.131][tid=88156] DLG-DUMP   id=1001  cls=ToolbarWindow32  par=Breadcrumb Parent en=1 vis=0 txt=''
+[21:47:18.132][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=msctls_progress32 en=1 vis=0 txt='網址列'
+[21:47:18.132][tid=88156] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.132][tid=88156] DLG-DUMP   id=0     cls=UniversalSearchBand par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.132][tid=88156] DLG-DUMP   id=0     cls=Search Box       par=UniversalSearchBand en=1 vis=0 txt=''
+[21:47:18.133][tid=88156] DLG-DUMP   id=0     cls=SearchEditBoxWrapperClass par=Search Box     en=1 vis=0 txt=''
+[21:47:18.133][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=SearchEditBoxWrapperClass en=1 vis=0 txt=''
+[21:47:18.133][tid=88156] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.134][tid=88156] COMPILE dlg 没有任何候选编辑框
+[21:47:18.509][tid=88156] DLG-DUMP#5 hwnd=00a60d3e edits=1 combos=2 btns=4
+[21:47:18.510][tid=88156] DLG-DUMP   id=0     cls=DUIViewWndClassName par=#32770         en=1 vis=0 txt=''
+[21:47:18.510][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=DUIViewWndClassName en=1 vis=0 txt=''
+[21:47:18.510][tid=88156] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.511][tid=88156] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt=''
+[21:47:18.511][tid=88156] DLG-DUMP   id=1001  cls=Edit             par=ComboBox       en=1 vis=0 txt=''
+[21:47:18.511][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.511][tid=88156] DLG-DUMP   id=0     cls=NamespaceTreeControl par=CtrlNotifySink en=1 vis=0 txt='命名空間樹狀目錄控制項'
+[21:47:18.511][tid=88156] DLG-DUMP   id=0     cls=Static           par=NamespaceTreeControl en=1 vis=0 txt='命名空間樹狀目錄控制項'
+[21:47:18.512][tid=88156] DLG-DUMP   id=100   cls=SysTreeView32    par=NamespaceTreeControl en=1 vis=0 txt='瀏覽窗格'
+[21:47:18.512][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.512][tid=88156] DLG-DUMP   id=1121  cls=SHELLDLL_DefView par=CtrlNotifySink en=1 vis=0 txt='ShellView'
+[21:47:18.513][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=SHELLDLL_DefView en=1 vis=0 txt=''
+[21:47:18.513][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.513][tid=88156] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[21:47:18.513][tid=88156] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.514][tid=88156] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[21:47:18.514][tid=88156] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.514][tid=88156] DLG-DUMP   id=0     cls=Button           par=FloatNotifySink en=1 vis=0 txt=''
+[21:47:18.514][tid=88156] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[21:47:18.514][tid=88156] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt='Windows可执行文件(*.exe)'
+[21:47:18.515][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=#32770         en=1 vis=0 txt=''
+[21:47:18.515][tid=88156] DLG-DUMP   id=1     cls=Button           par=#32770         en=1 vis=0 txt='存檔(&S)'
+[21:47:18.515][tid=88156] DLG-DUMP   id=2     cls=Button           par=#32770         en=1 vis=0 txt='取消'
+[21:47:18.515][tid=88156] DLG-DUMP   id=-1    cls=ScrollBar        par=#32770         en=1 vis=0 txt=''
+[21:47:18.516][tid=88156] DLG-DUMP   id=1092  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.516][tid=88156] DLG-DUMP   id=1091  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.516][tid=88156] DLG-DUMP   id=1093  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.516][tid=88156] DLG-DUMP   id=1120  cls=ListBox          par=#32770         en=1 vis=0 txt=''
+[21:47:18.516][tid=88156] DLG-DUMP   id=1095  cls=Static           par=#32770         en=1 vis=0 txt=''
+[21:47:18.517][tid=88156] DLG-DUMP   id=1038  cls=Button           par=#32770         en=0 vis=0 txt='說明(&H)'
+[21:47:18.517][tid=88156] DLG-DUMP   id=0     cls=WorkerW          par=#32770         en=1 vis=0 txt=''
+[21:47:18.517][tid=88156] DLG-DUMP   id=40965 cls=ReBarWindow32    par=WorkerW        en=1 vis=0 txt=''
+[21:47:18.518][tid=88156] DLG-DUMP   id=0     cls=TravelBand       par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.518][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=TravelBand     en=1 vis=0 txt='瀏覽按鈕'
+[21:47:18.518][tid=88156] DLG-DUMP   id=0     cls=UpBand           par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.519][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=UpBand         en=1 vis=0 txt='上頻帶'
+[21:47:18.519][tid=88156] DLG-DUMP   id=41477 cls=Address Band Root par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.519][tid=88156] DLG-DUMP   id=0     cls=msctls_progress32 par=Address Band Root en=1 vis=0 txt=''
+[21:47:18.519][tid=88156] DLG-DUMP   id=0     cls=Breadcrumb Parent par=msctls_progress32 en=1 vis=0 txt=''
+[21:47:18.520][tid=88156] DLG-DUMP   id=1001  cls=ToolbarWindow32  par=Breadcrumb Parent en=1 vis=0 txt='位址: C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\stage_logs\wk_win_214322'
+[21:47:18.520][tid=88156] DLG-DUMP   id=0     cls=ToolbarWindow32  par=msctls_progress32 en=1 vis=0 txt='網址列'
+[21:47:18.520][tid=88156] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.520][tid=88156] DLG-DUMP   id=0     cls=UniversalSearchBand par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.521][tid=88156] DLG-DUMP   id=0     cls=Search Box       par=UniversalSearchBand en=1 vis=0 txt=''
+[21:47:18.521][tid=88156] DLG-DUMP   id=0     cls=SearchEditBoxWrapperClass par=Search Box     en=1 vis=0 txt=''
+[21:47:18.521][tid=88156] DLG-DUMP   id=0     cls=DirectUIHWND     par=SearchEditBoxWrapperClass en=1 vis=0 txt=''
+[21:47:18.521][tid=88156] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[21:47:18.525][tid=88156] COMPILE dlg 候选 1 个（从下往上）:
+[21:47:18.525][tid=88156] COMPILE   #0 y=-31604  w=720   combo=1 txt=''
+[21:47:18.596][tid=88156] COMPILE dlg 几何选中 #0（y=-31604 w=720，回读成功）CDM=0
+[21:47:18.596][tid=88156] COMPILE fill ok: 控件文本='C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\stage_logs\wk_wke_214636\demo_proj_swke_base_ai_214640_checkout.exe'（期望 'C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\stage_logs\wk_wke_214636\demo_proj_swke_base_ai_214640_checkout.exe'）
+[21:47:18.741][tid=135384] HIDEGUARD iter=2000 evtAll=11099(C630 D10028 S37 L404) newWinEvt=14 evtAct=0 cloak=8631/20 acts=0

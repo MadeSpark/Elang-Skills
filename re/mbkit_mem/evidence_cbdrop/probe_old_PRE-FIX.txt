@@ -1,0 +1,14 @@
+================ probe_cbdrop ================
+MbKit : old.dll
+内核已就绪
+view = 037c9e48
+
+  RWX 页 = 02fd0000  回调桩 = 02fd0000  调用桩 = 02fd0040
+[控制组] 回调与调用点都在 exe 模块内
+  回调命中 = 1   新增被挡 = 0
+
+[实验组] 回调与调用点都在 VirtualAlloc 页内（等价于手工映射的插件 DLL）
+  回调命中 = 0   新增被挡 = 3
+  CbCount=1  CbHits=1  CbBlocked=3
+
+RESULT ctrl_hits=1 ctrl_blocked=0 stub_hits=0 stub_blocked=3 => STUB-CB-DROPPED

@@ -1,0 +1,15 @@
+[21:50:21.168][=== COMPILE BEGIN ===] 
+[21:50:21.169][COMPILE-CHECK] enabled=1
+[21:50:21.178][PANEL-TAIL] BEFORE hwnd=0x00550FBA class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:50:21.178][PANEL-TAIL] BEFORE hwnd=0x00BB069E class='ScintillaForEIDETools' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[21:50:21.179][PANEL-TAIL] BEFORE hwnd=0x0187063A class='Edit' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[21:50:21.179][PANEL-TAIL] BEFORE hwnd=0x014D0638 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[21:50:23.682][COMPILE-TRIGGER] send
+[21:50:24.835][COMPILE-DIALOG-FAIL] no-edit-control
+[21:50:25.121][COMPILE-DIALOG-FAIL] no-edit-control
+[21:50:25.677][COMPILE-DIALOG-FAIL] no-edit-control
+[21:50:26.049][COMPILE-DIALOG-FAIL] set-path-failed
+[21:50:27.101][COMPILE-DIALOG] fill+confirm
+[21:50:27.981][COMPILE-DIALOG-FAIL] set-path-failed
+[21:50:28.237][COMPILE-OUT-SEEN] C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\out\demo_mem.exe
+[21:50:29.026][COMPILE-TRIGGER-RET] handled=1

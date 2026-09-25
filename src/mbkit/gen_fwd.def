@@ -258,6 +258,7 @@ EXPORTS
     MbKit_SetNodePath
     MbKit_ConfigNodePath
     MbKit_KernelLoaded
+    MbKit_KernelState
     MbKit_Diag
     MbKit_NodePath
     MbKit_Version

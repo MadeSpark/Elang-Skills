@@ -362,7 +362,7 @@ def main():
 
     decls = G.parse_decls(os.path.join(SRC, "dll.e.txt"))
     mb = [d for d in decls if "MbKit" in d["lib"]]
-    assert len(mb) == 258, len(mb)
+    assert len(mb) == 260, len(mb)   # 252 wke/js + 8 _MbKit_（09-25 +KernelState+FwdError）
 
     structs = {}
     t = io.open(os.path.join(SRC, "struct.e.txt"), encoding="utf-8-sig").read().replace("\r\n", "\n")

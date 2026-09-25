@@ -1,0 +1,53 @@
+t_ms,lag_ms,jitter_ms,cursor_x,cursor_y,moved,cpu_total,top,e_pids,fg
+128,56813,0.4,499,739,0,0,,49560|149872|136508|75448,WorkBuddy
+244,56938,0.4,499,739,0,287.5,PopBlock.exe(12672)=75% | WorkBuddy.exe(84404)=50% | Weixin.exe(34528)=25%,49560|149872|136508|75448,WorkBuddy
+358,57063,0.1,499,739,0,325.0,WorkBuddy.exe(84404)=50% | e.exe(75448)=50% | WorkBuddy.exe(60508)=38%,49560|149872|136508|75448,WorkBuddy
+474,57172,0.6,499,739,0,243.7,小栗子虚拟机.exe(115292)=57% | WorkBuddy.exe(84404)=43% | WorkBuddy.exe(60508)=29%,49560|149872|136508|75448,WorkBuddy
+589,57282,0.4,499,739,0,269.9,WorkBuddy.exe(84404)=71% | Glance.exe(84208)=43% | LZTray.exe(21428)=28%,49560|149872|136508|75448,WorkBuddy
+714,57407,0.2,499,739,0,112.5,WorkBuddy.exe(60508)=25% | WorkBuddy.exe(84404)=25% | msedgewebview2.exe(35932)=12%,49560|149872|136508|75448,WorkBuddy
+831,57532,0.5,499,739,0,200.0,WorkBuddy.exe(84404)=62% | WorkBuddy.exe(60508)=50% | aha_doctor.exe(54828)=25%,49560|149872|136508|75448,WorkBuddy
+947,57641,0.4,499,739,0,143.3,WorkBuddy.exe(84404)=57% | 小栗子虚拟机.exe(115292)=43% | SMTC.exe(23684)=14%,49560|149872|136508|75448,WorkBuddy
+1074,57766,0.3,499,739,0,212.5,rclone.exe(134088)=100% | WorkBuddy.exe(84404)=38% | WorkBuddy.exe(60508)=25%,49560|149872|136508|75448,WorkBuddy
+1190,57891,0.2,499,739,0,937.5,WorkBuddy.exe(84404)=712% | rclone.exe(134088)=50% | Glance.exe(84208)=38%,49560|149872|136508|75448,WorkBuddy
+1304,58000,0.2,499,739,0,258.0,RcloneGUI.exe(5008)=129% | WorkBuddy.exe(84404)=72% | VPet-Simulator.Windows.exe(31276)=14%,49560|149872|136508|75448,WorkBuddy
+1419,58110,0.6,499,739,0,213.1,RcloneGUI.exe(5008)=85% | 小栗子虚拟机.exe(115292)=43% | WorkBuddy.exe(84404)=28%,49560|149872|136508|75448,WorkBuddy
+1535,58235,0.5,499,739,0,325.0,WorkBuddy.exe(84404)=62% | rclone.exe(134088)=50% | Weixin.exe(34528)=25%,49560|149872|136508|75448,WorkBuddy
+1654,58344,0.5,499,739,0,243.7,rclone.exe(134088)=86% | WorkBuddy.exe(84404)=43% | NVIDIA Overlay.exe(24340)=14%,49560|149872|136508|75448,WorkBuddy
+1770,58469,0.4,499,739,0,337.5,rclone.exe(134088)=100% | XiaoLiZi_Adapter.exe(148140)=75% | WorkBuddy.exe(60508)=38%,49560|149872|136508|75448,WorkBuddy
+1886,58578,0.6,499,739,0,344.0,rclone.exe(134088)=86% | XiaoLiZi_Adapter.exe(148140)=72% | WorkBuddy.exe(84404)=43%,49560|149872|136508|75448,WorkBuddy
+2001,58703,0.6,499,739,0,312.5,rclone.exe(134088)=62% | XiaoLiZi_Adapter.exe(148140)=62% | WorkBuddy.exe(84404)=25%,49560|149872|136508|75448,WorkBuddy
+2135,58813,0.2,499,739,0,383.5,WorkBuddy.exe(60508)=71% | rclone.exe(134088)=71% | WorkBuddy.exe(84404)=57%,49560|149872|136508|75448,WorkBuddy
+2251,58953,0.1,499,739,0,267.9,rclone.exe(134088)=67% | WorkBuddy.exe(84404)=33% | XiaoLiZi_Adapter.exe(148140)=33%,49560|149872|136508|75448,WorkBuddy
+2366,59063,0.4,499,739,0,426.1,rclone.exe(134088)=71% | XiaoLiZi_Adapter.exe(148140)=71% | WorkBuddy.exe(84404)=43%,49560|149872|136508|75448,WorkBuddy
+2482,59172,0.4,499,739,0,401.4,XiaoLiZi_Adapter.exe(148140)=115% | rclone.exe(134088)=100% | WorkBuddy.exe(84404)=72%,49560|149872|136508|75448,WorkBuddy
+2599,59297,0.4,499,739,0,425.0,XiaoLiZi_Adapter.exe(148140)=75% | rclone.exe(134088)=62% | WorkBuddy.exe(60508)=50%,49560|149872|136508|75448,WorkBuddy
+2716,59407,0.5,499,739,0,326.7,XiaoLiZi_Adapter.exe(148140)=114% | RcloneGUI.exe(5008)=71% | WorkBuddy.exe(84404)=57%,49560|149872|136508|75448,WorkBuddy
+2831,59532,0.5,499,739,0,350.0,XiaoLiZi_Adapter.exe(148140)=88% | WorkBuddy.exe(84404)=75% | rclone.exe(134088)=75%,49560|149872|136508|75448,WorkBuddy
+2946,59641,0.3,499,739,0,315.4,rclone.exe(134088)=86% | XiaoLiZi_Adapter.exe(148140)=72% | RcloneGUI.exe(5008)=29%,49560|149872|136508|75448,WorkBuddy
+3062,59766,0.2,499,739,0,312.5,rclone.exe(134088)=75% | WorkBuddy.exe(84404)=50% | WinMemoryCleaner.exe(12688)=25%,49560|149872|136508|75448,WorkBuddy
+3177,59875,0.1,499,739,0,215.0,rclone.exe(134088)=100% | RcloneGUI.exe(5008)=43% | WorkBuddy.exe(84404)=43%,49560|149872|136508|75448,WorkBuddy
+3293,59985,0.0,499,739,0,298.3,rclone.exe(134088)=99% | WorkBuddy.exe(84404)=43% | Everything.exe(43204)=28%,49560|149872|136508|75448,WorkBuddy
+3408,60110,0.1,499,739,0,275.0,rclone.exe(134088)=62% | WorkBuddy.exe(84404)=50% | QQ.exe(3176)=38%,49560|149872|136508|75448,WorkBuddy
+3524,60219,0.6,499,739,0,215.0,rclone.exe(134088)=72% | WorkBuddy.exe(84404)=43% | RcloneGUI.exe(5008)=29%,49560|149872|136508|75448,WorkBuddy
+3639,60344,0.2,499,739,0,225.0,rclone.exe(134088)=88% | WorkBuddy.exe(60508)=25% | WorkBuddy.exe(84404)=25%,49560|149872|136508|75448,WorkBuddy
+3757,60453,0.4,499,739,0,301.0,WorkBuddy.exe(84404)=72% | rclone.exe(134088)=72% | RcloneGUI.exe(5008)=29%,49560|149872|136508|75448,WorkBuddy
+3873,60563,0.3,499,739,0,383.5,e.exe(75448)=71% | RcloneGUI.exe(5008)=43% | Glance.exe(84208)=43%,49560|149872|136508|75448,WorkBuddy
+3989,60688,0.6,499,739,0,312.5,rclone.exe(134088)=75% | WorkBuddy.exe(60508)=38% | WorkBuddy.exe(84404)=38%,49560|149872|136508|75448,WorkBuddy
+4105,60797,0.3,499,739,0,215.0,rclone.exe(134088)=86% | WorkBuddy.exe(84404)=43% | python.exe(80452)=29%,49560|149872|136508|75448,WorkBuddy
+4238,60922,0.1,499,739,0,262.5,rclone.exe(134088)=62% | RcloneGUI.exe(5008)=50% | WorkBuddy.exe(84404)=50%,49560|149872|136508|75448,WorkBuddy
+4353,61047,0.3,499,739,0,150.0,WorkBuddy.exe(84404)=75% | WorkBuddy.exe(60508)=25% | SMTC.exe(23684)=12%,49560|149872|136508|75448,WorkBuddy
+4468,61172,0.5,499,739,0,150.0,WorkBuddy.exe(84404)=38% | 小栗子虚拟机.exe(115292)=38% | WorkBuddy.exe(60508)=25%,49560|149872|136508|75448,WorkBuddy
+4583,61282,0.2,499,739,0,142.0,WorkBuddy.exe(84404)=43% | Glance.exe(84208)=43% | WorkBuddy.exe(60508)=28%,49560|149872|136508|75448,WorkBuddy
+4698,61391,0.6,499,739,0,186.4,RcloneGUI.exe(5008)=57% | WorkBuddy.exe(60508)=57% | WorkBuddy.exe(84404)=43%,49560|149872|136508|75448,WorkBuddy
+4811,61516,0.1,499,739,0,175.0,RcloneGUI.exe(5008)=88% | WorkBuddy.exe(84404)=38% | WorkBuddy.exe(60508)=25%,49560|149872|136508|75448,WorkBuddy
+4928,61625,0.2,499,739,0,243.7,RcloneGUI.exe(5008)=100% | 小栗子虚拟机.exe(115292)=43% | WorkBuddy.exe(84404)=29%,49560|149872|136508|75448,WorkBuddy
+5044,61735,0.4,499,739,0,170.5,WorkBuddy.exe(60508)=57% | WorkBuddy.exe(84404)=43% | aha_doctor.exe(54828)=28%,49560|149872|136508|75448,WorkBuddy
+5160,61860,0.5,499,739,0,137.5,WorkBuddy.exe(84404)=50% | VPet-Simulator.Windows.exe(31276)=25% | Glance.exe(84208)=25%,49560|149872|136508|75448,WorkBuddy
+5277,61969,0.3,499,739,0,114.7,WorkBuddy.exe(84404)=29% | Glance.exe(84208)=29% | Everything.exe(43204)=14%,49560|149872|136508|75448,WorkBuddy
+5391,62094,0.2,499,739,0,125.0,WorkBuddy.exe(84404)=50% | WorkBuddy.exe(60508)=25% | PopBlock.exe(12672)=12%,49560|149872|136508|75448,WorkBuddy
+5505,62203,0.2,499,739,0,344.0,PopBlock.exe(12672)=100% | WorkBuddy.exe(84404)=57% | 小栗子虚拟机.exe(115292)=29%,49560|149872|136508|75448,WorkBuddy
+5620,62313,0.3,499,739,0,184.7,WorkBuddy.exe(84404)=57% | PopBlock.exe(12672)=28% | python.exe(80452)=28%,49560|149872|136508|75448,WorkBuddy
+5734,62438,0.4,499,739,0,137.5,WorkBuddy.exe(84404)=38% | SMTC.exe(23684)=25% | WorkBuddy.exe(60508)=25%,49560|149872|136508|75448,WorkBuddy
+5849,62547,0.3,499,739,0,157.7,Glance.exe(84208)=57% | WorkBuddy.exe(60508)=29% | WorkBuddy.exe(84404)=29%,49560|149872|136508|75448,WorkBuddy
+5965,62657,0.4,499,739,0,198.9,WorkBuddy.exe(84404)=57% | 小栗子虚拟机.exe(115292)=57% | TRAE SOLO CN.exe(51628)=28%,49560|149872|136508|75448,WorkBuddy
+6082,62782,0.4,499,739,0,150.0,XiaoLiZi_Adapter.exe(148140)=38% | aha_doctor.exe(54828)=25% | RcloneGUI.exe(5008)=12%,49560|149872|136508|75448,WorkBuddy

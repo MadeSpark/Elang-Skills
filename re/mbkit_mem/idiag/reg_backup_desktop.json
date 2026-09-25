@@ -1,0 +1,214 @@
+{
+  "key": "HKCU\\Control Panel\\Desktop",
+  "last_write": "2026-09-24 11:01:36",
+  "values": {
+    "BlockSendInputResets": {
+      "type": 1,
+      "value": "0"
+    },
+    "CaretTimeout": {
+      "type": 4,
+      "value": 5000
+    },
+    "CaretWidth": {
+      "type": 4,
+      "value": 1
+    },
+    "ClickLockTime": {
+      "type": 4,
+      "value": 1200
+    },
+    "CoolSwitchColumns": {
+      "type": 1,
+      "value": "7"
+    },
+    "CoolSwitchRows": {
+      "type": 1,
+      "value": "3"
+    },
+    "CursorBlinkRate": {
+      "type": 1,
+      "value": "530"
+    },
+    "DockMoving": {
+      "type": 1,
+      "value": "1"
+    },
+    "DragFromMaximize": {
+      "type": 1,
+      "value": "1"
+    },
+    "DragFullWindows": {
+      "type": 1,
+      "value": "1"
+    },
+    "DragHeight": {
+      "type": 1,
+      "value": "4"
+    },
+    "DragWidth": {
+      "type": 1,
+      "value": "4"
+    },
+    "FocusBorderHeight": {
+      "type": 4,
+      "value": 1
+    },
+    "FocusBorderWidth": {
+      "type": 4,
+      "value": 1
+    },
+    "FontSmoothing": {
+      "type": 1,
+      "value": "2"
+    },
+    "FontSmoothingGamma": {
+      "type": 4,
+      "value": 0
+    },
+    "FontSmoothingOrientation": {
+      "type": 4,
+      "value": 1
+    },
+    "FontSmoothingType": {
+      "type": 4,
+      "value": 2
+    },
+    "ForegroundFlashCount": {
+      "type": 4,
+      "value": 7
+    },
+    "LeftOverlapChars": {
+      "type": 1,
+      "value": "3"
+    },
+    "MenuShowDelay": {
+      "type": 1,
+      "value": "400"
+    },
+    "MouseWheelRouting": {
+      "type": 4,
+      "value": 2
+    },
+    "PaintDesktopVersion": {
+      "type": 4,
+      "value": 0
+    },
+    "Pattern": {
+      "type": 4,
+      "value": 0
+    },
+    "RightOverlapChars": {
+      "type": 1,
+      "value": "3"
+    },
+    "ScreenSaveActive": {
+      "type": 1,
+      "value": "1"
+    },
+    "SnapSizing": {
+      "type": 1,
+      "value": "1"
+    },
+    "TileWallpaper": {
+      "type": 1,
+      "value": "0"
+    },
+    "WallpaperOriginX": {
+      "type": 4,
+      "value": 0
+    },
+    "WallpaperOriginY": {
+      "type": 4,
+      "value": 0
+    },
+    "WallpaperStyle": {
+      "type": 1,
+      "value": "10"
+    },
+    "WheelScrollChars": {
+      "type": 1,
+      "value": "3"
+    },
+    "WheelScrollLines": {
+      "type": 1,
+      "value": "3"
+    },
+    "WindowArrangementActive": {
+      "type": 1,
+      "value": "1"
+    },
+    "ForegroundLockTimeout": {
+      "type": 4,
+      "value": 0
+    },
+    "WallPaper": {
+      "type": 1,
+      "value": "C:\\Users\\MadeSpark\\Desktop\\QQ图片20250302201905.png"
+    },
+    "Win8DpiScaling": {
+      "type": 4,
+      "value": 0
+    },
+    "DpiScalingVer": {
+      "type": 4,
+      "value": 4096
+    },
+    "UserPreferencesMask": {
+      "type": 3,
+      "value": "9e1e078012000000"
+    },
+    "MaxVirtualDesktopDimension": {
+      "type": 4,
+      "value": 8704
+    },
+    "MaxMonitorDimension": {
+      "type": 4,
+      "value": 3840
+    },
+    "TranscodedImageCount": {
+      "type": 4,
+      "value": 1
+    },
+    "LastUpdated": {
+      "type": 4,
+      "value": 4294967295
+    },
+    "TranscodedImageCache": {
+      "type": 3,
+      "value": "7ac30100339706009a0800006c05000096d032496d8bdb0143003a005c00550073006500720073005c004d0061006400650053007000610072006b005c004400650073006b0074006f0070005c0051005100fe564772320030003200350030003300300032003200300031003900300035002e0070006e006700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "Pattern Upgrade": {
+      "type": 1,
+      "value": "TRUE"
+    },
+    "LockScreenAutoLockActive": {
+      "type": 1,
+      "value": "0"
+    },
+    "LowLevelHooksTimeout": {
+      "type": 4,
+      "value": 25000
+    },
+    "PreviousPreferredUILanguages": {
+      "type": 7,
+      "value": [
+        "zh-TW"
+      ]
+    },
+    "PreferredUILanguages": {
+      "type": 7,
+      "value": [
+        "zh-TW"
+      ]
+    },
+    "AutoColorization": {
+      "type": 4,
+      "value": 1
+    },
+    "ImageColor": {
+      "type": 4,
+      "value": 3305111551
+    }
+  }
+}

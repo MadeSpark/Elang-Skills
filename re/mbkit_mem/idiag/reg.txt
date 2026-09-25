@@ -1,0 +1,228 @@
+########## A. 直接相关：低级钩子超时 ##########
+==============================================================================
+KEY  HKEY_CURRENT_USER\Control Panel\Desktop
+  子键=6  值=51  该键最后一次写入=2026-09-24 11:01:36
+    BlockSendInputResets         REG_SZ         = 0
+    CaretTimeout                 REG_DWORD      = 5000
+    CaretWidth                   REG_DWORD      = 1
+    ClickLockTime                REG_DWORD      = 1200
+    CoolSwitchColumns            REG_SZ         = 7
+    CoolSwitchRows               REG_SZ         = 3
+    CursorBlinkRate              REG_SZ         = 530
+    DockMoving                   REG_SZ         = 1
+    DragFromMaximize             REG_SZ         = 1
+    DragFullWindows              REG_SZ         = 1
+    DragHeight                   REG_SZ         = 4
+    DragWidth                    REG_SZ         = 4
+    FocusBorderHeight            REG_DWORD      = 1
+    FocusBorderWidth             REG_DWORD      = 1
+    FontSmoothing                REG_SZ         = 2
+    FontSmoothingGamma           REG_DWORD      = 0
+    FontSmoothingOrientation     REG_DWORD      = 1
+    FontSmoothingType            REG_DWORD      = 2
+    ForegroundFlashCount         REG_DWORD      = 7
+    LeftOverlapChars             REG_SZ         = 3
+    MenuShowDelay                REG_SZ         = 400
+    MouseWheelRouting            REG_DWORD      = 2
+    PaintDesktopVersion          REG_DWORD      = 0
+    Pattern                      REG_DWORD      = 0
+    RightOverlapChars            REG_SZ         = 3
+    ScreenSaveActive             REG_SZ         = 1
+    SnapSizing                   REG_SZ         = 1
+    TileWallpaper                REG_SZ         = 0
+    WallpaperOriginX             REG_DWORD      = 0
+    WallpaperOriginY             REG_DWORD      = 0
+    WallpaperStyle               REG_SZ         = 10
+    WheelScrollChars             REG_SZ         = 3
+    WheelScrollLines             REG_SZ         = 3
+    WindowArrangementActive      REG_SZ         = 1
+    ForegroundLockTimeout        REG_DWORD      = 0
+    WallPaper                    REG_SZ         = C:\Users\MadeSpark\Desktop\QQ图片20250302201905.png
+    Win8DpiScaling               REG_DWORD      = 0
+    DpiScalingVer                REG_DWORD      = 4096
+    UserPreferencesMask          REG_BINARY     = <8 bytes>
+    MaxVirtualDesktopDimension   REG_DWORD      = 8704
+    MaxMonitorDimension          REG_DWORD      = 3840
+    TranscodedImageCount         REG_DWORD      = 1
+    LastUpdated                  REG_DWORD      = 4294967295
+    TranscodedImageCache         REG_BINARY     = <800 bytes>
+    Pattern Upgrade              REG_SZ         = TRUE
+    LockScreenAutoLockActive     REG_SZ         = 0
+    LowLevelHooksTimeout         REG_DWORD      = 25000
+    PreviousPreferredUILanguages REG_MULTI_SZ   = ['zh-TW']
+    PreferredUILanguages         REG_MULTI_SZ   = ['zh-TW']
+    AutoColorization             REG_DWORD      = 1
+    ImageColor                   REG_DWORD      = 3305111551
+==============================================================================
+KEY  HKEY_CURRENT_USER\Control Panel\Desktop
+  子键=6  值=51  该键最后一次写入=2026-09-24 11:01:36
+    BlockSendInputResets         REG_SZ         = 0
+    CaretTimeout                 REG_DWORD      = 5000
+    CaretWidth                   REG_DWORD      = 1
+    ClickLockTime                REG_DWORD      = 1200
+    CoolSwitchColumns            REG_SZ         = 7
+    CoolSwitchRows               REG_SZ         = 3
+    CursorBlinkRate              REG_SZ         = 530
+    DockMoving                   REG_SZ         = 1
+    DragFromMaximize             REG_SZ         = 1
+    DragFullWindows              REG_SZ         = 1
+    DragHeight                   REG_SZ         = 4
+    DragWidth                    REG_SZ         = 4
+    FocusBorderHeight            REG_DWORD      = 1
+    FocusBorderWidth             REG_DWORD      = 1
+    FontSmoothing                REG_SZ         = 2
+    FontSmoothingGamma           REG_DWORD      = 0
+    FontSmoothingOrientation     REG_DWORD      = 1
+    FontSmoothingType            REG_DWORD      = 2
+    ForegroundFlashCount         REG_DWORD      = 7
+    LeftOverlapChars             REG_SZ         = 3
+    MenuShowDelay                REG_SZ         = 400
+    MouseWheelRouting            REG_DWORD      = 2
+    PaintDesktopVersion          REG_DWORD      = 0
+    Pattern                      REG_DWORD      = 0
+    RightOverlapChars            REG_SZ         = 3
+    ScreenSaveActive             REG_SZ         = 1
+    SnapSizing                   REG_SZ         = 1
+    TileWallpaper                REG_SZ         = 0
+    WallpaperOriginX             REG_DWORD      = 0
+    WallpaperOriginY             REG_DWORD      = 0
+    WallpaperStyle               REG_SZ         = 10
+    WheelScrollChars             REG_SZ         = 3
+    WheelScrollLines             REG_SZ         = 3
+    WindowArrangementActive      REG_SZ         = 1
+    ForegroundLockTimeout        REG_DWORD      = 0
+    WallPaper                    REG_SZ         = C:\Users\MadeSpark\Desktop\QQ图片20250302201905.png
+    Win8DpiScaling               REG_DWORD      = 0
+    DpiScalingVer                REG_DWORD      = 4096
+    UserPreferencesMask          REG_BINARY     = <8 bytes>
+    MaxVirtualDesktopDimension   REG_DWORD      = 8704
+    MaxMonitorDimension          REG_DWORD      = 3840
+    TranscodedImageCount         REG_DWORD      = 1
+    LastUpdated                  REG_DWORD      = 4294967295
+    TranscodedImageCache         REG_BINARY     = <800 bytes>
+    Pattern Upgrade              REG_SZ         = TRUE
+    LockScreenAutoLockActive     REG_SZ         = 0
+    LowLevelHooksTimeout         REG_DWORD      = 25000
+    PreviousPreferredUILanguages REG_MULTI_SZ   = ['zh-TW']
+    PreferredUILanguages         REG_MULTI_SZ   = ['zh-TW']
+    AutoColorization             REG_DWORD      = 1
+    ImageColor                   REG_DWORD      = 3305111551
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+  子键=2  值=23  该键最后一次写入=2026-04-25 12:34:24
+    ConsentPromptBehaviorAdmin   REG_DWORD      = 5
+    ConsentPromptBehaviorEnhancedAdmin REG_DWORD      = 1
+    ConsentPromptBehaviorUser    REG_DWORD      = 3
+    DSCAutomationHostEnabled     REG_DWORD      = 2
+    EnableCursorSuppression      REG_DWORD      = 1
+    EnableFullTrustStartupTasks  REG_DWORD      = 2
+    EnableInstallerDetection     REG_DWORD      = 1
+    EnableLUA                    REG_DWORD      = 1
+    EnableSecureUIAPaths         REG_DWORD      = 1
+    EnableUIADesktopToggle       REG_DWORD      = 0
+    EnableUwpStartupTasks        REG_DWORD      = 2
+    EnableVirtualization         REG_DWORD      = 1
+    PromptOnSecureDesktop        REG_DWORD      = 1
+    SupportFullTrustStartupTasks REG_DWORD      = 1
+    SupportUwpStartupTasks       REG_DWORD      = 1
+    TypeOfAdminApprovalMode      REG_DWORD      = 1
+    ValidateAdminCodeSignatures  REG_DWORD      = 0
+    undockwithoutlogon           REG_DWORD      = 1
+    dontdisplaylastusername      REG_DWORD      = 0
+    legalnoticecaption           REG_SZ         = 
+    legalnoticetext              REG_SZ         = 
+    scforceoption                REG_DWORD      = 0
+    shutdownwithoutlogon         REG_DWORD      = 1
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer
+  子键=84  值=22  该键最后一次写入=2026-09-23 13:57:53
+    AccessDeniedDialog           REG_SZ         = {100B4FC8-74C1-470F-B1B7-DD7B6BAE79BD}
+    ActiveSetupDisabled          REG_DWORD      = 0
+    ActiveSetupTaskOverride      REG_DWORD      = 1
+    AsyncRunOnce                 REG_DWORD      = 1
+    AsyncUpdatePCSettings        REG_DWORD      = 1
+    DisableAppInstallsOnFirstLogon REG_DWORD      = 1
+    DisableResolveStoreCategories REG_DWORD      = 1
+    DisableUpgradeCleanup        REG_DWORD      = 1
+    EarlyAppResolverStart        REG_DWORD      = 1
+    FileOpenDialog               REG_SZ         = {DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7}
+    FSIASleepTimeInMs            REG_DWORD      = 60000
+    GlobalFolderSettings         REG_SZ         = {EF8AD2D1-AE36-11D1-B2D2-006097DF8C11}
+    IconUnderline                REG_DWORD      = 2
+    ListViewPopupControl         REG_SZ         = {8be9f5ea-e746-4e47-ad57-3fb191ca1eed}
+    LVPopupSearchControl         REG_SZ         = {fccf70c8-f4d7-4d8b-8c17-cd6715e37fff}
+    MachineOobeUpdates           REG_DWORD      = 1
+    NoWaitOnRoamingPayloads      REG_DWORD      = 1
+    OpenFolderInNewTab           REG_DWORD      = 1
+    ShowRecommendations          REG_DWORD      = 1
+    TaskScheduler                REG_SZ         = {0f87369f-a4e5-4cfc-bd3e-73e6154572dd}
+    GlobalAssocChangedCounter    REG_DWORD      = 73
+    LayoutXMLPath                REG_SZ         = C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\TaskbarLayoutModification.xml
+
+########## B. 全盘搜索 LowLevelHooksTimeout（含 HKLM 各处） ##########
+  HKEY_CURRENT_USER 搜索失败: embedded null character
+  HKEY_LOCAL_MACHINE 搜索失败: embedded null character
+
+########## C. 其它经典「游戏优化」项（这些会直接损害输入/前台响应） ##########
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile
+  子键=1  值=2  该键最后一次写入=2026-04-25 14:42:42
+    NetworkThrottlingIndex       REG_DWORD      = 4294967295
+    SystemResponsiveness         REG_DWORD      = 20
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl
+  子键=0  值=3  该键最后一次写入=2026-09-01 07:54:41
+    ConvertibleSlateMode         REG_DWORD      = 0
+    Win32PrioritySeparation      REG_DWORD      = 2
+    Win32PrioritySeparation_bak  REG_DWORD      = 2
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management
+  子键=2  值=17  该键最后一次写入=2026-09-24 06:07:22
+    ClearPageFileAtShutdown      REG_DWORD      = 0
+    DisablePagingExecutive       REG_DWORD      = 0
+    HotPatchTableSize            REG_DWORD      = 4096
+    LargeSystemCache             REG_DWORD      = 0
+    NonPagedPoolQuota            REG_DWORD      = 0
+    NonPagedPoolSize             REG_DWORD      = 0
+    PagedPoolQuota               REG_DWORD      = 0
+    PagedPoolSize                REG_DWORD      = 0
+    PagingFiles                  REG_MULTI_SZ   = ['?:\\pagefile.sys']
+    SecondLevelDataCache         REG_DWORD      = 0
+    SessionPoolSize              REG_DWORD      = 4
+    SessionViewSize              REG_DWORD      = 48
+    SystemPages                  REG_DWORD      = 0
+    PhysicalAddressExtension     REG_DWORD      = 1
+    FeatureSettings              REG_DWORD      = 0
+    PagefileUsage                REG_BINARY     = <964 bytes>
+    ExistingPageFiles            REG_MULTI_SZ   = ['\\??\\C:\\pagefile.sys']
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Executive
+  子键=0  值=3  该键最后一次写入=2026-09-20 06:41:33
+    AdditionalCriticalWorkerThreads REG_DWORD      = 0
+    AdditionalDelayedWorkerThreads REG_DWORD      = 0
+    UuidSequenceNumber           REG_DWORD      = 2143545
+
+########## D. 谁在开机自启（Run 项里找优化/外设/远程控制软件） ##########
+==============================================================================
+KEY  HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run
+  子键=1  值=14  该键最后一次写入=2026-09-14 12:09:05
+    AB Download Manager          REG_SZ         = "C:\Users\MadeSpark\AppData\Local\ABDownloadManager\ABDownloadManager.exe" --background
+    TieTie                       REG_SZ         = D:\TieTie\TieTie.exe --AutoStart
+    GameViewer                   REG_SZ         = "E:\Program Files\Netease\GameViewer\GameViewer.exe" --auto-run
+    AudioRelay                   REG_SZ         = "D:\Tools\AudioRelay\AudioRelay.exe" --minimized
+    Weixin                       REG_SZ         = "D:\Weixin\Weixin.exe" -autorun
+    SmartConnect                 REG_SZ         = "C:\Program Files\Lenovo\Ready For Assistant\SmartConnect.exe" /mode:background /startup
+    Steam                        REG_SZ         = "E:\Steam\steam.exe" -silent
+    AutoLauncher                 REG_SZ         = C:\112\自动解锁Shapr.exe
+    MuMuPlayerService            REG_SZ         = E:\MuMuPlayer\nx_main\MuMuNxService.exe
+    LocalSend                    REG_SZ         = "D:\Tools\LocalSend\localsend_app.exe" --hidden
+    Parsec.App.0                 REG_SZ         = C:\Program Files\Parsec\parsecd.exe app_silent=1
+    RemoteGUI                    REG_SZ         = "D:\Tools\Rclone-GUI\RemoteGUI.exe" --minimized
+    RcloneGUI                    REG_SZ         = "D:\Tools\Rclone-GUI\RcloneGUI.exe" --minimized
+    WorkBuddy.WorkBuddy          REG_SZ         = D:\Tools\WorkBuddy\WorkBuddy.exe
+==============================================================================
+KEY  HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+  子键=1  值=3  该键最后一次写入=2026-04-25 13:18:43
+    SecurityHealth               REG_EXPAND_SZ  = %windir%\system32\SecurityHealthSystray.exe
+    RtkAudUService               REG_SZ         = "C:\WINDOWS\System32\DriverStore\FileRepository\realtekservice.inf_amd64_9366beb5d0043df3\RtkAudUService64.exe" -background
+    sysdiag                      REG_SZ         = "C:\Program Files\Huorong\Sysdiag\bin\hipstray.exe"

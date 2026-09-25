@@ -1,0 +1,49 @@
+{
+ "exe": "C:\\Users\\MadeSpark\\Desktop\\测试\\re\\mbkit_mem\\demo_run2\\内嵌窗口测试.exe",
+ "steps": [
+  {
+   "tag": "01_initial",
+   "alive": null,
+   "w": 803,
+   "h": 569,
+   "nonwhite": 446872,
+   "total": 457476,
+   "contentRight": 784,
+   "contentBottom": 488,
+   "bmp": "max_01_initial.bmp"
+  },
+  {
+   "tag": "02_maximized",
+   "alive": null,
+   "w": 1723,
+   "h": 1035,
+   "nonwhite": 1784336,
+   "total": 1784340,
+   "contentRight": 1704,
+   "contentBottom": 952,
+   "bmp": "max_02_maximized.bmp"
+  },
+  {
+   "tag": "03_restored",
+   "alive": null,
+   "w": 803,
+   "h": 569,
+   "nonwhite": 457472,
+   "total": 457476,
+   "contentRight": 792,
+   "contentBottom": 488,
+   "bmp": "max_03_restored.bmp"
+  },
+  {
+   "tag": "04_resized1000x700",
+   "alive": null,
+   "w": 1000,
+   "h": 700,
+   "nonwhite": 699996,
+   "total": 700000,
+   "contentRight": 980,
+   "contentBottom": 652,
+   "bmp": "max_04_resized1000x700.bmp"
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+﻿{
+    "Class": "窗口程序集_测试窗口",
+    "Comment": "在程序启动后自动调入本窗口",
+    "Controls": [
+        {
+            "Children": [],
+            "Comment": "",
+            "Cursor": "00000000",
+            "DataType": "窗口",
+            "Disable": false,
+            "ExtensionData": "060000000100000001000000000000FF010000000100000001000000010000000100000000000000000000000100000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "Height": 569,
+            "Left": 50,
+            "Name": "",
+            "Tag": "",
+            "Top": 50,
+            "UnknownBeforeEvents": 0,
+            "UnknownBeforeExtensionData": "0000000000000000000000000000000000000000",
+            "UnknownBeforeLeft": 99687824,
+            "UnknownBeforeName": "0000000000000000000000000000000000000000",
+            "UnknownBeforeParent": 0,
+            "UnknownBeforeVisible": 0,
+            "Visible": true,
+            "Width": 803
+        },
+        {
+            "Children": [],
+            "Comment": "",
+            "Cursor": "00000000",
+            "DataType": "图片框",
+            "Disable": false,
+            "ExtensionData": "",
+            "Height": 100,
+            "Left": 0,
+            "Name": "图片框1",
+            "Tag": "",
+            "Top": 0,
+            "UnknownBeforeEvents": 0,
+            "UnknownBeforeExtensionData": "0000000000000000000000000000000000000000",
+            "UnknownBeforeLeft": 99684416,
+            "UnknownBeforeName": "0000000000000000000000000000000000000000",
+            "UnknownBeforeParent": 0,
+            "UnknownBeforeVisible": 0,
+            "Visible": true,
+            "Width": 120
+        }
+    ],
+    "Id": 1375797249,
+    "Menus": [],
+    "Name": "测试窗口",
+    "UnknownAfterId": 42815264,
+    "UnknownBeforeClass": 0
+}

@@ -1,0 +1,21 @@
+﻿.版本 2
+
+.DLL命令 _P_LoadLibraryA, 整数型, "kernel32.dll", "LoadLibraryA"
+    .参数 _参数1, 文本型
+
+.DLL命令 _P_SetNodePath, 整数型, "MbKit.dll", "MbKit_SetNodePath"
+    .参数 _参数1, 文本型
+
+.DLL命令 _P_ConfigNodePath, 整数型, "MbKit.dll", "MbKit_ConfigNodePath"
+
+.DLL命令 _P_KernelPath, 整数型, "MbKit.dll", "MbKit_KernelPath"
+
+.DLL命令 _P_KernelLoaded, 整数型, "MbKit.dll", "MbKit_KernelLoaded"
+
+.DLL命令 _P_Diag, 整数型, "MbKit.dll", "MbKit_Diag"
+
+.DLL命令 _P_wkeIsInitialize, 字节型, "MbKit.dll", "@wkeIsInitialize"
+
+.DLL命令 _P_wkeInitialize, , "MbKit.dll", "@wkeInitialize"
+
+.DLL命令 _P_wkeGetVersion, 整数型, "MbKit.dll", "@wkeGetVersion"

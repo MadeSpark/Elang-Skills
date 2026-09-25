@@ -1,0 +1,38 @@
+﻿=== 1. 当前 e.exe 实例（内存/句柄/线程） ===
+  pid=75448  WS=12MB  Private=176MB  VM=558MB  Handles=512  Threads=25  start=09-24 10:56  title=AILI·LIFE - D:\DevelopmentFolder\插件开发目录\E\插件\AILI·LIFE\AILI·LIFE.e [无编译条件] - Windows动态链接库 - [程序集: 主程序集]
+  pid=136508  WS=116MB  Private=240MB  VM=748MB  Handles=962  Threads=35  start=09-24 01:12  title=XiaoLiZi_Adapter - D:\DevelopmentFolder\插件开发目录\E\插件\框架-栗子兼容计划\小栗子虚拟机\栗子适配器[3.1.x]_e2ee.e [无编译条件] - Windows窗口程序 - [程序集: E2EE服务端]
+
+=== 2. 系统内存 / 页面文件 ===
+  物理内存 总=32544MB  可用=14654MB
+  提交内存 已用=59168MB  上限=68022MB
+  页面文件 C:\pagefile.sys 已分配=26624MB 当前=4540MB 峰值=6005MB
+  AvailableMBytes=14535  PagesPerSec=0  PageFaultsPerSec=37731  PageReadsPerSec=0  NonpagedPoolMB=6387
+
+=== 3. 磁盘类型 / 队列 ===
+  物理盘 UMIS RPEYJ1T24MLR1HWQ  MediaType=SSD  BusType=NVMe  Size=954GB
+  物理盘 UMIS RPJYJ1T24RLS1QWY  MediaType=SSD  BusType=NVMe  Size=954GB
+  0 C: D:  AvgDiskQueueLength=0  %DiskTime=0  DiskReadsPerSec=0
+  1 E:  AvgDiskQueueLength=0  %DiskTime=0  DiskReadsPerSec=0
+
+=== 4. 全局低级钩子超时设置（HKCU\Control Panel\Desktop） ===
+  LowLevelHooksTimeout = 25000
+  ForegroundLockTimeout = 0
+  HungAppTimeout = (未设置=系统默认)
+  WaitToKillAppTimeout = (未设置=系统默认)
+  AutoEndTasks = (未设置=系统默认)
+  MenuShowDelay = 400
+
+=== 5. Defender / 杀软 ===
+  RealTimeProtection=True  AntivirusEnabled=True  BehaviorMonitor=True  IoavProtection=True  AMRunningMode=Normal
+  ExclusionPath = N/A: Must be an administrator to view exclusions
+  ExclusionProcess = N/A: Must be an administrator to view exclusions
+  注册杀软: Windows Defender  state=0x61100
+
+=== 6. lzolhelp64 / lzolhelp 的归属 ===
+  C:\Program Files (x86)\Lenovo\LegionZone\2.0.28.8182\lzolhelp64.dll  311KB  2026-08-20  ver=1.0.8.6231  company=Lenovo  desc=Lzolhelper
+  C:\Program Files (x86)\Lenovo\LegionZone\2.0.28.8182\lzolhelp64.exe  307KB  2026-08-20  ver=1.0.8.6221  company=Lenovo  desc=LzolHelper
+  C:\Program Files (x86)\Lenovo\LegionZone\2.0.29.9155\lzolhelp64.dll  312KB  2026-09-15  ver=1.0.8.6231  company=Lenovo  desc=Lzolhelper
+  C:\Program Files (x86)\Lenovo\LegionZone\2.0.29.9155\lzolhelp64.exe  307KB  2026-09-15  ver=1.0.8.6221  company=Lenovo  desc=LzolHelper
+
+=== 7. explorer.exe 里加载的非微软模块 ===
+

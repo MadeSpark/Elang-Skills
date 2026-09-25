@@ -1,0 +1,70 @@
+﻿=== 一、Application Hang（id 1002）全部 10 条原始信息 ===
+[2026-09-15 17:42:14]
+   程式 搞机工具箱v9.exe 版本 9.9.0.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-12 01:36:48]
+   程式 萌尘框架-mcif.exe 版本 1.3.0.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-12 01:31:04]
+   程式 萌尘框架-mcif.exe 版本 1.3.0.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-10 15:38:59]
+   程式 SubtitleEdit.exe 版本 4.0.13.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-05 11:44:53]
+   程式 SystemSettings.exe 版本 10.0.26100.7920 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-01 22:32:48]
+   程式 dllhost.exe 版本 10.0.26100.7705 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-09-01 22:03:26]
+   程式 ATNFC_Reader_2026.08.16.001.exe 版本 2026.8.16.1 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-08-22 14:49:46]
+   程式 小栗子虚拟机.exe 版本 1.0.0.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-08-20 13:14:01]
+   程式 dllhost.exe 版本 10.0.26100.7705 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+[2026-08-17 13:56:26]
+   程式 CrossDeviceService.exe 版本 1.26062.105.0 已停止與 Windows 互動，且已關閉。若要查看是否可使用此問題的詳細資訊，請檢查 [安全性與維護控制台] 中的問題歷程記錄。 | 
+
+=== 二、Application Error 里故障模块统计（近 180 天，全部 71 条按模块归并） ===
+   13 x  e.exe @ ntdll.dll
+   5 x  VPet-Simulator.Windows.exe @ ntdll.dll
+   5 x  svchost.exe_FrameServer @ ntdll.dll
+   4 x  小栗子虚拟机.exe @ ntdll.dll
+   3 x  Photoshop.exe @ ntdll.dll
+   3 x  bambu-studio.exe @ BambuStudio.dll
+   2 x  nvcontainer.exe @ nvcontainer.exe
+   2 x  远程桌面管理2.0.exe @ unknown
+   2 x  e.exe @ CeTools.dll
+   1 x  XiaoLiZi_Adapter.exe @ unknown
+   1 x  EDV6BE2.tmp @ unknown
+   1 x  EDV8258.tmp @ unknown
+   1 x  b1-Win64-Shipping.exe @ crashhandler64.dll
+   1 x  EDV3AD1.tmp @ unknown
+   1 x  explorer.exe @ ieframe.dll_unloaded
+   1 x  EDV9F74.tmp @ krnln.fne
+   1 x  小栗子虚拟机.exe @ unknown
+   1 x  图吧工具箱2025.exe @ unknown
+   1 x  SmartEngineHostN64.exe @ ntdll.dll
+   1 x  EDVCBB7.tmp @ krnln.fne
+   1 x  YuanShen.exe @ ntdll.dll
+   1 x  EDV9B23.tmp @ node.dll_unloaded
+   1 x  ResScheduler.exe @ ResScheduler.exe
+   1 x  IntelGraphicsSoftware.Service.exe @ KERNELBASE.dll
+   1 x  python.exe @ Qt6Core.dll
+   1 x  EDV8DE3.tmp @ node.dll_unloaded
+   1 x  EDV7762.tmp @ unknown
+   1 x  EDV27CF.tmp @ node.dll_unloaded
+   1 x  EDV8F28.tmp @ unknown
+   1 x  ATNFC_Reader_2026.08.16.001.exe @ KERNELBASE.dll
+   1 x  VPet-Simulator.Windows.exe @ KERNELBASE.dll
+   1 x  Explorer.EXE @ lzolhelp64.dll_unloaded
+   1 x  EDV9F3D.tmp @ node.dll_unloaded
+   1 x  EDV4976.tmp @ node.dll_unloaded
+   1 x  Explorer.EXE @ KERNELBASE.dll
+   1 x  EDV9A87.tmp @ unknown
+   1 x  EDV702F.tmp @ krnln.fne
+   1 x  EDV22FF.tmp @ unknown
+   1 x  svchost.exe_FrameServer @ frameserver.dll
+   1 x  EDVD676.tmp @ unknown
+   1 x  OpenConsole.exe @ ntdll.dll
+
+=== 三、explorer.exe 相关 WER 报告内容（最新 2 份 Report.wer 全文） ===
+---- AppCrash_Explorer.EXE_a1a25dbe26d71d17055390cccfcb3079eedef2_b3ed0291_9c89b396-dc86-4b5b-8a51-4d2582e3dd72  (2026-09-24 19:01) ----
+(无 Report.wer)
+
+

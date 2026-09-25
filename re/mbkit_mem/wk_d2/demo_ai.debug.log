@@ -1,0 +1,6 @@
+[20:35:25.754][=== COMPILE BEGIN ===] 
+[20:35:25.755][COMPILE-CHECK] enabled=1
+[20:35:25.780][PANEL-TAIL] BEFORE hwnd=0x003B0D58 class='ScintillaForEIDETools' | prev='◆正在加载插件...  ' | last=''
+[20:35:25.781][PANEL-TAIL] BEFORE hwnd=0x003C0690 class='Edit' | prev='◆正在加载插件...  ' | last=''
+[20:35:25.781][PANEL-TAIL] BEFORE hwnd=0x01CC02C0 class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[20:35:28.287][COMPILE-TRIGGER] send

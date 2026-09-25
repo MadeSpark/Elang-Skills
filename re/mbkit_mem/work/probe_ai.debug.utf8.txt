@@ -1,0 +1,14 @@
+[18:17:10.410][=== COMPILE BEGIN ===] 
+[18:17:10.410][COMPILE-CHECK] enabled=1
+[18:17:10.433][PANEL-TAIL] BEFORE hwnd=0x01E3195A class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[18:17:10.433][PANEL-TAIL] BEFORE hwnd=0x00061D58 class='ScintillaForEIDETools' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[18:17:10.434][PANEL-TAIL] BEFORE hwnd=0x00081D30 class='Edit' | prev='◆▲▲▲▲▲▲▲▲▲▲▲【加载完成】▲▲▲▲▲▲▲▲▲▲▲  ' | last=''
+[18:17:10.434][PANEL-TAIL] BEFORE hwnd=0x005B017E class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[18:17:12.942][COMPILE-TRIGGER] send
+[18:17:13.653][COMPILE-DIALOG-FAIL] no-edit-control
+[18:17:14.063][COMPILE-DIALOG-FAIL] no-edit-control
+[18:17:14.536][COMPILE-DIALOG-FAIL] set-path-failed
+[18:17:15.493][COMPILE-DIALOG] fill+confirm
+[18:17:16.306][COMPILE-DIALOG-FAIL] no-edit-control
+[18:17:16.611][COMPILE-OUT-SEEN] C:\Users\MadeSpark\Desktop\测试\re\mbkit_mem\static_out\probe.exe
+[18:17:17.074][COMPILE-TRIGGER-RET] handled=1

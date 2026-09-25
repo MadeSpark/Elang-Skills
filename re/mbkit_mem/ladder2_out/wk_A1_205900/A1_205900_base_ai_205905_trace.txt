@@ -1,0 +1,12 @@
+[20:59:16.595][tid=135116] ===== elang_addin loaded into e.exe (pid=135300) =====
+[20:59:16.595][tid=135116] LIBINFO state=0xE0000104 (LBS_IDE_PLUGIN=256) name='AI调试宿主' guid=7A1E4F22C3B0499E8D6A0011223344FE
+[20:59:16.596][tid=135116] LIBINFO pfnNotify=0x16CC5DF0
+[20:59:16.596][tid=135116] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[20:59:16.596][tid=135116] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[20:59:16.596][tid=109112] HIDEGUARD start (raw lp=0x00000002 mode=2; 1=park 2=hide)
+[20:59:16.597][tid=109112] HIDEGUARD timer resolution -> 5000 (x100ns)
+[20:59:16.598][tid=109112] HIDEGUARD after timer-resolve: mode=2 raw lp=0x00000002 (若与上面不同 = 栈已被破坏!)
+[20:59:16.600][tid=135116] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[20:59:16.600][tid=135116] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[20:59:16.601][tid=109112] HIDEGUARD hook create+show=0x404511BF move=0x05681011
+[20:59:16.604][tid=79188] HIDEGUARD cloak#1 cls='LayeredWindow' ex=0x000800A8

@@ -1,0 +1,11 @@
+[20:56:08.656][=== COMPILE BEGIN ===] 
+[20:56:08.656][COMPILE-CHECK] enabled=1
+[20:56:08.929][PANEL-TAIL] BEFORE hwnd=0x004006E6 class='ScintillaForEIDETools' | prev='◆正在加载插件...  ' | last=''
+[20:56:08.929][PANEL-TAIL] BEFORE hwnd=0x00650308 class='Edit' | prev='◆正在加载插件...  ' | last=''
+[20:56:08.930][PANEL-TAIL] BEFORE hwnd=0x006105CE class='Edit' | prev='    10、再下移一行光标后输入“fh (sz2)”。  ' | last=''
+[20:56:11.433][COMPILE-TRIGGER] send
+[20:56:12.333][COMPILE-DIALOG-FAIL] no-edit-control
+[20:56:12.845][COMPILE-DIALOG-FAIL] no-edit-control
+[20:56:12.997][COMPILE-DIALOG-FAIL] no-edit-control
+[20:56:13.593][COMPILE-DIALOG-FAIL] set-path-failed
+[20:56:14.263][COMPILE-DIALOG] fill+confirm

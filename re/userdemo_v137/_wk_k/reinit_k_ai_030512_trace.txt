@@ -1,0 +1,501 @@
+[03:05:18.769][tid=46752] ===== elang_addin loaded into e.exe (pid=3004) =====
+[03:05:18.770][tid=46752] LIBINFO state=0xE0000104 (LBS_IDE_PLUGIN=256) name='AIµ÷ÊÔËÞÖ÷' guid=7A1E4F22C3B0499E8D6A0011223344FE
+[03:05:18.771][tid=46752] LIBINFO pfnNotify=0x516A5DF0
+[03:05:18.772][tid=46752] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[03:05:18.773][tid=46752] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[03:05:18.773][tid=46124] HIDEGUARD start (raw lp=0x00000002 mode=2; 1=park 2=hide)
+[03:05:18.774][tid=46124] HIDEGUARD timer resolution -> 5000 (x100ns)
+[03:05:18.775][tid=46124] HIDEGUARD after timer-resolve: mode=2 raw lp=0x00000002 (ÈôÓëÉÏÃæ²»Í¬ = Õ»ÒÑ±»ÆÆ»µ!)
+[03:05:18.777][tid=37840] HIDEGUARD cloak#1 cls='LayeredWindow' ex=0x000800A8
+[03:05:18.777][tid=46124] HIDEGUARD hook create+show=0x03001515 move=0x00D815C5
+[03:05:18.781][tid=37840] HIDEGUARD cloak#2 cls='GDI+ Hook Window Class' ex=0x00000000
+[03:05:18.830][tid=46752] NOTIFY nMsg=1 (0x1) p1=0x00467FF0 p2=0x00000000
+[03:05:18.830][tid=46752] HOOK NL_SYS_NOTIFY_FUNCTION -> PFN_NOTIFY_SYS=0x00467FF0 (overwritten)
+[03:05:40.582][tid=37840] HIDEGUARD cloak#3 cls='tooltips_class32' ex=0x00000080
+[03:05:40.588][tid=46124] HIDEGUARD cloak#4 cls='ENewFrame' ex=0x00000110
+[03:05:40.590][tid=37840] HIDEGUARD cloak#5 cls='tooltips_class32' ex=0x00000080
+[03:05:40.681][tid=37840] HIDEGUARD cloak#6 cls='tooltips_class32' ex=0x00000080
+[03:05:40.686][tid=37840] HIDEGUARD cloak#7 cls='tooltips_class32' ex=0x00000080
+[03:05:40.689][tid=37840] HIDEGUARD cloak#8 cls='tooltips_class32' ex=0x00000080
+[03:05:40.693][tid=37840] HIDEGUARD cloak#9 cls='tooltips_class32' ex=0x00000080
+[03:05:40.704][tid=37840] HIDEGUARD cloak#10 cls='Afx:400000:0:10003:fc102037:0' ex=0x00000080
+[03:05:40.712][tid=37840] HIDEGUARD cloak#11 cls='tooltips_class32' ex=0x00000080
+[03:05:40.718][tid=37840] HIDEGUARD cloak#12 cls='tooltips_class32' ex=0x00000080
+[03:05:40.728][tid=37840] HIDEGUARD cloak#13 cls='tooltips_class32' ex=0x00000080
+[03:05:40.737][tid=37840] HIDEGUARD cloak#14 cls='tooltips_class32' ex=0x00000080
+[03:05:40.745][tid=37840] HIDEGUARD cloak#15 cls='tooltips_class32' ex=0x00000080
+[03:05:40.750][tid=37840] HIDEGUARD cloak#16 cls='tooltips_class32' ex=0x00000080
+[03:05:40.755][tid=37840] HIDEGUARD cloak#17 cls='_EL_HideOwner' ex=0x00000180
+[03:05:40.764][tid=37840] HIDEGUARD cloak#18 cls='_EL_HideOwner' ex=0x00000180
+[03:05:40.771][tid=37840] HIDEGUARD cloak#19 cls='ColorMade' ex=0x00000000
+[03:05:40.780][tid=37840] HIDEGUARD cloak#20 cls='ColorMade' ex=0x00000080
+[03:05:40.792][tid=37840] HIDEGUARD cloak#21 cls='Menulwy' ex=0x00000000
+[03:05:40.800][tid=37840] HIDEGUARD cloak#22 cls='Menulwy' ex=0x00000000
+[03:05:40.807][tid=37840] HIDEGUARD cloak#23 cls='tooltips_class32' ex=0x00000080
+[03:05:40.814][tid=37840] HIDEGUARD cloak#24 cls='Setfd' ex=0x00000000
+[03:05:40.823][tid=37840] HIDEGUARD cloak#25 cls='_EL_HideOwner' ex=0x00000180
+[03:05:40.825][tid=37840] HIDEGUARD cloak#26 cls='shadow_window' ex=0x000800A0
+[03:05:40.826][tid=37840] HIDEGUARD cloak#27 cls='ENewFrame' ex=0x00080130
+[03:05:40.831][tid=37840] HIDEGUARD cloak#28 cls='IME' ex=0x00000000
+[03:05:40.837][tid=37840] HIDEGUARD cloak#29 cls='MSCTFIME UI' ex=0x00000000
+[03:05:41.142][tid=46752] NOTIFY nMsg=18 (0x12) p1=0x00000000 p2=0x00000000
+[03:05:41.142][tid=46752] HOOK NL_IDE_READY (ai_mode=1)
+[03:05:41.143][tid=47048] WORKER start (hide-guard ÒÑÔÚ EnsureInit ÀïÆð£¬ÔçÓÚ±¾Ïß³ÌÔ¼ 5s)
+[03:05:41.143][tid=47048] STEP2 AI task param -> 'C:\Users\MadeSpark\Desktop\²âÊÔ\re\userdemo_v137\_wk_k\reinit_k_ai.e' (source=env:ELANG_AI_TASK)
+[03:05:41.144][tid=47048] STEP3 read-only probe begin
+[03:05:41.144][tid=47048] MACRO FN_COMPILE_AND_RUN = 0x05020002 (expect 0x05020002)
+[03:05:41.144][tid=47048] MACRO FN_END_RUN         = 0x05020003
+[03:05:41.145][tid=47048] MACRO FN_OPEN_FILE2      = 0x03010008 (expect 0x03010008)
+[03:05:41.145][tid=47048] MACRO FN_ADD_TAB         = 0x05030001 (expect 0x05030001)
+[03:05:41.145][tid=47048] MACRO FN_SWITCH_OUTPUT_BAR = 0x04020003 (expect 0x04020003)
+[03:05:41.146][tid=47048] MACRO FN_IS_FUNC_ENABLED = 0x05030004 (expect 0x05030004)
+[03:05:41.146][tid=47048] MACRO FN_STEP_INTO       = 0x05010001 (expect 0x05010001)
+[03:05:41.146][tid=47048] MACRO FN_SET_BREAK_POINTER = 0x05010006 (expect 0x05010006)
+[03:05:41.147][tid=47048] MACRO NL_SYS_NOTIFY_FUNCTION = 1 / NL_IDE_READY = 18 / NL_RIGHT_POPUP_MENU_SHOW = 19
+[03:05:41.147][tid=47048] MACRO LBS_IDE_PLUGIN = 0x100 / NES_GET_MAIN_HWND = 1 / NES_RUN_FUNC = 2
+[03:05:41.147][tid=47048] MACRO LIB_FORMAT_VER = 20000101
+[03:05:41.147][tid=47048] STruct sizeof(LIB_INFO)=144  offsetof m_dwState=48 m_nCmdCount=100 m_pCmdsFunc=108 m_pfnNotify=120 m_pLibConst=136
+[03:05:41.148][tid=47048] STruct sizeof(LIB_INFO2)=160 (LIB_INFO=144 + 4 ptrs)
+[03:05:41.149][tid=37840] HIDEGUARD cloak#30 cls='IME' ex=0x00000000
+[03:05:41.149][tid=37840] HIDEGUARD poll iter=1 enumMs=22375
+[03:05:41.150][tid=47048] PROBE NES_GET_MAIN_HWND -> hwnd=0x00D416C6 class='ENewFrame' visible=0 (expect class ENewFrame)
+[03:05:41.150][tid=47048] PROBE GetCommandLineA    = 'D:\ides\e\e.exe C:\Users\MadeSpark\Desktop\²âÊÔ\re\userdemo_v137\_wk_k\reinit_k_ai.e'
+[03:05:41.150][tid=47048] PROBE GetModuleFileNameA(nullptr) = 'D:\ides\e\e.exe'
+[03:05:41.151][tid=47048] PROBE FN_IS_FUNC_ENABLED table (nMsg=2 func=0x05030004):
+[03:05:41.151][tid=47048]    func 0x05020002 FN_COMPILE_AND_RUN           -> handled=1 enabled=1
+[03:05:41.152][tid=47048]    func 0x05020003 FN_END_RUN                   -> handled=1 enabled=0
+[03:05:41.152][tid=47048]    func 0x05020001 FN_COMPILE                   -> handled=1 enabled=1
+[03:05:41.152][tid=47048]    func 0x03010008 FN_OPEN_FILE2                -> handled=1 enabled=1
+[03:05:41.152][tid=47048]    func 0x05030001 FN_ADD_TAB                   -> handled=1 enabled=1
+[03:05:41.153][tid=47048]    func 0x04020003 FN_SWITCH_OUTPUT_BAR         -> handled=1 enabled=1
+[03:05:41.153][tid=47048]    func 0x05030004 FN_IS_FUNC_ENABLED           -> handled=1 enabled=1
+[03:05:41.153][tid=47048]    func 0x05010001 FN_STEP_INTO                 -> handled=1 enabled=0
+[03:05:41.153][tid=47048]    func 0x05010002 FN_STEP                      -> handled=1 enabled=0
+[03:05:41.154][tid=47048]    func 0x05010003 FN_STEP_OUT                  -> handled=1 enabled=0
+[03:05:41.154][tid=47048]    func 0x05010004 FN_RUN_TO_CURSOR             -> handled=1 enabled=1
+[03:05:41.154][tid=37840] HIDEGUARD cloak#31 cls='LayeredWindow' ex=0x000800A8
+[03:05:41.154][tid=47048]    func 0x05010006 FN_SET_BREAK_POINTER         -> handled=1 enabled=1
+[03:05:41.155][tid=47048]    func 0x05010007 FN_CLEAR_ALL_BREAK_POINTER   -> handled=1 enabled=1
+[03:05:41.155][tid=47048]    func 0x05010008 FN_SHOW_NEXT_STATMENT        -> handled=1 enabled=0
+[03:05:41.156][tid=47048]    func 0x0503000A FN_GET_PRG_TEXT              -> handled=1 enabled=1
+[03:05:41.156][tid=37840] HIDEGUARD cloak#32 cls='GDI+ Hook Window Class' ex=0x00080020
+[03:05:41.156][tid=47048]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[03:05:41.157][tid=37840] HIDEGUARD cloak#33 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.157][tid=47048]    func 0x01010042 FN_MOVE_CARET                -> handled=1 enabled=1
+[03:05:41.158][tid=47048]    func 0x0202006D FN_INSERT_TEXT               -> handled=1 enabled=1
+[03:05:41.158][tid=47048]    func 0x02020070 FN_PRE_COMPILE               -> handled=1 enabled=1
+[03:05:41.158][tid=47048]    func 0x05020005 FN_PUBLISH                   -> handled=1 enabled=1
+[03:05:41.159][tid=47048]    func 0x05020006 FN_COMPILE_STANDARD          -> handled=1 enabled=1
+[03:05:41.159][tid=37840] HIDEGUARD cloak#34 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.159][tid=47048]    func 0x05020007 FN_COMPILE_STATIC            -> handled=1 enabled=1
+[03:05:41.160][tid=47048]    func 0x05020008 FN_COMPILE_EPACKAGE          -> handled=1 enabled=1
+[03:05:41.160][tid=47048]    func 0x0502000D FN_COMPILE_WINDOWS_EXE       -> handled=1 enabled=1
+[03:05:41.160][tid=47048]    func 0x0502000E FN_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[03:05:41.160][tid=37840] HIDEGUARD cloak#35 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.161][tid=47048]    func 0x0502000F FN_COMPILE_WINDOWS_DLL       -> handled=1 enabled=1
+[03:05:41.161][tid=47048]    func 0x05020010 FN_COMPILE_WINDOWS_ECOM      -> handled=1 enabled=1
+[03:05:41.161][tid=47048]    func 0x05020011 FN_STATIC_COMPILE_WINDOWS_EXE -> handled=1 enabled=1
+[03:05:41.161][tid=47048]    func 0x05020012 FN_STATIC_COMPILE_WINDOWS_CONOLE_EXE -> handled=1 enabled=1
+[03:05:41.161][tid=47048]    func 0x05020013 FN_STATIC_COMPILE_WINDOWS_DLL -> handled=1 enabled=1
+[03:05:41.161][tid=37840] HIDEGUARD cloak#36 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.162][tid=47048]    func 0x02020037 FN_INSERT_NEW_WIN_FORM       -> handled=1 enabled=1
+[03:05:41.163][tid=47048]    func 0x02020055 FN_MENU_MODI                 -> handled=1 enabled=1
+[03:05:41.163][tid=37840] HIDEGUARD cloak#37 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.163][tid=47048]    func 0x0202003E FN_REMOVE_SPEC_UNIT          -> handled=1 enabled=1
+[03:05:41.164][tid=47048]    func 0x0202003F FN_MOVE_LEFT_ONE             -> handled=1 enabled=1
+[03:05:41.164][tid=37840] HIDEGUARD cloak#38 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.164][tid=47048]    func 0x02020040 FN_MOVE_RIGHT_ONE            -> handled=1 enabled=1
+[03:05:41.165][tid=47048]    func 0x02020041 FN_MOVE_UP_ONE               -> handled=1 enabled=1
+[03:05:41.165][tid=47048]    func 0x02020042 FN_MOVE_DOWN_ONE             -> handled=1 enabled=1
+[03:05:41.165][tid=47048]    func 0x02020043 FN_MOVE_LEFT_ONE_GRID        -> handled=1 enabled=1
+[03:05:41.165][tid=37840] HIDEGUARD cloak#39 cls='Afx:400000:0:10003:fc102037:0' ex=0x000800A0
+[03:05:41.166][tid=47048]    func 0x02020044 FN_MOVE_RIGHT_ONE_GRID       -> handled=1 enabled=1
+[03:05:41.166][tid=47048]    func 0x02020045 FN_MOVE_UP_ONE_GRID          -> handled=1 enabled=1
+[03:05:41.166][tid=37840] HIDEGUARD cloak#40 cls='tooltips_class32' ex=0x000800A0
+[03:05:41.167][tid=47048]    func 0x02020046 FN_MOVE_DOWN_ONE_GRID        -> handled=1 enabled=1
+[03:05:41.168][tid=47048]    func 0x02020047 FN_RESIZE_LEFT_ONE           -> handled=1 enabled=1
+[03:05:41.168][tid=47048]    func 0x02020048 FN_RESIZE_RIGHT_ONE          -> handled=1 enabled=1
+[03:05:41.168][tid=47048]    func 0x02020049 FN_RESIZE_UP_ONE             -> handled=1 enabled=1
+[03:05:41.169][tid=47048]    func 0x0202004A FN_RESIZE_DOWN_ONE           -> handled=1 enabled=1
+[03:05:41.169][tid=47048]    func 0x0202004B FN_RESIZE_LEFT_ONE_GRID      -> handled=1 enabled=1
+[03:05:41.169][tid=47048]    func 0x0202004C FN_RESIZE_RIGHT_ONE_GRID     -> handled=1 enabled=1
+[03:05:41.170][tid=47048]    func 0x0202004D FN_RESIZE_UP_ONE_GRID        -> handled=1 enabled=1
+[03:05:41.170][tid=47048]    func 0x0202004E FN_RESIZE_DOWN_ONE_GRID      -> handled=1 enabled=1
+[03:05:41.170][tid=47048]    func 0x0202004F FN_HORZ_CENTER               -> handled=1 enabled=1
+[03:05:41.171][tid=47048]    func 0x02020050 FN_VERT_CENTER               -> handled=1 enabled=1
+[03:05:41.171][tid=47048]    func 0x02020052 FN_UNIT_GO_TOP               -> handled=1 enabled=1
+[03:05:41.171][tid=47048]    func 0x02020053 FN_UNIT_GO_BOTTOM            -> handled=1 enabled=1
+[03:05:41.171][tid=47048]    func 0x0202007F FN_HORZ_UNIT_MIDDLE          -> handled=1 enabled=1
+[03:05:41.172][tid=47048]    func 0x02020080 FN_VERT_UNIT_MIDDLE          -> handled=1 enabled=1
+[03:05:41.172][tid=47048]    func 0x0202005D FN_LEFT_ALIGN                -> handled=1 enabled=1
+[03:05:41.173][tid=47048]    func 0x0202005E FN_TOP_ALIGN                 -> handled=1 enabled=1
+[03:05:41.173][tid=47048]    func 0x0202005F FN_RIGHT_ALIGN               -> handled=1 enabled=1
+[03:05:41.173][tid=47048]    func 0x02020060 FN_BOTTOM_ALIGN              -> handled=1 enabled=1
+[03:05:41.174][tid=47048]    func 0x02020061 FN_HORZ_MIDDLE               -> handled=1 enabled=1
+[03:05:41.174][tid=47048]    func 0x02020062 FN_VERT_MIDDLE               -> handled=1 enabled=1
+[03:05:41.174][tid=47048]    func 0x02020063 FN_HORZ_AVG                  -> handled=1 enabled=1
+[03:05:41.175][tid=47048]    func 0x02020064 FN_VERT_AVG                  -> handled=1 enabled=1
+[03:05:41.175][tid=47048]    func 0x02020065 FN_EQU_WIDTH                 -> handled=1 enabled=1
+[03:05:41.175][tid=47048]    func 0x02020066 FN_EQU_HEIGHT                -> handled=1 enabled=1
+[03:05:41.176][tid=47048]    func 0x02020067 FN_EQU_WIDTHHEIGHT           -> handled=1 enabled=1
+[03:05:41.176][tid=47048]    func 0x02020076 FN_LOCK_UNIT                 -> handled=1 enabled=1
+[03:05:41.176][tid=47048]    func 0x02020077 FN_UNLOCK_UNIT               -> handled=1 enabled=1
+[03:05:41.176][tid=47048]    func 0x0202006A FN_INSERT_NEW_CLASS_MOD      -> handled=1 enabled=1
+[03:05:41.177][tid=47048]    func 0x0202000F FN_INSERT_NEW_LOCAL_VAR      -> handled=1 enabled=1
+[03:05:41.177][tid=47048]    func 0x02020010 FN_INSERT_NEW_CONST_RES      -> handled=1 enabled=1
+[03:05:41.177][tid=47048]    func 0x02020011 FN_INSERT_NEW_PIC_RES        -> handled=1 enabled=1
+[03:05:41.178][tid=47048]    func 0x02020012 FN_INSERT_NEW_SOUND_RES      -> handled=1 enabled=1
+[03:05:41.178][tid=47048]    func 0x0202007E FN_INSERT_NEW_LONGTEXT       -> handled=1 enabled=1
+[03:05:41.178][tid=47048]    func 0x04020031 FN_GOTO_SPEC_UNIT_DATA_TYPE  -> handled=1 enabled=1
+[03:05:41.179][tid=47048]    func 0x04020032 FN_RELINK                    -> handled=1 enabled=1
+[03:05:41.179][tid=47048]    func 0x04020038 FN_EVA_DESIGNER              -> handled=1 enabled=1
+[03:05:41.179][tid=47048]    func 0x05030002 FN_GET_ACTIVE_WND_TYPE       -> handled=1 enabled=1
+[03:05:41.179][tid=47048]    func 0x05030003 FN_INPUT_ECOM                -> handled=1 enabled=1
+[03:05:41.180][tid=47048]    func 0x05030005 FN_CLIP_GET_EPRG_DATA_SIZE   -> handled=1 enabled=1
+[03:05:41.180][tid=47048]    func 0x05030006 FN_CLIP_GET_EPRG_DATA        -> handled=1 enabled=1
+[03:05:41.181][tid=47048]    func 0x05030007 FN_CLIP_SET_EPRG_DATA        -> handled=1 enabled=1
+[03:05:41.181][tid=47048]    func 0x05030008 FN_GET_CARET_ROW_INDEX       -> handled=1 enabled=1
+[03:05:41.181][tid=47048]    func 0x05030009 FN_GET_CARET_COL_INDEX       -> handled=1 enabled=1
+[03:05:41.181][tid=47048]    func 0x0503000B FN_GET_PRG_HELP              -> handled=1 enabled=1
+[03:05:41.182][tid=47048]    func 0x0503000C FN_GET_NUM_ECOM              -> handled=1 enabled=1
+[03:05:41.182][tid=47048]    func 0x0503000D FN_GET_ECOM_FILE_NAME        -> handled=1 enabled=1
+[03:05:41.182][tid=47048]    func 0x0503000E FN_GET_NUM_LIB               -> handled=1 enabled=1
+[03:05:41.182][tid=47048]    func 0x0503000F FN_GET_LIB_INFO_TEXT         -> handled=1 enabled=1
+[03:05:41.183][tid=47048]    func 0x02020087 FN_ADD_NEW_ECOM2             -> handled=1 enabled=1
+[03:05:41.183][tid=47048]    func 0x02020085 FN_INPUT_PRG2                -> handled=1 enabled=1
+[03:05:41.183][tid=47048]    func 0x02020071 FN_SET_AND_COMPILE_PRG_ITEM_TEXT -> handled=1 enabled=1
+[03:05:41.184][tid=47048]    func 0x02020086 FN_REPLACE_ALL2              -> handled=1 enabled=1
+[03:05:41.184][tid=47048]    func 0x02020036 FN_FORCE_PROCESS             -> handled=1 enabled=1
+[03:05:41.184][tid=47048]    func 0x04020033 FN_GOTO_LAST_MODI_PLACE      -> handled=1 enabled=0
+[03:05:41.184][tid=47048]    func 0x02020032 FN_UNDO                      -> handled=1 enabled=0
+[03:05:41.185][tid=47048]    func 0x02020033 FN_REDO                      -> handled=1 enabled=0
+[03:05:41.185][tid=47048] PROBE EnumChildWindows of main window begin:
+[03:05:41.188][tid=47048]   child#1 hwnd=0x00F01366 class='AfxControlBar42s' text='×´Ì¬¼Ð' rect=(-3,705,1694,1006) visible=0
+[03:05:41.195][tid=47048]   child#2 hwnd=0x001A159A class='Afx:400000:8:10003:900015:0' text='×´Ì¬¼Ð' rect=(0,831,1268,1019) visible=0
+[03:05:41.197][tid=47048]   child#3 hwnd=0x0025134C class='#32770' text='' rect=(17,837,1265,1016) visible=0
+[03:05:41.204][tid=47048]   child#4 hwnd=0x0010171C class='SysTabControl32' text='×´Ì¬¼ÐÓÒ±ß' rect=(17,837,17,837) visible=0
+[03:05:41.208][tid=47048]   child#5 hwnd=0x00131714 class='SysTabControl32' text='×´Ì¬¼Ð×ó±ß' rect=(17,837,17,837) visible=0
+[03:05:41.210][tid=47048]   child#6 hwnd=0x00101722 class='ScintillaForEIDETools' text='
+¡ï ÄÚÁª»ã±à²å¼þ:µ±Ç°Ò×ÓïÑÔ°æ±¾ [593] Ö§³Öµ±Ç°°æ±¾(¿ÉÒÔÔÚ²Ëµ¥ÖÐÑ¡Ôñ¡°¹¤¾ß->ÄÚÁª»ã±àÉèÖÃ¡±ÐÞ¸ÄÉèÖÃ; ×÷Õß: yecate qq: 869443499)
+¡ï µ±Ç°°æ±¾Îª v3.59(20250727) ¿ª·¢Î¬»¤²»Ò×, Èç¹û´Ë²å¼þ¶ÔÄã¿ª·¢ÓÐ°ïÖú,ÇëÔÞÖúÖ§³ÖÏÂ, Ð»Ð»!
+
+
+¡ô
+¨‹¨‹¨‹¨‹¨‹²å¼þÕýÔÚ¼ÓÔØÖÐ£¬Çë' rect=(18,837,18,837) visible=0
+[03:05:41.213][tid=47048]   child#7 hwnd=0x002214B0 class='Edit' text='¡ôÕýÔÚ¼ÓÔØ²å¼þ...
+' rect=(18,837,18,837) visible=0
+[03:05:41.215][tid=47048]   child#8 hwnd=0x0057149C class='Edit' text='--- ³ÌÐòµÄÊäÈë·½·¨£º
+    ÎªÁË±ãÓÚÊäÈë³ÌÐò£¬Ò×ÓïÑÔÄÚÖÃËÄÖÖÃû³ÆÊäÈë·¨£ºÊ×Æ´¡¢È«Æ´¡¢Ë«Æ´¡¢Ó¢ÎÄ¡£ÈýÖÖÆ´ÒôÊäÈë·¨¾ùÖ§³ÖÄÏ·½Òô¼°¶àÒô×Ö¡£Ê×Æ´ÊäÈë·¨¼°È«Æ´ÊäÈë·¨ÔÚÏµÍ³ÖÐ±»ºÏ²¢Îª¡°Ê×Æ´¼°È«Æ´ÊäÈë·¨¡±£¬ÏµÍ³×Ô¶¯ÅÐ±ðËùÊäÈëµÄÆ´ÒôÊÇÊ×Æ´·½Ê½»¹ÊÇÈ«Æ´·½Ê½¡£Ë«Æ´ÊäÈë·¨µÄ±àÂë' rect=(21,863,1255,1005) visible=0
+[03:05:41.223][tid=47048]   child#9 hwnd=0x006416E6 class='SysTreeView32' text='Tree1' rect=(21,863,1255,1005) visible=0
+[03:05:41.227][tid=47048]   child#10 hwnd=0x00580CE6 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[03:05:41.229][tid=47048]   child#11 hwnd=0x00AC16DE class='SysHeader32' text='' rect=(23,865,175,883) visible=0
+[03:05:41.230][tid=47048]   child#12 hwnd=0x001116F2 class='Static' text=' ' rect=(482,885,1255,906) visible=0
+[03:05:41.234][tid=47048]   child#13 hwnd=0x00111548 class='Edit' text='' rect=(433,908,1255,1005) visible=0
+[03:05:41.241][tid=47048]   child#14 hwnd=0x001716FA class='SysTreeView32' text='Tree1' rect=(21,863,431,1005) visible=0
+[03:05:41.248][tid=47048]   child#15 hwnd=0x003715F4 class='ComboBox' text='' rect=(433,863,1255,883) visible=0
+[03:05:41.249][tid=47048]   child#16 hwnd=0x001216F4 class='Button' text='Ð´Èë' rect=(433,885,477,906) visible=0
+[03:05:41.252][tid=47048]   child#17 hwnd=0x00131654 class='Static' text='--- ½öµ÷ÊÔÖÐ¶Ï×´Ì¬ÏÂÓÐÐ§ ---' rect=(21,863,1255,1005) visible=0
+[03:05:41.254][tid=47048]   child#18 hwnd=0x001916D0 class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[03:05:41.260][tid=47048]   child#19 hwnd=0x00420CE8 class='ListBox' text='' rect=(21,863,1255,1005) visible=0
+[03:05:41.265][tid=47048]   child#20 hwnd=0x000F1574 class='SysListView32' text='List1' rect=(21,863,1255,1005) visible=0
+[03:05:41.272][tid=47048]   child#21 hwnd=0x002616D4 class='SysTabControl32' text='Tab1' rect=(397,914,502,1006) visible=0
+[03:05:41.279][tid=47048]   child#22 hwnd=0x00221618 class='SysTabControl32' text='Tab1' rect=(20,840,1262,1013) visible=0
+[03:05:41.281][tid=47048]   child#23 hwnd=0x00271708 class='MDIClient' text='' rect=(343,97,1694,705) visible=0
+[03:05:41.290][tid=47048]   child#24 hwnd=0x0022170C class='CCustomTabCtrl' text='' rect=(0,43,0,43) visible=0
+[03:05:41.292][tid=47048]   child#25 hwnd=0x001A15CA class='AfxControlBar42s' text='²Ëµ¥Ìõ' rect=(-3,27,897,53) visible=0
+[03:05:41.299][tid=47048]   child#26 hwnd=0x00291706 class='ToolbarWindow32' text='¶ÔÆë¹¤¾ßÌõ' rect=(-147,384,210,409) visible=0
+[03:05:41.303][tid=47048]   child#27 hwnd=0x004016B6 class='ToolbarWindow32' text='±ê×¼¹¤¾ßÌõ' rect=(-3,27,897,48) visible=0
+[03:05:41.311][tid=47048]   child#28 hwnd=0x00151616 class='Afx:400000:b:10003:10:0' text='²Ëµ¥Ìõ' rect=(-2,43,1721,73) visible=0
+[03:05:41.316][tid=47048]   child#29 hwnd=0x005B0CF6 class='ToolbarWindow32' text='¶¨Î»¹¤¾ßÌõ' rect=(-5000,-4955,-4481,-4930) visible=0
+[03:05:41.318][tid=47048]   child#30 hwnd=0x001915A2 class='AfxControlBar42s' text='¹¤×÷¼Ð' rect=(-3,53,343,705) visible=0
+[03:05:41.322][tid=47048]   child#31 hwnd=0x001615DA class='Afx:400000:8:10003:900015:0' text='¹¤×÷Óë×´Ì¬×éºÏ¼Ð' rect=(84,1131,692,1135) visible=0
+[03:05:41.324][tid=47048]   child#32 hwnd=0x001E1498 class='Afx:400000:8:10003:900015:0' text='¹¤×÷¼Ð' rect=(-3,77,335,705) visible=0
+[03:05:41.331][tid=47048]   child#33 hwnd=0x0014163E class='#32770' text='' rect=(-3,77,335,705) visible=0
+[03:05:41.333][tid=47048]   child#34 hwnd=0x002416BC class='SysTabControl32' text='Tab1' rect=(-3,77,335,705) visible=0
+[03:05:41.336][tid=47048]   child#35 hwnd=0x009312F6 class='Afx:400000:b:10003:900015:0' text='' rect=(1,101,211,404) visible=0
+[03:05:41.340][tid=47048]   child#36 hwnd=0x002A1700 class='ComboBox' text='--- ÎÞ¶ÔÓ¦ÊÂ¼þ ---' rect=(1,405,211,425) visible=0
+[03:05:41.343][tid=47048]   child#37 hwnd=0x0037162A class='ComboBox' text='' rect=(1,81,211,101) visible=0
+[03:05:41.352][tid=47048]   child#38 hwnd=0x00BA1702 class='SysTreeView32' text='Tree1' rect=(1,81,211,425) visible=0
+[03:05:41.353][tid=47048]   child#39 hwnd=0x0025169C class='SysTreeView32' text='Tree1' rect=(-2,77,334,685) visible=0
+[03:05:41.356][tid=47048]   child#40 hwnd=0x00070CFA class='SysTabControl32' text='Tab1' rect=(12,172,198,306) visible=0
+[03:05:41.359][tid=47048]   child#41 hwnd=0x005515FA class='AfxControlBar42s' text='´°¿Ú×é¼þÏä' rect=(1707,94,1707,833) visible=0
+[03:05:41.361][tid=47048]   child#42 hwnd=0x0015162C class='Afx:400000:8:10003:900015:0' text='´°¿Ú×é¼þÏä' rect=(1716,118,1716,828) visible=0
+[03:05:41.367][tid=47048]   child#43 hwnd=0x001415F2 class='#32770' text='' rect=(1716,118,1716,828) visible=0
+[03:05:41.369][tid=47048]   child#44 hwnd=0x000B178C class='Button' text='»ù±¾×é¼þ2' rect=(1716,802,1716,822) visible=0
+[03:05:41.371][tid=47048]   child#45 hwnd=0x000D178E class='Button' text='»ù±¾×é¼þ1' rect=(1716,123,1716,143) visible=0
+[03:05:41.372][tid=47048]   child#46 hwnd=0x001B1632 class='SysTreeView32' text='Tree1' rect=(1733,148,1840,291) visible=0
+[03:05:41.373][tid=47048]   child#47 hwnd=0x00111720 class='SysTabControl32' text='' rect=(1722,137,1723,138) visible=0
+[03:05:41.374][tid=47048]   child#48 hwnd=0x000D1760 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.377][tid=47048]   child#49 hwnd=0x000B1762 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.380][tid=47048]   child#50 hwnd=0x000B1764 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.401][tid=47048]   child#51 hwnd=0x000B1766 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.404][tid=47048]   child#52 hwnd=0x000B1768 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.408][tid=47048]   child#53 hwnd=0x000B176A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.412][tid=47048]   child#54 hwnd=0x000B176C class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.414][tid=47048]   child#55 hwnd=0x000B176E class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.416][tid=47048]   child#56 hwnd=0x000A1770 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.417][tid=47048]   child#57 hwnd=0x000B1774 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.419][tid=47048]   child#58 hwnd=0x000F1776 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.421][tid=47048]   child#59 hwnd=0x00241778 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.425][tid=47048]   child#60 hwnd=0x000B177A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.427][tid=47048]   child#61 hwnd=0x000B177E class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.433][tid=47048]   child#62 hwnd=0x000F1782 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.434][tid=47048]   child#63 hwnd=0x000C1784 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.550][tid=47048]   child#64 hwnd=0x000A1786 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.554][tid=47048]   child#65 hwnd=0x000A1788 class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.556][tid=47048]   child#66 hwnd=0x000A178A class='Button' text='' rect=(1716,118,1716,118) visible=0
+[03:05:41.560][tid=47048]   child#67 hwnd=0x001316D2 class='Button' text='' rect=(1721,152,1749,180) visible=0
+[03:05:41.563][tid=47048]   child#68 hwnd=0x001B1734 class='Button' text='' rect=(1721,181,1749,209) visible=0
+[03:05:41.568][tid=47048]   child#69 hwnd=0x00231736 class='Button' text='' rect=(1721,210,1749,238) visible=0
+[03:05:41.571][tid=47048]   child#70 hwnd=0x000C1738 class='Button' text='' rect=(1721,239,1749,267) visible=0
+[03:05:41.576][tid=47048]   child#71 hwnd=0x000B173A class='Button' text='' rect=(1721,268,1749,296) visible=0
+[03:05:41.580][tid=47048]   child#72 hwnd=0x000B173C class='Button' text='' rect=(1721,297,1749,325) visible=0
+[03:05:41.584][tid=47048]   child#73 hwnd=0x0016173E class='Button' text='' rect=(1721,326,1749,354) visible=0
+[03:05:41.590][tid=47048]   child#74 hwnd=0x002A1740 class='Button' text='' rect=(1721,355,1749,383) visible=0
+[03:05:41.591][tid=47048]   child#75 hwnd=0x000D1742 class='Button' text='' rect=(1721,384,1749,412) visible=0
+[03:05:41.592][tid=47048]   child#76 hwnd=0x00111744 class='Button' text='' rect=(1721,413,1749,441) visible=0
+[03:05:41.596][tid=47048]   child#77 hwnd=0x00171746 class='Button' text='' rect=(1721,442,1749,470) visible=0
+[03:05:41.601][tid=47048]   child#78 hwnd=0x00111748 class='Button' text='' rect=(1721,471,1749,499) visible=0
+[03:05:41.608][tid=47048]   child#79 hwnd=0x000D174A class='Button' text='' rect=(1721,500,1749,528) visible=0
+[03:05:41.610][tid=47048]   child#80 hwnd=0x000A174C class='Button' text='' rect=(1721,529,1749,557) visible=0
+[03:05:41.617][tid=47048]   child#81 hwnd=0x000A174E class='Button' text='' rect=(1721,558,1749,586) visible=0
+[03:05:41.625][tid=47048]   child#82 hwnd=0x000E1750 class='Button' text='' rect=(1721,587,1749,615) visible=0
+[03:05:41.628][tid=47048]   child#83 hwnd=0x000B1752 class='Button' text='' rect=(1721,616,1749,644) visible=0
+[03:05:41.631][tid=47048]   child#84 hwnd=0x000B1754 class='Button' text='' rect=(1721,645,1749,673) visible=0
+[03:05:41.634][tid=47048]   child#85 hwnd=0x000B1756 class='Button' text='' rect=(1721,674,1749,702) visible=0
+[03:05:41.637][tid=47048]   child#86 hwnd=0x001A1758 class='Button' text='' rect=(1721,703,1749,731) visible=0
+[03:05:41.638][tid=47048]   child#87 hwnd=0x000C175C class='Button' text='' rect=(1721,732,1749,760) visible=0
+[03:05:41.639][tid=47048]   child#88 hwnd=0x000B175E class='Button' text='' rect=(1721,761,1749,789) visible=0
+[03:05:41.640][tid=47048]   child#89 hwnd=0x000F16DA class='ToolbarWindow32' text='' rect=(897,27,966,48) visible=0
+[03:05:41.640][tid=47048]   child#90 hwnd=0x001C14AE class='msctls_statusbar32' text='--- ³ÌÐòµÄÊäÈë·½·¨£º £ü  ÎªÁË±ãÓÚÊäÈë³ÌÐò£¬Ò×ÓïÑÔÄÚÖÃËÄÖÖÃû³ÆÊäÈë·¨£ºÊ×Æ´¡¢È«Æ´¡¢Ë«Æ´¡¢Ó¢ÎÄ¡£ÈýÖÖÆ´ÒôÊäÈë·¨¾ùÖ§³ÖÄÏ·½Òô¼°¶àÒô×Ö¡£Ê×Æ´ÊäÈë·¨¼°È«Æ´ÊäÈë·¨ÔÚÏµÍ³ÖÐ±»ºÏ²¢Îª¡°Ê×Æ´¼°È«Æ´ÊäÈë·¨¡±£¬ÏµÍ³×Ô¶¯ÅÐ±ðËùÊäÈëµÄÆ´ÒôÊÇÊ×Æ´·½Ê½»¹ÊÇÈ«Æ´·½Ê½¡£Ë«Æ´ÊäÈë·¨µÄ±àÂë¹' rect=(353,655,1684,675) visible=0
+[03:05:41.644][tid=47048]   child#91 hwnd=0x001008A0 class='msctls_progress32' text='' rect=(353,658,553,674) visible=0
+[03:05:41.646][tid=47048]   child#92 hwnd=0x00170CE4 class='Button' text='' rect=(1541,658,1557,674) visible=0
+[03:05:41.650][tid=47048]   child#93 hwnd=0x00210CF4 class='ComboBox' text='²âÊÔ´°¿Ú *' rect=(343,77,883,97) visible=0
+[03:05:41.656][tid=47048]   child#94 hwnd=0x0002192C class='ComboBox' text='²âÊÔ´°¿Ú' rect=(883,77,1694,97) visible=0
+[03:05:41.656][tid=47048] PROBE EnumChildWindows end: total=94
+[03:05:41.656][tid=47048] PROBE hide=2 -> ShowWindow(hwnd=0x00D416C6, SW_HIDE) (visible before=0)
+[03:05:41.659][tid=47048] PROBE hide=2 -> visible after=0
+[03:05:41.659][tid=47048] STEP3 read-only probe end
+[03:05:41.660][tid=47048] STEP4 skipped (ELANG_AI_RUN != 1)
+[03:05:41.661][tid=47048] COMPILE func=0x05020011 handled=1 enabled=1 delay=2500ms
+[03:05:42.757][tid=47048] RUN panel snapshot: 4 ¸öÎÄ±¾Àà×Ó´°¿Ú
+[03:05:42.757][tid=47048] RUN   panel[0] hwnd=0x00101722 class='ScintillaForEIDETools' len=399
+[03:05:42.757][tid=47048] RUN   panel[1] hwnd=0x002214B0 class='Edit' len=98
+[03:05:42.758][tid=47048] RUN   panel[2] hwnd=0x0057149C class='Edit' len=3906
+[03:05:42.758][tid=47048] RUN   panel[3] hwnd=0x00111548 class='Edit' len=0
+[03:05:42.759][tid=47048] RUN BEFORE hwnd=0x00101722 class='ScintillaForEIDETools' | prev='¡ô¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡¾¼ÓÔØÍê³É¡¿¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø  ' | last=''
+[03:05:42.759][tid=47048] RUN BEFORE hwnd=0x002214B0 class='Edit' | prev='¡ô¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡¾¼ÓÔØÍê³É¡¿¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø¡ø  ' | last=''
+[03:05:42.759][tid=47048] RUN BEFORE hwnd=0x0057149C class='Edit' | prev='    10¡¢ÔÙÏÂÒÆÒ»ÐÐ¹â±êºóÊäÈë¡°fh (sz2)¡±¡£  ' | last=''
+[03:05:42.771][tid=37840] HIDEGUARD cloak NewWindow try#1 style=0x84000000 ex=0x00000000 vis=0
+[03:05:42.776][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[03:05:42.791][tid=46124] HIDEGUARD evt NewWindow#1 event=0x8000 child=0 vis=0
+[03:05:42.791][tid=46124] HIDEGUARD cloak NewWindow try#2 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.792][tid=46124] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.793][tid=46124] HIDEGUARD evt NewWindow#2 event=0x8000 child=0 vis=0
+[03:05:42.793][tid=46124] HIDEGUARD cloak NewWindow try#3 style=0x86010000 ex=0x00000000 vis=0
+[03:05:42.799][tid=46124] HIDEGUARD cloak NewWindow OK (ex=0x00000000)
+[03:05:42.804][tid=46124] HIDEGUARD evt NewWindow#3 event=0x8000 child=0 vis=0
+[03:05:42.804][tid=46124] HIDEGUARD cloak NewWindow try#4 style=0x52000000 ex=0x00010000 vis=0
+[03:05:42.805][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.806][tid=46124] HIDEGUARD evt NewWindow#4 event=0x800B child=0 vis=0
+[03:05:42.807][tid=46124] HIDEGUARD cloak NewWindow try#5 style=0x52000000 ex=0x00010000 vis=0
+[03:05:42.807][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.811][tid=37840] HIDEGUARD cloak NewWindow try#6 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.812][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.835][tid=46124] HIDEGUARD evt NewWindow#5 event=0x8000 child=0 vis=0
+[03:05:42.835][tid=46124] HIDEGUARD cloak NewWindow try#7 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.836][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.836][tid=46124] HIDEGUARD evt NewWindow#6 event=0x800B child=0 vis=0
+[03:05:42.837][tid=46124] HIDEGUARD cloak NewWindow try#8 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.837][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.845][tid=37840] HIDEGUARD cloak NewWindow try#9 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.846][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.846][tid=46124] HIDEGUARD evt NewWindow#7 event=0x8000 child=0 vis=0
+[03:05:42.847][tid=46124] HIDEGUARD cloak NewWindow try#10 style=0x52000000 ex=0x00010000 vis=0
+[03:05:42.847][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.851][tid=46124] HIDEGUARD evt NewWindow#8 event=0x8000 child=0 vis=0
+[03:05:42.851][tid=46124] HIDEGUARD cloak NewWindow try#11 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.852][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.856][tid=46124] HIDEGUARD evt NewWindow#9 event=0x8000 child=0 vis=0
+[03:05:42.857][tid=46124] HIDEGUARD cloak NewWindow try#12 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.857][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.860][tid=37840] HIDEGUARD cloak NewWindow try#13 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.861][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.865][tid=46124] HIDEGUARD evt NewWindow#10 event=0x8000 child=0 vis=0
+[03:05:42.865][tid=46124] HIDEGUARD cloak NewWindow try#14 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.866][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.874][tid=46124] HIDEGUARD evt NewWindow#11 event=0x8000 child=0 vis=0
+[03:05:42.874][tid=46124] HIDEGUARD cloak NewWindow try#15 style=0x42000000 ex=0x00010000 vis=0
+[03:05:42.875][tid=46124] HIDEGUARD cloak NewWindow SKIPPED: ÊÇ×Ó´°¿Ú(WS_CHILD)
+[03:05:42.878][tid=46124] HIDEGUARD evt NewWindow#12 event=0x800B child=0 vis=0
+[03:05:42.879][tid=46124] HIDEGUARD cloak NewWindow try#16 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.880][tid=37840] HIDEGUARD cloak NewWindow try#17 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.880][tid=46124] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.881][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.881][tid=46124] HIDEGUARD evt NewWindow#13 event=0x8002 child=0 vis=0
+[03:05:42.882][tid=46124] HIDEGUARD cloak NewWindow try#18 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.883][tid=46124] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.884][tid=46124] HIDEGUARD evt NewWindow#14 event=0x800B child=0 vis=0
+[03:05:42.885][tid=46124] HIDEGUARD cloak NewWindow try#19 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.886][tid=46124] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.893][tid=37840] HIDEGUARD cloak NewWindow try#20 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.894][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.911][tid=37840] HIDEGUARD cloak NewWindow try#21 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.911][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.923][tid=37840] HIDEGUARD cloak NewWindow try#22 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.924][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.940][tid=37840] HIDEGUARD cloak NewWindow try#23 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.941][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.953][tid=37840] HIDEGUARD cloak NewWindow try#24 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.953][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.970][tid=37840] HIDEGUARD cloak NewWindow try#25 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.970][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.981][tid=37840] HIDEGUARD cloak NewWindow try#26 style=0x86010000 ex=0x00080020 vis=0
+[03:05:42.982][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:42.996][tid=37840] HIDEGUARD cloak NewWindow try#27 style=0x84000000 ex=0x00080020 vis=0
+[03:05:42.997][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.007][tid=37840] HIDEGUARD cloak NewWindow try#28 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.008][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.022][tid=37840] HIDEGUARD cloak NewWindow try#29 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.023][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.036][tid=37840] HIDEGUARD cloak NewWindow try#30 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.037][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.054][tid=37840] HIDEGUARD cloak NewWindow try#31 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.055][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.064][tid=37840] HIDEGUARD cloak NewWindow try#32 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.065][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.081][tid=37840] HIDEGUARD cloak NewWindow try#33 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.082][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.094][tid=37840] HIDEGUARD cloak NewWindow try#34 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.095][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.108][tid=37840] HIDEGUARD cloak NewWindow try#35 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.109][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.122][tid=37840] HIDEGUARD cloak NewWindow try#36 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.123][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.138][tid=37840] HIDEGUARD cloak NewWindow try#37 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.139][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.150][tid=37840] HIDEGUARD cloak NewWindow try#38 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.150][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.166][tid=37840] HIDEGUARD cloak NewWindow try#39 style=0x84000000 ex=0x00080020 vis=0
+[03:05:43.167][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:43.177][tid=37840] HIDEGUARD cloak NewWindow try#40 style=0x86010000 ex=0x00080020 vis=0
+[03:05:43.178][tid=37840] HIDEGUARD cloak NewWindow OK (ex=0x00080020)
+[03:05:45.260][tid=47048] COMPILE trigger 0x05020011 ...
+[03:05:46.118][tid=46124] HIDEGUARD iter=2000 evtAll=10459(C288 D10007 S4 L160) newWinEvt=14 evtAct=0 cloak=8214/0 acts=0
+[03:05:47.383][tid=46124] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[03:05:47.401][tid=46124] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[03:05:47.408][tid=46124] HIDEGUARD cloak FAILED cls='CicMarshalWndClass' err=87
+[03:05:47.414][tid=46124] HIDEGUARD cloak FAILED cls='Tablet Programmability Message Window' err=87
+[03:05:47.416][tid=46124] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[03:05:47.424][tid=36616] COMPILE save dialog has NO Edit control
+[03:05:47.903][tid=46124] HIDEGUARD cloak FAILED cls='UIAInvokeHelperWndClass' err=87
+[03:05:47.906][tid=46124] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[03:05:47.910][tid=46124] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[03:05:47.925][tid=36616] COMPILE save dialog has NO Edit control
+[03:05:48.042][tid=36616] COMPILE save dialog has NO Edit control
+[03:05:48.046][tid=46124] HIDEGUARD cloak FAILED cls='OleMainThreadWndClass' err=87
+[03:05:48.216][tid=46124] HIDEGUARD cloak FAILED cls='WorkerW' err=87
+[03:05:48.379][tid=37840] HIDEGUARD cloak FAILED cls='' err=1400
+[03:05:48.379][tid=46124] HIDEGUARD cloak FAILED cls='' err=1400
+[03:05:48.578][tid=36616] DLG-DUMP#4 hwnd=004018bc edits=1 combos=1 btns=3
+[03:05:48.579][tid=36616] DLG-DUMP   id=0     cls=DUIViewWndClassName par=#32770         en=1 vis=0 txt=''
+[03:05:48.579][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=DUIViewWndClassName en=1 vis=0 txt=''
+[03:05:48.579][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:48.580][tid=36616] DLG-DUMP   id=0     cls=NamespaceTreeControl par=CtrlNotifySink en=1 vis=0 txt='ÃüÃû¿Õég˜ä îÄ¿ä›¿ØÖÆí—'
+[03:05:48.580][tid=36616] DLG-DUMP   id=0     cls=Static           par=NamespaceTreeControl en=1 vis=0 txt='ÃüÃû¿Õég˜ä îÄ¿ä›¿ØÖÆí—'
+[03:05:48.580][tid=36616] DLG-DUMP   id=100   cls=SysTreeView32    par=NamespaceTreeControl en=1 vis=0 txt='žgÓ[´°¸ñ'
+[03:05:48.581][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:48.581][tid=36616] DLG-DUMP   id=1121  cls=SHELLDLL_DefView par=CtrlNotifySink en=1 vis=0 txt='ShellView'
+[03:05:48.581][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=SHELLDLL_DefView en=1 vis=0 txt=''
+[03:05:48.582][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:48.582][tid=36616] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[03:05:48.582][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:48.583][tid=36616] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[03:05:48.583][tid=36616] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:48.583][tid=36616] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt=''
+[03:05:48.583][tid=36616] DLG-DUMP   id=1001  cls=Edit             par=ComboBox       en=1 vis=0 txt=''
+[03:05:48.584][tid=36616] DLG-DUMP   id=1092  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:48.584][tid=36616] DLG-DUMP   id=1091  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:48.584][tid=36616] DLG-DUMP   id=1093  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:48.585][tid=36616] DLG-DUMP   id=1120  cls=ListBox          par=#32770         en=1 vis=0 txt=''
+[03:05:48.585][tid=36616] DLG-DUMP   id=1095  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:48.585][tid=36616] DLG-DUMP   id=1     cls=Button           par=#32770         en=1 vis=0 txt='´æ™n(&S)'
+[03:05:48.586][tid=36616] DLG-DUMP   id=2     cls=Button           par=#32770         en=1 vis=0 txt='È¡Ïû'
+[03:05:48.586][tid=36616] DLG-DUMP   id=1038  cls=Button           par=#32770         en=0 vis=0 txt='ÕfÃ÷(&H)'
+[03:05:48.587][tid=36616] DLG-DUMP   id=-1    cls=ScrollBar        par=#32770         en=1 vis=0 txt=''
+[03:05:48.587][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=#32770         en=1 vis=0 txt=''
+[03:05:48.587][tid=36616] DLG-DUMP   id=0     cls=WorkerW          par=#32770         en=1 vis=0 txt=''
+[03:05:48.588][tid=36616] DLG-DUMP   id=40965 cls=ReBarWindow32    par=WorkerW        en=1 vis=0 txt=''
+[03:05:48.588][tid=36616] DLG-DUMP   id=0     cls=TravelBand       par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.588][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=TravelBand     en=1 vis=0 txt='žgÓ[°´âo'
+[03:05:48.589][tid=36616] DLG-DUMP   id=0     cls=UpBand           par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.589][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=UpBand         en=1 vis=0 txt='ÉÏîlŽ§'
+[03:05:48.589][tid=36616] DLG-DUMP   id=41477 cls=Address Band Root par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.590][tid=36616] DLG-DUMP   id=0     cls=msctls_progress32 par=Address Band Root en=1 vis=0 txt=''
+[03:05:48.590][tid=36616] DLG-DUMP   id=0     cls=Breadcrumb Parent par=msctls_progress32 en=1 vis=0 txt=''
+[03:05:48.590][tid=36616] DLG-DUMP   id=1001  cls=ToolbarWindow32  par=Breadcrumb Parent en=1 vis=0 txt=''
+[03:05:48.590][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=msctls_progress32 en=1 vis=0 txt='¾WÖ·ÁÐ'
+[03:05:48.591][tid=36616] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.591][tid=36616] DLG-DUMP   id=0     cls=UniversalSearchBand par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.592][tid=36616] DLG-DUMP   id=0     cls=Search Box       par=UniversalSearchBand en=1 vis=0 txt=''
+[03:05:48.592][tid=36616] DLG-DUMP   id=0     cls=SearchEditBoxWrapperClass par=Search Box     en=1 vis=0 txt=''
+[03:05:48.592][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=SearchEditBoxWrapperClass en=1 vis=0 txt=''
+[03:05:48.593][tid=36616] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:48.593][tid=36616] COMPILE dlg Ã»ÓÐÈÎºÎºòÑ¡±à¼­¿ò
+[03:05:49.629][tid=36616] DLG-DUMP#5 hwnd=004018bc edits=1 combos=2 btns=4
+[03:05:49.630][tid=36616] DLG-DUMP   id=0     cls=DUIViewWndClassName par=#32770         en=1 vis=0 txt=''
+[03:05:49.630][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=DUIViewWndClassName en=1 vis=0 txt=''
+[03:05:49.630][tid=36616] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.631][tid=36616] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt=''
+[03:05:49.631][tid=36616] DLG-DUMP   id=1001  cls=Edit             par=ComboBox       en=1 vis=0 txt=''
+[03:05:49.631][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.632][tid=36616] DLG-DUMP   id=0     cls=NamespaceTreeControl par=CtrlNotifySink en=1 vis=0 txt='ÃüÃû¿Õég˜ä îÄ¿ä›¿ØÖÆí—'
+[03:05:49.632][tid=36616] DLG-DUMP   id=0     cls=Static           par=NamespaceTreeControl en=1 vis=0 txt='ÃüÃû¿Õég˜ä îÄ¿ä›¿ØÖÆí—'
+[03:05:49.632][tid=36616] DLG-DUMP   id=100   cls=SysTreeView32    par=NamespaceTreeControl en=1 vis=0 txt='žgÓ[´°¸ñ'
+[03:05:49.633][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.633][tid=36616] DLG-DUMP   id=1121  cls=SHELLDLL_DefView par=CtrlNotifySink en=1 vis=0 txt='ShellView'
+[03:05:49.634][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=SHELLDLL_DefView en=1 vis=0 txt=''
+[03:05:49.634][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.634][tid=36616] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[03:05:49.635][tid=36616] DLG-DUMP   id=0     cls=CtrlNotifySink   par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.635][tid=36616] DLG-DUMP   id=0     cls=ScrollBar        par=CtrlNotifySink en=1 vis=0 txt=''
+[03:05:49.635][tid=36616] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.636][tid=36616] DLG-DUMP   id=0     cls=Button           par=FloatNotifySink en=1 vis=0 txt=''
+[03:05:49.636][tid=36616] DLG-DUMP   id=0     cls=FloatNotifySink  par=DirectUIHWND   en=1 vis=0 txt=''
+[03:05:49.637][tid=36616] DLG-DUMP   id=0     cls=ComboBox         par=FloatNotifySink en=1 vis=0 txt='Windows¿ÉÖ´ÐÐÎÄ¼þ(*.exe)'
+[03:05:49.637][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=#32770         en=1 vis=0 txt=''
+[03:05:49.637][tid=36616] DLG-DUMP   id=1     cls=Button           par=#32770         en=1 vis=0 txt='´æ™n(&S)'
+[03:05:49.638][tid=36616] DLG-DUMP   id=2     cls=Button           par=#32770         en=1 vis=0 txt='È¡Ïû'
+[03:05:49.638][tid=36616] DLG-DUMP   id=-1    cls=ScrollBar        par=#32770         en=1 vis=0 txt=''
+[03:05:49.638][tid=36616] DLG-DUMP   id=1092  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:49.638][tid=36616] DLG-DUMP   id=1091  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:49.639][tid=36616] DLG-DUMP   id=1093  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:49.639][tid=36616] DLG-DUMP   id=1120  cls=ListBox          par=#32770         en=1 vis=0 txt=''
+[03:05:49.640][tid=36616] DLG-DUMP   id=1095  cls=Static           par=#32770         en=1 vis=0 txt=''
+[03:05:49.640][tid=36616] DLG-DUMP   id=1038  cls=Button           par=#32770         en=0 vis=0 txt='ÕfÃ÷(&H)'
+[03:05:49.640][tid=36616] DLG-DUMP   id=0     cls=WorkerW          par=#32770         en=1 vis=0 txt=''
+[03:05:49.640][tid=36616] DLG-DUMP   id=40965 cls=ReBarWindow32    par=WorkerW        en=1 vis=0 txt=''
+[03:05:49.641][tid=36616] DLG-DUMP   id=0     cls=TravelBand       par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.641][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=TravelBand     en=1 vis=0 txt='žgÓ[°´âo'
+[03:05:49.642][tid=36616] DLG-DUMP   id=0     cls=UpBand           par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.642][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=UpBand         en=1 vis=0 txt='ÉÏîlŽ§'
+[03:05:49.642][tid=36616] DLG-DUMP   id=41477 cls=Address Band Root par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.642][tid=36616] DLG-DUMP   id=0     cls=msctls_progress32 par=Address Band Root en=1 vis=0 txt=''
+[03:05:49.643][tid=36616] DLG-DUMP   id=0     cls=Breadcrumb Parent par=msctls_progress32 en=1 vis=0 txt=''
+[03:05:49.643][tid=36616] DLG-DUMP   id=1001  cls=ToolbarWindow32  par=Breadcrumb Parent en=1 vis=0 txt='Î»Ö·: C:\Users\MadeSpark\Desktop\²âÊÔ\re\mbkit_mem\out_mem'
+[03:05:49.643][tid=36616] DLG-DUMP   id=0     cls=ToolbarWindow32  par=msctls_progress32 en=1 vis=0 txt='¾WÖ·ÁÐ'
+[03:05:49.644][tid=36616] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.644][tid=36616] DLG-DUMP   id=0     cls=UniversalSearchBand par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.645][tid=36616] DLG-DUMP   id=0     cls=Search Box       par=UniversalSearchBand en=1 vis=0 txt=''
+[03:05:49.645][tid=36616] DLG-DUMP   id=0     cls=SearchEditBoxWrapperClass par=Search Box     en=1 vis=0 txt=''
+[03:05:49.645][tid=36616] DLG-DUMP   id=0     cls=DirectUIHWND     par=SearchEditBoxWrapperClass en=1 vis=0 txt=''
+[03:05:49.646][tid=36616] DLG-DUMP   id=0     cls=SeparatorBand    par=ReBarWindow32  en=1 vis=0 txt=''
+[03:05:49.646][tid=36616] COMPILE dlg ºòÑ¡ 2 ¸ö£¨´ÓÏÂÍùÉÏ£©:
+[03:05:49.647][tid=36616] COMPILE   #0 y=-31604  w=720   combo=1 txt=''
+[03:05:49.647][tid=36616] COMPILE   #1 y=-31949  w=392   combo=1 txt=''
+[03:05:49.721][tid=36616] COMPILE dlg ¼¸ºÎÑ¡ÖÐ #0£¨y=-31604 w=720£¬»Ø¶Á³É¹¦£©CDM=0
+[03:05:49.722][tid=36616] COMPILE fill ok: ¿Ø¼þÎÄ±¾='C:\Users\MadeSpark\Desktop\²âÊÔ\re\userdemo_v137\bin\reinit_k.exe'£¨ÆÚÍû 'C:\Users\MadeSpark\Desktop\²âÊÔ\re\userdemo_v137\bin\reinit_k.exe'£©
+[03:05:50.439][tid=46124] HIDEGUARD iter=4000 evtAll=11079(C462 D10079 S40 L498) newWinEvt=14 evtAct=0 cloak=15897/31 acts=0
+[03:05:50.654][tid=36616] COMPILE save dialog has NO Edit control
+[03:05:51.218][tid=36616] COMPILE output seen: C:\Users\MadeSpark\Desktop\²âÊÔ\re\userdemo_v137\bin\reinit_k.exe
+[03:05:52.537][tid=47048] COMPILE handled=1

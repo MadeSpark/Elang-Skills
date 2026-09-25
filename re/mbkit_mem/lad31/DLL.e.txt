@@ -1,0 +1,12 @@
+﻿.版本 2
+
+.DLL命令 参考_strlen, 整数型, "msvcrt.dll", "@strlen"
+    .参数 文本, 文本型
+
+.DLL命令 参考_strlen集, 整数型, "msvcrt.dll", "@strlen"
+    .参数 数据, 字节集
+
+.DLL命令 参考_memset, 整数型, "msvcrt.dll", "@memset"
+    .参数 目标, 整数型, 传址
+    .参数 值, 整数型
+    .参数 长度, 整数型

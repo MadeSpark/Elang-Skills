@@ -1,0 +1,10 @@
+﻿{
+    "MbKit": {
+        "Comment": "MbKit 宿主层（常驻转发 node.dll）。内嵌在此，首次运行时释放到磁盘并预载。",
+        "IsPublic": false
+    },
+    "Mapper": {
+        "Comment": "PE 手工映射器机器码（1840 B，运行时拷到 池+0x800）",
+        "IsPublic": false
+    }
+}
