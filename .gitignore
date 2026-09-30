@@ -6,16 +6,14 @@
 /.idea/
 /.git/
 
-# 发布区成品**必须入库**：四个 SKILL.md、使用说明、三个安装入口都只在这里手工维护，
-# 工程侧没有它们的源本 —— 不入库就是单点存储，丢了无法重建。
-# （skills/*/scripts|references|assets 是 tools/ docs/ src/ 的同步副本，
-#   verify-release.py 会断言它们与源本逐字节一致，所以入库还能顺带暴露「改完忘同步」。）
-# 曾经的坑：整目录忽略时，dist/ 里的分发包会与发布区内容悄悄漂移，而 git 完全看不见。
-#
-# 只忽略**发布附件本身**（打包好的压缩包）—— 这正是 bafd77e 那次提交的原本意图，
-# 当时把规则写成 `/Releases/`，连整个目录一起忽略了，属于误伤。
-/Releases/**/*.zip
-/Releases/**/*.tar.gz
+# ---------------------------------------------------------------------------
+# 发布区 Releases/ **不入库**：成品只通过 GitHub Release 附件分发（Elang-AiTools.zip），
+# 仓库不再携带这份成品副本（避免上游把成品与逆向中间物混在一起推送）。
+# 源本仍在工作区（tools/ docs/ src/ 与 Releases/ 本地目录都在），发布时现打压缩包上传为
+# Release 资产即可；skills/*/scripts|references|assets 与 tools/ docs/ src/ 的逐字节一致
+# 仍可用 tools/verify-release.py 在本地核验。
+# ---------------------------------------------------------------------------
+/Releases/
 
 # Python 运行产物
 __pycache__/

@@ -1,0 +1,10 @@
+RegisterRawInputDevices FAILED gle=87
+==== MOUSE SAMPLER START ==== baseline 5s -> testWindow 3s (close eIDE NOW) -> post 12s ====
+All times us offset from testStart. If max gap > 200ms appears in post or overlap bins => hooks holding mouse inputs.
+[BASELINE START 5s. Please move mouse continuously.]
+
+===== Mouse HID RAW INPUT Sampling BASELINE (5s, 100ms bins, us resolution) =====
+t(ms),samples_in_bin,max_inter_sample_gap_ms_in_bin
+ALERT_BASELINE: NO MOUSE INPUTS (did you move mouse during test?)
+
+[TEST WINDOW START 3s. Please NOW CLOSE eIDE while moving mouse continuously.]

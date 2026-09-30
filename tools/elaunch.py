@@ -657,13 +657,59 @@ def make_visible_startupinfo():
 # --------------------------------------------------------------------------- #
 # 主流程
 # --------------------------------------------------------------------------- #
+def preflight(e_dir: str, lib_dir: str, log_fn=print):
+    """启动前置健康检查（交接 2026-09-26「易语言 IDE 卡死」专项，红线 1/C.2）：
+
+    ① LowLevelHooksTimeout 不得 > 300（Windows 默认 300ms）。历史 AI 曾把它改成
+       25000，低级钩子一卡就能把全系统输入冻结 5-10 秒。>300 时自动删键值回滚
+       默认并大声打日志；键值不存在 = 默认，正常。
+    ② lib\\ 下残留 elang_addin.fne = 上次异常残留（严禁常驻），先删再启动。
+    幂等：只删违规项，其余一律不动。
+    """
+    # ① 注册表门禁
+    try:
+        import winreg
+        key_path = r"Control Panel\Desktop"
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0,
+                            winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as k:
+            try:
+                cur, _typ = winreg.QueryValueEx(k, "LowLevelHooksTimeout")
+            except OSError:
+                cur = None
+        if cur is not None and int(cur) > 300:
+            log_fn("!! LowLevelHooksTimeout=%s > 300（历史配置又改坏了，会冻键鼠），"
+                   "自动回滚为 Windows 默认 300ms" % cur)
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0,
+                                winreg.KEY_SET_VALUE | winreg.KEY_WOW64_64KEY) as k:
+                winreg.DeleteValue(k, "LowLevelHooksTimeout")
+            log_fn("!! 已删除 LowLevelHooksTimeout（重启/注销后对现有钩子生效）")
+    except Exception as _e:      # 门禁自身绝不阻断启动
+        log_fn("preflight[registry] 跳过: %s" % _e)
+    # ② 残留 fne 清理
+    try:
+        stray = os.path.join(lib_dir, LIB_FNAME)
+        if os.path.exists(stray):
+            try:
+                os.remove(stray)
+                log_fn("!! 已清理 lib\\ 下残留的 %s（严禁常驻，见卡死交接红线）" % LIB_FNAME)
+            except OSError:
+                log_fn("!! lib\\%s 残留且删除失败——请手动删除后重试" % LIB_FNAME)
+    except Exception as _e:
+        log_fn("preflight[fne] 跳过: %s" % _e)
+
+
 def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float = None,
             fne: str = None, home: str = None, tag: str = None, quiet: bool = False,
             compile_kind: str = None, expect_out: str = None,
-            check_only: bool = False, headless: str = "hide") -> dict:
+            check_only: bool = False, headless: str = None,
+            open_target: str = None) -> dict:
     # `precompile`（= FN_PRE_COMPILE）只做语法/语义静态检查：无产物、无保存框。
     pre_mode = (compile_kind == "precompile")
-    # 无头策略：park / shide / hide / off（见 WindowHider；默认 park —— 只有它不卡编译）
+    # 编译模式禁止默认启动两层隐藏守护链：其会并发改写 IDE 窗口，
+    # 大型 DLL 工程触发官方编译功能号时可能因此令 e.exe 访问冲突。
+    # 调试运行仍沿用 hide 默认；无头编译须由调用方显式声明。
+    if headless is None:
+        headless = "off" if compile_kind else "hide"
     if headless is True:
         headless = "park"
     elif headless is False:
@@ -673,6 +719,10 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     ai_e = os.path.abspath(ai_e)
     if not os.path.isfile(ai_e):
         raise SystemExit("找不到加壳后的 .e: %s" % ai_e)
+    if open_target:
+        open_target = os.path.abspath(open_target)
+        if not os.path.isfile(open_target):
+            raise SystemExit("找不到待打开的目标 .e: %s" % open_target)
 
     e_dir = resolve_home(home)
     e_exe = os.path.join(e_dir, "e.exe")
@@ -680,10 +730,17 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         raise SystemExit("在 %s 下找不到 e.exe" % e_dir)
     lib_dir = os.path.join(e_dir, "lib")
     dst_fne = os.path.join(lib_dir, LIB_FNAME)
+    preflight(e_dir, lib_dir)   # 红线1/C.2：注册表门禁 + 残留 fne 清理
 
     fne = os.path.abspath(fne or DEFAULT_FNE)
     if not os.path.isfile(fne):
         raise SystemExit("找不到支持库 .fne: %s（用 --fne 指定）" % fne)
+    # 仅清理本次投放的文件。已有同名文件表示上次异常残留或用户手动投放；
+    # 覆盖它可能掩盖问题，随后 finally 的删除更可能误删用户文件。
+    if os.path.exists(dst_fne):
+        raise SystemExit(
+            "检测到 lib\\%s 已存在；拒绝覆盖。请先将其移出 lib\\，确认普通 IDE "
+            "可正常启动/编译后，再运行无头工具。" % LIB_FNAME)
 
     if log is None:
         log = os.path.splitext(ai_e)[0] + ".debug.log"
@@ -725,6 +782,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     try:
         print("== elaunch ==")
         print("   ai.e    = %s" % ai_e)
+        if open_target:
+            print("   target  = %s" % open_target)
         print("   ELANG   = %s" % e_dir)
         print("   fne     = %s" % fne)
         print("   log     = %s" % log)
@@ -747,6 +806,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 "ELANG_AI_CAPTURE": log,
                 "ELANG_AI_HIDE": ("0" if hl_mode == "off" else hl_mode),
             })
+            if open_target:
+                env["ELANG_AI_OPEN_TARGET"] = open_target
         else:
             env.update({
                 "ELANG_AI_TRACE": trace,
@@ -1039,11 +1100,13 @@ def main():
                          "与 --compile precompile 同用时改走官方预编译（快但不可靠）")
     ap.add_argument("--expect-out", dest="expect_out",
                     help="编译模式下期望产物路径（出现即判成功并收尾）；--check 下可省略")
+    ap.add_argument("--open-target", dest="open_target",
+                    help="由已加壳引导工程加载 FNE 后，用官方 FN_OPEN_FILE2 打开的真实 .e")
     ap.add_argument("--visible", action="store_true", dest="visible",
                     help="排障用：**开着窗口**跑（等价 --headless off）")
     ap.add_argument("--headless", choices=["park", "shide", "hide", "off"],
-                    default="hide",
-                    help="无头策略（默认 hide）。hide=隐藏+移出屏幕（屏幕零窗口）；"
+                    default=None,
+                    help="窗口策略。编译默认 off，调试运行默认 hide；hide=隐藏+移出屏幕（屏幕零窗口）；"
                          "shide=同上但主窗口走 SW_HIDE 启动；park=只移出屏幕、保持可见；"
                          "off=显示窗口")
     ap.add_argument("--home", help="易语言安装目录（默认 $ELANG_HOME → 注册表）")
@@ -1061,7 +1124,8 @@ def main():
                          quiet=(a.quiet or a.as_json),
                          compile_kind=a.compile_kind, expect_out=a.expect_out,
                          check_only=a.check_only,
-                         headless=("off" if a.visible else a.headless))
+                         headless=("off" if a.visible else a.headless),
+                         open_target=a.open_target)
     except SystemExit as e:
         if a.as_json:
             print(json.dumps({"ok": False, "status": "error", "error": str(e)},

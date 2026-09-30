@@ -1,4 +1,0 @@
-
----STDERR---
-璇�娉曟��鏌ユ湭鑳藉畬鎴愶紙status=failed锛�
-  瀹屾暣闈㈡澘鏃ュ織锛圲TF-8 瑙嗗浘锛�: C:\Users\MadeSpark\Desktop\娴嬭瘯\re\mbkit_mem\chk_logs\wk_demo_win2_213647\demo_proj_base_ai.debug.utf8.txt

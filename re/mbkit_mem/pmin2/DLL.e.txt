@@ -1,4 +1,0 @@
-﻿.版本 2
-
-.DLL命令 参考_strlen, 整数型, "msvcrt.dll", "@strlen"
-    .参数 文本, 文本型

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- t2e 读取器（DeclParser / Importer）自检：直接链接源文件编译，不引用 QAQ.ETool.Core 工程 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>ImportCheck</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\QAQ.ETool.Core\Text\TextModel.cs" Link="Linked\TextModel.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\EJson.cs" Link="Linked\EJson.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\TextFiles.cs" Link="Linked\TextFiles.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\Layout.cs" Link="Linked\Layout.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\DeclParser.cs" Link="Linked\DeclParser.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\Importer.cs" Link="Linked\Importer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

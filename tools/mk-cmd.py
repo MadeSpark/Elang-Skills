@@ -87,7 +87,7 @@ if exist "%USERPROFILE%\.workbuddy\"       call :inst "%USERPROFILE%\.workbuddy\
 
 echo.
 echo 安装完成。在任意一个已安装的工具里新开对话，说「用易语言帮我写个程序」
-echo 或提到 e2txt，看技能是否被自动调起。
+echo 或提到 QAQ-ETool，看技能是否被自动调起。
 goto :done
 
 rem ======================= 子程序 =======================
@@ -100,6 +100,11 @@ if not exist "%DST%\" mkdir "%DST%" 2>nul
 echo   %LABEL%
 echo     安装到: %DST%
 for /d %%S in ("%SRC%\*") do call :one "%%~fS" "%%~nxS" "%DST%"
+rem 退役技能（e2txt-cli 已由 qaq-etool-cli 取代）：顺手删掉，技能市场装的不动
+if exist "%DST%\e2txt-cli\SKILL.md" if not exist "%DST%\e2txt-cli\_skillhub_meta.json" (
+  rd /s /q "%DST%\e2txt-cli"
+  echo     [移除] 退役技能 e2txt-cli
+)
 echo.
 endlocal
 goto :eof

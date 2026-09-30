@@ -12,7 +12,7 @@
 | 组件 | 说明 |
 |---|---|
 | `Releases/Elang-AiTools/skills/elang-ai-coding/` | **编码技能**：格式铁律、五种控制语句精确语义、Unicode/文本长度铁律、声明槽位总表、DLL cdecl、支持库命令查询、双次往返验证、GUI 项目产出。自包含（脚本/exe/规范全文都在包内）。**references 带四份专题**：置入代码与机器码、Win32 与 DLL 互操作、程序入口与编译验证、黑月编译与黑月界面类（搬运自 [aiqinxuancai/e-language-skill](https://github.com/aiqinxuancai/e-language-skill)，MIT，经本机实测修订） |
-| `Releases/Elang-AiTools/skills/e2txt-cli/` | **e2txt 命令行技能**：`.e` ⇄ 文本目录互转的参数与全部坑 |
+| `Releases/Elang-AiTools/skills/qaq-etool-cli/` | **转换技能**：自带 QAQ-ETool（命令行 `QAQ-ETool.exe` + 图形界面 `qaq-etool-gui.exe` + `qaq-libinfo.exe`），`.e` ⇄ 文本目录互转的参数、退出码与交付红线。其它三个技能的脚本都靠它转换，需同装 |
 | `Releases/Elang-AiTools/skills/elang-debug/` | **调试技能**：给 `.e` 加壳声明宿主库 → 程序化触发易语言 IDE 的「调试运行」→ 流式收调试框日志 → 输出结果 JSON（`ok`/`stopped`/`crashed`/`timeout`）。自包含（宿主库 `.fne` + 两个脚本都在包内） |
 | `Releases/Elang-AiTools/skills/elang-build/` | **无头编译技能**：不开 IDE 把 `.e` **静态编译**成原生 exe/dll——自家宿主库链路（`ecompile.py` 一条命令：加壳→触发官方 FNST_RUN 静态编译功能号→进程内自动填产物对话框→收尾自证，实测可用）；不依赖任何第三方工具。自包含 |
 | `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch`/`ecompile` 等工程脚本 |
@@ -45,7 +45,7 @@
 | `02-嵌套控制流压测/` | 最深 **5 层**嵌套：素数判断（`跳出循环`）、九九乘法表（`判断循环首 × 变量循环首`）、do-while（`循环判断首/尾`）+ `到循环尾` | rtcheck 一次通过 ✓；IDE 编译 32ms ✓；`ExitCode:0`；结果逐项核对正确 |
 | `03-Json解析测试/` | 用 yyJson（酷C版）模块的 `json对象` 做四组用例：RFC6901 路径取值（`地址/市`、`标签/0`）、`取对象/取数组` 参考参数接收、对象枚举、坏 JSON 错误捕捉 | echeck ✓、rtcheck 收敛 ✓；IDE 运行 ✓；四组用例全部通过，输出见 `示例输出_Json解析测试.txt` |
 
-每个 demo 目录下 `项目/` 都是**双击 `项目.etprj` 就能用 e2txt GUI 打开**的完整工程
+每个 demo 目录下 `项目/` 都是**把 `项目.etprj` 拖到 `qaq-etool-gui.exe` 上就能打开**的完整工程
 （文本源码在 `项目/代码/*.e.txt`，`项目/代码.e` 是可直接用易语言 IDE 打开的产物）。
 
 ## 快速开始
@@ -60,17 +60,46 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 # 3. 对话里直接说：「用易语言写一个……」，技能会被自动调起
 ```
 
-依赖：[e2txt](https://e2eee.com)（`.e` ⇄ 文本转换器，JimStone/谢栋）与易语言 IDE（提供 `lib\*.fne`）。
+依赖：易语言 IDE（提供 `lib\*.fne`）与 Python 3.9+；`.e` ⇄ 文本转换工具 QAQ-ETool 随 `qaq-etool-cli` 技能发布，不用另装。
 
-## 目录
+## 项目结构
+
+仓库分三层：**发布区**（`Releases/`，交付给用户的成品）、**源与工具**（`src/` `tools/` `QAQ-ETool/`，构建成品的源本）、**素材与产物**（`docs/` `demos/` `支持库文档/` `out_mbkit/`）。发布区里的 `skills/*/scripts|references|assets` 是 `tools/` `docs/` `src/` 的同步副本，`tools/verify-release.py` 会断言它们与源本逐字节一致。
 
 ```
-├── Releases/Elang-AiTools/   发布区（成品）：四个技能 + 跨工具安装器
-├── demos/                    实测 demo（工程 + 示例输出）
-├── docs/                     格式规范全文 + 开发工程说明
-├── tools/                    mkproj / rtcheck / efix / mkcage / elaunch / 打包与校验脚本
-├── src/                      导出支持库文档工具、调试宿主支持库的 C 源码与构建脚本
-└── 支持库文档/               导出产物（77 库 / 5951 条命令）
+测试/
+├── Releases/Elang-AiTools/       发布区（成品）：四个技能 + 跨工具安装器
+│   ├── skills/
+│   │   ├── elang-ai-coding/       编码技能（assets: 导出exe / references: 四份专题 / scripts）
+│   │   ├── elang-build/           无头编译技能（scripts: ecompile 等）
+│   │   ├── elang-debug/           调试技能（assets: 宿主库 .fne / references / scripts）
+│   │   └── qaq-etool-cli/         .e⇄文本 转换技能（assets: QAQ-ETool 三件套 exe）
+│   ├── install-skills.py / .sh    一键装进本机所有 AI 工具
+│   ├── 安装技能.cmd               Windows 安装入口
+│   └── 使用说明.md
+│
+├── src/                          C 源码与构建脚本
+│   ├── addin/                    调试/编译宿主支持库 elang_addin.fne 的源码
+│   ├── mbkit/                    miniblink 多实例热重载内核 MbKit.dll 源码
+│   └── elibdoc.c                 支持库文档导出工具源码（产物 = 导出支持库文档.exe）
+│
+├── tools/                        工程脚本
+│   ├── mkproj / rtcheck / echeck / elibs / mkcage / elaunch / ecompile / etool   核心闭环脚本
+│   ├── pack-skill.py / sync-release.sh / verify-release.py                       打包与发布校验
+│   └── *-eide-*.ps1                                                              IDE 卡死排查脚本
+│
+├── QAQ-ETool/                    .e ⇄ 文本目录 转换工具的源码工程（dist/gui/src/tests/vendor…）
+│
+├── demos/                        实测 demo（工程 + 示例输出）
+│   ├── 01-C盘结构输出/
+│   ├── 02-嵌套控制流压测/
+│   └── 03-Json解析测试/
+│
+├── docs/                         格式规范全文 + 开发工程说明
+├── 支持库文档/                   导出产物（77 库 / 5951 条命令 + commands.jsonl）
+├── out_mbkit/                    miniblink 模块文本产物（miniblink.e / .ec + 使用说明）
+├── 导出支持库文档.exe            支持库文档导出工具（成品）
+└── README.md / .gitignore / .gitattributes / .zcodeignore
 ```
 
 ## 工作流（AI 写易语言代码的标准闭环）
@@ -78,7 +107,7 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 ```
 echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
   → rtcheck 双次往返收敛自检（格式）
-  → e2txt t2e 生成 .e
+  → QAQ-ETool t2e 生成 .e（出现 [错误] 或退出码 2 即失败）
   → 易语言 IDE 编译运行验收（终审）
 ```
 
@@ -91,7 +120,7 @@ echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
 
 让 AI 不只是“写”，还能**跑起来看**：
 
-1. `mkcage.py` 给用户的 `.e` **加壳**（只在工程文本里声明一个宿主支持库，全程离线、不启 IDE）；
+1. `mkcage.py` 给用户的 `.e` **加壳**（只在工程库表里声明一个宿主支持库，全程离线、不启 IDE）；
 2. `elaunch.py` 启动易语言 IDE 打开加壳后的 `.e`，**程序化触发一次「调试运行」**，
    并把调试框文本 **50ms 增量流式落盘**（中文同时给 `.utf8.txt` 视图）；
 3. 结束时输出**机器可读 JSON**：`status` 判定**不看面板尾行**（尾行分不出“正常结束/被中断”）——
@@ -99,7 +128,7 @@ echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
    `stopped` 靠“**我们主动**发过 `FN_END_RUN` 且观测到 `enabled 1→0`”，
    `ok` = 自然结束，`timeout` = 超时未结束。
 
-前置：Windows + 易语言 IDE（用 `ELANG_HOME` 或注册表 `HKCU\Software\FlySky\E\Install` 定位）+ e2txt + Python 3.9+。
+前置：Windows + 易语言 IDE（用 `ELANG_HOME` 或注册表 `HKCU\Software\FlySky\E\Install` 定位）+ Python 3.9+（QAQ-ETool 由同装的 `qaq-etool-cli` 技能提供）。
 ```bash
 python skills/elang-debug/scripts/mkcage.py   <用户.e> <_ai.e>      # 加壳
 python skills/elang-debug/scripts/elaunch.py  <_ai.e> --json        # 调试运行 + 收日志
@@ -109,5 +138,5 @@ python skills/elang-debug/scripts/elaunch.py  <_ai.e> --json        # 调试运�
 
 ## License
 
-本项目工具代码与文档随意使用；e2txt 版权归其作者（JimStone/谢栋，e2eee.com）所有；
+本项目工具代码与文档随意使用；
 易语言为大连大有吴涛易语言软件开发有限公司产品。

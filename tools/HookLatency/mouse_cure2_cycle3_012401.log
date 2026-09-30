@@ -1,0 +1,115 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=3s test=4s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=3479162)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 3s]: t=0..3000ms
+
+[TESTWINDOW 4s]: t=3000..7000ms  -> close eIDE DURING THIS WINDOW
+
+[POST-CLOSE 12s]: t=7000..19000ms  (this is where user reports 2s freeze)
+
+===== HID stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+2425,2,6.4
+2475,7,7.3
+2525,7,7.1
+2575,7,8.0
+2625,7,14.1
+2675,3,7.0
+SUMMARY_BASELINE: samples=33, avg_Hz=11, max_inter_sample_gap_ms=14.1
+
+===== HID stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+225,1,0.0
+275,7,7.1
+325,7,7.3
+375,7,7.2
+425,7,7.3
+475,7,7.2
+525,8,7.1
+575,4,7.0
+825,1,0.0
+875,1,0.0
+1125,5,7.4
+1175,7,7.2
+1225,4,20.1
+1275,2,6.8
+1575,1,0.0
+2675,33,0.1
+2775,1,0.0
+3025,1,0.0
+SUMMARY_TESTWINDOW_CLOSE: samples=104, avg_Hz=26, max_inter_sample_gap_ms=1078.5
+WARN_TESTWINDOW_CLOSE: max gap > 500ms (mild freeze)
+
+===== HID stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+175,6,7.2
+225,8,9.8
+275,7,7.5
+325,5,13.7
+3525,3,6.9
+3575,8,8.2
+3625,7,7.1
+3675,7,7.2
+3725,5,14.2
+3775,1,0.0
+4025,1,0.0
+4225,1,0.0
+SUMMARY_POST_CLOSE_12s: samples=59, avg_Hz=5, max_inter_sample_gap_ms=3190.3
+ALERT_POST_CLOSE_12s: MAX GAP > 2000ms !!! -> mouse FROZE > 2 SECONDS (user reported)
+
+===== WH_MOUSE_LL stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+2425,2,6.8
+2475,7,7.4
+2525,7,7.1
+2575,7,7.4
+2625,7,14.0
+2675,3,7.0
+SUMMARY_BASELINE: samples=33, avg_Hz=11, max_inter_sample_gap_ms=14.0
+
+===== WH_MOUSE_LL stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+225,1,0.0
+275,7,7.1
+325,7,7.2
+375,7,7.2
+425,7,7.2
+475,7,7.2
+525,8,7.2
+575,4,7.1
+825,1,0.0
+875,1,0.0
+1125,5,7.2
+1175,7,7.1
+1225,7,7.1
+1275,3,7.4
+1575,1,0.0
+1625,2,29.6
+1675,1,0.0
+1725,2,30.6
+1775,2,31.4
+1825,1,0.0
+1875,2,34.2
+1925,2,30.6
+1975,1,0.0
+2025,2,30.7
+2075,2,30.6
+2125,1,0.0
+2175,2,30.9
+2225,1,0.0
+2275,1,0.0
+2325,2,25.0
+2375,2,30.7
+2425,1,0.0
+2475,2,29.5
+2525,1,0.0
+SUMMARY_TESTWINDOW_CLOSE: samples=103, avg_Hz=26, max_inter_sample_gap_ms=312.0
+NOTICE_TESTWINDOW_CLOSE: max gap > 200ms (Windows default LL hook timeout)
+
+===== WH_MOUSE_LL stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_POST_CLOSE_12s: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_POST_CLOSE_12s: NO SAMPLES (sampler not recording mouse events, method broken)
+
+==== DONE ====

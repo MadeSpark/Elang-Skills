@@ -281,14 +281,17 @@ def main():
     if not files:
         raise SystemExit("没有找到 .e.txt 文件")
 
-    lib_path = args.lib
-    if not lib_path:
-        for cand in (os.path.join(os.getcwd(), "支持库文档", "commands.jsonl"),
-                     os.path.join(os.path.dirname(src), "支持库文档", "commands.jsonl")):
-            if os.path.isfile(cand):
-                lib_path = cand
-                break
-    lib = load_lib(lib_path)
+    # 支持库文档：--lib → elibs 自动定位（./支持库文档、缓存；都没有就调技能自带导出器生成）
+    idx, lib_path = None, args.lib
+    try:
+        import elibs
+        docs = elibs.find_docs(args.lib, src)
+        if docs:
+            idx = elibs.LibIndex(docs)
+            lib_path = os.path.join(docs, "commands.jsonl")
+    except SystemExit as e:
+        print(f"（支持库文档不可用：{e}）", file=sys.stderr)
+    lib = idx.cmds if idx else load_lib(lib_path)
 
     errs, warns, subs = [], [], {}
     texts = {}
@@ -303,6 +306,18 @@ def main():
     for rel, lines in texts.items():
         check_blocks(rel, lines, errs, warns)
         check_calls(rel, lines, subs, lib, errs, warns)
+
+    # 库表检查：命令/类型/常量存在于本机支持库，但所属库不在工程库表里
+    # → t2e 报「未定义的子程序或命令」、IDE 编译报找不到命令。
+    if idx:
+        cfg_path, _cfg, _have, missing = elibs.analyze(src, idx)
+        if cfg_path is None and os.path.isdir(src):
+            warns.append("没找到 配置/支持库.config.json（或 config/lib.config.json），跳过库表检查")
+        for name, (libs, where) in sorted(missing.items()):
+            f, ln, kind = where[0]
+            more = f" 等 {len(where)} 处" if len(where) > 1 else ""
+            errs.append(f"{f}:{ln} {kind}「{name}」属于支持库 {'/'.join(sorted(libs))}，"
+                        f"但库表未引用{more} → elibs.py <文本目录> --fix")
 
     if args.json:
         print(json.dumps({"errors": errs, "warnings": warns, "lib": bool(lib)},

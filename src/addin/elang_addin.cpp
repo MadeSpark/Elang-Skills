@@ -61,6 +61,7 @@ static_assert(offsetof(LIB_INFO, m_pLibConst) == 136, "LIB_INFO.m_pLibConst offs
 
 #define TRACE_ENV_VAR     "ELANG_AI_TRACE"
 #define TASK_ENV_VAR      "ELANG_AI_TASK"
+#define OPEN_TARGET_ENV_VAR "ELANG_AI_OPEN_TARGET"
 #define HIDE_ENV_VAR      "ELANG_AI_HIDE"
 #define CMDLINE_TASK_OPT  "--ai-task="
 #define INI_FILE_NAME     "elang_ai_task.ini"
@@ -215,6 +216,295 @@ static void Trace(const char *pszFmt, ...)
     }
     if (g_blCsReady) LeaveCriticalSection(&g_cs);
 }
+
+/* ==========================================================================
+ * 3a-2. 事件通道 + 对话框监控（2026-09-27）
+ * --------------------------------------------------------------------------
+ * 目的：无头自动化里，e.exe 弹出的任何模态框（编译错误、找不到启动子程序…）
+ *       以前没人应答，触发线程永不返回，表现为「AI 工具一路空等到超时」。
+ * 现在：
+ *   1) EventWrite —— 关键里程碑写进独立事件文件（ELANG_AI_EVENTS，缺省
+ *      %TEMP%\elang_ai_events.log），Python 侧随时 tail，失败时把「最后现场」
+ *      直接带回给 AI；
+ *   2) DlgWatch   —— 独立线程 + 独立 WinEvent 钩子，盯本进程所有顶层 #32770
+ *      对话框：完整记录（标题+子控件文本）进事件文件，并按 ELANG_AI_DLG_POLICY
+ *      （observe=只记录（缺省）/ dismiss=替用户点掉）应答。
+ *      编译保存框（DirectUIHWND / “请输入欲编译到”）由既有填充线程负责，
+ *      本监控只记录、绝不去点。
+ * ========================================================================== */
+#define EVENTS_ENV_VAR     "ELANG_AI_EVENTS"
+#define DLGPOLICY_ENV_VAR  "ELANG_AI_DLG_POLICY"
+
+static char g_szEventsPath[MAX_PATH] = { 0 };
+
+static void EventsInit(void)
+{
+    char szTemp[MAX_PATH] = { 0 };
+    if (g_szEventsPath[0] != '\0') return;
+    if (GetEnvStr(EVENTS_ENV_VAR, g_szEventsPath, MAX_PATH)) return;
+    if (GetTempDir(szTemp, MAX_PATH))
+        snprintf(g_szEventsPath, MAX_PATH, "%selang_ai_events.log", szTemp);
+}
+
+static void EventWrite(const char *pszKind, const char *pszFmt, ...)
+{
+    char    szLine[2048] = { 0 };
+    char    szBody[1600] = { 0 };
+    va_list ap;
+    int     nLen, nBody;
+    HANDLE  hFile;
+    DWORD   dwWritten = 0;
+    SYSTEMTIME st;
+
+    if (!g_blAiMode) return;
+    EventsInit();
+    if (g_szEventsPath[0] == '\0') return;
+
+    GetLocalTime(&st);
+    va_start(ap, pszFmt);
+    nBody = vsnprintf(szBody, sizeof(szBody) - 1, pszFmt, ap);
+    va_end(ap);
+    if (nBody < 0) return;
+
+    nLen = snprintf(szLine, sizeof(szLine) - 3,
+                    "[%02d:%02d:%02d.%03d] %s %s",
+                    st.wHour, st.wMinute, st.wSecond, st.wMilliseconds,
+                    pszKind, szBody);
+    if (nLen < 0) return;
+    nLen = (int)strlen(szLine);
+    szLine[nLen++] = '\r';
+    szLine[nLen++] = '\n';
+    szLine[nLen]   = '\0';
+
+    if (g_blCsReady) EnterCriticalSection(&g_cs);
+    hFile = CreateFileA(g_szEventsPath, FILE_APPEND_DATA,
+                        FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                        OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile != INVALID_HANDLE_VALUE)
+    {
+        WriteFile(hFile, szLine, (DWORD)nLen, &dwWritten, NULL);
+        CloseHandle(hFile);
+    }
+    if (g_blCsReady) LeaveCriticalSection(&g_cs);
+}
+
+/* ---- 模态框监控 -------------------------------------------------------- */
+
+/* 0=observe 1=dismiss（缺省 observe；elaunch/ecompile 会显式传 dismiss） */
+static volatile LONG g_nDlgPolicy = 0;
+
+/* 安全应答规则：
+ *   - 只有 1 个命令按钮                          → 点它（错误/提示框的「确定」）
+ *   - 多个按钮且含 IDOK                          → 点 IDOK
+ *   - 多个按钮、无 IDOK、含 IDCANCEL 且无 IDYES  → 点 IDCANCEL
+ *   - 其余（是/否问句等语义不明）                → 只记录，绝不瞎猜 */
+typedef struct _DLG_SCAN
+{
+    char  items[10][220];
+    int   n;
+    int   nBtn;                     /* 命令按钮个数 */
+    HWND  hSingle;
+    BOOL  blHas[8];                 /* 按 IDOK..IDCANCEL 序号表 */
+} DLG_SCAN;
+
+static BOOL CALLBACK DlgChildProc(HWND hChild, LPARAM lp)
+{
+    DLG_SCAN *p = (DLG_SCAN *)lp;
+    char szCls[64] = { 0 };
+    char szTxt[128] = { 0 };
+    int  nId;
+
+    if (p->n >= 10) return TRUE;
+    GetClassNameA(hChild, szCls, sizeof(szCls));
+    GetWindowTextA(hChild, szTxt, sizeof(szTxt));
+    nId = (int)GetDlgCtrlID(hChild);
+    snprintf(p->items[p->n], sizeof(p->items[0]), "cls='%s' id=%d text='%s'",
+             szCls, nId, szTxt);
+    p->n++;
+    if (strcmp(szCls, "Button") == 0)
+    {
+        p->nBtn++;
+        p->hSingle = hChild;
+    }
+    return TRUE;
+}
+
+typedef struct _DLG_SAVECHK { BOOL blSave; } DLG_SAVECHK;
+
+static BOOL CALLBACK DlgSaveChkProc(HWND hChild, LPARAM lp)
+{
+    DLG_SAVECHK *p = (DLG_SAVECHK *)lp;
+    char szCls[64] = { 0 };
+    GetClassNameA(hChild, szCls, sizeof(szCls));
+    if (strcmp(szCls, "DirectUIHWND") == 0) { p->blSave = TRUE; return FALSE; }
+    return TRUE;
+}
+
+static void DlgHandle(HWND hDlg)
+{
+    char        szTitle[256] = { 0 };
+    DLG_SCAN    scan;
+    DLG_SAVECHK sv;
+    int         i;
+    HWND        hClick = NULL;
+    int         nClickId = 0;
+    BOOL        blHasOk, blHasYes, blHasNo, blHasCancel;
+
+    GetWindowTextA(hDlg, szTitle, sizeof(szTitle));
+
+    /* 编译保存框归既有填充线程管，这里只留一条事件绝不动它 */
+    if (strstr(szTitle, "请输入欲编译到") != NULL)
+    {
+        EventWrite("DLG-SAVEBOX", "hwnd=0x%08X title='%s' (由填充线程接管)",
+                   (unsigned)(size_t)hDlg, szTitle);
+        return;
+    }
+
+    memset(&scan, 0, sizeof(scan));
+    EnumChildWindows(hDlg, DlgChildProc, (LPARAM)&scan);
+    memset(&sv, 0, sizeof(sv));
+    EnumChildWindows(hDlg, DlgSaveChkProc, (LPARAM)&sv);
+
+    {
+        char szKids[1600] = { 0 };
+        for (i = 0; i < scan.n; i++)
+        {
+            strncat(szKids, szKids[0] ? " | " : "",
+                    sizeof(szKids) - strlen(szKids) - 1);
+            strncat(szKids, scan.items[i],
+                    sizeof(szKids) - strlen(szKids) - 1);
+        }
+        EventWrite("DLG-MODAL", "hwnd=0x%08X title='%s' btns=%d kids=[%s]",
+                   (unsigned)(size_t)hDlg, szTitle, scan.nBtn, szKids);
+    }
+
+    if (g_nDlgPolicy < 1 || sv.blSave) return;
+    if (strstr(szTitle, "另存") || strstr(szTitle, "Save As") ||
+        strstr(szTitle, "覆盖") || strstr(szTitle, "覆蓋") ||
+        strstr(szTitle, "已存在"))
+        return;                          /* 覆盖确认框归 AnswerConfirmDialogs 管 */
+
+    /* 按钮语义判定（见函数头注释的安全规则） */
+    blHasOk = blHasYes = blHasNo = blHasCancel = FALSE;
+    {
+        HWND h;
+        h = GetDlgItem(hDlg, IDOK);     if (h) { blHasOk = TRUE; }
+        h = GetDlgItem(hDlg, IDYES);    if (h) { blHasYes = TRUE; }
+        h = GetDlgItem(hDlg, IDNO);     if (h) { blHasNo = TRUE; }
+        h = GetDlgItem(hDlg, IDCANCEL); if (h) { blHasCancel = TRUE; }
+    }
+
+    if (scan.nBtn == 1 && scan.hSingle != NULL)
+    {
+        hClick = scan.hSingle;          /* 单按钮：错误/提示框的「确定」 */
+    }
+    else if (blHasOk)
+    {
+        hClick = GetDlgItem(hDlg, IDOK);
+        nClickId = IDOK;
+    }
+    else if (blHasCancel && !blHasYes && !blHasNo)
+    {
+        hClick = GetDlgItem(hDlg, IDCANCEL);
+        nClickId = IDCANCEL;
+    }
+
+    if (hClick != NULL)
+    {
+        DWORD dwCmd = (DWORD)((WORD)(nClickId ? nClickId : 1) | ((DWORD)BN_CLICKED << 16));
+        PostMessageA(hDlg, WM_COMMAND, (WPARAM)dwCmd, (LPARAM)hClick);
+        PostMessageA(hClick, BM_CLICK, 0, 0);
+        EventWrite("DLG-DISMISSED", "hwnd=0x%08X clicked=%d",
+                   (unsigned)(size_t)hDlg, nClickId ? nClickId : 1);
+    }
+}
+
+/* 每个 hwnd 只报一次（环形表；仅监控线程读写，无需加锁） */
+#define DLG_SEEN_MAX 32
+static HWND  g_hDlgSeen[DLG_SEEN_MAX];
+static int   g_nDlgSeen = 0;
+
+static void CALLBACK DlgWinEventProc(HWINEVENTHOOK hHook, DWORD dwEvent, HWND hWnd,
+                                     LONG idObject, LONG idChild,
+                                     DWORD dwThread, DWORD dwTime)
+{
+    char szCls[64] = { 0 };
+    DWORD dwPid = 0;
+    int   i;
+
+    (void)hHook; (void)dwThread; (void)dwTime;
+    if (hWnd == NULL || idObject != OBJID_WINDOW || idChild != 0) return;
+    GetWindowThreadProcessId(hWnd, &dwPid);
+    if (dwPid != GetCurrentProcessId()) return;
+
+    GetClassNameA(hWnd, szCls, sizeof(szCls));
+
+    if (dwEvent == EVENT_OBJECT_DESTROY)
+    {
+        if (strcmp(szCls, "ENewFrame") == 0)
+            EventWrite("IDE-EXIT", "主窗口销毁 cls='ENewFrame' hwnd=0x%08X",
+                       (unsigned)(size_t)hWnd);
+        return;
+    }
+
+    if (strcmp(szCls, "#32770") != 0) return;
+    if (dwEvent != EVENT_OBJECT_SHOW && dwEvent != EVENT_SYSTEM_DIALOGSTART &&
+        dwEvent != EVENT_OBJECT_CREATE)
+        return;
+    if (!IsWindowVisible(hWnd)) return;
+
+    for (i = 0; i < g_nDlgSeen && i < DLG_SEEN_MAX; i++)
+        if (g_hDlgSeen[i] == hWnd) return;
+    if (g_nDlgSeen < DLG_SEEN_MAX)
+        g_hDlgSeen[g_nDlgSeen++] = hWnd;
+
+    DlgHandle(hWnd);
+}
+
+static DWORD __stdcall DlgWatchProc(LPVOID lp)
+{
+    HWINEVENTHOOK hkDlg, hkObj;
+    (void)lp;
+
+    {
+        char sz[32] = { 0 };
+        if (GetEnvStr(DLGPOLICY_ENV_VAR, sz, sizeof(sz)))
+            g_nDlgPolicy = (_stricmp(sz, "dismiss") == 0) ? 1 : 0;
+    }
+
+    hkDlg = SetWinEventHook(EVENT_SYSTEM_DIALOGSTART, EVENT_SYSTEM_DIALOGEND, NULL,
+                            DlgWinEventProc, GetCurrentProcessId(), 0,
+                            WINEVENT_OUTOFCONTEXT);
+    hkObj = SetWinEventHook(EVENT_OBJECT_CREATE, EVENT_OBJECT_SHOW, NULL,
+                            DlgWinEventProc, GetCurrentProcessId(), 0,
+                            WINEVENT_OUTOFCONTEXT);
+    EventWrite("DLGW-START", "policy=%s hookDlg=0x%08X hookObj=0x%08X",
+               g_nDlgPolicy ? "dismiss" : "observe",
+               (unsigned)(size_t)hkDlg, (unsigned)(size_t)hkObj);
+    Trace("DLGWATCH start policy=%s hookDlg=0x%08X hookObj=0x%08X",
+          g_nDlgPolicy ? "dismiss" : "observe",
+          (unsigned)(size_t)hkDlg, (unsigned)(size_t)hkObj);
+
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+    for (;;)
+    {
+        /* WINEVENT_OUTOFCONTEXT 的回调只在本线程「取消息状态」时投递 ⇒ 纯消息泵，
+           绝不做 EnumWindows（那是 HidePollProc 的教训）。 */
+        DWORD dwR = MsgWaitForMultipleObjectsEx(0, NULL, 50, QS_ALLINPUT,
+                                                MWMO_INPUTAVAILABLE);
+        if (dwR == WAIT_OBJECT_0)
+        {
+            MSG msg;
+            while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessageW(&msg);
+            }
+        }
+    }
+    /* not reached */
+}
+
 
 /* ==========================================================================
  * 3b. 崩溃陷阱（仅诊断构建 -DPOC_CRASHTRAP 启用）
@@ -516,6 +806,128 @@ static BOOL IdeIsFuncEnabled(DWORD dwFuncNo, BOOL *pblHandled)
     BOOL blHandled = IdeRunFunc(FN_IS_FUNC_ENABLED, dwFuncNo, (DWORD)(size_t)&blEnabled);
     if (pblHandled != NULL) *pblHandled = blHandled;
     return blEnabled;
+}
+
+/* 编译功能号会打开 IDE 的模态保存框，必须由 IDE 主消息线程执行。
+   早期实现在 WorkerProc 里直接调 NES_RUN_FUNC：小工程偶尔可用，但大型 DLL 工程会在
+   COMPILE-TRIGGER 后触发 e.exe 访问冲突。WH_GETMESSAGE 钩子让请求在主线程取到
+   私有消息时执行，Worker 只负责等待和保存框填充。 */
+#define WM_ELANG_AI_INVOKE (WM_APP + 0x04A1)
+
+typedef struct _IDE_UI_CALL
+{
+    DWORD         dwFn;
+    DWORD         dwArg1;
+    DWORD         dwArg2;
+    BOOL          blHandled;
+    HANDLE        hDone;
+    volatile LONG lPending;
+} IDE_UI_CALL;
+
+static IDE_UI_CALL g_IdeUiCall = { 0 };
+
+static LRESULT __stdcall IdeMainGetMsgHook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode >= 0 && wParam == PM_REMOVE && lParam != 0)
+    {
+        MSG *pMsg = (MSG *)lParam;
+        if (pMsg->message == WM_ELANG_AI_INVOKE &&
+            InterlockedCompareExchange(&g_IdeUiCall.lPending, 0, 1) == 1)
+        {
+            pMsg->message = WM_NULL;  /* 不让私有消息进入 IDE 的正常分发。 */
+            Trace("COMPILE main-thread invoke 0x%08X ...", (unsigned)g_IdeUiCall.dwFn);
+            g_IdeUiCall.blHandled = IdeRunFunc(g_IdeUiCall.dwFn,
+                                                g_IdeUiCall.dwArg1,
+                                                g_IdeUiCall.dwArg2);
+            Trace("COMPILE main-thread invoke return handled=%d",
+                  g_IdeUiCall.blHandled ? 1 : 0);
+            if (g_IdeUiCall.hDone != NULL)
+                SetEvent(g_IdeUiCall.hDone);
+        }
+    }
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+static BOOL IdeRunFuncOnMainThread(DWORD dwFn, DWORD dwArg1, DWORD dwArg2,
+                                   BOOL *pblHandled)
+{
+    HWND       hMain;
+    DWORD      dwThreadId = 0;
+    HMODULE    hSelf = NULL;
+    HHOOK      hHook = NULL;
+    DWORD      dwWait;
+    BOOL       blOk = FALSE;
+
+    if (pblHandled != NULL)
+        *pblHandled = FALSE;
+    hMain = IdeGetMainHwnd();
+    if (hMain == NULL || !IsWindow(hMain))
+    {
+        Trace("COMPILE main-thread invoke aborted: main window unavailable");
+        return FALSE;
+    }
+    dwThreadId = GetWindowThreadProcessId(hMain, NULL);
+    if (dwThreadId == 0 ||
+        !GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            (LPCSTR)(size_t)&IdeMainGetMsgHook, &hSelf))
+    {
+        Trace("COMPILE main-thread invoke aborted: module/thread lookup failed err=%lu",
+              (unsigned long)GetLastError());
+        return FALSE;
+    }
+    if (InterlockedCompareExchange(&g_IdeUiCall.lPending, 1, 0) != 0)
+    {
+        Trace("COMPILE main-thread invoke aborted: request already pending");
+        return FALSE;
+    }
+
+    g_IdeUiCall.dwFn = dwFn;
+    g_IdeUiCall.dwArg1 = dwArg1;
+    g_IdeUiCall.dwArg2 = dwArg2;
+    g_IdeUiCall.blHandled = FALSE;
+    g_IdeUiCall.hDone = CreateEventA(NULL, TRUE, FALSE, NULL);
+    if (g_IdeUiCall.hDone == NULL)
+    {
+        InterlockedExchange(&g_IdeUiCall.lPending, 0);
+        Trace("COMPILE main-thread invoke aborted: CreateEvent failed err=%lu",
+              (unsigned long)GetLastError());
+        return FALSE;
+    }
+
+    hHook = SetWindowsHookExA(WH_GETMESSAGE, IdeMainGetMsgHook, hSelf, dwThreadId);
+    if (hHook == NULL || !PostThreadMessageA(dwThreadId, WM_ELANG_AI_INVOKE, 0, 0))
+    {
+        Trace("COMPILE main-thread invoke setup failed hook=0x%08X err=%lu",
+              (unsigned)(size_t)hHook, (unsigned long)GetLastError());
+        if (hHook != NULL)
+            UnhookWindowsHookEx(hHook);
+        CloseHandle(g_IdeUiCall.hDone);
+        g_IdeUiCall.hDone = NULL;
+        InterlockedExchange(&g_IdeUiCall.lPending, 0);
+        return FALSE;
+    }
+
+    /* 真编译会在主线程的模态保存框+实际代码生成中等待；大模块（>500 子程序）
+       可能需要 6~15 分钟（如 miniblink.ec 的 ecom 编译）。上限给到 30 分钟，
+       外层 elaunch.py 仍有独立 timeout 做最后兜底。 */
+    dwWait = WaitForSingleObject(g_IdeUiCall.hDone, 30 * 60 * 1000);
+    if (dwWait == WAIT_OBJECT_0)
+    {
+        blOk = TRUE;
+        if (pblHandled != NULL)
+            *pblHandled = g_IdeUiCall.blHandled;
+    }
+    else
+    {
+        Trace("COMPILE main-thread invoke wait failed/timeout code=%lu",
+              (unsigned long)dwWait);
+        InterlockedExchange(&g_IdeUiCall.lPending, 0);
+    }
+    UnhookWindowsHookEx(hHook);
+    CloseHandle(g_IdeUiCall.hDone);
+    g_IdeUiCall.hDone = NULL;
+    return blOk;
 }
 
 /* ==========================================================================
@@ -1721,6 +2133,7 @@ static DWORD __stdcall DialogFillerProc(LPVOID lp)
             {
                 CapWrite("COMPILE-OUT-SEEN", g_szCompileOutPath);
                 Trace("COMPILE output seen: %s", g_szCompileOutPath);
+                EventWrite("COMPILE-OUT-SEEN", "%s", g_szCompileOutPath);
                 blOutSeen = TRUE;
                 Sleep(3000);
                 break;
@@ -1736,6 +2149,7 @@ static void DoCompileTask(HWND hMain)
 {
     char  szTmp[MAX_PATH] = { 0 };
     char  szEnv[MAX_PATH] = { 0 };
+    char  szOpenTarget[MAX_PATH] = { 0 };
     int   nDelay = 1500;
     DWORD dwFn;
     DWORD t0;
@@ -1747,6 +2161,7 @@ static void DoCompileTask(HWND hMain)
     if (dwFn == 0)
         return;
     blPre = (dwFn == FN_PRE_COMPILE);
+    EventWrite("COMPILE-START", "fn=0x%08X pre=%d", (unsigned)dwFn, blPre ? 1 : 0);
 
     /* 捕获文件（与 RUN 同一路径约定） */
     if (GetEnvStr(CAP_ENV_VAR, g_szCapturePath, MAX_PATH) == FALSE)
@@ -1762,6 +2177,24 @@ static void DoCompileTask(HWND hMain)
     if (GetEnvStr(COMPILE_DELAY_ENV_VAR, szEnv, sizeof(szEnv)) && szEnv[0])
         nDelay = atoi(szEnv);
     GetEnvStr(COMPILE_OUT_ENV_VAR, g_szCompileOutPath, MAX_PATH);
+
+    /* 引导工程仅负责按需加载 FNE；真实源码由官方打开文件功能载入后再编译。
+       这样不会让 mkcage 的 e2t→t2e 有损链碰到目标 .e。 */
+    if (GetEnvStr(OPEN_TARGET_ENV_VAR, szOpenTarget, sizeof(szOpenTarget)) &&
+        szOpenTarget[0] != '\0')
+    {
+        BOOL blOpened = FALSE;
+        BOOL blHandled = FALSE;
+        Trace("COMPILE open target '%s' ...", szOpenTarget);
+        blOpened = IdeRunFuncOnMainThread(FN_OPEN_FILE2,
+                                          (DWORD)(size_t)szOpenTarget, 0,
+                                          &blHandled);
+        Trace("COMPILE open target invoked=%d handled=%d",
+              blOpened ? 1 : 0, blHandled ? 1 : 0);
+        CapWrite("COMPILE-OPEN-TARGET",
+                 (blOpened && blHandled) ? "opened=1" : "opened=0");
+        Sleep(1000);
+    }
     {
         BOOL blEnabled = FALSE, blHandled = FALSE;
         blEnabled = IdeIsFuncEnabled(dwFn, &blHandled);
@@ -1786,18 +2219,22 @@ static void DoCompileTask(HWND hMain)
             /* FN_PRE_COMPILE 的功能参数1 = BOOL*，返回「是否预编译成功」。
                我们在 IDE 进程内，直接用本栈上的 BOOL 变量接结果即可。 */
             BOOL blPreOk = FALSE;
-            blHandled = IdeRunFunc(FN_PRE_COMPILE, (DWORD)(size_t)&blPreOk, 0);
-            Trace("COMPILE pre-compile handled=%d ok=%d", blHandled ? 1 : 0, blPreOk ? 1 : 0);
+            BOOL blInvoked = IdeRunFuncOnMainThread(FN_PRE_COMPILE,
+                                                    (DWORD)(size_t)&blPreOk, 0,
+                                                    &blHandled);
+            Trace("COMPILE pre-compile invoked=%d handled=%d ok=%d",
+                  blInvoked ? 1 : 0, blHandled ? 1 : 0, blPreOk ? 1 : 0);
             {
-                char szB[64];
-                snprintf(szB, sizeof(szB), "handled=%d ok=%d",
-                         blHandled ? 1 : 0, blPreOk ? 1 : 0);
+                char szB[80];
+                snprintf(szB, sizeof(szB), "invoked=%d handled=%d ok=%d",
+                         blInvoked ? 1 : 0, blHandled ? 1 : 0, blPreOk ? 1 : 0);
                 CapWrite("COMPILE-PRE-RET", szB);
             }
         }
         else
         {
-            blHandled = IdeRunFunc(dwFn, 0, 0);   /* 模态保存对话框在此阻塞，由 filler 解掉 */
+            /* 模态保存对话框在主线程阻塞，由 filler 解掉；Worker 不得直调 IDE。 */
+            IdeRunFuncOnMainThread(dwFn, 0, 0, &blHandled);
             Trace("COMPILE handled=%d", blHandled ? 1 : 0);
             CapWrite("COMPILE-TRIGGER-RET", blHandled ? "handled=1" : "handled=0");
         }
@@ -1830,6 +2267,7 @@ static void DoCompileTask(HWND hMain)
         }
         PanelDumpTails("FINAL");
         CapWrite("=== COMPILE END ===", "pre-compile");
+        EventWrite("COMPILE-END", "pre-compile");
         Trace("COMPILE pre-compile capture done (file=%s)", g_szCapturePath);
         if (g_hCapture != INVALID_HANDLE_VALUE)
         {
@@ -1861,6 +2299,7 @@ static void DoCompileTask(HWND hMain)
             {
                 CapWrite("COMPILE-OUT-SEEN", g_szCompileOutPath);
                 Trace("COMPILE output seen: %s", g_szCompileOutPath);
+                EventWrite("COMPILE-OUT-SEEN", "%s", g_szCompileOutPath);
                 blOutSeen = TRUE;
             }
         }
@@ -1879,6 +2318,7 @@ static void DoCompileTask(HWND hMain)
 
     PanelDumpTails("FINAL");
     CapWrite("=== COMPILE END ===", blOutSeen ? "out-seen" : "timeout-or-not-seen");
+    EventWrite("COMPILE-END", blOutSeen ? "out-seen" : "timeout-or-not-seen");
     Trace("COMPILE capture done (iters=%d, outSeen=%d, file=%s)", nIter, blOutSeen ? 1 : 0, g_szCapturePath);
     if (g_hCapture != INVALID_HANDLE_VALUE)
     {
@@ -2343,6 +2783,7 @@ static DWORD __stdcall WorkerProc(LPVOID lParam)
     }
 
     Trace("WORKER done");
+    EventWrite("WORKER-DONE", "");
     return 0;
 }
 
@@ -2383,6 +2824,7 @@ INT LI_NOTIFY_CONV ProcessNotifyLib(INT nMsg, DWORD dwParam1, DWORD dwParam2)
 
     case NL_IDE_READY:
         Trace("HOOK NL_IDE_READY (ai_mode=%d)", g_blAiMode ? 1 : 0);
+        EventWrite("IDE-READY", "ai_mode=%d", g_blAiMode ? 1 : 0);
         if (g_blAiMode)
         {
             /* 只置位 + 起线程，绝不在通知回调里做耗时工作。 */
@@ -2406,6 +2848,7 @@ INT LI_NOTIFY_CONV ProcessNotifyLib(INT nMsg, DWORD dwParam1, DWORD dwParam2)
 
     case NL_UNLOAD_FROM_IDE:
         Trace("HOOK NL_UNLOAD_FROM_IDE");
+        EventWrite("IDE-UNLOAD", "");
         return NR_OK;
 
     case NL_FREE_LIB_DATA:
@@ -2557,6 +3000,14 @@ static void EnsureInit(void)
         Trace("LIBINFO state=0x%08X (LBS_IDE_PLUGIN=%d) name='%s' guid=%s",
               (unsigned)s_LibInfo.m_dwState, LBS_IDE_PLUGIN, LI_LIB_NAME, LI_LIB_GUID_STR);
         Trace("LIBINFO pfnNotify=0x%08X", (unsigned)(size_t)s_LibInfo.m_pfnNotify);
+        EventWrite("ADDIN-LOADED", "pid=%lu", (unsigned long)GetCurrentProcessId());
+
+        /* 事件监控线程：与无头档位无关，AI 会话一律起（弹窗监控不依赖隐身）。 */
+        {
+            HANDLE hD = CreateThread(NULL, 0, DlgWatchProc, NULL, 0, NULL);
+            if (hD != NULL) CloseHandle(hD);
+            else Trace("DLGWATCH CreateThread FAILED err=%lu", GetLastError());
+        }
 
         /* 无头守护：**这里是本库最早能跑代码的地方**，必须在这儿起线程。
            曾经挂在 `WorkerProc`（NL_IDE_READY）里 —— 那比宿主库加载还晚约 5 秒，

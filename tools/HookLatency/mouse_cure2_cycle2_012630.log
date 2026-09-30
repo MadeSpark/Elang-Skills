@@ -1,0 +1,9 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=3s test=4s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=9704468)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 3s]: t=0..3000ms
+
+[TESTWINDOW 4s]: t=3000..7000ms  -> close eIDE DURING THIS WINDOW
+
+[POST-CLOSE 12s]: t=7000..19000ms  (this is where user reports 2s freeze)

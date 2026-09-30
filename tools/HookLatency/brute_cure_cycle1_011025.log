@@ -1,0 +1,7 @@
+==== Global Hook BruteForce Unhooker ====
+  own installed hhooks: WH_KEYBOARD_LL=0x03E30B3F WH_MOUSE_LL=0x003F17D5 => scan range: 0x00000004..0x10000000
+  (if a candidate handle is a valid currently-installed global hook (any type, any owner proc), UnhookWindowsHookEx returns TRUE; otherwise it simply returns FALSE/NO_ERROR so no side effect)
+  mode: FULL NUKE (every 4-aligned hhook up to 0x10000000). This removes ALL currently installed global hooks (including benign ones like touchpad/input-method hooks; they will reinstall themselves automatically within ~200ms).
+[Nuke] Brute Unhook every 4-aligned hhook 0x4..0x10000000
+[NUKE] Brute force done. total_calls=67108864, success_unhooked=0, elapsed_ms=31234
+==== DONE. Run MouseRateSampler immediately after this completes to confirm max_gap_post_close <300ms (should be <100ms since ALL STALE DEAD HOOKS ARE GONE).

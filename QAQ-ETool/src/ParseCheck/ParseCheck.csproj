@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <!-- 直接编译契约 + 解析器三件套，不引用任何项目（Core 正在被并行修改） -->
+  <ItemGroup>
+    <Compile Include="..\QAQ.ETool.Core\Text\CodeAst.cs" Link="Linked\CodeAst.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\CodeLexer.cs" Link="Linked\CodeLexer.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\CodeParser.cs" Link="Linked\CodeParser.cs" />
+    <Compile Include="..\QAQ.ETool.Core\Text\CodePrinter.cs" Link="Linked\CodePrinter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="UnitTests.cs" />
+    <Compile Include="Stats.cs" />
+  </ItemGroup>
+
+</Project>

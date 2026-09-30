@@ -9,7 +9,7 @@
 # 规范全文进**技能包内部**的 references\（不是发布区根的 docs\）——
 # 技能必须自包含：装到任何 AI 工具的技能目录后，脚本、exe、规范都要跟着过去。
 # 编译产物（支持库 .fne / 导出支持库文档.exe）由各自的 src/*/build.sh 自己同步到
-# skills/<技能>/assets/，**不经过本脚本**。
+# skills/<技能>/assets/，**不经过本脚本**；QAQ-ETool 的 3 个 exe 例外，见下 ASSETS。
 # 最后调用 install-skills.py，把技能刷到本机**所有** AI 工具的技能目录
 # （~/.agents/skills、~/.claude/skills、~/.trae/skills … 见该脚本顶部目标表）。
 #
@@ -26,12 +26,23 @@ cd "$(dirname "$0")/.."          # 工程根
 PY=python
 
 # 每技能一行： <技能名>|<scripts（真源 tools/）>|<references（真源 docs/）>
+# etool.py（定位/调用 QAQ-ETool）与 ec_guard.py（转换红线门禁）是共享模块，
+# 被 import 的技能各带一份，保证每个技能单独装也能 import 成功。
 SKILLS=(
-  "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py|易语言文本格式规范.md 置入代码与机器码.md Win32与DLL互操作.md 程序入口与编译验证.md 黑月编译与黑月界面类.md"
-  "e2txt-cli||"
-  "elang-debug|mkcage.py elaunch.py readlog.py|"
-  "elang-build|ecompile.py|"
+  "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py elibs.py etool.py|易语言文本格式规范.md 置入代码与机器码.md Win32与DLL互操作.md 程序入口与编译验证.md 黑月编译与黑月界面类.md"
+  "qaq-etool-cli||"
+  "elang-debug|mkcage.py elaunch.py readlog.py ec_guard.py etool.py|"
+  "elang-build|ecompile.py ec_guard.py etool.py|"
 )
+
+# 第三方成品 exe：<技能名>|<来源目录>|<文件>。来源目录不在（例如没检出 QAQ-ETool 工程）就跳过，
+# 发布区里已有的 exe 保持不动。
+ASSETS=(
+  "qaq-etool-cli|QAQ-ETool/dist|QAQ-ETool.exe qaq-etool-gui.exe qaq-libinfo.exe"
+)
+
+# 已退役的技能：发布区里残留就删掉（安装点由 install-skills.py 的退役表清理）
+RETIRED=(e2txt-cli)
 
 # 发布区可能被挪动，按顺序找
 find_kit() {
@@ -61,6 +72,18 @@ for entry in "${SKILLS[@]}"; do
       else echo "  !! 缺 docs/$f"; fi
     done
   fi
+done
+for entry in "${ASSETS[@]}"; do
+  IFS='|' read -r name srcdir files <<< "$entry"
+  if [ ! -d "$srcdir" ]; then echo "技能 $name: 跳过 assets（没有 $srcdir）"; continue; fi
+  mkdir -p "$KIT/skills/$name/assets"
+  for f in $files; do
+    if [ -f "$srcdir/$f" ]; then cp -f "$srcdir/$f" "$KIT/skills/$name/assets/"; echo "  $srcdir/$f -> skills/$name/assets/"
+    else echo "  !! 缺 $srcdir/$f"; fi
+  done
+done
+for name in "${RETIRED[@]}"; do
+  if [ -d "$KIT/skills/$name" ]; then rm -rf "$KIT/skills/$name"; echo "已删除退役技能 skills/$name"; fi
 done
 echo
 

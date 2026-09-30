@@ -1,0 +1,63 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=3s test=4s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=6099794)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 3s]: t=0..3000ms
+
+[TESTWINDOW 4s]: t=3000..7000ms  -> close eIDE DURING THIS WINDOW
+
+[POST-CLOSE 12s]: t=7000..19000ms  (this is where user reports 2s freeze)
+
+===== HID stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+1525,3,7.5
+1575,8,7.3
+1625,7,7.4
+1675,6,7.1
+1725,2,0.4
+1775,7,7.2
+1825,8,9.2
+1875,6,7.1
+1925,4,21.0
+2175,1,0.0
+2375,1,0.0
+SUMMARY_POST_CLOSE_12s: samples=53, avg_Hz=4, max_inter_sample_gap_ms=236.2
+NOTICE_POST_CLOSE_12s: max gap > 200ms (Windows default LL hook timeout)
+
+===== WH_MOUSE_LL stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+1525,3,7.3
+1575,8,7.1
+1625,7,7.1
+1675,6,7.1
+1725,5,16.8
+1775,7,7.0
+1825,8,7.9
+1875,6,7.1
+1925,4,21.0
+2175,1,0.0
+2375,1,0.0
+SUMMARY_POST_CLOSE_12s: samples=56, avg_Hz=5, max_inter_sample_gap_ms=236.5
+NOTICE_POST_CLOSE_12s: max gap > 200ms (Windows default LL hook timeout)
+
+==== DONE ====

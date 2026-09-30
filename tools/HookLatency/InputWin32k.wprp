@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WindowsPerformanceRecorder Version="1.0" Author="Input latency diagnostics">
+  <Profiles>
+    <SystemCollector Id="InputSystem" Name="Input focused system collector">
+      <BufferSize Value="128"/>
+      <Buffers Value="128"/>
+    </SystemCollector>
+    <EventCollector Id="InputEvents" Name="Input focused Win32k collector">
+      <BufferSize Value="256"/>
+      <Buffers Value="256"/>
+    </EventCollector>
+    <SystemProvider Id="InputSystemProvider">
+      <Keywords>
+        <Keyword Value="ProcessThread"/>
+        <Keyword Value="Loader"/>
+        <Keyword Value="SampledProfile"/>
+      </Keywords>
+      <Stacks>
+        <Stack Value="SampledProfile"/>
+      </Stacks>
+    </SystemProvider>
+    <EventProvider Id="InputWin32kProvider" Name="Microsoft-Windows-Win32k" NonPagedMemory="true" Level="5">
+      <!-- Contention and internal message queues; no per-event stack walk. -->
+      <Keywords>
+        <Keyword Value="0x10800000"/>
+      </Keywords>
+      <CaptureStateOnStart>
+        <Keyword Value="0x80000"/>
+      </CaptureStateOnStart>
+      <CaptureStateOnSave>
+        <Keyword Value="0x80000"/>
+      </CaptureStateOnSave>
+    </EventProvider>
+    <Profile Id="InputWin32k.Verbose.File" Name="InputWin32k" Description="Input lock and event queue diagnostics" DetailLevel="Verbose" LoggingMode="File">
+      <Collectors>
+        <SystemCollectorId Value="InputSystem">
+          <SystemProviderId Value="InputSystemProvider"/>
+        </SystemCollectorId>
+        <EventCollectorId Value="InputEvents">
+          <EventProviders>
+            <EventProviderId Value="InputWin32kProvider"/>
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="InputWin32k.Verbose.Memory" Name="InputWin32k" Description="Input lock and event queue diagnostics" Base="InputWin32k.Verbose.File" DetailLevel="Verbose" LoggingMode="Memory"/>
+  </Profiles>
+</WindowsPerformanceRecorder>

@@ -1,0 +1,77 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=3s test=4s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=6230866)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 3s]: t=0..3000ms
+
+[TESTWINDOW 4s]: t=3000..7000ms  -> close eIDE DURING THIS WINDOW
+
+[POST-CLOSE 12s]: t=7000..19000ms  (this is where user reports 2s freeze)
+
+===== HID stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+2475,4,7.0
+2525,8,7.1
+2575,4,7.0
+2775,1,0.0
+2975,1,0.0
+3025,1,0.0
+3175,1,0.0
+3525,4,6.9
+3575,7,7.1
+3625,8,7.2
+3675,4,7.3
+4125,6,7.1
+4175,7,7.4
+4225,7,14.0
+8575,2,6.5
+8625,7,7.1
+8675,8,7.5
+8725,3,22.0
+SUMMARY_POST_CLOSE_12s: samples=83, avg_Hz=7, max_inter_sample_gap_ms=4339.3
+ALERT_POST_CLOSE_12s: MAX GAP > 2000ms !!! -> mouse FROZE > 2 SECONDS (user reported)
+
+===== WH_MOUSE_LL stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+2475,4,7.0
+2525,8,7.0
+2575,4,7.0
+2775,1,0.0
+2975,1,0.0
+3025,1,0.0
+3175,1,0.0
+3525,4,7.0
+3575,7,7.1
+3625,8,7.0
+3675,4,7.0
+4125,6,7.1
+4175,7,7.4
+4225,7,14.1
+8575,2,7.1
+8625,8,7.0
+8675,7,7.1
+8725,3,21.1
+SUMMARY_POST_CLOSE_12s: samples=83, avg_Hz=7, max_inter_sample_gap_ms=4338.8
+ALERT_POST_CLOSE_12s: MAX GAP > 2000ms !!! -> mouse FROZE > 2 SECONDS (user reported)
+
+==== DONE ====

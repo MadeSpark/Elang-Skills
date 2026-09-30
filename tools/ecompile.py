@@ -3,7 +3,7 @@
 """无头编译易语言 .e -> 原生 exe/dll（走本套装自己的宿主支持库链路，零第三方依赖）。
 
     python ecompile.py <输入.e|文本目录> <输出.exe|输出.dll> [--kind 静态编译种类]
-                       [--fne <elang_addin.fne>] [--home <易语言目录>] [--e2txt <e2txt.exe>]
+                       [--fne <elang_addin.fne>] [--home <易语言目录>] [--etool <QAQ-ETool.exe>]
                        [--timeout 300] [--workdir <目录>] [--json] [-q]
     python ecompile.py <输入.e|文本目录> --check [--fast] [--json] [-q]
                        # 只要语法检查、不要产物（--fast = 毫秒级但不充分，见下）
@@ -50,7 +50,8 @@
 
 流程（真编译；`--check` 省掉产物等待）：
 
-  1. 输入是文本目录（含 代码/）时先 t2e 出 .e（e2txt）。
+  1. 输入是文本目录（含 代码/ 或 class/）时先 t2e 出 .e（QAQ-ETool，由同装的技能
+     qaq-etool-cli 提供；定位顺序见 etool.py）。
   2. mkcage 加壳：把本套装宿主库 elang_addin 登记进工程库表（绝不改原 .e）。
   3. elaunch --compile：临时投放 .fne 到 lib\\ → 启动独立 IDE → 宿主库进程内触发
      静态编译功能号（官方 FNST_RUN 家族，见 elang-debug 技能《接口与调用约定清单》）→
@@ -69,6 +70,14 @@
   static_dll     FN_STATIC_COMPILE_WINDOWS_DLL   静态编译为 Windows 动态链接库
   exe/console/dll                                    对应的非静态编译
   ecom           FN_COMPILE_WINDOWS_ECOM         编译为易模块（.ec）—— 易模块工程用这个
+
+易模块（--kind ecom）交付门禁（--ecom-validate 默认开启）
+=========================================================================
+编译成功 ≠ 可以交付。.ec 产物默认自动过两道门禁，不过就删掉候选并返回失败：
+  门禁1  头 8 字节 = CNWTEPRG（合法已编译易模块；t2e 产物伪装的一律拦下）
+  门禁3  反向抽取（e2t）成功、无 [错误] 且退出码 0；给了 --guard 还要命中
+         全部关键语句（丢代码的模块在这里现形，历史上已 3 次静默丢代码）。
+红线详见 --help 尾部。
 
 结果 JSON（--json；stdout 只放 JSON）：
   真编译 {"ok":true,"status":"ok","output":"…","outputSize":N,…}
@@ -91,6 +100,10 @@ import sys
 import tempfile
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import ec_guard                                             # noqa: E402
+import etool                                                # noqa: E402
+
 EXIT_OK, EXIT_ENV, EXIT_COMPILE, EXIT_DOCTOR = 0, 2, 3, 4
 SKILL_SCRIPTS = Path(__file__).resolve().parent
 SKILL_ROOT = SKILL_SCRIPTS.parent
@@ -100,6 +113,17 @@ KINDS = ("static", "static_exe", "static_console", "static_dll", "exe", "console
 # `--check` 失败时要保留现场（编译器的面板日志就在工作目录里），但**必须限量**：
 # 无限堆积会把 %TEMP% 撑满（实测一次会话就留了 73 个目录 / 6.6 MB）。
 KEEP_WORKDIRS = 10
+
+# 红线（2026-09-26 用户当面要求写进 skill/工具链，--help 里也展示）
+RED_LINES = """\n交付红线（违反任何一条都不准交付）:
+  1. .ec 必须由 .e 经官方 IDE 编译产出（头 8 字节 = CNWTEPRG）；
+     t2e 产物只是 .e 源码，严禁改扩展名/伪装成 .ec 部署。
+  2. QAQ-ETool 报 [错误] 或退出码 2（无法解析 / 未验证代码）⇒ 代码没转全 ⇒ 立即失败，
+     严禁继续编译。
+  3. 候选 .ec 部署前必须反向抽取（e2t）验证关键语句仍在；缺失 = 丢代码，不准交付
+     （--ecom-validate 默认开启；关键语句清单用 --guard 指定）。
+  4. 覆盖常用模块前必须先备份旧版。
+"""
 
 
 def out(msg: str) -> None:
@@ -129,8 +153,15 @@ def prune_workdirs(keep: int = KEEP_WORKDIRS) -> None:
 
 
 def find_tool(name: str, sub: str) -> Path | None:
-    """定位同套装技能里的脚本/资产：本技能根 → ~/.agents/skills → PATH 不适用。"""
-    cands = [SKILL_ROOT / sub / name,
+    """定位工具时优先工作区真源，再回退到已安装技能副本。"""
+    cands: list[Path] = []
+    # 开发工作区布局：tools/ 保存 Python 真源，src/addin/ 保存 FNE 真源产物。
+    # 不可优先命中 ~/.agents 的旧安装副本，否则本次修复不会实际生效。
+    if "scripts" in sub:
+        cands.append(SKILL_SCRIPTS / name)
+    elif "assets" in sub:
+        cands.append(SKILL_ROOT / "src" / "addin" / name)
+    cands += [SKILL_ROOT / sub / name,
              SKILL_ROOT.parent / sub / name,
              Path.home() / ".agents" / "skills" / sub / name]
     for c in cands:
@@ -139,19 +170,9 @@ def find_tool(name: str, sub: str) -> Path | None:
     return None
 
 
-def find_e2txt(explicit: str | None) -> str | None:
-    if explicit:
-        return explicit
-    env = os.environ.get("E2TXT")
-    if env and Path(env).is_file():
-        return env
-    found = shutil.which("e2txt")
-    if found:
-        return found
-    env_dir = os.environ.get("E2TXT_DIR")
-    if env_dir and (Path(env_dir) / "e2txt.exe").is_file():
-        return str(Path(env_dir) / "e2txt.exe")
-    return None
+def find_etool(explicit: str | None) -> str | None:
+    """QAQ-ETool：--etool → QAQ_ETOOL → 同级技能 qaq-etool-cli → ~/.agents → PATH。"""
+    return etool.find(explicit)
 
 
 def find_elang_dir(explicit: str | None) -> Path | None:
@@ -220,22 +241,69 @@ def ec_internal_name(path: Path) -> str | None:
     return None
 
 
+def validate_ec(dst: Path, tool: str | None, guard: str | None, work: Path) -> dict:
+    """候选 .ec 交付门禁（红线1+红线3）。返回 {"ok": bool, "error": str|None, ...}。
+
+    门禁1：头 8 字节必须是 CNWTEPRG（合法已编译易模块；t2e 产物伪装的一律不是）。
+    门禁3：反向抽取（QAQ-ETool -mode e2t）必须成功、无 [错误] 且退出码 0；
+           给了 --guard 时还必须命中全部关键语句/子程序体量规则。
+    失败时调用方必须把候选 .ec 删掉，绝不让坏模块流到部署位。
+    """
+    r: dict[str, object] = {"ok": True, "error": None}
+    try:
+        head = dst.open("rb").read(8)
+    except OSError as e:
+        return {"ok": False, "error": "门禁1 无法读取产物头: %s" % e}
+    if head != b"CNWTEPRG":
+        return {"ok": False,
+                "error": "门禁1 失败：头 8 字节 = %r ≠ b'CNWTEPRG'，不是合法已编译易模块"
+                         % head}
+    r["header"] = "CNWTEPRG"
+
+    if not tool:
+        return {"ok": False,
+                "error": "门禁3 无法执行：" + etool.NOT_FOUND +
+                         " 按红线3，未做反向抽取验证的 .ec 不准交付"}
+    audit = work / "audit"
+    p = etool.run(tool, "e2t", dst, audit, "-nosidecar")
+    has_txt = (audit / "代码").is_dir() or (audit / "class").is_dir()
+    if not p.ok or not has_txt:
+        return {"ok": False,
+                "error": "门禁3 失败：e2t 反向抽取未产出文本（rc=%s）。坏模块不准交付。\n%s"
+                         % (p.rc, (p.stderr or p.stdout)[-300:])}
+    pm = ec_guard.parse_error_block(p.stdout, p.stderr, rc=p.rc)
+    if pm:
+        return {"ok": False,
+                "error": "门禁3 失败：反向抽取没能完整还原代码（产物方法体损坏）。\n%s" % pm}
+    r["reverseExtract"] = str(audit)
+
+    if guard:
+        fails = ec_guard.check_text_dir(audit, guard)
+        if fails:
+            return {"ok": False,
+                    "error": "门禁3 失败：反向抽取关键语句缺失（丢代码，不准交付）：\n  - %s"
+                             % "\n  - ".join(fails)}
+        r["guard"] = "PASS (%s)" % os.path.basename(guard)
+    return r
+
+
 def doctor(args) -> int:
     mkcage = find_tool("mkcage.py", "elang-debug" + os.sep + "scripts")
     elaunch = find_tool("elaunch.py", "elang-debug" + os.sep + "scripts")
     fne = Path(args.fne) if args.fne else find_tool(
         "elang_addin.fne", "elang-debug" + os.sep + "assets")
-    e2txt = find_e2txt(args.e2txt)
+    tool = find_etool(args.etool)
     elang = find_elang_dir(args.home)
     checks = {
         "mkcage": str(mkcage) if mkcage else None,
         "elaunch": str(elaunch) if elaunch else None,
         "elang_addin_fne": str(fne) if fne else None,
-        "e2txt": e2txt,
+        "qaq_etool": tool,
         "elang_dir": str(elang) if elang else None,
         "static_linker_note": "静态编译要求 IDE 已配置过静态链接器（首次先在 IDE 手动静态编译一次）",
     }
-    ok_all = all([mkcage, elaunch, fne, elang])  # e2txt 仅文本目录输入时必需
+    # QAQ-ETool 是加壳（mkcage）、文本目录输入与 .ec 门禁的必需品
+    ok_all = all([mkcage, elaunch, fne, elang, tool])
     result = {"ok": ok_all, **checks}
     if args.json:
         print(json.dumps(result, ensure_ascii=False))
@@ -246,10 +314,9 @@ def doctor(args) -> int:
     return EXIT_OK if ok_all else EXIT_DOCTOR
 
 
-# e2txt 会把「本次转换的配置」（Dest / Level / NameStyle …）**就地写回文本目录的
-# `项目.etprj`** —— 也就是它会改写用户的输入目录，并把我们的临时路径写进别人的工程里。
-# ecompile 对外的承诺是「绝不改原工程」，所以这里快照 + 还原（连 mtime 一起还原，
-# 免得版本控制每次都报这个文件被改）。
+# ecompile 对外的承诺是「绝不改原工程」。t2e 读的是用户的文本目录，为防转换工具
+# 就地改写或新建 `项目.etprj`（把临时路径写进别人的工程），这里快照 + 还原
+# （连 mtime 一起还原，免得版本控制每次都报这个文件被改）。
 ETPRJ_NAMES = ("项目.etprj", "project.etprj")
 
 
@@ -270,12 +337,12 @@ def snapshot_etprj(src: Path) -> dict:
 
 
 def restore_etprj(snap: dict) -> list:
-    """还原被 e2txt 就地改写的 `项目.etprj`；返回实际被还原的文件名列表。"""
+    """还原被就地改写的 `项目.etprj`；返回实际被还原的文件名列表。"""
     fixed = []
     for p, orig in snap.items():
         try:
             if orig is None:
-                if p.exists():                 # 原本没有 ⇒ 是 e2txt 新建的，删掉才算还原
+                if p.exists():                 # 原本没有 ⇒ 是转换时新建的，删掉才算还原
                     p.unlink()
                     fixed.append(p.name + "（新建已删）")
                 continue
@@ -289,48 +356,59 @@ def restore_etprj(snap: dict) -> list:
     return fixed
 
 
-def t2e_if_dir(src: Path, e2txt: str | None, work: Path) -> tuple[Path, list]:
+def t2e_if_dir(src: Path, tool: str | None, work: Path) -> tuple[Path, list]:
     """文本目录 → .e。返回 (产物路径, 被还原的输入文件名列表)。"""
     if src.is_file():
         return src, []
     if not (src / "代码").is_dir() and not (src / "class").is_dir():
         raise SystemExit("输入既不是 .e 也不是文本目录（应含 代码/ 或 class/）: %s" % src)
-    if not e2txt:
-        raise SystemExit("文本目录输入需要 e2txt（--e2txt / E2TXT / PATH）")
+    if not tool:
+        raise SystemExit("文本目录输入需要 QAQ-ETool。" + etool.NOT_FOUND)
     dst = work / (src.stem + "_base.e")
     snap = snapshot_etprj(src)
-    r = subprocess.run([e2txt, "-mode", "t2e", "-src", str(src), "-dst", str(dst),
-                        "-enc", "UTF-8", "-level", "1", "-ns", "2"], capture_output=True)
+    r = etool.run(tool, "t2e", src, dst)
     restored = restore_etprj(snap)
-    if "SUCC" not in r.stdout.decode("gbk", "replace") or not dst.is_file():
-        err = r.stderr.decode("gbk", "replace")
-        if "AI调试宿主" in err or "elang_addin" in err:
-            raise SystemExit("输入 .e 已经加壳过（库表里已有本套装宿主库），请改用原始 .e；"
-                             "e2t 无法回读声明了未安装支持库的工程"
-                             "（会报「加载支持库失败」且不产出文本目录）")
-        raise SystemExit("t2e 失败（见上方 stderr 的 [错误] 行）: %s" % src)
+    if not r.ok or not dst.is_file():
+        raise SystemExit("t2e 失败: %s\n  %s" % (src, "\n  ".join((r.fatal + r.errors)[:5])
+                                                  or r.tail(300)))
+    # ★ 红线2 门禁：QAQ-ETool 默认宽松组包——绑定不了的语句会写成「未验证代码」，
+    #   照常 SUCC 并落盘，只以 [错误] + 退出码 2 提示。不查就是带着坏代码往下走，立即失败。
+    pm = ec_guard.parse_error_block(r.stdout, r.stderr, rc=r.rc)
+    if pm:
+        raise SystemExit("t2e 未能完整转换（红线2 门禁）: %s" % pm)
     return dst, restored
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(add_help=True)
+    ap = argparse.ArgumentParser(
+        epilog=RED_LINES, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("src", nargs="?", help="输入 .e 或文本目录")
     ap.add_argument("dst", nargs="?", help="输出 .exe / .dll（--check 时可省略）")
     ap.add_argument("--check", action="store_true",
                     help="语法兜底检查：不要产物，只判源码能否通过编译器的语法/语义静态检查")
+    ap.add_argument("--direct", action="store_true",
+                    help="直接编译输入 .e，跳过 mkcage 的 e2t→t2e 回写。"
+                         "适用于已有临时 FNE 投放能力且不能承受源码转换的工程。")
+    ap.add_argument("--guard", help="交付门禁的关键语句清单（ec_guard 格式）。"
+                                    "传给 mkcage 做 _ai.e 回读，也用于最终 .ec 的反向抽取验证")
+    ap.add_argument("--ecom-validate", action=argparse.BooleanOptionalAction, default=True,
+                    help="编译 .ec 后自动跑交付门禁（头 CNWTEPRG + 反向抽取 + --guard 关键语句），"
+                         "不过就删掉候选并返回失败。默认开启，--no-ecom-validate 可关")
     ap.add_argument("--fast", action="store_true",
                     help="与 --check 同用：改走官方预编译 FN_PRE_COMPILE（毫秒级）。"
                          "⚠️ 实测它对确定有问题的源码也一律返回成功，**不能单独当通过判据**")
     ap.add_argument("--visible", action="store_true",
-                    help="排障用：开着易语言窗口跑（等价 --headless off）")
-    ap.add_argument("--headless", choices=["park", "shide", "hide", "off"], default="hide",
-                    help="无头策略（默认 hide）：hide=隐藏+移出屏幕（屏幕零窗口）；"
-                         "shide=同上但主窗口走 SW_HIDE 启动；park=只移出屏幕、保持可见；off=显示窗口")
+                    help="显式显示易语言窗口（等价 --headless off）")
+    ap.add_argument("--headless", choices=["park", "shide", "hide", "off"],
+                    help="显式指定窗口策略。编译默认 off，避免隐藏守护链干扰 IDE 编译；"
+                         "hide=隐藏+移出屏幕；shide=同上但主窗口走 SW_HIDE 启动；"
+                         "park=只移出屏幕、保持可见；off=显示窗口")
     ap.add_argument("--kind", choices=KINDS, default="static_console",
                     help="静态编译种类（默认 static_console）")
     ap.add_argument("--fne", help="宿主库 elang_addin.fne（默认自动定位套装内副本）")
     ap.add_argument("--home", help="易语言安装目录（默认 ELANG_HOME → 注册表 → 文件关联）")
-    ap.add_argument("--e2txt", help="e2txt 可执行文件（输入为文本目录时需要）")
+    ap.add_argument("--etool", help="QAQ-ETool.exe 路径或其所在目录（默认 QAQ_ETOOL → "
+                                    "同级技能 qaq-etool-cli/assets → ~/.agents/skills → PATH）")
     ap.add_argument("--timeout", type=float, default=300.0, help="编译等待秒数（默认 300）")
     ap.add_argument("--workdir", help="工作目录（默认临时目录，保留加壳副本与日志）")
     ap.add_argument("--json", action="store_true")
@@ -351,7 +429,7 @@ def main() -> int:
     elang = find_elang_dir(args.home)
 
     missing = []
-    if not mkcage:
+    if not mkcage and not args.direct:
         missing.append("mkcage.py（elang-debug 技能 scripts/）")
     if not elaunch:
         missing.append("elaunch.py（elang-debug 技能 scripts/）")
@@ -379,9 +457,16 @@ def main() -> int:
         out(str(result["error"]))
         return EXIT_ENV
 
-    e2txt = find_e2txt(args.e2txt)
-    if src.is_dir() and not e2txt:
-        result["error"] = "文本目录输入需要 e2txt（--e2txt / E2TXT / PATH）"
+    try:
+        tool = find_etool(args.etool)
+    except SystemExit as e:
+        result["error"] = str(e)
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False))
+        out(str(result["error"]))
+        return EXIT_ENV
+    if src.is_dir() and not tool:
+        result["error"] = "文本目录输入需要 QAQ-ETool。" + etool.NOT_FOUND
         if args.json:
             print(json.dumps(result, ensure_ascii=False))
         out(str(result["error"]))
@@ -398,28 +483,37 @@ def main() -> int:
     work.mkdir(parents=True, exist_ok=True)
 
     try:
-        # 1) 文本目录 → .e（e2txt 会就地改写 `项目.etprj`，t2e_if_dir 内部已快照还原）
-        base_e, restored = t2e_if_dir(src, e2txt, work)
+        # 1) 文本目录 → .e（t2e_if_dir 内部对 `项目.etprj` 快照还原）
+        base_e, restored = t2e_if_dir(src, tool, work)
         if restored:
             result["inputRestored"] = restored
-        # 2) 加壳（绝不改原 .e）
-        ai_e = work / (base_e.stem + "_ai.e")
-        r = subprocess.run([sys.executable, str(mkcage), str(base_e), str(ai_e),
-                            "--fne", str(fne), "--json"], capture_output=True)
-        d = json.loads((r.stdout or b"{}").decode("utf-8", "replace"))
-        if not d.get("ok"):
-            result["error"] = "加壳失败: %s" % (d.get("error") or r.stderr[:300])
-            if args.json:
-                print(json.dumps(result, ensure_ascii=False))
-            out(str(result["error"]))
-            return EXIT_ENV
+        # 2) 默认加壳声明宿主库；--direct 时由 elaunch 临时投放 FNE 后直接编译原 .e。
+        if args.direct:
+            ai_e = base_e
+            result["direct"] = True
+        else:
+            ai_e = work / (base_e.stem + "_ai.e")
+            mc_cmd = [sys.executable, str(mkcage), str(base_e), str(ai_e),
+                      "--fne", str(fne), "--json"]
+            if args.guard:
+                mc_cmd += ["--guard", args.guard]
+            r = subprocess.run(mc_cmd, capture_output=True)
+            d = json.loads((r.stdout or b"{}").decode("utf-8", "replace"))
+            if not d.get("ok"):
+                result["error"] = "加壳失败: %s" % (d.get("error") or r.stderr[:300])
+                if args.json:
+                    print(json.dumps(result, ensure_ascii=False))
+                out(str(result["error"]))
+                return EXIT_ENV
+            if d.get("guard"):
+                result["cageGuard"] = d["guard"]
         # 3) 无头编译 / 语法兜底检查
         cmd = [sys.executable, str(elaunch), str(ai_e),
                "--timeout", str(args.timeout), "--fne", str(fne),
                "--home", str(elang), "--json"]
         if args.visible:
             cmd += ["--headless", "off"]
-        elif args.headless and args.headless != "hide":
+        elif args.headless:
             cmd += ["--headless", args.headless]
         if args.check and args.fast:
             # 快速模式：官方 FN_PRE_COMPILE（毫秒级）。**不充分**，见 docstring。
@@ -464,6 +558,8 @@ def main() -> int:
                                        "结论未知（**不能当通过**）")
                 else:
                     result["error"] = "语法检查未能完成（status=%s）" % d.get("status")
+                    if d.get("error"):      # elaunch 前置条件失败时的原因（别吞掉）
+                        result["error"] += "：%s" % d["error"]
         elif d.get("ok") and dst.is_file() and dst.stat().st_size > 0:
             result["ok"] = True
             result["output"] = str(dst)
@@ -484,6 +580,20 @@ def main() -> int:
                             "编译期 IDE 会直接崩溃（0xc0000005，无任何报错）。"
                             "请把产物重命名为 %s.ec，或让工程名与目标模块名一致后重编译。"
                             % (inner, want, inner, inner))
+                # ★ 交付门禁（--ecom-validate 默认开启）：编译成功 ≠ 可以交付。
+                #   门禁1 头 = CNWTEPRG；门禁3 反向抽取无 [错误] 且退出码 0 +
+                #   --guard 关键语句全命中。不过 ⇒ 删掉候选，绝不让坏模块流到部署位。
+                if args.ecom_validate:
+                    gate = validate_ec(dst, tool, args.guard, work)
+                    result["gate"] = {k: v for k, v in gate.items() if k != "ok"}
+                    if not gate["ok"]:
+                        result["ok"] = False
+                        result["error"] = gate["error"]
+                        result["candidateDeleted"] = True
+                        try:
+                            dst.unlink()
+                        except OSError:
+                            result["candidateDeleted"] = False
         else:
             result["error"] = "编译未产出（status=%s）" % d.get("status")
     finally:

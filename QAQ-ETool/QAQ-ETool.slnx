@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Probe/Probe.csproj" />
+    <Project Path="src/QAQ.ETool.Core/QAQ.ETool.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/QAQ.ETool.Cli/">
+    <Project Path="src/QAQ.ETool.Cli/QAQ-ETool.csproj" />
+  </Folder>
+  <Folder Name="/vendor/" />
+  <Folder Name="/vendor/EProjectFile/">
+    <Project Path="vendor/EProjectFile/EProjectFile/EProjectFile.csproj" />
+  </Folder>
+</Solution>

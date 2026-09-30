@@ -4,7 +4,8 @@
 rtcheck —— 易语言文本格式自检（双次往返收敛检验）
 
 为什么是「双次往返」而不是「一次往返」：
-    e2txt 会把文本规范化（空行按规则重写、丢掉 .支持库 行、补 4 空格占位行…），
+    转换工具 QAQ-ETool（由同装的技能 qaq-etool-cli 提供）会把文本规范化
+    （空行按规则重写、丢掉 .支持库 行、补 4 空格占位行…），
     所以「原始输入 == 回读结果」永远不成立，不能作为判据。
     正确判据是**收敛性**：文本 → t2e → e2t 得到规范形；规范形再走一遍应当**逐字节不变**。
     收敛即说明文本格式正确。
@@ -26,34 +27,8 @@ import subprocess
 import sys
 import tempfile
 
-def find_e2txt():
-    """定位 e2txt：环境变量 E2TXT → PATH。**不假定任何安装路径**（技能要给任何机器用）。"""
-    env = os.environ.get("E2TXT")
-    if env and os.path.exists(env):
-        return env
-    for name in ("e2txt", "e2txt.exe", "e2txt.cmd", "e2txt.bat"):
-        p = shutil.which(name)
-        if p:
-            return p
-    return env or "e2txt"        # 都没找到就交回系统，让报错信息保持可读
-
-
-E2TXT = find_e2txt()
-E2TXT_DIR = os.path.dirname(os.path.abspath(E2TXT))
-
-
-def _drop_stray(work):
-    """e2txt 的 t2e 会在**自身目录**里建一个与「-dst 父目录名」同名的空目录。
-
-    这是 e2txt 的固定行为（实测：-dst 落在 x\\y\\p1.e 就会多出 <e2txt目录>\\y\\）。
-    这里只删**空目录**，且只在它确实是本次 work 目录的同名副本时动手。
-    """
-    stray = os.path.join(E2TXT_DIR, os.path.basename(os.path.normpath(work)))
-    try:
-        if os.path.isdir(stray) and not os.listdir(stray):
-            os.rmdir(stray)
-    except OSError:
-        pass
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import etool  # noqa: E402
 
 DECL_RE = re.compile(r"^\s*\.(局部变量|程序集变量|参数)\s+(.+?)\s*$")
 # `.常量 名, "值"` 的值字段本身就是半角引号（值若是文本，再在内部用全角 “ ”），
@@ -63,12 +38,15 @@ CONST_RE = re.compile(r"^\s*\.常量\s")
 
 # ---------------- 基础 ----------------
 
-def run_e2txt(argv, timeout=900):
-    """e2txt 退出码恒为 0，成败信息分在 stdout(SUCC:) 与 stderr(ERROR:/[错误])"""
-    p = subprocess.run([E2TXT] + argv, capture_output=True, timeout=timeout)
-    so = p.stdout.decode("gbk", errors="replace")
-    se = p.stderr.decode("gbk", errors="replace")
-    return "SUCC:" in so, so, se
+_TOOL = None
+
+
+def tool():
+    """QAQ-ETool 路径（首次调用时定位；找不到直接报错退出）。"""
+    global _TOOL
+    if _TOOL is None:
+        _TOOL = etool.require()
+    return _TOOL
 
 
 def read_tree(root):
@@ -127,7 +105,7 @@ def detect_ns(src):
     """检测文本目录用的是哪种命名风格。
 
     NameStyle=2 是「中文」风格（`代码/` `配置/` `窗口/` `资源/` `常量.e.txt` `排序.list.txt`），
-    e2txt GUI 默认就是这套；不传 `-ns` 时 e2t 会输出英文风格（`class/` `config/` …），
+    本套技能生成的项目都用这套；不传 `-ns` 时 e2t 会输出英文风格（`class/` `config/` …），
     两者文件名对不上，会把全部文件误报成「丢失」。所以这里按实际目录名自动选择。
     """
     for d in ('代码', '配置', '窗口', '资源'):
@@ -141,15 +119,20 @@ def roundtrip(src, work, tag, ns=None):
     e = os.path.join(work, f"{tag}.e")
     out = os.path.join(work, f"{tag}_txt")
     ns_args = ["-ns", ns] if ns else []
-    ok, so, se = run_e2txt(["-mode", "t2e", "-src", src, "-dst", e,
-                            "-enc", "UTF-8", "-level", "2"] + ns_args)
-    errs = [l for l in se.splitlines() if "[错误]" in l]
-    if not ok or not os.path.exists(e):
+    # QAQ-ETool 的 .qaq/sidecar.json 会让「未改动文本」的 t2e 逐字节还原上一个 .e，
+    # 第二遍往返因此必然收敛，收敛检验就失去意义。本工具检验的是**文本本身**，故关掉旁路文件。
+    r = etool.run(tool(), "t2e", src, e, "-nosidecar")
+    r.warn_partial("t2e")
+    errs = r.fatal + r.errors
+    if r.rc == 2 and not r.errors:
+        # 只有 [警告] 也可能退出码 2：无法识别的写法被「按未验证代码写入」，同样算问题
+        errs = errs + [w for w in r.warnings if "未验证" in w] or ["t2e 退出码 2：" + r.info()]
+    if not r.ok or not os.path.exists(e):
         return False, None, len(errs), errs[:5]
-    ok2, so2, se2 = run_e2txt(["-mode", "e2t", "-src", e, "-dst", out,
-                               "-enc", "UTF-8", "-level", "2"] + ns_args)
-    if not ok2:
-        return False, None, len(errs), errs[:5]
+    r2 = etool.run(tool(), "e2t", e, out, "-level", "2", "-nosidecar", *ns_args)
+    r2.warn_partial("e2t")
+    if not r2.ok:
+        return False, None, len(errs), (errs + r2.fatal + r2.errors)[:5]
     return True, out, len(errs), errs[:5]
 
 
@@ -206,12 +189,19 @@ def lint_source(T):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="易语言文本格式双次往返收敛检验")
+    ap = argparse.ArgumentParser(
+        description="易语言文本格式双次往返收敛检验（转换工具：QAQ-ETool）")
     ap.add_argument("src", help="待检查的文本目录")
     ap.add_argument("--tmp", help="临时工作目录（默认系统临时目录）")
     ap.add_argument("--keep", action="store_true", help="保留临时产物")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
+    # 输出被重定向时 Windows 默认 GBK，✓ ✗ ★ 这类符号会让 print 直接抛 UnicodeEncodeError
+    for s in (sys.stdout, sys.stderr):
+        try:
+            s.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
 
     src = os.path.abspath(args.src)
     if not os.path.isdir(src):
@@ -225,11 +215,10 @@ def main():
 
         def _cleanup():
             shutil.rmtree(work, ignore_errors=True)
-            _drop_stray(work)
 
         atexit.register(_cleanup)
 
-    rep = {"src": src, "work": work, "ns": detect_ns(src)}
+    rep = {"src": src, "work": work, "ns": detect_ns(src), "etool": tool()}
 
     # --- 第一遍：原文 → 规范形1 ---
     ns = rep["ns"]
@@ -296,7 +285,7 @@ def main():
     rep["style"] = {"tab_files": tabs[:5], "bom_missing": no_bom[:5],
                     "crlf_missing": no_crlf[:5], "indent_bad": indent_bad[:10]}
 
-    # --- 原文 vs 规范形1（信息性：e2txt 改写了哪些写法；用多重集合差集，避免对不齐的噪声）---
+    # --- 原文 vs 规范形1（信息性：转换工具改写了哪些写法；用多重集合差集，避免对不齐的噪声）---
     from collections import Counter
     norm_src = []
     for rel in T0:
@@ -314,8 +303,11 @@ def main():
     lint = lint_source(T0)
     rep["source_lint"] = {"count": len(lint), "items": lint[:15]}
 
+    # t2e 报 [错误] 时，绑定失败的语句会被写成「未验证代码」照样往返、照样收敛，
+    # 所以收敛之外还必须要求两遍 t2e 都没有 [错误]。
     rep["passed"] = (converge and not indent_bad and not tabs and not no_bom
-                     and not no_crlf and not rep["files"]["lost_in_pass1"])
+                     and not no_crlf and not rep["files"]["lost_in_pass1"]
+                     and nerr == 0 and nerr2 == 0)
     return _emit(rep, args)
 
 
@@ -324,6 +316,7 @@ def _emit(rep, args):
         print(json.dumps(rep, ensure_ascii=False, indent=2))
     else:
         print(f"来源目录: {rep['src']}")
+        print(f"转换工具: QAQ-ETool  {rep['etool']}")
         if rep.get("fatal"):
             print(f"✗ {rep['fatal']}")
             return 1
@@ -358,7 +351,7 @@ def _emit(rep, args):
 
         n = rep["source_normalized"]
         if n["count"]:
-            print(f"\ne2txt 规范化了你的原文 {n['count']} 处（信息性，不是错误）:")
+            print(f"\nQAQ-ETool 规范化了你的原文 {n['count']} 处（信息性，不是错误）:")
             for x in n["sample"]:
                 print(f"      {x}")
 
@@ -373,10 +366,10 @@ def _emit(rep, args):
                           else "✓ 往返已收敛" if rep["passed"]
                           else "✗ 存在问题，见上"))
 
-        # 数组位提示：命令行版 e2txt.exe 会给局部变量/程序集变量无条件加数组位（见 规范 §7）
+        # 数组位提示：回读成「数组」的局部变量/程序集变量（见 规范 §7）
         arr = a.get("polluted", 0)
         if arr:
-            print(f"\n注意: 上面有 {arr} 条变量回读成了「数组」。这只是 e2txt 自己的解读口径，**不要去清** ——")
+            print(f"\n注意: 上面有 {arr} 条变量回读成了「数组」。这只是 e2t 回读的解读口径，**不要去清** ——")
             print("      实测把这一位清掉之后，易语言 IDE 会直接打不开该 .e；原样交付则能打开、能编译运行。")
             print("      唯一的判据是：用户能不能在 IDE 里打开它并编译运行。")
     return 0 if (rep.get("passed") and rep.get("source_lint", {}).get("count", 0) == 0) else 1

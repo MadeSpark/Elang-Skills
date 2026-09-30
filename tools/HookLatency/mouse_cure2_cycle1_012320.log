@@ -1,0 +1,51 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=3s test=4s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=10683690)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 3s]: t=0..3000ms
+
+[TESTWINDOW 4s]: t=3000..7000ms  -> close eIDE DURING THIS WINDOW
+
+[POST-CLOSE 12s]: t=7000..19000ms  (this is where user reports 2s freeze)
+
+===== HID stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== HID stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+8625,3,7.2
+8675,7,8.6
+8725,7,7.3
+8775,7,7.3
+8825,7,7.2
+8875,7,7.2
+SUMMARY_POST_CLOSE_12s: samples=38, avg_Hz=3, max_inter_sample_gap_ms=8.6
+
+===== WH_MOUSE_LL stream BASELINE (3000ms @t+0ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_BASELINE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_BASELINE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream TESTWINDOW_CLOSE (4000ms @t+3000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+SUMMARY_TESTWINDOW_CLOSE: samples=0, avg_Hz=0, max_inter_sample_gap_ms=0.0
+ALERT_TESTWINDOW_CLOSE: NO SAMPLES (sampler not recording mouse events, method broken)
+
+===== WH_MOUSE_LL stream POST_CLOSE_12s (12000ms @t+7000ms start, 50ms bins) =====
+t_ms_rel_phase,binsamples,maxgap_ms_in_bin
+8625,3,7.2
+8675,7,7.1
+8725,7,7.2
+8775,7,7.3
+8825,7,7.1
+8875,7,7.1
+SUMMARY_POST_CLOSE_12s: samples=38, avg_Hz=3, max_inter_sample_gap_ms=7.3
+
+==== DONE ====

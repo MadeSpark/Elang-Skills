@@ -8,11 +8,9 @@ efix —— 读写易语言 .e 里「变量 / 参数声明记录」的工具
 
     **t2e 产物里的变量 flags bit3 不能清，原样交付就行。**
 
-      · 同一文本目录、同一时刻，CLI `e2txt.exe` 与 GUI `e2txt-gui.exe` 的 t2e 产物
-        **逐字节完全相同** —— 不存在「GUI 干净、CLI 脏」这回事，早先的归因是错的。
       · 用本工具 `apply` 清掉 bit3 之后，**易语言 IDE 直接打不开该 .e**；
         未清的原样产物则能打开、能成功编译运行（用户实测）。
-      · `e2t` 回读时把 bit3 显示成 `, 数组`，那只是 e2txt 自己的解读口径，
+      · `e2t` 回读时若把 bit3 显示成 `, 数组`，那只是回读的解读口径，
         IDE 并不把该变量当数组。
 
     ⇒ **交付 t2e 产物时请直接用，不要跑 apply。**
@@ -44,6 +42,9 @@ efix —— 读写易语言 .e 里「变量 / 参数声明记录」的工具
 用法：
     python efix.py check --e out.e --src 文本目录
     python efix.py apply --e out.e --src 文本目录 [--out 新文件.e]
+
+转换工具：apply 的回读护栏调用 QAQ-ETool（由同装的技能 qaq-etool-cli 提供）。
+    定位顺序见 etool.py：QAQ_ETOOL → 同级技能 assets → ~/.agents/skills → PATH。
 """
 
 import argparse
@@ -55,19 +56,9 @@ import struct
 import subprocess
 import sys
 
-def find_e2txt():
-    """定位 e2txt：环境变量 E2TXT → PATH。**不假定任何安装路径**（技能要给任何机器用）。"""
-    env = os.environ.get("E2TXT")
-    if env and os.path.exists(env):
-        return env
-    for name in ("e2txt", "e2txt.exe", "e2txt.cmd", "e2txt.bat"):
-        p = shutil.which(name)
-        if p:
-            return p
-    return env or "e2txt"        # 都没找到就交回系统，让报错信息保持可读
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import etool  # noqa: E402
 
-
-E2TXT = find_e2txt()
 DECL_RE = re.compile(r"^\s*\.(局部变量|程序集变量|参数)\s+(.+?)\s*$")
 SUB_RE = re.compile(r"^\s*\.子程序\s+(\S+)")
 
@@ -125,8 +116,14 @@ def source_decls(src_dir):
 def e2t(e_path, out_dir):
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)
-    subprocess.run([E2TXT, "-mode", "e2t", "-src", e_path, "-dst", out_dir,
-                    "-enc", "UTF-8", "-level", "2"], capture_output=True)
+    tool = etool.require()
+    r = etool.run(tool, "e2t", e_path, out_dir, "-level", "2", "-nosidecar")
+    if not r.ok:
+        # 回读失败时 before/after 都是空集合，护栏会「空对空」误放行，必须在这里拦住
+        print(f"[efix] ✗ e2t 回读失败（QAQ-ETool: {tool}，rc={r.rc}）", file=sys.stderr)
+        print("      " + (r.stderr or r.stdout).strip()[-400:], file=sys.stderr)
+        raise SystemExit(2)
+    r.warn_partial("e2t")
     return out_dir
 
 
@@ -167,7 +164,8 @@ def only_array_removals(before, after):
 # ---------------- 主流程 ----------------
 
 def main():
-    ap = argparse.ArgumentParser(description="检查/修补 e2txt t2e 的数组位缺陷")
+    ap = argparse.ArgumentParser(
+        description="检查/修补 t2e 产物的变量数组位（回读护栏用 QAQ-ETool）")
     ap.add_argument("mode", choices=["check", "apply"])
     ap.add_argument("--e", required=True, help="t2e 产出的 .e 文件")
     ap.add_argument("--src", required=True, help="对应的源文本目录")

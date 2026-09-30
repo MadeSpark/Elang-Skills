@@ -1,0 +1,19 @@
+# 官方 SDK 头文件（飞扬软件版权，本地从 D:\ides\e\sdk\cpp\elib 复制，不入库）
+vendor/esdk/
+
+# 构建产物
+*.exe
+*.o
+*.obj
+*.a
+*.dll
+build/
+
+# 测试运行产物
+tests/baseline/
+tests/out/
+tests/scratch/
+
+# Python
+__pycache__/
+*.pyc

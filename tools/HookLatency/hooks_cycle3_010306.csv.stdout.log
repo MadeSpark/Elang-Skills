@@ -1,0 +1,15 @@
+==== EnumerateLLHooks: snapshot every 100ms for 22s, align to QPC us ====
+CSV columns: t_us_rel_start,hook_type,hhook_x64,hookproc_x64,hmod_x64,owner_pid,owner_procname,module_fullpath,note
+2207682,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_1
+4948556,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,2336,e,,PID=2336_alive_at_snap_2
+4950271,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_2
+8482095,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,2336,e,,PID=2336_alive_at_snap_3
+8483059,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_3
+11770701,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,2336,e,,PID=2336_alive_at_snap_4
+11776282,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_4
+15031560,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,2336,e,,PID=2336_alive_at_snap_5
+15031898,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_5
+18261961,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_6
+20421648,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_7
+22575536,PROCESS_MARKER_e_EXE_ALIVE,0,0,0,73516,e,,PID=73516_alive_at_snap_8
+==== EnumerateLLHooks DONE. 8 snapshots. Align this CSV's t_us with MouseRateSampler's t_us (both QPC relative from process start) to pinpoint stale wild hook exact PID+DLL.

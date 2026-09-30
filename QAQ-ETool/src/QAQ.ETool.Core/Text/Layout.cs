@@ -1,0 +1,61 @@
+namespace QAQ.ETool.Core.Text;
+
+/// <summary>
+/// 文本目录布局：英文（默认）/ 中文（-ns 2）。对照表见 docs/e2txt-format-spec.md §2.1
+/// </summary>
+public sealed class Layout
+{
+    public string Class { get; private init; } = "";
+    public string Config { get; private init; } = "";
+    public string Form { get; private init; } = "";
+    public string Resource { get; private init; } = "";
+    public string Module { get; private init; } = "";
+    public string OrderList { get; private init; } = "";
+    public string DirsDesc { get; private init; } = "";
+    public string LibConfig { get; private init; } = "";
+    public string SystemConfig { get; private init; } = "";
+    public string UserConfig { get; private init; } = "";
+    public string EcInitConfig { get; private init; } = "";
+    public string EpackFilesConfig { get; private init; } = "";
+    public string ResourceDesc { get; private init; } = "";
+    public string Const { get; private init; } = "";
+    public string Dll { get; private init; } = "";
+    public string Struct { get; private init; } = "";
+    public string Global { get; private init; } = "";
+    public string Icon { get; private init; } = "";
+    public string Project { get; private init; } = "";
+    /// <summary>project.etprj 中的 NameStyle 值</summary>
+    public int NameStyle { get; private init; }
+
+    public static readonly Layout English = new()
+    {
+        Class = "class", Config = "config", Form = "form", Resource = "resource", Module = "module",
+        OrderList = "order.list.txt", DirsDesc = "dirs.desc.json",
+        LibConfig = "lib.config.json", SystemConfig = "system.config.json", UserConfig = "user.config.json",
+        EcInitConfig = "ec.init.config.json", EpackFilesConfig = "epack.files.config.json",
+        ResourceDesc = "resource.desc.json",
+        Const = "const.e.txt", Dll = "dll.e.txt", Struct = "struct.e.txt", Global = "global.e.txt",
+        Icon = "icon.ico", Project = "project.etprj", NameStyle = 1,
+    };
+
+    public static readonly Layout Chinese = new()
+    {
+        Class = "代码", Config = "配置", Form = "窗口", Resource = "资源", Module = "模块",
+        OrderList = "排序.list.txt", DirsDesc = "目录.desc.json",
+        LibConfig = "支持库.config.json", SystemConfig = "系统.config.json", UserConfig = "用户.config.json",
+        EcInitConfig = "模块.初始化.config.json", EpackFilesConfig = "易包.文件.config.json",
+        ResourceDesc = "资源.desc.json",
+        Const = "常量.e.txt", Dll = "DLL.e.txt", Struct = "自定义类型.e.txt", Global = "全局变量.e.txt",
+        Icon = "图标.ico", Project = "项目.etprj", NameStyle = 2,
+    };
+
+    public static Layout FromNs(string? ns) => ns == "2" ? Chinese : English;
+
+    /// <summary>t2e：探测文本目录用的是哪种布局</summary>
+    public static Layout Detect(string dir)
+    {
+        if (Directory.Exists(Path.Combine(dir, Chinese.Class)) || File.Exists(Path.Combine(dir, Chinese.Project)))
+            return Chinese;
+        return English;
+    }
+}

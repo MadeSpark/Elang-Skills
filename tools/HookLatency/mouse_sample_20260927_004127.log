@@ -1,0 +1,7 @@
+==== MouseRateSampler FIXED v2 (own HWND_MESSAGE sink) baseline=5s test=3s post=12s ====
+RegisterRawInputDevices OK (sink hwnd=4522444)
+WH_MOUSE_LL installed: OK
+
+[BASELINE 5s]: t=0..5000ms
+
+[TESTWINDOW 3s]: t=5000..8000ms  -> close eIDE DURING THIS WINDOW

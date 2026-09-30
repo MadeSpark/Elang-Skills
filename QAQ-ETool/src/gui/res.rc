@@ -1,0 +1,33 @@
+/* res.rc —— manifest 与版本信息（UTF-8 源） */
+#pragma code_page(65001)
+#include <windows.h>
+
+1 24 "qaq-etool-gui.manifest"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+FILEFLAGSMASK   0x3fL
+FILEFLAGS       0x0L
+FILEOS          VOS_NT_WINDOWS32
+FILETYPE        VFT_APP
+FILESUBTYPE     VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "CompanyName",      "QAQ-ETool"
+            VALUE "FileDescription",  "QAQ-ETool 图形界面"
+            VALUE "FileVersion",      "1.0.0.0"
+            VALUE "InternalName",     "qaq-etool-gui"
+            VALUE "OriginalFilename", "qaq-etool-gui.exe"
+            VALUE "ProductName",      "QAQ-ETool"
+            VALUE "ProductVersion",   "1.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0804, 1200
+    END
+END

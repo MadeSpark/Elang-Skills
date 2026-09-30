@@ -1,0 +1,26 @@
+HookInspector: WH_MOUSE_LL=OK WH_KEYBOARD_LL=OK. baseline=3s test=4s post=15s
+Note: We run LAST in LIFO chain -> our hook runs FIRST. We measure CallNextHookEx() duration -> >500ms => chain STUCK (the 2s freeze you feel).
+
+[BASELINE 3s t=0..3000ms] DLL holders: 
+end baseline DLL: 
+
+[TESTWINDOW 4s t=3000..7000ms] -> close eIDE NOW during this interval. (OPEN e.exe -> WAIT hooks install -> CLOSE)
+  DLL t+500ms: 
+  DLL t+1000ms: 
+  DLL t+1500ms: 
+  DLL t+2000ms: 
+  DLL t+2500ms: 
+  DLL t+3000ms: 
+  DLL t+3500ms: 
+  DLL t+4000ms: 
+
+[POST-CLOSE 15s t=7000..22000ms] -> (freeze phase)
+  DLL post t+1250ms: 
+  DLL post t+2500ms: 
+  DLL post t+3750ms: 
+  DLL post t+5000ms: 
+  DLL post t+6250ms: 
+  DLL post t+7500ms: 
+  DLL post t+8750ms: 
+  DLL post t+10000ms: 
+  DLL post t+11250ms: 

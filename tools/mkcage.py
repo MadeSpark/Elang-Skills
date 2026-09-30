@@ -4,7 +4,7 @@ r"""mkcage.py —— 给「用户的 .e」加壳：让它在被易语言 IDE 打
 
 原理
 ====
-`e2txt` 的 `t2e` 读「支持库清单」的**唯一有效通道**是工程文本里的 lib 配置文件
+QAQ-ETool 的 `t2e` 读「支持库清单」的**唯一有效通道**是工程文本里的 lib 配置文件
 （英文布局 `config/lib.config.json`；中文布局 `配置/支持库.config.json`）。
 在文本 `类/*.e.txt` 里写 `.支持库 <key>` **不生效**。
 
@@ -15,9 +15,17 @@ r"""mkcage.py —— 给「用户的 .e」加壳：让它在被易语言 IDE 打
 ====
     python mkcage.py <输入.e> [<输出_ai.e>]
       --fne <path>     本库 .fne 路径（默认：脚本同目录的 ../assets/elang_addin.fne）
+      --guard <path>   关键语句门禁文件（ec_guard.py 格式）。给出后：
+                       ① 每次 e2t/t2e 出现 [错误] 或退出码 2 立即失败（红线2）；
+                       ② 对产物 _ai.e 做 e2t 回读并验证关键语句（红线2 的双保险；
+                          若 e2t 无法回读，则跳过本步，
+                          由 ecompile 对最终 .ec 的反向抽取门禁兜底）。
       --json           结果以 JSON 打到 stdout
       -q, --quiet      不打印过程
     退出码：0 = 成功；非 0 = 失败。
+
+红线（2026-09-26）：.ec 必须由 .e 编译产出，t2e 产物严禁改扩展名当 .ec 部署；
+e2t / t2e 出现 [错误] 或退出码 2 一律失败，严禁带着没转全的代码继续编译。
 
 成功判据（两道都要过）
 ======================
@@ -33,7 +41,8 @@ r"""mkcage.py —— 给「用户的 .e」加壳：让它在被易语言 IDE 打
 
 依赖
 ====
-    仅 Python 3.9+ 标准库；`e2txt` 需要可用（见下）。
+    仅 Python 3.9+ 标准库；转换工具 QAQ-ETool 由同装的技能 qaq-etool-cli 提供
+    （定位顺序见 etool.py：环境变量 QAQ_ETOOL → 同级技能 assets → ~/.agents/skills → PATH）。
 """
 from __future__ import annotations
 
@@ -45,6 +54,10 @@ import shutil
 import subprocess
 import sys
 import tempfile
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ec_guard                                             # noqa: E402
+import etool                                                # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -60,23 +73,6 @@ CFG_CANDIDATES = [
     os.path.join("config", "lib.config.json"),
     os.path.join("配置", "支持库.config.json"),
 ]
-
-
-def find_e2txt() -> str:
-    """按 `E2TXT` 环境变量 → `PATH` 的顺序找 e2txt；都没有则报清晰错误。"""
-    env = os.environ.get("E2TXT")
-    if env:
-        if os.path.isfile(env):
-            return env
-        which = shutil.which(env)
-        if which:
-            return which
-        raise SystemExit("E2TXT 指向的文件不存在：%s" % env)
-    which = shutil.which("e2txt")
-    if which:
-        return which
-    raise SystemExit(
-        "找不到 e2txt。请把 e2txt 加进 PATH，或设环境变量 E2TXT=<e2txt 可执行文件路径>。")
 
 
 def md5f(p: str) -> str:
@@ -140,14 +136,9 @@ def dump_libinfo(fne: str) -> dict:
     return info
 
 
-def run_e2txt(e2txt: str, mode: str, src: str, dst: str, extra=None):
-    cmd = [e2txt, "-mode", mode, "-src", src, "-dst", dst, "-level", "2"]
-    if extra:
-        cmd += extra
-    p = subprocess.run(cmd, capture_output=True, timeout=900)
-    return (p.returncode,
-            p.stdout.decode("gbk", errors="replace"),
-            p.stderr.decode("gbk", errors="replace"))
+def has_text(txt_dir: str) -> bool:
+    """e2t 是否真的产出了文本工程（英文布局 class/，中文布局 代码/ 或 类/）。"""
+    return any(os.path.isdir(os.path.join(txt_dir, d)) for d in ("class", "代码"))
 
 
 def find_cfg(txt_dir: str):
@@ -188,7 +179,8 @@ def patch_cfg(cfg_path: str, info: dict):
     return (not existed), len(data), existed
 
 
-def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False) -> dict:
+def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False,
+           guard: str = None) -> dict:
     """加壳主流程；成功返回结果 dict，失败抛 SystemExit。"""
 
     def say(msg=""):
@@ -206,9 +198,9 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
         fne = DEFAULT_FNE
     fne = os.path.abspath(fne)
 
-    e2txt = find_e2txt()
+    tool = etool.require()
     info = dump_libinfo(fne)
-    say("[0/4] e2txt = %s" % e2txt)
+    say("[0/4] QAQ-ETool = %s" % tool)
     say("      本库(%s): KEY=%s GUID=%s NAME=%s VER=%d.%d"
         % (info["src"], info["key"], info["guid"], info["name"], info["major"], info["minor"]))
 
@@ -216,21 +208,18 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
     txt_dir = os.path.join(tmp, "text")
     try:
         say("[1/4] e2t: %s -> <tmp>/text" % user_e)
-        rc, so, se = run_e2txt(e2txt, "e2t", user_e, txt_dir, ["-enc", "UTF-8"])
-        # 成败判据（2026-09-23 修正）：只看 rc / SUCC: / 文本目录是否实产。
-        # 旧判据是「stderr 里出现 [错误] 就算失败」，但工程一旦引用了**本机未安装的支持库**，
-        # e2t 就会往 stderr 刷一堆
-        #   「解析【类型】名称 失败！[支持库] 20994 ...」
-        # 那是**非致命**的表达降级：stdout 照常打 SUCC:，文本目录也写得完整。
-        # 按旧判据，这类工程会一律「加壳失败」，等于整条无头编译链路对它们不可用。
-        has_txt = (os.path.isdir(os.path.join(txt_dir, "代码"))
-                   or os.path.isdir(os.path.join(txt_dir, "class")))
-        if rc != 0 or "SUCC:" not in so or not os.path.isdir(txt_dir) or not has_txt:
-            raise SystemExit("e2t 失败 rc=%s\nSTDOUT:%s\nSTDERR:%s"
-                             % (rc, so[-400:], se[-400:]))
-        n_err = sum(1 for ln in se.splitlines() if "[错误]" in ln)
-        if n_err:
-            say("      (e2t 提示 %d 条，非致命：工程引用了本机未安装的支持库)" % n_err)
+        r = etool.run(tool, "e2t", user_e, txt_dir, "-level", "2")
+        # 成败判据：已产出（SUCC: 且退出码 ≠ 1）+ 文本目录实产。
+        # 工程引用了**本机未安装的支持库**时只会打「[警告] 支持库未能加载」，
+        # 那是非致命的表达降级，文本目录照样完整。
+        if not r.ok or not has_text(txt_dir):
+            raise SystemExit("e2t 失败 " + r.tail())
+        for ln in r.warnings[:3]:
+            say("      (e2t 提示，非致命) %s" % ln[:160])
+        # ★ 红线2 门禁：[错误] / 退出码 2 = 有代码没能转成文本，立即失败。
+        pm = ec_guard.parse_error_block(r.stdout, r.stderr, rc=r.rc)
+        if pm:
+            raise SystemExit("e2t 失败（红线2 门禁）: %s" % pm)
 
         cfg = find_cfg(txt_dir)
         if not cfg:
@@ -243,16 +232,18 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
 
         os.makedirs(os.path.dirname(out_e), exist_ok=True)
         say("[3/4] t2e -> %s" % out_e)
-        rc, so, se = run_e2txt(e2txt, "t2e", txt_dir, out_e)
-        # 此刻本机 lib\ 通常**没装**本库，t2e 会打一条
-        #   「引入支持库失败！…[原因] 支持库不存在」——这是**预期且非致命**：
-        #   它仍会把库记录写进 .e。真正判据见下面两道。
-        if rc != 0 or "SUCC:" not in so or not os.path.isfile(out_e):
-            raise SystemExit("t2e 失败 rc=%s\nSTDOUT:%s\nSTDERR:%s"
-                             % (rc, so[-400:], se[-400:]))
-        for ln in se.splitlines():
-            if "[错误]" in ln:
-                say("      (t2e 提示，非致命) %s" % ln.strip()[:160])
+        r = etool.run(tool, "t2e", txt_dir, out_e)
+        # 此刻本机 lib\ 通常**没装**本库，t2e 会打「[警告] 支持库未能加载」之类提示——
+        # 这是**预期且非致命**：库记录照样写进 .e。真正判据见下面两道。
+        if not r.ok or not os.path.isfile(out_e):
+            raise SystemExit("t2e 失败 " + r.tail())
+        for ln in r.warnings[:3]:
+            say("      (t2e 提示，非致命) %s" % ln[:160])
+        # ★ 红线2 门禁（t2e 侧）：绑定不了的语句会被写成「未验证代码」（[错误] + 退出码 2），
+        #   立即失败，绝不带着没转全的 _ai.e 去编译。
+        pm = ec_guard.parse_error_block(r.stdout, r.stderr, rc=r.rc)
+        if pm:
+            raise SystemExit("t2e 失败（红线2 门禁）: %s" % pm)
 
         m_user = md5f(user_e)
         m_out = md5f(out_e)
@@ -263,6 +254,30 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
         if not has_key:
             reasons.append("判据②失败：产物里找不到 Key 的 ASCII '%s'" % info["key"])
         ok = not reasons
+
+        # ★ 红线2 双保险：e2t 回读 _ai.e 验证关键语句。
+        #   e2t 若产不出文本目录，不算丢代码证据，跳过并由 ecompile 的最终 .ec 反向抽取门禁兜底。
+        guard_result = "未启用"
+        if guard:
+            rb = os.path.join(tmp, "readback")
+            r2 = etool.run(tool, "e2t", out_e, rb, "-level", "2", "-nosidecar")
+            pm2 = ec_guard.parse_error_block(r2.stdout, r2.stderr, rc=r2.rc)
+            if not (r2.ok and has_text(rb)):
+                if pm2:
+                    reasons.append("回读 e2t 报错（红线2）：%s" % pm2[:300])
+                else:
+                    guard_result = "跳过（e2t 无法回读 _ai.e；由最终 .ec 门禁兜底）"
+                    say("      (guard 回读跳过: %s)" % guard_result)
+            else:
+                if pm2:
+                    reasons.append("回读 e2t 报错（红线2）：%s" % pm2[:300])
+                else:
+                    fails = ec_guard.check_text_dir(rb, guard)
+                    if fails:
+                        reasons.append("回读关键语句门禁未过: " + "; ".join(fails))
+                    else:
+                        guard_result = "PASS"
+                    say("      guard 回读: %s" % guard_result)
         result = {
             "ok": ok,
             "input": user_e,
@@ -277,6 +292,8 @@ def mkcage(user_e: str, out_e: str = None, fne: str = None, quiet: bool = False)
             "changed": (m_out != m_user),
             "hasKeyAscii": has_key,
             "records": total,
+            "guard": guard_result,
+            "etool": tool,
         }
         say("[4/4] 验收：")
         say("      输入 %s  md5=%s" % (os.path.basename(user_e), m_user))
@@ -298,12 +315,14 @@ def main():
     ap.add_argument("input", help="输入 .e")
     ap.add_argument("output", nargs="?", help="输出 _ai.e（默认 <输入>_ai.e）")
     ap.add_argument("--fne", help="本库 .fne 路径（默认 ../assets/elang_addin.fne）")
+    ap.add_argument("--guard", help="关键语句门禁文件（启用 e2t 回读 + 关键语句验证）")
     ap.add_argument("--json", action="store_true", dest="as_json", help="结果以 JSON 打到 stdout")
     ap.add_argument("-q", "--quiet", action="store_true", help="不打印过程")
     a = ap.parse_args()
 
     try:
-        result = mkcage(a.input, a.output, a.fne, quiet=(a.quiet or a.as_json))
+        result = mkcage(a.input, a.output, a.fne, quiet=(a.quiet or a.as_json),
+                        guard=a.guard)
     except SystemExit as e:
         if a.as_json:
             print(json.dumps({"ok": False, "error": str(e)}, ensure_ascii=False))

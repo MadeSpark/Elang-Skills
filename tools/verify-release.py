@@ -4,7 +4,7 @@
 
     python tools/verify-release.py
 
-检查七件事：
+检查八件事：
 
   1. 发布区只含成品（不该有 .venv / pyproject.toml / uv.lock / 生成物 / __pycache__）
   2. 技能符合 **Agent Skills 开放规范**：frontmatter 字段白名单、`name` 正则与目录一致、
@@ -13,7 +13,7 @@
   3. **全部安装点**（`~/.agents`、`~/.claude`、`~/.trae` …）与发布区逐文件 md5 一致
   4. 三个安装入口存在且 `安装技能.cmd` 是 GBK+CRLF（否则 cmd 里中文乱码）
   5. dist/ 里的技能分发包结构（zip 根即 SKILL.md）
-  6. 文档里不再有失效的绝对路径
+  6. 文档里不再有失效的绝对路径；技能包里不再出现已退役的转换工具 e2txt
   7. **技能 / 安装器 / 使用说明里没有本机专有信息**（路径、统计数、模块版本、个人信息）
   8. **跨技能运行期依赖**：技能的 `scripts/*.py` 若去读同级技能的目录/资产，那个技能
      就成了运行期硬依赖（单独分发必然缺件）。要求它登记在白名单内，**且**在消费者的
@@ -206,20 +206,34 @@ SELF_CONTAINED = [
      ROOT / "docs" / "程序入口与编译验证.md"),
     ("elang-ai-coding/references/黑月编译与黑月界面类.md",
      ROOT / "docs" / "黑月编译与黑月界面类.md"),
-    ("elang-build/scripts/ecompile.py",
-     ROOT / "tools" / "ecompile.py"),
     ("elang-debug/assets/elang_addin.fne",
      ROOT / "src" / "addin" / "elang_addin.fne"),
     ("elang-debug/assets/elang_addin.libinfo.txt",
      ROOT / "src" / "addin" / "elang_addin.libinfo.txt"),
 ]
+# 脚本真源都在 tools/，由 sync-release.sh 按技能分发（与它的 SKILLS 表保持一致）
+SCRIPTS = {
+    "elang-ai-coding": ("mkproj.py", "rtcheck.py", "efix.py", "echeck.py", "elibs.py", "etool.py"),
+    "elang-debug": ("mkcage.py", "elaunch.py", "readlog.py", "ec_guard.py", "etool.py"),
+    "elang-build": ("ecompile.py", "ec_guard.py", "etool.py"),
+}
+for _sk, _names in SCRIPTS.items():
+    for _n in _names:
+        SELF_CONTAINED.append((f"{_sk}/scripts/{_n}", ROOT / "tools" / _n))
+# QAQ-ETool 的 3 个 exe：源在 QAQ-ETool/dist/（独立工程，可能没检出）。没有源时只查技能包里有。
+QAQ_DIST = ROOT / "QAQ-ETool" / "dist"
+for _n in ("QAQ-ETool.exe", "qaq-etool-gui.exe", "qaq-libinfo.exe"):
+    SELF_CONTAINED.append((f"qaq-etool-cli/assets/{_n}", QAQ_DIST / _n))
 for rel, src in SELF_CONTAINED:
     p = SKILLS_SRC / rel.replace("/", os.sep)
     if not p.is_file():
         bad(f"技能包缺少 {rel}（装到别的工具后就找不到了）")
         continue
     if not src.is_file():
-        bad(f"工程侧源本缺失，无法比对: {src}")
+        if src.parent == QAQ_DIST:
+            ok(f"{rel:46s} {p.stat().st_size:>9,} B  存在（没有 QAQ-ETool/dist，跳过比对）")
+        else:
+            bad(f"工程侧源本缺失，无法比对: {src}")
         continue
     if p.read_bytes() != src.read_bytes():
         bad(f"{rel} 与工程侧源本不一致（跑 src/build.sh 或 tools/sync-release.sh 同步）")
@@ -238,6 +252,7 @@ REF_ALLOW = {
         "黑月编译与黑月界面类.md",
     },
     "elang-build": set(),
+    "qaq-etool-cli": set(),
     "elang-debug": {
         "加壳流程.md",
         "接口与调用约定清单.md",
@@ -342,9 +357,10 @@ head(6, "文档里的失效路径")
 DOCS = ["README.md",
         "Releases/Elang-AiTools/使用说明.md",
         "Releases/Elang-AiTools/skills/elang-ai-coding/SKILL.md",
-        "Releases/Elang-AiTools/skills/e2txt-cli/SKILL.md",
+        "Releases/Elang-AiTools/skills/qaq-etool-cli/SKILL.md",
         "Releases/Elang-AiTools/skills/elang-debug/SKILL.md",
         "Releases/Elang-AiTools/skills/elang-build/SKILL.md",
+        "Releases/Elang-AiTools/skills/elang-debug/references/加壳流程.md",
         "docs/易语言文本格式规范.md",
         "docs/置入代码与机器码.md",
         "docs/Win32与DLL互操作.md",
@@ -374,6 +390,31 @@ for rel in DOCS:
     else:
         ok(f"{rel}  无残留")
 
+# 转换工具已换成 QAQ-ETool：技能包、使用说明、README、规范真源里一律不许再出现 e2txt。
+# 唯一例外是安装器的「退役技能」清理表（要按名字删掉旧安装点的 e2txt-cli）。
+E2TXT = re.compile(r"e2txt", re.I)
+RETIRED_OK = {"install-skills.py", "install-skills.sh", "安装技能.cmd"}
+e2_targets = [p for p in KIT.rglob("*")
+              if p.is_file() and p.suffix.lower() in (".md", ".py", ".sh", ".cmd", ".txt", ".json")]
+# docs/ 只查随技能发布的规范真源；交接记录等内部工作文档是历史档案，不在此列
+e2_targets += [ROOT / "README.md"] + [ROOT / "docs" / n for n in sorted(REF_ALLOW["elang-ai-coding"])]
+e2_hits = []
+for p in e2_targets:
+    if not p.is_file():
+        continue
+    raw = p.read_bytes()
+    enc = "gbk" if p.suffix.lower() == ".cmd" else "utf-8"
+    txt = raw.decode(enc, errors="replace")
+    if p.name in RETIRED_OK:
+        txt = txt.replace("e2txt-cli", "")
+    for i, l in enumerate(txt.splitlines()):
+        if E2TXT.search(l):
+            e2_hits.append(f"{os.path.relpath(p, ROOT)}:{i + 1}  {l.strip()[:80]}")
+for h in e2_hits:
+    bad(f"残留 e2txt: {h}")
+if not e2_hits:
+    ok(f"e2txt 零残留（{len(e2_targets)} 个文件；安装器只允许出现退役技能名 e2txt-cli）")
+
 head(7, "技能 / 安装器 / 使用说明里的本机专有信息")
 try:
     spec = importlib.util.spec_from_file_location(
@@ -396,9 +437,11 @@ head(8, "跨技能运行期依赖（技能必须成套安装）")
 # 只允许白名单内的依赖，且消费者必须在自己的 SKILL.md 正文里声明过同装 ——
 # 否则用户只会看到一句「找不到文件」，无从知道还得再装一个技能。
 CROSS_DEP_ALLOW = {
-    "elang-build": {"elang-debug"},
+    "elang-ai-coding": {"qaq-etool-cli"},
+    "elang-debug": {"qaq-etool-cli"},
+    "elang-build": {"elang-debug", "qaq-etool-cli"},
 }
-SKILL_REF_RE = re.compile(r"\b(elang-ai-coding|elang-build|elang-debug|e2txt-cli)\b")
+SKILL_REF_RE = re.compile(r"\b(elang-ai-coding|elang-build|elang-debug|qaq-etool-cli)\b")
 cross_seen = False
 for d in skill_dirs:
     body = (d / "SKILL.md").read_text(encoding="utf-8", errors="replace")

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\vendor\EProjectFile\EProjectFile\EProjectFile.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>QAQ.ETool.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- GBK 等代码页 -->
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+  </ItemGroup>
+
+  <!-- 自研支持库元数据导出器（32 位 C，由 build.ps1 编译）随程序一起发布 -->
+  <ItemGroup>
+    <None Include="..\libinfo\qaq-libinfo.exe" Condition="Exists('..\libinfo\qaq-libinfo.exe')">
+      <Link>qaq-libinfo.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+﻿C:\msys64\mingw32\bin\gcc.exe : Using built-in specs.
+At line:15 char:3463
++ ... pgrep\bin'; C:\msys64\mingw32\bin\gcc.exe -shared -m32 -v -o StripHoo ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Using built-in specs.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+COLLECT_GCC=C:\msys64\mingw32\bin\gcc.exe
+COLLECT_LTO_WRAPPER=C:/msys64/mingw32/bin/../lib/gcc/i686-w64-mingw32/15.2.0/lto-wrapper.exe
+Target: i686-w64-mingw32
+Configured with: ../gcc-15.2.0/configure --prefix=/mingw32 --with-local-prefix=/mingw32/local --with-native-system-head
+er-dir=/mingw32/include --libexecdir=/mingw32/lib --enable-bootstrap --enable-checking=release --with-arch=pentium4 --w
+ith-tune=generic --enable-mingw-wildcard --enable-languages=c,lto,c++,fortran --enable-shared --enable-static --enable-
+libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-backtrace=yes --ena
+ble-libstdcxx-filesystem-ts --enable-libstdcxx-time --disable-libstdcxx-pch --enable-lto --enable-libgomp --disable-lib
+ssp --disable-multilib --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with
+-libiconv --with-system-zlib --with-gmp=/mingw32 --with-mpfr=/mingw32 --with-mpc=/mingw32 --with-isl=/mingw32 --with-pk
+gversion='Rev9, Built by MSYS2 project' --with-bugurl=https://github.com/msys2/MINGW-packages/issues --with-gnu-as --wi
+th-gnu-ld --with-libstdcxx-zoneinfo=yes --disable-libstdcxx-debug --disable-sjlj-exceptions --with-dwarf2 --with-boot-l
+dflags=-static-libstdc++ --with-stage1-ldflags=-static-libstdc++
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 15.2.0 (Rev9, Built by MSYS2 project) 
+COLLECT_GCC_OPTIONS='-shared' '-m32' '-v' '-o' 'StripHooks.dll' '-mtune=generic' '-march=pentium4' '-dumpdir' 'StripHoo
+ks.dll-'
+ C:/msys64/mingw32/bin/../lib/gcc/i686-w64-mingw32/15.2.0/cc1.exe -quiet -v -iprefix C:/msys64/mingw32/bin/../lib/gcc/i
+686-w64-mingw32/15.2.0/ -D_REENTRANT StripHooks.c -quiet -dumpdir StripHooks.dll- -dumpbase StripHooks.c -dumpbase-ext 
+.c -m32 -mtune=generic -march=pentium4 -version -o C:\Users\MADESP~1\AppData\Local\Temp\ccUbRMGT.s
