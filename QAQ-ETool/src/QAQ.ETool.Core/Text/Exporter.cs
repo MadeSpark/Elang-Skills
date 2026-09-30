@@ -10,7 +10,7 @@ public sealed class ExportOptions
     public Layout Layout { get; init; } = Layout.English;
     /// <summary>e2txt 的 -level（1 省略空产物，2 完整）</summary>
     public int Level { get; init; } = 2;
-    /// <summary>写进 project.etprj 的源文件路径（原样记录）</summary>
+    /// <summary>写进 project.qtprj 的源文件路径（原样记录）</summary>
     public string? SourcePath { get; init; }
 }
 
@@ -566,7 +566,7 @@ public sealed class Exporter
         return ".image.dat";
     }
 
-    // ================================================================ project.etprj（GBK 无 BOM）
+    // ================================================================ project.qtprj（GBK 无 BOM）
     private void WriteProject()
     {
         var src = _o.SourcePath == null ? "" : RelativeSource(_o.SourcePath);

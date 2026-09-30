@@ -23,8 +23,9 @@ public sealed class Layout
     public string Struct { get; private init; } = "";
     public string Global { get; private init; } = "";
     public string Icon { get; private init; } = "";
+    /// <summary>工程文件（扩展名 .qtprj，供 qaq-etool-gui.exe 关联打开）</summary>
     public string Project { get; private init; } = "";
-    /// <summary>project.etprj 中的 NameStyle 值</summary>
+    /// <summary>工程文件中的 NameStyle 值</summary>
     public int NameStyle { get; private init; }
 
     public static readonly Layout English = new()
@@ -35,7 +36,7 @@ public sealed class Layout
         EcInitConfig = "ec.init.config.json", EpackFilesConfig = "epack.files.config.json",
         ResourceDesc = "resource.desc.json",
         Const = "const.e.txt", Dll = "dll.e.txt", Struct = "struct.e.txt", Global = "global.e.txt",
-        Icon = "icon.ico", Project = "project.etprj", NameStyle = 1,
+        Icon = "icon.ico", Project = "project.qtprj", NameStyle = 1,
     };
 
     public static readonly Layout Chinese = new()
@@ -46,10 +47,14 @@ public sealed class Layout
         EcInitConfig = "模块.初始化.config.json", EpackFilesConfig = "易包.文件.config.json",
         ResourceDesc = "资源.desc.json",
         Const = "常量.e.txt", Dll = "DLL.e.txt", Struct = "自定义类型.e.txt", Global = "全局变量.e.txt",
-        Icon = "图标.ico", Project = "项目.etprj", NameStyle = 2,
+        Icon = "图标.ico", Project = "项目.qtprj", NameStyle = 2,
     };
 
     public static Layout FromNs(string? ns) => ns == "2" ? Chinese : English;
+
+    /// <summary>目录里有任一布局的工程文件（项目.qtprj / project.qtprj）即视为文本工程目录</summary>
+    public static bool IsTextProjectDir(string dir) =>
+        File.Exists(Path.Combine(dir, Chinese.Project)) || File.Exists(Path.Combine(dir, English.Project));
 
     /// <summary>t2e：探测文本目录用的是哪种布局</summary>
     public static Layout Detect(string dir)

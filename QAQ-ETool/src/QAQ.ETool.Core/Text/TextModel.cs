@@ -13,8 +13,8 @@ public sealed class TextProject
     public string Root { get; set; } = "";
     public Layout Layout { get; set; } = Layout.English;
 
-    /// <summary>project.etprj（GBK JSON）原样</summary>
-    public JObject? Etprj { get; set; }
+    /// <summary>工程文件 project.qtprj（GBK JSON）原样</summary>
+    public JObject? ProjectInfo { get; set; }
 
     // ---------------- config/
     public List<TLib> Libs { get; } = new();

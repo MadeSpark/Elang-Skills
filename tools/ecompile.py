@@ -315,15 +315,15 @@ def doctor(args) -> int:
 
 
 # ecompile 对外的承诺是「绝不改原工程」。t2e 读的是用户的文本目录，为防转换工具
-# 就地改写或新建 `项目.etprj`（把临时路径写进别人的工程），这里快照 + 还原
+# 就地改写或新建项目文件 `项目.qtprj`（把临时路径写进别人的工程），这里快照 + 还原
 # （连 mtime 一起还原，免得版本控制每次都报这个文件被改）。
-ETPRJ_NAMES = ("项目.etprj", "project.etprj")
+PRJ_NAMES = ("项目.qtprj", "project.qtprj")
 
 
-def snapshot_etprj(src: Path) -> dict:
-    """记录 `项目.etprj` 的原状；**不存在的也记一条 None**，用于事后判定「是被新建的」。"""
+def snapshot_prj(src: Path) -> dict:
+    """记录项目文件（`项目.qtprj` 等）的原状；**不存在的也记一条 None**，用于事后判定「是被新建的」。"""
     snap = {}
-    for n in ETPRJ_NAMES:
+    for n in PRJ_NAMES:
         p = src / n
         try:
             if p.is_file():
@@ -336,8 +336,8 @@ def snapshot_etprj(src: Path) -> dict:
     return snap
 
 
-def restore_etprj(snap: dict) -> list:
-    """还原被就地改写的 `项目.etprj`；返回实际被还原的文件名列表。"""
+def restore_prj(snap: dict) -> list:
+    """还原被就地改写的项目文件；返回实际被还原的文件名列表。"""
     fixed = []
     for p, orig in snap.items():
         try:
@@ -365,9 +365,9 @@ def t2e_if_dir(src: Path, tool: str | None, work: Path) -> tuple[Path, list]:
     if not tool:
         raise SystemExit("文本目录输入需要 QAQ-ETool。" + etool.NOT_FOUND)
     dst = work / (src.stem + "_base.e")
-    snap = snapshot_etprj(src)
+    snap = snapshot_prj(src)
     r = etool.run(tool, "t2e", src, dst)
-    restored = restore_etprj(snap)
+    restored = restore_prj(snap)
     if not r.ok or not dst.is_file():
         raise SystemExit("t2e 失败: %s\n  %s" % (src, "\n  ".join((r.fatal + r.errors)[:5])
                                                   or r.tail(300)))
@@ -483,7 +483,7 @@ def main() -> int:
     work.mkdir(parents=True, exist_ok=True)
 
     try:
-        # 1) 文本目录 → .e（t2e_if_dir 内部对 `项目.etprj` 快照还原）
+        # 1) 文本目录 → .e（t2e_if_dir 内部对 `项目.qtprj` 快照还原）
         base_e, restored = t2e_if_dir(src, tool, work)
         if restored:
             result["inputRestored"] = restored

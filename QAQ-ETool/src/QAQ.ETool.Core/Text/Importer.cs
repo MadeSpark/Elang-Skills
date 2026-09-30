@@ -78,7 +78,7 @@ public static class Importer
 
         public void Run()
         {
-            Guard("project", LoadEtprj);
+            Guard("project", LoadProjectFile);
             Guard("config", LoadConfigs);
             Guard("decls", () => LoadDecls(_root, P.Main));
             Guard("module", LoadModules);
@@ -159,8 +159,8 @@ public static class Importer
             return "";
         }
 
-        // ------------------------------------------------------------ project.etprj（GBK 无 BOM；也接受 UTF-8）
-        private void LoadEtprj()
+        // ------------------------------------------------------------ project.qtprj（GBK 无 BOM；也接受 UTF-8）
+        private void LoadProjectFile()
         {
             var path = Path.Combine(_root, _l.Project);
             if (!File.Exists(path)) { Warn(path, "缺少工程文件"); return; }
@@ -170,7 +170,7 @@ public static class Importer
             try { text = TextFiles.ReadUtf8(b); }
             catch (DecoderFallbackException) { text = TextFiles.Gbk.GetString(b); }
             var v = ParseJson(path, text);
-            if (v is JObject o) P.Etprj = o;
+            if (v is JObject o) P.ProjectInfo = o;
             else if (v != null) Err(path, "顶层应为 JSON 对象");
         }
 

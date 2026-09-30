@@ -47,7 +47,9 @@ def main():
                 print("#   " + l)
             sys.stdout.flush()
             cmd = [sys.executable, str(ROOT / "tools/cmpdir.py"), str(BASE / f.stem / lay), str(dst),
-                   "--show", str(a.show), "--ctx", "1", "--skip", "etprj"]
+                   "--show", str(a.show), "--ctx", "1",
+                   # 基线（e2txt）写 .etprj，QAQ-ETool 写 .qtprj；两者都只差 Source 路径，不比
+                   "--skip", "etprj", "--skip", "qtprj"]
             if a.all:
                 cmd += ["--all", str(a.all)]
             subprocess.run(cmd)

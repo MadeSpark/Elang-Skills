@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using QAQ.ETool.Core.Model;
 using QAQ.ETool.Core.Text;
@@ -61,11 +61,9 @@ static int E2T(string src, string dst, Dictionary<string, string> opts)
     if (Directory.Exists(dst) && Directory.EnumerateFileSystemEntries(dst).Any())
     {
         // 安全闸：只清空「看起来是文本工程」的目录，绝不误删用户其它目录
-        bool isTextProject = File.Exists(Path.Combine(dst, Layout.English.Project))
-                             || File.Exists(Path.Combine(dst, Layout.Chinese.Project));
-        if (!isTextProject)
+        if (!Layout.IsTextProjectDir(dst))
         {
-            Console.Error.WriteLine("ERROR:目标目录非空且不是文本工程目录（缺少 project.etprj / 项目.etprj），拒绝覆盖");
+            Console.Error.WriteLine("ERROR:目标目录非空且不是文本工程目录（缺少 项目.qtprj / project.qtprj），拒绝覆盖");
             return 1;
         }
         ClearDir(dst);

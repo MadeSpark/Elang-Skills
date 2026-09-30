@@ -11,8 +11,8 @@
  *   --smoke                                             创建窗口 500ms 后自动关闭
  *
  * 普通参数：qaq-etool-gui.exe [路径]
- *   .e / .ec → 预选解包；文件夹或 .etprj（取其所在目录）→ 预选组包。
- *   可把 .etprj 拖到 exe 上，或用「打开方式」关联，无需注册表。
+ *   .e / .ec → 预选解包；文件夹或 .qtprj（取其所在目录）→ 预选组包。
+ *   可把 .qtprj 拖到 exe 上，或用「打开方式」关联，无需注册表。
  */
 #include "core.h"
 #include "selftest.h"
@@ -541,20 +541,21 @@ static void OnBrowseDst(HWND hwnd)
 
 /* ---------- 拖放 ---------- */
 
-static BOOL HasExtEtprj(const wchar_t *p)
+/* 文本工程文件：.qtprj（e2t 写出的） */
+static BOOL HasExtProject(const wchar_t *p)
 {
     const wchar_t *dot = wcsrchr(p, L'.');
     const wchar_t *s1 = wcsrchr(p, L'\\'), *s2 = wcsrchr(p, L'/');
     if (!dot || (s1 && dot < s1) || (s2 && dot < s2))
         return FALSE;
-    return _wcsicmp(dot, L".etprj") == 0;
+    return _wcsicmp(dot, L".qtprj") == 0;
 }
 
 /*
  * 把路径归类为转换源：
- *   .e / .ec 文件 → e2t，源 = 该文件
- *   文件夹        → t2e，源 = 该文件夹
- *   .etprj 文件   → t2e，源 = 其所在文件夹（文本项目描述文件）
+ *   .e / .ec 文件  → e2t，源 = 该文件
+ *   文件夹         → t2e，源 = 该文件夹
+ *   .qtprj 文件    → t2e，源 = 其所在文件夹（文本项目描述文件）
  * 成功返回新分配的源路径并写 *mode；无法识别返回 NULL。
  */
 static wchar_t *ClassifySource(const wchar_t *path, int *mode)
@@ -567,7 +568,7 @@ static wchar_t *ClassifySource(const wchar_t *path, int *mode)
         *mode = MODE_E2T;
         return FullPath(path);
     }
-    if (IsFile(path) && HasExtEtprj(path)) {
+    if (IsFile(path) && HasExtProject(path)) {
         wchar_t *full = FullPath(path), *dir;
         dir = full ? ParentDir(full) : NULL;
         free(full);
@@ -607,7 +608,7 @@ static void OnDropPath(HWND hwnd, const wchar_t *path)
         return;
     }
     if (!ApplySource(path, FALSE))
-        MessageBoxW(hwnd, L"只支持拖入 .e / .ec 文件（解包）、文件夹或 .etprj（组包）。", kTitle,
+        MessageBoxW(hwnd, L"只支持拖入 .e / .ec 文件（解包）、文件夹或 .qtprj（组包）。", kTitle,
                     MB_OK | MB_ICONINFORMATION);
 }
 
@@ -1003,7 +1004,7 @@ static BOOL OnCreate(HWND hwnd)
     LoadSettings();
     SetStatus(L"就绪");
     if (g_initPath && !ApplySource(g_initPath, TRUE))
-        SetStatus(L"启动参数不是 .e / .ec / .etprj 或文件夹，已忽略");
+        SetStatus(L"启动参数不是 .e / .ec / .qtprj 或文件夹，已忽略");
     DragAcceptFiles(hwnd, TRUE);
     g_hFocusSave = g_hEditSrc;
     Layout(hwnd);

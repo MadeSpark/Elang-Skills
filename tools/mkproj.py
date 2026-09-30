@@ -1,10 +1,11 @@
 """mkproj —— 把纯文本的易语言源码目录补全成一个能直接组包、也能用 QAQ-ETool 图形界面打开的完整项目。
 
-图形界面 `qaq-etool-gui.exe <项目目录\\项目.etprj>`（或把 .etprj 拖到 exe 上）会把
+图形界面 `qaq-etool-gui.exe <项目目录\\项目.qtprj>`（或把 .qtprj 拖到 exe 上、
+把 .qtprj 的「打开方式」设成 qaq-etool-gui.exe 后双击）会把
 **项目文件所在目录**预选为「组包（文本 → .e）」的源目录。一个合格的项目目录包含：
 
     <项目目录>/
-    ├── 项目.etprj              项目描述（中文布局的标志文件；GUI 靠它定位）
+    ├── 项目.qtprj              项目描述（中文布局的标志文件；GUI 靠它定位）
     ├── 代码/                   ← 必须是这个目录名（NameStyle=2 中文命名风格）
     │   ├── xxx.static.e.txt    标准程序集
     │   ├── xxx.class.e.txt     类程序集
@@ -19,10 +20,10 @@
 
 用法：
     python mkproj.py <项目目录>                # 用内置示例初始化一个项目
-    python mkproj.py <项目目录> --keep         # 已有 代码/ 时只补全配置与 etprj
+    python mkproj.py <项目目录> --keep         # 已有 代码/ 时只补全配置与 qtprj
     python mkproj.py <项目目录> --no-build     # 不调用 QAQ-ETool 生成 代码.e
 
-`项目.etprj` 在 t2e **跑完之后**再写，并做「保留已有值 + 补齐缺失键」的合并，
+`项目.qtprj` 在 t2e **跑完之后**再写，并做「保留已有值 + 补齐缺失键」的合并，
 不覆盖用户改过的字段。
 
 依赖：命令行转换工具 QAQ-ETool，由同装的技能 qaq-etool-cli 提供。定位顺序（见 etool.py）：
@@ -138,11 +139,14 @@ LIB_BASE = {
 }
 
 
-def etprj_dict():
-    """项目描述的基本键值（与 QAQ-ETool e2t 写出的 项目.etprj 同一套含义）。
+PRJ_NAME = '项目.qtprj'
+
+
+def prj_dict():
+    """项目描述的基本键值（与 QAQ-ETool e2t 写出的 项目.qtprj 同一套含义）。
 
     `Source` = 源 .e 相对项目目录的路径；我们的 .e 就在项目目录内，所以是 `代码.e`。
-    QAQ-ETool 组包时只把 项目.etprj 当「中文布局」的标志，不读其中的值，
+    QAQ-ETool 组包时只把 项目.qtprj 当「中文布局」的标志，不读其中的值，
     这些键是给人看、给别的工具留的元信息。
     """
     return {
@@ -169,9 +173,9 @@ def w(rel, text, root, crlf=True):
 
 
 def w_gbk(rel, text, root):
-    """写 etprj 专用：**GBK 无 BOM + CRLF**。
+    """写 qtprj 专用：**GBK 无 BOM + CRLF**。
 
-    文本工程的约定：`项目.etprj` 写成 ANSI(GBK) 无 BOM，而 `*.e.txt` / `*.config.json`
+    文本工程的约定：`项目.qtprj` 写成 ANSI(GBK) 无 BOM，而 `*.e.txt` / `*.config.json`
     是 UTF-8 **带 BOM**（QAQ-ETool e2t 的产物就是这样；读取时两种编码它都接受）。
     按 GBK 读的工具遇到 UTF-8+BOM 会把 `EF BB BF` 塞到 `{` 前面，JSON 解析直接失败。
     """
@@ -183,8 +187,8 @@ def w_gbk(rel, text, root):
     print(f'  {rel:40s} {len(data):6d}B  (GBK)')
 
 
-def read_etprj(p):
-    """按 GBK 优先读 etprj（兼容历史上被写成 UTF-8 的文件）。"""
+def read_prj(p):
+    """按 GBK 优先读项目文件（兼容历史上被写成 UTF-8 的文件）。"""
     raw = open(p, 'rb').read()
     for enc in ('gbk', 'utf-8-sig'):
         try:
@@ -194,17 +198,17 @@ def read_etprj(p):
     return {}
 
 
-def write_etprj(root):
-    """写 etprj：保留已有的全部键值（含本脚本不认识的），只补齐缺失的基本键。
+def write_prj(root):
+    """写 项目.qtprj：保留已有的全部键值（含本脚本不认识的），只补齐缺失的基本键。
 
     格式：**GBK、无 BOM、CRLF**（见 w_gbk 的说明）。
     """
-    p = os.path.join(root, '项目.etprj')
-    cur = read_etprj(p) if os.path.exists(p) else {}
-    merged = dict(etprj_dict())
+    p = os.path.join(root, PRJ_NAME)
+    cur = read_prj(p) if os.path.exists(p) else {}
+    merged = dict(prj_dict())
     merged.update(cur if isinstance(cur, dict) else {})
     merged = dict(sorted(merged.items()))
-    w_gbk('项目.etprj', json.dumps(merged, ensure_ascii=False, indent=4) + '\n', root)
+    w_gbk(PRJ_NAME, json.dumps(merged, ensure_ascii=False, indent=4) + '\n', root)
     return len(merged)
 
 
@@ -279,7 +283,7 @@ def build_libs(root, sample):
 def main():
     ap = argparse.ArgumentParser(description='补全易语言文本项目（转换工具：QAQ-ETool）')
     ap.add_argument('root', help='项目目录')
-    ap.add_argument('--keep', action='store_true', help='保留已有 代码/ 内容，只补全配置与 etprj')
+    ap.add_argument('--keep', action='store_true', help='保留已有 代码/ 内容，只补全配置与 qtprj')
     ap.add_argument('--no-build', action='store_true',
                     help='不调用 QAQ-ETool 生成 代码.e')
     ap.add_argument('--fix', action='store_true',
@@ -352,8 +356,8 @@ def main():
         print('!! ' + etool.NOT_FOUND)
         return 2
 
-    n = write_etprj(root)
-    print(f'项目.etprj: {n} 个键')
+    n = write_prj(root)
+    print(f'{PRJ_NAME}: {n} 个键')
     return 0
 
 

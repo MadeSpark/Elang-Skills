@@ -30,7 +30,7 @@ static class DirCheck
         var methods = allClasses.SelectMany(c => c.Methods).ToList();
         var locals = methods.SelectMany(m => m.Locals).ToList();
         var sets = new[] { p.Main }.Concat(p.Modules.Select(m => m.Decls)).ToList();
-        Console.WriteLine($"布局={(p.Layout == Layout.Chinese ? "中文" : "英文")} 耗时={sw.ElapsedMilliseconds}ms etprj={(p.Etprj != null ? "有" : "无")} 支持库={p.Libs.Count} EcInit={p.EcInit.Count} Epack={p.EpackFileNames.Count} 图标={p.Icon.Length}B");
+        Console.WriteLine($"布局={(p.Layout == Layout.Chinese ? "中文" : "英文")} 耗时={sw.ElapsedMilliseconds}ms qtprj={(p.ProjectInfo != null ? "有" : "无")} 支持库={p.Libs.Count} EcInit={p.EcInit.Count} Epack={p.EpackFileNames.Count} 图标={p.Icon.Length}B");
         Console.WriteLine($"程序集={p.Classes.Count}(主)+{allClasses.Count - p.Classes.Count}(模块) 子程序={methods.Count} 参数={methods.Sum(m => m.Params.Count)} " +
                           $"局部变量={locals.Count}(无名 {locals.Count(v => v.Name.Length == 0)}) 程序集变量={allClasses.Sum(c => c.Vars.Count)}(无名 {allClasses.Sum(c => c.Vars.Count(v => v.Name.Length == 0))}) " +
                           $"体行={methods.Sum(m => m.Body.Count)} 空体={methods.Count(m => m.Body.Count == 0)}");
@@ -61,7 +61,7 @@ static class DirCheck
             diff++;
             if (shown++ < 10) Console.WriteLine("  D " + FirstDiff(rel, orig, data));
         }
-        // 原样 JSON 回写（窗口、system/user、etprj）与资源字节
+        // 原样 JSON 回写（窗口、system/user、qtprj）与资源字节
         int jsonSame = 0, jsonDiff = 0;
         void J(string rel, byte[] data)
         {
@@ -72,7 +72,7 @@ static class DirCheck
         foreach (var fm in p.Forms) J(fm.File, EJson.ToUtf8Bom(fm.Json));
         if (p.SystemConfig != null) J(p.Layout.Config + "/" + p.Layout.SystemConfig, EJson.ToUtf8Bom(p.SystemConfig));
         if (p.UserConfig != null) J(p.Layout.Config + "/" + p.Layout.UserConfig, EJson.ToUtf8Bom(p.UserConfig));
-        if (p.Etprj != null) J(p.Layout.Project, TextFiles.Gbk.GetBytes(EJson.Serialize(p.Etprj)));
+        if (p.ProjectInfo != null) J(p.Layout.Project, TextFiles.Gbk.GetBytes(EJson.Serialize(p.ProjectInfo)));
         foreach (var r in p.Resources) J(r.File, r.Data);
         Console.WriteLine($"JSON/资源原样回写：{jsonSame}/{jsonSame + jsonDiff} 一致");
         Console.WriteLine("程序集顺序（前 8）：" + string.Join(", ", p.Classes.Take(8).Select(c => (c.Folder.Length > 0 ? c.Folder + "/" : "") + c.Name)));
