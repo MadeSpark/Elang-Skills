@@ -93,6 +93,29 @@ int          __stdcall MbKit_KernelLoaded(void);
 int          __stdcall MbKit_KernelState(void);
 const char*  __stdcall MbKit_Diag(void);
 
+/* --------------------------------------------------------------------------
+ * 内核启动：**异步**（2026-10-01）
+ *
+ *   MbKit_EnsureKernelInit() —— 只把「启动内核」投递到常驻线程 K 就返回，
+ *                               **绝不阻塞调用方**（可安全地用在 DllMain /
+ *                               宿主的 UI 线程里；同步等 LoadLibrary(node.dll)
+ *                               在持有加载锁时会死锁）。
+ *   MbKit_WaitKernel(ms)     —— 等启动完成；等待期间**抽本线程消息队列**
+ *                               （见 mbk_thread.c 的 mbk_wait_pump），避免
+ *                               「宿主线程被挡住、内核又要它处理窗口消息」的互等。
+ *                               ms<=0 = 默认 20s。返回 MBKIT_OK / 失败码。
+ *   MbKit_BootState()        —— 0=未启动 1=启动中 2=完成 3=失败（诊断用）
+ *   MbKit_PumpCount()        —— 编组等待期间抽掉的消息数（诊断；>0 说明确实
+ *                               在「边等边抽消息」，即该死锁场景被化解了）
+ *   MbKit_WaitTimeouts()     —— 编组等待超时次数（诊断；正常恒为 0）
+ * ------------------------------------------------------------------------*/
+int          __stdcall MbKit_EnsureKernelInit(void);
+int          __stdcall MbKit_WaitKernel(int ms);
+int          __stdcall MbKit_BootState(void);
+int          __stdcall MbKit_BootWaits(void);
+int          __stdcall MbKit_PumpCount(void);
+int          __stdcall MbKit_WaitTimeouts(void);
+
 /* 实际使用的内核全路径 / 版本串 / 最近一次错误 */
 const char*  __stdcall MbKit_NodePath(void);
 const char*  __stdcall MbKit_Version(void);
@@ -167,6 +190,58 @@ int          __stdcall MbKit_DetachView(void* view);  /* 只解绑某一个 view
 /* 模块存活校验（业务事件函数指针是否仍指向已加载模块）
  * 供测试与业务侧自检使用：cbAddr 是函数地址，hOwner 是注册时的模块句柄（可为 0） */
 int          __stdcall MbKit_AliveModule(unsigned int cbAddr, unsigned int hOwner);
+
+/* --------------------------------------------------------------------------
+ * ★ v1.4.2 崩溃探针（卸载窗口取证）
+ *
+ * 场景：宿主热重载插件 = FreeLibrary(旧) → LoadLibrary(新)。两次之间那一小段
+ * 「空窗期」里，只要有代码指针指向**已被卸载的映像**，就是访问违例 —— 而宿主
+ * 自己的致命错误处理会直接把进程收掉（表现为 ExitCode=0、日志断在半句），
+ * 什么都留不下。MbKit 已自钉（PIN），业务 DLL 卸载后它仍在进程里，于是由它
+ * 挂一个向量异常处理器，把崩溃点、故障地址所在模块、调用栈写进日志。
+ *
+ * 用法：业务侧在**触发重载之前**调一次，然后去看返回的文件路径。
+ * ------------------------------------------------------------------------*/
+const char*  __stdcall MbKit_InstallVehProbe(void);   /* 返回日志全路径（空串=失败） */
+int          __stdcall MbKit_VehHits(void);           /* 探针累计捕获次数 */
+int          __stdcall MbKit_InstallMsgTrace(void);   /* WH_GETMESSAGE 跟踪当前线程消息 */
+
+/* ── 热重载安全（v1.4.2）─────────────────────────────────────────────
+ * 宿主 `重载自身` = FreeLibrary(旧插件) → LoadLibrary(新插件)，两次之间有空窗
+ * 期。只要还有指针指向旧映像（窗口过程 / 内核回调 / 宿主内部记下的地址），跳
+ * 进去就是访问违例，宿主致命错误处理直接收掉进程（ExitCode=0，日志断在半句）。
+ * 从插件侧无法保证那些指针都被清干净（内核、user32、宿主代码都可能记着），
+ * 但可以让**那段映像不被卸载**：钉住（PIN = 加一个引用）之后 FreeLibrary 只减
+ * 引用计数，映像留在进程里 ⇒ 所有悬挂指针仍指向有效代码 ⇒ 空窗期不再有命案。
+ * 代价（有意为之）：每次重载多留一份旧映像（约几 MB），进程退出才回收。
+ * 用法：在**宿主可能卸载本插件之前**调用一次（例如重载按钮的第一行）。
+ * 返回：非 0 = 被钉住的模块句柄；0 = 失败（调用点所在模块无法反查）。 */
+unsigned int __stdcall MbKit_PinCaller(void);               /* 钉住「调用者」所在模块（=本插件） */
+unsigned int __stdcall MbKit_PinAddress(unsigned int addr); /* 钉住指定地址所属模块 */
+
+/* ── 僵尸窗口清理（v1.4.2，热重载命案的直接凶手）──────────────────────
+ * 插件的按钮/窗体，窗口过程编译在插件 DLL 自己的映像里。宿主 `重载自身` 卸载
+ * 插件映像时**并不销毁插件的窗口** ⇒ 窗口还挂在窗口链上，其窗口过程却已落在被
+ * 释放的代码页里。此后任何消息（miniblink 离屏重绘 tick 约 16ms 一次）被 user32
+ * 派发给它，就是「跳进已卸载代码」⇒ 访问违例 ⇒ 宿主致命错误处理收掉进程。
+ * 本命令枚举本进程所有窗口，把**窗口过程落在 MEM_FREE 区域**（映像确实已卸载、
+ * 过程永远不可能再正确执行）的窗口销毁掉；落在已提交内存里的一律不动。
+ * 建议在**重载之前**调用一次。返回被销毁的僵尸窗口数。 */
+int __stdcall MbKit_KillZombieWindows(void);
+int __stdcall MbKit_ZombieScanned(void);      /* 上次扫描到的窗口总数 */
+
+/* ── 销毁「窗口过程还在调用者映像里」的窗口（v1.4.2，热重载的真正解药）──
+ * 探针实测：插件的按钮窗口过程就在插件 DLL 映像里
+ * （`Button 标题=重载插件 [proc=<插件 md5 名>.dll+0xF0E84]`）。插件映像被卸载后，
+ * 这些窗口就是下一次消息派发的坟墓。本命令用返回地址反查**调用者所在模块**的映像
+ * 范围（即本插件 DLL），把窗口过程落在该范围内的窗口全部销毁 —— 卸载前调一次即可。
+ * 返回被销毁的窗口数；找不到调用者模块返回 -1。 */
+int __stdcall MbKit_KillCallerWindows(void);
+int __stdcall MbKit_CallerWindowScanned(void);  /* 上次扫描到的窗口总数 */
+
+/* 诊断：回调代理因「回调地址已经不在内存里（插件映像被宿主卸载）」而拦下的次数。
+ * 热重载/卸载发生时它会立刻从 0 上涨 —— 这正是旧版「每 128 次才查一次」漏掉的路径。 */
+int __stdcall MbKit_CbRegionBlocked(void);
 
 #ifdef __cplusplus
 }

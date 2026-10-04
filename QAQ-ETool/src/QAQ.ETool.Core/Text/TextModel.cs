@@ -46,6 +46,8 @@ public sealed class TextProject
     public List<string> RootOrder { get; } = new();
     /// <summary>class/dirs.desc.json 的 ExpandedDirs</summary>
     public List<string> ExpandedDirs { get; } = new();
+    /// <summary>class/标签页.desc.json：IDE 打开的标签页（编辑信息段2 的文本化），保持标签栏顺序；元素为 null = 空占位</summary>
+    public List<TOpenTab?> OpenTabs { get; } = new();
 
     // ---------------- resource/
     public List<TResource> Resources { get; } = new();
@@ -221,4 +223,51 @@ public sealed class TResource
     /// <summary>resource.desc.json 里的 Comment / IsPublic（无记录 = null / false）</summary>
     public string? Comment { get; set; }
     public bool Public { get; set; }
+}
+
+// =====================================================================================
+// 打开的标签页（.e 编辑信息段2 的文本化，见 docs/e2txt-format-spec.md §3.12）。
+// 全部按「名字」引用实体，t2e 时重新绑定 ID；解析不出名字的字段附带原始 ID/下标兜底。
+// =====================================================================================
+
+public enum TTabKind { Code, ClassTable, Form, Table, Raw }
+
+public sealed class TOpenTab
+{
+    public TTabKind Kind { get; set; }
+    /// <summary>程序集名；模块内的带 [模块名] 前缀（与 sidecar 键约定一致）。名字解析失败为 null（用 ClassId 兜底）</summary>
+    public string? Class { get; set; }
+    public int? ClassId { get; set; }
+    /// <summary>子程序名（Kind=Code）；解析失败为 null（用 MethodIndex 兜底）</summary>
+    public string? Method { get; set; }
+    /// <summary>子程序在程序集内的下标（0 基，Kind=Code 的兜底）</summary>
+    public int? MethodIndex { get; set; }
+    /// <summary>表格号 N（1 基；Kind=ClassTable 必有，Kind=Code 的选区端点也可能引用）</summary>
+    public int? Table { get; set; }
+    /// <summary>窗口名（Kind=Form）；解析失败为 null（用 FormId 兜底）</summary>
+    public string? Form { get; set; }
+    public int? FormId { get; set; }
+    /// <summary>Kind=Form：设计器中选中的单元名（组件/菜单/窗口自身）</summary>
+    public List<string> Units { get; } = new();
+    /// <summary>Kind=Table：struct / global / dll / const / image / sound</summary>
+    public string? TableKind { get; set; }
+    /// <summary>代码元素 = 光标所在行的代码数据字节位置；表格元素 = 行索引（原样往返）</summary>
+    public int Offset { get; set; }
+    /// <summary>表格列索引（代码页为 0）</summary>
+    public int Column { get; set; }
+    public int SelStart { get; set; }
+    public int SelCurrent { get; set; }
+    public List<TTabEndpoint> Endpoints { get; } = new();
+    /// <summary>Kind=Raw：未知类型的 TypeId 与原始载荷（base64）</summary>
+    public int RawTypeId { get; set; }
+    public string? RawData { get; set; }
+}
+
+/// <summary>多行选区的选择点。Elem（子程序名）/ Table（表格号）二选一；Offset = 该元素的代码数据字节位置或行索引</summary>
+public sealed class TTabEndpoint
+{
+    public string? Elem { get; set; }
+    public int? MethodIndex { get; set; }
+    public int? Table { get; set; }
+    public int Offset { get; set; }
 }

@@ -58,6 +58,20 @@ syntax-error；3=启动器自身失败。
                  分支都返回了数据。
     错误(10044): 不能将 "整数型" 数据转换到 "逻辑型" 数据
 
+事件通道（2026-10-03 起全链路打通，防「弹窗卡死」）
+======================================================
+编译/运行期的致命报错（如「无法找到启动子程序"_启动子程序"!」）走的是 **MessageBox**，
+输出面板一个字都没有 —— 面板判据全部落空，旧版只能空等到超时。现在：
+
+  * elaunch 给每个会话设置**专属事件文件** `ELANG_AI_EVENTS=<log目录>/<tag>_events.txt`
+    与 `ELANG_AI_DLG_POLICY=dismiss`（fne 的 DlgWatch 替用户点掉可安全应答的框）；
+  * 等待循环里 tail 事件文件：`DLG-ERROR`（标题含「错误」的致命框）出现 1.5s 内、
+    普通模态框 12s 无人应答 → **立刻收尾**，结果 JSON 的 `dialogBlocked` 带回
+    `{title, msg, raw}`（msg 就是弹窗原文），`eventsTail` 带事件尾 40 行；
+  * `DLG-SAVEBOX`（编译保存框）归填充线程管，绝不据此判失败；
+  * 事件行同时落面板日志与 trace 可回看：`DLG-MODAL`（含 msg=）、`DLG-DISMISSED`、
+    `DLG-RETRY`（自动应答补点）、`COMPILE-START/END/OUT-SEEN`、`IDE-READY/IDE-EXIT`。
+
 无头（默认开）
 ==============
 **默认不开可见窗口**：`e.exe` 以 `STARTUPINFO.wShowWindow = SW_HIDE` 启动（压住主窗口），
@@ -237,6 +251,134 @@ PRE_RET_RE = re.compile(r"COMPILE-PRE-RET\]\s*handled=(\d+)\s+ok=(\d+)")
 TRIGGER_REFUSED = "COMPILE-TRIGGER-RET] handled=0"
 # 保存框出现的事件行
 DIALOG_SEEN = "COMPILE-DIALOG]"
+
+# 宿主库事件文件（ELANG_AI_EVENTS）里的行：`[HH:MM:SS.mmm] KIND k=v …`
+# DLG-MODAL 自 2026-10-03 起带 `msg=`（弹窗正文，如「无法找到启动子程序…」）
+EV_DLG_MODAL = re.compile(
+    r"\]\s*DLG-MODAL\s+hwnd=(0x[0-9A-Fa-f]+)\s+title='([^']*)'\s+btns=(\d+)\s+msg='([^']*)'")
+EV_DLG_ERROR = re.compile(
+    r"\]\s*DLG-ERROR\s+hwnd=(0x[0-9A-Fa-f]+)\s+title='([^']*)'\s+msg='([^']*)'")
+EV_DLG_DISMISSED = re.compile(r"\]\s*DLG-DISMISSED\s+hwnd=(0x[0-9A-Fa-f]+)")
+EV_DLG_SAVEBOX = re.compile(r"\]\s*DLG-SAVEBOX\s+hwnd=(0x[0-9A-Fa-f]+)")
+EV_IDE_EXIT = re.compile(r"\]\s*IDE-EXIT\b")
+
+
+class EventWatch:
+    """增量 tail 宿主库事件文件（fne 以 GBK 逐行追加），解析弹窗与里程碑事件。
+
+    为什么必须有它：编译/运行期的致命报错（如「无法找到启动子程序」）走的是
+    **MessageBox**，输出面板一个字都没有 —— 面板判据全部落空，AI 只能空等到超时。
+    宿主库的 DlgWatch 线程会把每个模态框（标题+正文+按钮）写进事件文件；
+    本类把它变成「秒级可读」的信号源：
+
+      * DLG-ERROR   → 致命弹窗（标题含「错误/Error」），宽限期后判定会话失败；
+      * DLG-MODAL   → 任何模态框都记录；非保存框若长期无人应答（>DLG_STUCK_SEC）
+                      也按阻塞处理（fne 的 dismiss 策略应答不了「是/否问句」，
+                      这种框本来就该交还给人/AI 判断，但必须立刻报告，不能等超时）；
+      * DLG-DISMISSED → fne 已替用户点掉该框，解除阻塞候选。
+    保存框（DLG-SAVEBOX）由编译填充线程负责，绝不据此判失败。
+    """
+
+    DLG_STUCK_SEC = 12.0        # 非错误弹窗无人应答多少秒 → 视为阻塞
+    ERR_GRACE_SEC = 1.5         # 错误弹窗出现后给 fne 多少秒完成自动应答
+    TAIL_MAX = 40               # 结果 JSON 里带的 eventsTail 行数
+
+    def __init__(self, path: str):
+        self.path = path
+        self.pos = 0
+        self.raw_tail = []          # 全部事件行（有界，供 eventsTail）
+        self.dialogs = []           # DLG-MODAL/DLG-ERROR 摘要（有界）
+        self.errors = []            # DLG-ERROR（致命错误弹窗）——出现即失败信号
+        self.pending = {}           # hwnd → dict(t=time, raw=..., title=..., msg=..., error=bool)
+        self.dismissed = set()      # 已被 fne 应答过的 hwnd
+        self.ide_exit = False
+
+    def pump(self) -> list:
+        """读入新事件行，更新内部状态；返回本次新解析到的事件 dict 列表。"""
+        new_events = []
+        if not os.path.isfile(self.path):
+            return new_events
+        try:
+            with open(self.path, "rb") as f:
+                f.seek(self.pos)
+                data = f.read()
+                self.pos = f.tell()
+        except OSError:
+            return new_events
+        if not data:
+            return new_events
+        for ln in data.decode("gbk", errors="replace").splitlines():
+            ln = ln.rstrip()
+            if not ln:
+                continue
+            self.raw_tail.append(ln)
+            if len(self.raw_tail) > 400:
+                self.raw_tail = self.raw_tail[-200:]
+            m = EV_DLG_ERROR.search(ln)
+            if m:
+                ev = {"kind": "DLG-ERROR", "hwnd": m.group(1), "title": m.group(2),
+                      "msg": m.group(3), "raw": ln, "t": time.time()}
+                self.dialogs.append(ev)
+                self.errors.append(ev)
+                self.pending.setdefault(m.group(1), dict(ev))
+                new_events.append(ev)
+                continue
+            m = EV_DLG_MODAL.search(ln)
+            if m:
+                ev = {"kind": "DLG-MODAL", "hwnd": m.group(1), "title": m.group(2),
+                      "btns": int(m.group(3)), "msg": m.group(4), "raw": ln,
+                      "t": time.time()}
+                self.dialogs.append(ev)
+                if len(self.dialogs) > 40:
+                    self.dialogs = self.dialogs[-20:]
+                self.pending.setdefault(m.group(1), dict(ev))
+                new_events.append(ev)
+                continue
+            m = EV_DLG_DISMISSED.search(ln)
+            if m:
+                self.dismissed.add(m.group(1))
+                self.pending.pop(m.group(1), None)
+                continue
+            if EV_DLG_SAVEBOX.search(ln):
+                continue
+            if EV_IDE_EXIT.search(ln):
+                self.ide_exit = True
+                continue
+        return new_events
+
+    def blocked_dialog(self) -> dict | None:
+        """返回当前「阻塞会话」的弹窗（致命错误框优先，其次长期无人应答的框）。
+
+        判定口径：
+          * DLG-ERROR 出现 DLG_ERR_GRACE_SEC 秒后仍未消失（没等到 DLG-DISMISSED）
+            → 致命（错误框点掉后编译/运行也必然没产出了）；
+          * 普通模态框 DLG_STUCK_SEC 秒无人应答 → 阻塞（等于 AI 在替人扛着一个
+            语义不明的问句干等）。
+          * 已被 fne 应答（DLG-DISMISSED）的框不算阻塞。
+        """
+        now = time.time()
+        for hwnd, ev in list(self.pending.items()):
+            if hwnd in self.dismissed:
+                self.pending.pop(hwnd, None)
+                continue
+            grace = self.ERR_GRACE_SEC if ev.get("kind") == "DLG-ERROR" else self.DLG_STUCK_SEC
+            if now - ev["t"] >= grace:
+                return {"title": ev.get("title") or "", "msg": ev.get("msg") or "",
+                        "kind": ev.get("kind"), "raw": ev.get("raw") or ""}
+        return None
+
+    def first_error(self) -> dict | None:
+        """第一条 DLG-ERROR（致命错误弹窗）。
+
+        ⚠️ 与「是否已被 fne 应答」无关：错误框一出现，编译/运行就已经中止
+        （dismiss 只是替用户把模态框点掉、让 IDE 不卡死），会话必然没有产出
+        —— 所以这是**失败信号**，等待循环见到就该带原文收尾，不能等超时。
+        """
+        return self.errors[0] if self.errors else None
+
+    def tail(self) -> list:
+        return self.raw_tail[-self.TAIL_MAX:]
+
 
 
 def panel_payload_lines(text: str) -> list:
@@ -751,6 +893,9 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         tag = "%s_%s" % (os.path.splitext(os.path.basename(ai_e))[0], time.strftime("%H%M%S"))
     harness = os.path.join(log_dir, "%s_harness.txt" % tag)
     trace = os.path.join(log_dir, "%s_trace.txt" % tag)
+    # 事件文件：**每会话独享**（旧实现缺省落 %TEMP%\elang_ai_events.log，多会话互相
+    # 覆盖、还会读到上一次的旧事件）。fne 侧 EventWrite 认 ELANG_AI_EVENTS。
+    events = os.path.join(log_dir, "%s_events.txt" % tag)
 
     # `--check` 走真编译时（`--check --compile <种类>`）不关心产物，但 IDE 的保存框必须
     # **有东西可填**才会被宿主库消掉（模态框不消掉，触发线程就永远不返回）。所以给个临时
@@ -761,7 +906,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         check_out_made = True
 
     # 只清**同名 tag** 旧证据，不碰别次运行
-    for f in (log, trace, harness):
+    for f in (log, trace, harness, events):
         if os.path.exists(f):
             safe_remove(f)
 
@@ -795,6 +940,12 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         print("   已投放 lib\\%s (%d B)" % (LIB_FNAME, os.path.getsize(dst_fne)))
 
         env = os.environ.copy()
+        # 事件通道（2026-10-03 起）：fne 的 DlgWatch 把每个模态框（含编译/运行期的
+        # 致命错误框）写进本会话专属的事件文件；dismiss 策略让它替用户点掉可安全
+        # 应答的框。Python 侧在等待循环里 tail 这份文件 —— 弹窗一出现就能带原文
+        # 收尾，而不是空等到超时（面板判据对「弹窗报错」完全失效）。
+        env["ELANG_AI_EVENTS"] = events
+        env["ELANG_AI_DLG_POLICY"] = "dismiss"
         if compile_kind:
             # 编译模式：触发 FNST_RUN 编译家族功能号，监视期望产物出现
             env.update({
@@ -835,6 +986,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         print("   e.exe pid = %d" % pid)
         print("   无头模式 = %s" % hl_mode)
         hider = WindowHider(pid, mode=hl_mode).start()
+        evw = EventWatch(events)
 
         deadline = t0 + float(timeout)
         if compile_kind:
@@ -848,6 +1000,19 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 rc = proc.poll()
                 if rc is not None:
                     e_self_exit = rc
+                    break
+                evw.pump()
+                err = evw.first_error()
+                blocked = evw.blocked_dialog()
+                if err or blocked:
+                    # 弹窗报错（如「无法找到启动子程序」）：面板一个字都没有，
+                    # 原有判据（面板错误行/保存框/产物）全部落空 —— 带着弹窗原文
+                    # 立刻收尾，不再空等到超时。错误框出现即失败（已被自动点掉
+                    # 也一样：编译已经中止）；普通模态框 12 秒无人应答也按阻塞算。
+                    start["dialogBlocked"] = err or blocked
+                    _b = start["dialogBlocked"]
+                    print("   !! 模态弹窗: title='%s' msg='%s'"
+                          % (_b.get("title"), _b.get("msg")))
                     break
                 tr = read_text_best(trace)
                 cap = read_text_best(log)
@@ -884,6 +1049,17 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 rc = proc.poll()
                 if rc is not None:
                     e_self_exit = rc
+                    break
+                evw.pump()
+                err = evw.first_error()
+                blocked = evw.blocked_dialog()
+                if (err or blocked) and start["runEnd"] is None:
+                    # 运行还没开始/没结束就被弹窗挡住（如「无法找到启动子程序」）：
+                    # 带原文立刻收尾；若运行已自然结束才弹的框，只记录不判失败。
+                    start["dialogBlocked"] = err or blocked
+                    _b = start["dialogBlocked"]
+                    print("   !! 模态弹窗: title='%s' msg='%s'"
+                          % (_b.get("title"), _b.get("msg")))
                     break
                 tr = read_text_best(trace)
                 if start["runStart"] is None and "FN_END_RUN enabled: 0 -> 1" in tr:
@@ -975,7 +1151,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         if check_only and pre_mode:
             # 预编译：拿 IDE 自己的返回值 `ok=N` 当主判据；只要面板里出现 `错误(NNNN)`
             # 就绝不判"通过"（宁可保守，也不给一个假的"没问题"）。
-            if errors:
+            if errors or start.get("dialogBlocked"):
                 status = "syntax-error"
             elif start.get("preOk") is True:
                 status = "syntax-ok"
@@ -987,10 +1163,11 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 status = "timeout"
         elif check_only:
             # 语法检查 + 真编译：出现保存框 = 静态检查已过；面板报错 = 源码有错；
-            # IDE 自崩 = failed；都没出现 = 超时（**不下"通过"结论**）
+            # 错误弹窗（DLG-ERROR，如「无法找到启动子程序」）= 源码有错（原文在
+            # dialogBlocked 里）；IDE 自崩 = failed；都没出现 = 超时（**不下"通过"结论**）
             if start.get("dialogSeen"):
                 status = "syntax-ok"
-            elif start.get("compileFailed") or errors:
+            elif start.get("dialogBlocked") or start.get("compileFailed") or errors:
                 status = "syntax-error"
             elif e_self_exit is not None:
                 status = "failed"
@@ -998,10 +1175,14 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 status = "timeout"
         elif start.get("outSeen"):
             status = "ok"
-        elif start.get("compileFailed") or e_self_exit is not None:
+        elif start.get("dialogBlocked") or start.get("compileFailed") \
+                or e_self_exit is not None:
             status = "failed"
         else:
             status = "timeout"
+    elif start.get("dialogBlocked") and start["runEnd"] is None:
+        # 调试运行被弹窗挡住（还没跑到/没跑完）：立刻失败并带回弹窗原文
+        status = "failed"
     elif e_self_exit is not None and (e_self_exit & 0xFFFFFFFF) != 0:
         status = "crashed"
     elif start["runEnd"] and start["weSent"]:
@@ -1051,6 +1232,10 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         "precompileOk": start.get("preOk"),
         "errors": errors or None,
         "errorTail": error_tail,
+        "dialogBlocked": start.get("dialogBlocked"),
+        "eventsFile": events,
+        "eventsTail": evw.tail() or None,
+        "dialogsSeen": [d.get("raw") for d in evw.dialogs[-8:]] or None,
         "headless": None if hider is None else (
             {"mode": hider.mode, "enabled": hider.enabled, "hiddenActions": hider.handled,
              "hookOk": hider.hook_ok, "hookError": hider.hook_error,
@@ -1074,6 +1259,10 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         print("   无头=%s" % hider.summary(), file=sys.stderr)
     for e in errors:
         print("   编译错误: %s" % e, file=sys.stderr)
+    if start.get("dialogBlocked"):
+        _b = start["dialogBlocked"]
+        print("   弹窗阻塞: title='%s' msg='%s'" % (_b.get("title"), _b.get("msg")),
+              file=sys.stderr)
     return result
 
 

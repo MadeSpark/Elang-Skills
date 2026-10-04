@@ -543,6 +543,13 @@ def main() -> int:
         result["logUtf8"] = d.get("logUtf8")
         result["errors"] = d.get("errors")
         result["errorTail"] = d.get("errorTail")
+        # 事件通道（2026-10-03 起）：编译/运行期的致命报错可能走 MessageBox
+        # （如「无法找到启动子程序」），面板一个字都没有。elaunch 会 tail 宿主库
+        # 事件文件并把弹窗原文带回 —— 这里原样透传给调用方（AI）。
+        result["dialogBlocked"] = d.get("dialogBlocked")
+        result["eventsFile"] = d.get("eventsFile")
+        result["eventsTail"] = d.get("eventsTail")
+        result["dialogsSeen"] = d.get("dialogsSeen")
         result["precompileOk"] = d.get("precompileOk")
         result["eExitCode"] = d.get("eExitCode")
         result["headless"] = d.get("headless")
@@ -550,9 +557,14 @@ def main() -> int:
             result["syntaxOk"] = bool(d.get("syntaxOk"))
             result["ok"] = bool(d.get("ok"))
             if not result["ok"]:
+                dlg = d.get("dialogBlocked") or {}
                 errs = d.get("errors") or []
                 if errs:
                     result["error"] = "语法检查未通过：%s" % errs[0]
+                elif dlg.get("msg") or dlg.get("title"):
+                    # 错误弹窗（面板没有错误行时，原文只在弹窗里）
+                    result["error"] = ("语法检查未通过，IDE 弹窗报错：%s %s" % (
+                        dlg.get("title") or "", dlg.get("msg") or "")).strip()
                 elif d.get("status") == "timeout":
                     result["error"] = ("语法检查超时：既没等到保存框也没等到报错，"
                                        "结论未知（**不能当通过**）")
@@ -595,7 +607,13 @@ def main() -> int:
                         except OSError:
                             result["candidateDeleted"] = False
         else:
-            result["error"] = "编译未产出（status=%s）" % d.get("status")
+            dlg = d.get("dialogBlocked") or {}
+            if dlg.get("msg") or dlg.get("title"):
+                result["error"] = ("编译被错误弹窗阻断（status=%s）：%s %s" % (
+                    d.get("status"), dlg.get("title") or "",
+                    dlg.get("msg") or "")).strip()
+            else:
+                result["error"] = "编译未产出（status=%s）" % d.get("status")
     finally:
         # 保留判据 = 「确实产生过值得回看的日志」**且**本次不成功：
         #   * 成功（ok）           → 日志无回看价值，删
@@ -627,6 +645,9 @@ def main() -> int:
             out(str(result.get("error")))
             for e in (result.get("errors") or []):
                 out("  %s" % e)
+            dlg = result.get("dialogBlocked") or {}
+            if dlg.get("msg"):
+                out("  IDE 弹窗: %s %s" % (dlg.get("title") or "", dlg.get("msg")))
             if result.get("logUtf8"):
                 out("  完整面板日志（UTF-8 视图）: %s" % result["logUtf8"])
     return EXIT_OK if result.get("ok") else EXIT_COMPILE

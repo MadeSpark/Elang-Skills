@@ -6,6 +6,7 @@
 using System.Text;
 using QIQI.EProjectFile;
 using QIQI.EProjectFile.Context;
+using QIQI.EProjectFile.EditorTabInfo;
 using QIQI.EProjectFile.Sections;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -132,6 +133,51 @@ if (args.Length == 2 && args[0] == "--flags")
     var los = d0.GetOrNull(LosableSection.Key);
     Console.WriteLine($"losable: {los}");
     foreach (var kv in hist) Console.WriteLine($"{kv.Value,7} {kv.Key}");
+    return 0;
+}
+if (args.Length == 2 && args[0] == "--tabs")
+{
+    // 编辑信息段2（打开的标签页）：逐个打印类型 / 类+子程序（或表格、窗口）/ 光标（组包还原验收用）
+    var d0 = new EplDocument();
+    using (var fs0 = File.OpenRead(args[1])) d0.Load(fs0);
+    var code0 = d0.GetOrNull(CodeSection.Key);
+    var classes = code0?.Classes.ToDictionary(c => c.Id, c => c) ?? new Dictionary<int, ClassInfo>();
+    var methods = code0?.Methods.ToDictionary(m => m.Id, m => m) ?? new Dictionary<int, MethodInfo>();
+    var forms = d0.GetOrNull(ResourceSection.Key)?.Forms.ToDictionary(f => f.Id, f => f) ?? new Dictionary<int, FormInfo>();
+    var sec = d0.GetOrNull(EditorInfoSection.Key);
+    if (sec == null) { Console.WriteLine("（无编辑信息段2）"); return 0; }
+    int i = 0;
+    foreach (var t in sec.Tabs)
+    {
+        int n = i++;
+        switch (t)
+        {
+            case null:
+                Console.WriteLine($"TAB {n}: (空占位)");
+                break;
+            case ClassEditorTabInfo c:
+            {
+                classes.TryGetValue(c.ClassId, out var cls);
+                string elem = c.ElemId < 0 ? $"表格{-c.ElemId}"
+                    : cls != null && c.ElemId < cls.Methods.Count && methods.TryGetValue(cls.Methods[c.ElemId], out var m) ? m.Name
+                    : $"子程序?{c.ElemId}";
+                Console.WriteLine($"TAB {n}: code [{cls?.Name ?? $"0x{c.ClassId:X8}"}].{elem} offset={c.Offset} col={c.ColumnInTable} sel=({c.SelectionStart},{c.SelectionCurrent}) ep={c.SelectionEndpoints?.Count ?? 0}");
+                break;
+            }
+            case FormDesignerTabInfo f:
+                Console.WriteLine($"TAB {n}: form {(forms.TryGetValue(f.FormId, out var fm) ? fm.Name : $"0x{f.FormId:X8}")} units=[{string.Join(",", (f.UnitIds ?? new List<int>()).Select(x => $"0x{x:X8}"))}]");
+                break;
+            case PureTableEditorTabInfo p:
+                Console.WriteLine($"TAB {n}: table type={p.TypeId} offset={p.Offset} col={p.ColumnInTable} sel=({p.SelectionStart},{p.SelectionCurrent}) ep={p.SelectionEndpoints?.Count ?? 0}");
+                break;
+            case GeneralEditorTabInfo g:
+                Console.WriteLine($"TAB {n}: raw type={g.TypeId} len={g.Data?.Length ?? 0}");
+                break;
+            default:
+                Console.WriteLine($"TAB {n}: {t.GetType().Name}");
+                break;
+        }
+    }
     return 0;
 }
 if (args.Length < 1)

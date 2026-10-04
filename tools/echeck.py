@@ -163,6 +163,227 @@ def check_blocks(path, lines, errs, warns):
         errs.append(f"{path}:{ln} 块「{kind}」缺块尾（.判断结束 / .如果结束 / .计次循环尾 等）")
 
 
+# ---------------- 流程线空行规则检查 ----------------
+# 隐藏块尾：IDE 不给它们画可见收尾线，流程线的走向全靠其后的空行
+HIDDEN_TAIL_KIND = {"如果真结束", "如果结束"}
+
+BLOCK_KW_RE = re.compile(r"^(\s*)\.([^\s(（]+)")
+
+
+def parse_kw(raw):
+    """提取块语句的 (缩进, 关键字)；非块语句（空行/普通语句/声明行）返回 (None, None)"""
+    line = strip_comment(raw)
+    if DECL_RE.match(line):
+        return None, None
+    m = BLOCK_KW_RE.match(line)
+    if not m:
+        return None, None
+    return len(m.group(1)), m.group(2)
+
+
+def check_hidden_tail_gap(path, lines, warns):
+    """规则①+③+⑤：隐藏块尾（.如果真结束 / .如果结束）后的空行间距检查。
+
+    IDE 不给这两种块尾画可见收尾线，流程线的走向依赖块尾后面的空行：
+    ① 隐藏块尾紧贴下一条块尾（中间无空行）→ 流程线会串线，必须补空行；
+    ③ 隔在中间的空行缩进必须与隐藏块尾自身缩进一致，否则流程线对不齐；
+    ⑤ 隐藏块尾紧贴中段标记（.否则 / .默认 / .判断）→ 同样必须补空行
+       （2026-10-03 深夜实证：A/B demo 的 case5/case6 因此在 IDE 里整个
+       .判断 的框消失；原生代码里「隐藏块尾紧贴中段标记」0 处——第四轮
+       曾误判 15 处合法，是统计脚本把 .判断开始 误吞进 .判断 的前缀匹配 bug）。
+    只查隐藏块尾：显式块尾（判断结束/计次循环尾等）IDE 会画可见收尾线，
+    原生代码里显式块尾紧贴块首、紧贴中段标记都是合法写法，查了就是误报。
+    隐藏块尾 → 空行 → .子程序 等声明行、隐藏块尾紧贴同缩进块首都是合法写法
+    （用户 IDE 负对照实测：case7 隐藏块尾紧贴块首渲染正常）。
+    （统计基准：未经打包往返的原生代码里，「隐藏块尾→块尾」「隐藏块尾→中段标记」
+    全部带同缩进空行，0 处紧贴、0 处缩进不符。）
+    """
+    n = len(lines)
+    for ln, raw in enumerate(lines, 1):
+        indent, kw = parse_kw(raw)
+        if kw not in HIDDEN_TAIL_KIND:
+            continue
+        j = ln  # 下一行下标（0 基）
+        gaps = []
+        while j < n and lines[j].strip() == "":
+            gaps.append(lines[j])
+            j += 1
+        if j >= n:
+            continue  # 文件末尾，无需检查
+        _, next_kw = parse_kw(lines[j])
+        if next_kw not in TAIL_KIND and next_kw not in ("否则", "默认", "判断"):
+            continue  # 只查「隐藏块尾 → 块尾/中段标记」衔接，其余写法合法
+        kind = "块尾" if next_kw in TAIL_KIND else "中段标记"
+        if not gaps:
+            warns.append(
+                f"{path}:{ln} 「.{kw}」与下一条{kind}「.{next_kw}」紧挨着（中间无空行）"
+                f"→ IDE 流程线会串线（该行补一个 {indent} 空格缩进的空行）")
+        else:
+            for g in gaps:
+                g_ind = len(g) - len(g.lstrip())
+                if g_ind != indent:
+                    warns.append(
+                        f"{path}:{ln} 「.{kw}」后的空行缩进 {g_ind} ≠ 本行缩进 {indent}"
+                        f"→ IDE 流程线对不齐（把空行改成 {indent} 空格缩进）")
+                    break  # 同一位置只报一条，避免刷屏淹掉真问题
+
+
+def check_sub_tail_gap(path, lines, warns):
+    """规则②：子程序末行是块尾时，其后到下一个 .子程序 之间必须存在
+    至少一条与块尾同缩进的空行，否则 IDE 流程线会断开并串到下一个子程序。
+    末行是普通语句 → 不检查。
+    """
+    n = len(lines)
+    body_start = None
+    for i, raw in enumerate(lines):
+        if SUB_RE.match(strip_comment(raw)):
+            if body_start is not None:
+                _check_sub_tail_body(path, lines, body_start, i, warns)
+            body_start = i + 1
+    if body_start is not None:
+        _check_sub_tail_body(path, lines, body_start, n, warns)
+
+
+def _check_sub_tail_body(path, lines, start, end, warns):
+    """检查 [start, end) 范围内单个子程序体的末尾空行规则"""
+    last = None
+    for i in range(end - 1, start - 1, -1):
+        if lines[i].strip() != "":
+            last = i
+            break
+    if last is None:
+        return  # 空子程序体
+    indent, kw = parse_kw(lines[last])
+    if kw not in TAIL_KIND:
+        return  # 末行是普通语句 → 不检查
+    has_blank = False
+    for i in range(last + 1, end):
+        if lines[i].strip() == "":
+            has_blank = True
+            g_ind = len(lines[i]) - len(lines[i].lstrip())
+            if g_ind == indent:
+                return  # 找到同缩进空行 → 合格
+    if not has_blank:
+        warns.append(
+            f"{path}:{last + 1} 子程序末行是块尾「.{kw}」，其后没有空行"
+            f"→ IDE 流程线会断开并串到下一个子程序（补一个 {indent} 空格缩进的空行）")
+    else:
+        warns.append(
+            f"{path}:{last + 1} 子程序末行是块尾「.{kw}」，其后没有 {indent} 空格缩进的空行"
+            f"→ IDE 流程线会断开并串到下一个子程序（把空行补成 {indent} 空格缩进）")
+
+
+def check_empty_branch_gap(path, lines, warns):
+    """规则④：.否则 / .默认 与 .判断结束 之间没有占位空行（空分支）时，
+    整个 .判断 的框在 IDE 里画不出来，必须插占位空行。
+    查下一非空行时必须跳过空行——只看紧邻一行会被占位空行挡住而漏报。
+    ⚠️ 占位空行的缩进【不做检查】：原生代码 42 处空分支的占位空行
+    全部是「中段缩进 + 4」（.默认 在 4、空行在 8），而 A/B demo 的 v4 版
+    用「中段自身缩进」（4）也渲染正常 ⇒ 两种缩进都合法，只要求存在。
+    （第三轮曾断言「占位空行缩进 = 中段自身缩进，42 处全部如此」——错，
+    当时没逐条验缩进；按它做检查会对原生代码误报 42 处。）
+    """
+    n = len(lines)
+    for ln, raw in enumerate(lines, 1):
+        indent, kw = parse_kw(raw)
+        if kw not in ("否则", "默认"):
+            continue
+        j = ln  # 下一行下标（0 基），跳过空行找第一条非空行
+        gaps = []
+        while j < n and lines[j].strip() == "":
+            gaps.append(lines[j])
+            j += 1
+        if j >= n:
+            continue
+        _, next_kw = parse_kw(lines[j])
+        if next_kw != "判断结束":
+            continue  # 分支有内容 → 不报
+        if gaps:
+            continue  # 已有占位空行（原生惯例缩进=中段+4，不强制）→ 不报
+        warns.append(
+            f"{path}:{ln} 「.{kw}」与「.判断结束」之间没有占位空行（空分支）"
+            f"→ 整个 .判断 的框在 IDE 里画不出来（插一个 {indent} 空格缩进的占位空行）")
+
+
+def check_if_needs_else(path, lines, errs):
+    """检查 .如果 块是否配有 .否则（.如果真 不需要）。
+
+    独立维护一个只跟踪 .如果 的小栈（不动 check_blocks 的栈）：
+    .如果 入栈时记「未见否则」标记，遇到 .否则 清除栈顶标记，
+    弹出 .如果结束 时标记还在 → error（t2e 会静默把无否则的 .如果
+    改写成 .如果真，语义悄悄变了）。
+    """
+    stack = []  # [起始行号, 是否未见否则]
+    for ln, raw in enumerate(lines, 1):
+        _, kw = parse_kw(raw)
+        if kw == "如果":
+            stack.append([ln, True])
+        elif kw == "否则":
+            if stack:
+                stack[-1][1] = False
+        elif kw == "如果结束":
+            if stack:
+                start_ln, no_else = stack.pop()
+                if no_else:
+                    errs.append(
+                        f"{path}:{ln} 「.如果」（第{start_ln}行）没有配对的「.否则」"
+                        f"（t2e 会静默把它改写成 .如果真）")
+
+
+def _extract_head_args(line):
+    """提取块首行第一个括号内的参数文本；没有括号返回 None。
+
+    不能复用 parse_calls：块首行以「.关键字」开头，CALL_RE 会把整段
+    「.变量循环首」连点号一起当命令名而拒绝识别，只认出行内的普通调用，
+    导致块首自身参数被漏掉。这里直接定位第一个括号，跳过全角引号内的
+    内容并按嵌套括号深度找配对右括号。
+    """
+    start = -1
+    for idx, c in enumerate(line):
+        if c in "(（":
+            start = idx
+            break
+    if start < 0:
+        return None
+    depth, in_q = 0, False
+    for k in range(start, len(line)):
+        c = line[k]
+        if c == "“":
+            in_q = True
+        elif c == "”":
+            in_q = False
+        elif not in_q:
+            if c in "([{":
+                depth += 1
+            elif c in ")]}":
+                depth -= 1
+                if depth == 0:
+                    return line[start + 1:k]
+    return line[start + 1:]  # 括号不闭合（坏行），取到行尾
+
+
+def check_loop_head_args(path, lines, errs):
+    """循环块首参数个数检查：
+    .判断循环首 只接受 1 个参数（条件）；.变量循环首 需要 2 个参数（起始值、终止值）。
+    参数切分复用 split_args（已处理全角引号与嵌套括号）；
+    整行没有括号参数的情况按 0 个参数处理。
+    """
+    for ln, raw in enumerate(lines, 1):
+        _, kw = parse_kw(raw)
+        if kw not in ("判断循环首", "变量循环首"):
+            continue
+        inner = _extract_head_args(strip_comment(raw))
+        n_args = 0
+        if inner is not None:
+            args, bad = split_args(inner)
+            if not bad and not (len(args) == 1 and args[0].strip() == ""):
+                n_args = len(args)
+        if kw == "判断循环首" and n_args >= 2:
+            errs.append(f"{path}:{ln} 「.判断循环首」只接受 1 个参数（条件），给了 {n_args} 个")
+        elif kw == "变量循环首" and n_args < 2:
+            errs.append(f"{path}:{ln} 「.变量循环首」需要 2 个参数（起始值、终止值），只给了 {n_args} 个")
+
+
 def load_lib(jsonl):
     """commands.jsonl → {命令名: [(参数flags列表, 库名)]}"""
     table = {}
@@ -268,6 +489,19 @@ def check_calls(path, lines, subs, lib, errs, warns):
                 work.extend(a for a in args if "(" in a)
 
 
+def safe_relpath(path):
+    """os.path.relpath 的安全封装。
+
+    脚本工作目录与被检文件不在同一盘符时（如在 D: 工作区检查解包到
+    C: 临时目录的文件），relpath 会抛 ValueError 直接崩溃；
+    此时退回绝对路径，保证检查流程不中断。
+    """
+    try:
+        return os.path.relpath(path)
+    except ValueError:
+        return os.path.abspath(path)
+
+
 def main():
     ap = argparse.ArgumentParser(description="易语言文本源码静态检查（块结构 + 命令/参数）")
     ap.add_argument("src", help="文本目录或单个 .e.txt")
@@ -296,7 +530,7 @@ def main():
     errs, warns, subs = [], [], {}
     texts = {}
     for f in files:
-        rel = os.path.relpath(f)
+        rel = safe_relpath(f)
         with open(f, "r", encoding="utf-8-sig") as fh:
             lines = fh.read().replace("\r\n", "\n").split("\n")
         texts[rel] = lines
@@ -305,6 +539,11 @@ def main():
 
     for rel, lines in texts.items():
         check_blocks(rel, lines, errs, warns)
+        check_hidden_tail_gap(rel, lines, warns)
+        check_sub_tail_gap(rel, lines, warns)
+        check_empty_branch_gap(rel, lines, warns)
+        check_if_needs_else(rel, lines, errs)
+        check_loop_head_args(rel, lines, errs)
         check_calls(rel, lines, subs, lib, errs, warns)
 
     # 库表检查：命令/类型/常量存在于本机支持库，但所属库不在工程库表里
@@ -334,6 +573,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-

@@ -305,6 +305,8 @@ typedef struct _DLG_SCAN
     int   nBtn;                     /* 命令按钮个数 */
     HWND  hSingle;
     BOOL  blHas[8];                 /* 按 IDOK..IDCANCEL 序号表 */
+    char  szMsg[260];               /* 消息文本 = 第一个非按钮、非空文本的子控件
+                                       （MessageBox 的正文就是它，如「无法找到启动子程序…」） */
 } DLG_SCAN;
 
 static BOOL CALLBACK DlgChildProc(HWND hChild, LPARAM lp)
@@ -326,10 +328,79 @@ static BOOL CALLBACK DlgChildProc(HWND hChild, LPARAM lp)
         p->nBtn++;
         p->hSingle = hChild;
     }
+    else if (p->szMsg[0] == '\0' && szTxt[0] != '\0' && strcmp(szCls, "Static") == 0)
+    {
+        snprintf(p->szMsg, sizeof(p->szMsg), "%s", szTxt);
+    }
     return TRUE;
 }
 
 typedef struct _DLG_SAVECHK { BOOL blSave; } DLG_SAVECHK;
+
+/* ---- 应答重试表 ----------------------------------------------------------
+ * 无头模式下第一次 BM_CLICK 可能被吞（2026-09-22 实测过），而 WinEvent 钩子对
+ * 同一个 hwnd 只报一次（去重表），点击失败后没人再管 → 模态框永远不消。
+ * 这里把「判定过可点」的框登记进表，由 DlgWatch 的泵循环每 800ms 补点一次，
+ * 框一消失（IsWindow/可见性失效）即出表。仅监控线程读写，无需加锁。 */
+#define DLG_RETRY_MAX 8
+typedef struct _DLG_RETRY
+{
+    HWND  hDlg;
+    HWND  hBtn;
+    DWORD dwCmd;
+    DWORD tLast;
+    int   nTries;
+} DLG_RETRY;
+static DLG_RETRY g_Retry[DLG_RETRY_MAX];
+static int       g_nRetry = 0;
+
+static void DlgRetryAdd(HWND hDlg, HWND hBtn, DWORD dwCmd)
+{
+    int i;
+    for (i = 0; i < g_nRetry && i < DLG_RETRY_MAX; i++)
+        if (g_Retry[i].hDlg == hDlg) { g_Retry[i].tLast = GetTickCount(); return; }
+    if (g_nRetry >= DLG_RETRY_MAX)
+    {
+        /* 表满：挤掉最老的一项（正常会话同时存在的模态框远小于 8） */
+        for (i = 1; i < DLG_RETRY_MAX; i++) g_Retry[i - 1] = g_Retry[i];
+        g_nRetry = DLG_RETRY_MAX - 1;
+    }
+    g_Retry[g_nRetry].hDlg    = hDlg;
+    g_Retry[g_nRetry].hBtn    = hBtn;
+    g_Retry[g_nRetry].dwCmd   = dwCmd;
+    g_Retry[g_nRetry].tLast   = GetTickCount();
+    g_Retry[g_nRetry].nTries  = 1;
+    g_nRetry++;
+}
+
+/* 泵循环里调用：补点仍在的框、清掉已消失的框。 */
+static void DlgRetryPump(void)
+{
+    int i;
+    DWORD now = GetTickCount();
+    for (i = 0; i < g_nRetry; )
+    {
+        if (!IsWindow(g_Retry[i].hDlg) || !IsWindowVisible(g_Retry[i].hDlg) ||
+            !IsWindow(g_Retry[i].hBtn))
+        {
+            int j;
+            for (j = i + 1; j < g_nRetry; j++) g_Retry[j - 1] = g_Retry[j];
+            g_nRetry--;
+            continue;                    /* 不 ++，接着处理挪过来的那一项 */
+        }
+        if (now - g_Retry[i].tLast >= 800)
+        {
+            PostMessageA(g_Retry[i].hDlg, WM_COMMAND,
+                         (WPARAM)g_Retry[i].dwCmd, (LPARAM)g_Retry[i].hBtn);
+            PostMessageA(g_Retry[i].hBtn, BM_CLICK, 0, 0);
+            g_Retry[i].tLast = now;
+            g_Retry[i].nTries++;
+            EventWrite("DLG-RETRY", "hwnd=0x%08X tries=%d",
+                       (unsigned)(size_t)g_Retry[i].hDlg, g_Retry[i].nTries);
+        }
+        i++;
+    }
+}
 
 static BOOL CALLBACK DlgSaveChkProc(HWND hChild, LPARAM lp)
 {
@@ -374,8 +445,20 @@ static void DlgHandle(HWND hDlg)
             strncat(szKids, scan.items[i],
                     sizeof(szKids) - strlen(szKids) - 1);
         }
-        EventWrite("DLG-MODAL", "hwnd=0x%08X title='%s' btns=%d kids=[%s]",
-                   (unsigned)(size_t)hDlg, szTitle, scan.nBtn, szKids);
+        EventWrite("DLG-MODAL", "hwnd=0x%08X title='%s' btns=%d msg='%s' kids=[%s]",
+                   (unsigned)(size_t)hDlg, szTitle, scan.nBtn, scan.szMsg, szKids);
+        Trace("DLG-MODAL hwnd=0x%08X title='%s' msg='%s' kids=%d",
+              (unsigned)(size_t)hDlg, szTitle, scan.szMsg, scan.n);
+    }
+
+    /* 错误弹窗（如「无法找到启动子程序」）：单独发一条 DLG-ERROR —— Python 侧
+       只认这个标签做「立即收尾」，把弹窗原文第一时间带回给 AI，不再空等到超时。 */
+    if (strstr(szTitle, "错误") != NULL || strstr(szTitle, "錯誤") != NULL ||
+        strstr(szTitle, "Error") != NULL || strstr(szTitle, "error") != NULL)
+    {
+        EventWrite("DLG-ERROR", "hwnd=0x%08X title='%s' msg='%s'",
+                   (unsigned)(size_t)hDlg, szTitle, scan.szMsg);
+        Trace("DLG-ERROR title='%s' msg='%s'", szTitle, scan.szMsg);
     }
 
     if (g_nDlgPolicy < 1 || sv.blSave) return;
@@ -416,6 +499,7 @@ static void DlgHandle(HWND hDlg)
         PostMessageA(hClick, BM_CLICK, 0, 0);
         EventWrite("DLG-DISMISSED", "hwnd=0x%08X clicked=%d",
                    (unsigned)(size_t)hDlg, nClickId ? nClickId : 1);
+        DlgRetryAdd(hDlg, hClick, dwCmd);
     }
 }
 
@@ -457,6 +541,14 @@ static void CALLBACK DlgWinEventProc(HWINEVENTHOOK hHook, DWORD dwEvent, HWND hW
         if (g_hDlgSeen[i] == hWnd) return;
     if (g_nDlgSeen < DLG_SEEN_MAX)
         g_hDlgSeen[g_nDlgSeen++] = hWnd;
+    else
+    {
+        /* 表满就整体清零重来：漏记新弹窗（不写 DLG-MODAL / 不应答）比偶尔
+           重复记录一条危害大得多 —— 长会话里弹窗数很容易超过 32。 */
+        memset(g_hDlgSeen, 0, sizeof(g_hDlgSeen));
+        g_hDlgSeen[0] = hWnd;
+        g_nDlgSeen = 1;
+    }
 
     DlgHandle(hWnd);
 }
@@ -501,6 +593,8 @@ static DWORD __stdcall DlgWatchProc(LPVOID lp)
                 DispatchMessageW(&msg);
             }
         }
+        /* 应答重试：第一次点击被吞时每 800ms 补点，框消失即停（见 g_Retry 注释）。 */
+        DlgRetryPump();
     }
     /* not reached */
 }

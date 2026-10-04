@@ -60,6 +60,7 @@ static CRITICAL_SECTION g_cbLock;
 static LONG          g_cbLockState = 0;   /* 0=未建 1=建设中 2=就绪 */
 static LONG          g_blkTotal = 0;
 static LONG          g_hitTotal = 0;
+static LONG          g_regionBlk = 0;     /* 因「回调地址已不在（映像被卸载）」被拦下的次数 */
 
 static void cb_lock(void)
 {
@@ -113,6 +114,8 @@ static int region_ok(void* addr)
     return 1;
 }
 
+static void note_blocked(MBCB* e);
+
 static int entry_alive(MBCB* e)
 {
     if (!e || !e->used) return 0;
@@ -124,11 +127,26 @@ static int entry_alive(MBCB* e)
         return addr_same_module((void*)(UINT_PTR)e->regRet, e->regMod);
 
     /* ③ 两条路都判不出业务身份（业务 DLL 不在加载器链表里，如宿主手工映射加载）。
-     *    —— 放行！判不出来 ≠ 已失效。只做「那段内存还在不在」的兜底，
-     *    且 VirtualQuery 不便宜 ⇒ 每 128 次才真查一次。 */
-    if (e->hits % 128) return 1;
-    return region_ok((void*)(UINT_PTR)e->regRet);
+     *    v1.4.2 及以前：放行，且每 128 次才 VirtualQuery 一次 —— 这里留了一个致命窗口：
+     *    宿主卸载插件映像后，内核的定时回调（典型是 wkeOnPaintUpdated 的离屏重绘，
+     *    MiniBlinkTimerWindowClass/OffScreenTimer 约 16ms 一次）仍有最多 127 次机会
+     *    直接跳进已释放的插件代码；一次访问违例就足以让宿主的致命错误处理收掉进程。
+     *    v1.4.3：每次都查，注册点与目标函数两段内存都要在。 */
+    if (!region_ok((void*)(UINT_PTR)e->regRet)) {
+        InterlockedIncrement(&g_regionBlk);
+        note_blocked(e);
+        return 0;
+    }
+    if (!region_ok(e->bizCb)) {
+        InterlockedIncrement(&g_regionBlk);
+        note_blocked(e);
+        return 0;
+    }
+    return 1;
 }
+
+/* 诊断用：因「回调地址已经不在了」被拦下的总次数（热重载时它会立刻上涨） */
+int __stdcall MbKit_CbRegionBlocked(void) { return (int)g_regionBlk; }
 
 static void note_blocked(MBCB* e)
 {

@@ -12,7 +12,7 @@
      规范全文都在技能包内，且与工程侧源本逐字节一致）
   3. **全部安装点**（`~/.agents`、`~/.claude`、`~/.trae` …）与发布区逐文件 md5 一致
   4. 三个安装入口存在且 `安装技能.cmd` 是 GBK+CRLF（否则 cmd 里中文乱码）
-  5. dist/ 里的技能分发包结构（zip 根即 SKILL.md）
+  5. dist/ 里的技能分发包结构（zip 根即 SKILL.md；没有 dist/ 时跳过）
   6. 文档里不再有失效的绝对路径；技能包里不再出现已退役的转换工具 e2txt
   7. **技能 / 安装器 / 使用说明里没有本机专有信息**（路径、统计数、模块版本、个人信息）
   8. **跨技能运行期依赖**：技能的 `scripts/*.py` 若去读同级技能的目录/资产，那个技能
@@ -220,18 +220,24 @@ SCRIPTS = {
 for _sk, _names in SCRIPTS.items():
     for _n in _names:
         SELF_CONTAINED.append((f"{_sk}/scripts/{_n}", ROOT / "tools" / _n))
-# QAQ-ETool 的 3 个 exe：源在 QAQ-ETool/dist/（独立工程，可能没检出）。没有源时只查技能包里有。
-QAQ_DIST = ROOT / "QAQ-ETool" / "dist"
-for _n in ("QAQ-ETool.exe", "qaq-etool-gui.exe", "qaq-libinfo.exe"):
-    SELF_CONTAINED.append((f"qaq-etool-cli/assets/{_n}", QAQ_DIST / _n))
+# QAQ-ETool 的 3 个 exe：源在各自的构建产物目录（QAQ-ETool.exe = dotnet publish 单文件自包含；
+# qaq-etool-gui.exe = src/gui 产物）。成品只保留发布区，不再有 QAQ-ETool/dist 中转；没有构建产物时只查技能包里有。
+QAQ_SOURCES = {
+    "QAQ-ETool.exe": ROOT / "QAQ-ETool" / "src" / "QAQ.ETool.Cli" / "bin" / "Release" / "net8.0" / "win-x64" / "publish",
+    "qaq-libinfo.exe": ROOT / "QAQ-ETool" / "src" / "QAQ.ETool.Cli" / "bin" / "Release" / "net8.0" / "win-x64" / "publish",
+    "qaq-etool-gui.exe": ROOT / "QAQ-ETool" / "src" / "gui",
+}
+QAQ_DIRS = set(QAQ_SOURCES.values())
+for _n, _d in QAQ_SOURCES.items():
+    SELF_CONTAINED.append((f"qaq-etool-cli/assets/{_n}", _d / _n))
 for rel, src in SELF_CONTAINED:
     p = SKILLS_SRC / rel.replace("/", os.sep)
     if not p.is_file():
         bad(f"技能包缺少 {rel}（装到别的工具后就找不到了）")
         continue
     if not src.is_file():
-        if src.parent == QAQ_DIST:
-            ok(f"{rel:46s} {p.stat().st_size:>9,} B  存在（没有 QAQ-ETool/dist，跳过比对）")
+        if src.parent in QAQ_DIRS:
+            ok(f"{rel:46s} {p.stat().st_size:>9,} B  存在（没有构建产物，跳过比对）")
         else:
             bad(f"工程侧源本缺失，无法比对: {src}")
         continue

@@ -1,0 +1,22 @@
+==== spike_cli tag=in0 pid=48216  node=D:\DevelopmentFolder\�������Ŀ¼\E\���\���-����\main\corn\node.dll  700x420  hold=14000ms restart=0
+[init ] ctl=MBKSPK_CTL_in0_48216 frame=MBKSPK_FRM_in0_48216 evt=MBKSPK_EVT_in0_48216
+[init ] 窗口 hwnd=007f1a42 客户区=700x420 客户区屏幕原点=(68,91) tid=56668
+[spawn] 辅助进程 pid=19804  cmd="C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host.exe" "D:\DevelopmentFolder\�������Ŀ¼\E\���\���-����\main\corn\node.dll" "file:///C:/Users/MadeSpark/Desktop/����/src/mbkit/host/spike.html" 700 420 "MBKSPK_CTL_in0_48216" "MBKSPK_FRM_in0_48216" "MBKSPK_EVT_in0_48216" "C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host_in0.log"
+[probe t1s           ] 共享帧非白=265920/294000 (90.45%) hash=931EFD37  窗口非白=265920  客户端paint=32  辅助进程paints=17 frames=44 内核失效=1 tick=28 输入转发=3 本地转发=4 status=2 title="CLICK 1 at 350,200"
+[probe t2s           ] 共享帧非白=267243/294000 (90.90%) hash=CBCB336F  窗口非白=267243  客户端paint=96  辅助进程paints=50 frames=138 内核失效=3 tick=88 输入转发=6 本地转发=7 status=2 title="CLICK 2 at 350,200"
+[probe t3s           ] 共享帧非白=267172/294000 (90.87%) hash=881C243A  窗口非白=267172  客户端paint=158  辅助进程paints=83 frames=231 内核失效=5 tick=148 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t4s           ] 共享帧非白=267167/294000 (90.87%) hash=124240F8  窗口非白=267167  客户端paint=233  辅助进程paints=118 frames=329 内核失效=7 tick=211 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t5s           ] 共享帧非白=267213/294000 (90.89%) hash=D91BDF5B  窗口非白=267213  客户端paint=298  辅助进程paints=152 frames=424 内核失效=9 tick=272 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t6s           ] 共享帧非白=267121/294000 (90.86%) hash=865A31BE  窗口非白=267121  客户端paint=370  辅助进程paints=186 frames=521 内核失效=11 tick=335 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t7s           ] 共享帧非白=267235/294000 (90.90%) hash=8F015140  窗口非白=267235  客户端paint=444  辅助进程paints=220 frames=619 内核失效=13 tick=399 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t8s           ] 共享帧非白=267142/294000 (90.86%) hash=87FEAF54  窗口非白=267142  客户端paint=517  辅助进程paints=254 frames=717 内核失效=15 tick=463 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t9s           ] 共享帧非白=267157/294000 (90.87%) hash=94F73586  窗口非白=267157  客户端paint=590  辅助进程paints=288 frames=813 内核失效=17 tick=526 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t10s          ] 共享帧非白=267182/294000 (90.88%) hash=0198D338  窗口非白=267182  客户端paint=657  辅助进程paints=322 frames=912 内核失效=19 tick=590 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t11s          ] 共享帧非白=267069/294000 (90.84%) hash=3A8D4053  窗口非白=267069  客户端paint=726  辅助进程paints=356 frames=1009 内核失效=21 tick=653 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t12s          ] 共享帧非白=267201/294000 (90.88%) hash=FE58DD68  窗口非白=267201  客户端paint=794  辅助进程paints=390 frames=1107 内核失效=23 tick=717 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t13s          ] 共享帧非白=267117/294000 (90.86%) hash=A6E7BE26  窗口非白=267117  客户端paint=855  辅助进程paints=424 frames=1204 内核失效=25 tick=780 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe t14s          ] 共享帧非白=267110/294000 (90.85%) hash=CE292B38  窗口非白=267110  客户端paint=927  辅助进程paints=458 frames=1302 内核失效=27 tick=844 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"
+[probe final         ] 共享帧非白=267110/294000 (90.85%) hash=CE292B38  窗口非白=267110  客户端paint=928  辅助进程paints=458 frames=1303 内核失效=27 tick=845 输入转发=9 本地转发=10 status=2 title="CLICK 3 at 350,200"  BMP=C:\Users\MadeSpark\Desktop\����\src\mbkit\host\shot_in0_final.bmp
+[exit ] 客户端 paint 次数=928  辅助进程 frames=1303 status=2 title=CLICK 3 at 350,200
+[kill ] 辅助进程已销毁（客户端退出）—— node.dll 随进程消亡，锁死的句柄就此释放
+==== spike_cli 结束 ====

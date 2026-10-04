@@ -51,6 +51,7 @@ W：en 144 个文件 / cn 144 个；N：en 132 / cn 132。按下表映射后**�
 | `class/<窗口程序集名>.form.e.txt` | `代码/<窗口程序集名>.form.e.txt` | 后缀不翻译 |
 | `class/order.list.txt` | `代码/排序.list.txt` | |
 | `class/dirs.desc.json` | `代码/目录.desc.json` | |
+| `class/tabs.desc.json` | `代码/标签页.desc.json` | **QAQ-ETool 扩展**，e2txt 无此文件（见 §3.12） |
 | `config/` | `配置/` | |
 | `config/lib.config.json` | `配置/支持库.config.json` | |
 | `config/system.config.json` | `配置/系统.config.json` | |
@@ -338,6 +339,50 @@ W 的 `ProjectType` 为 2（W 是 DLL 插件工程），N 为 0（普通窗口�
 ### 3.11 模块目录名
 
 目录名**不是** `.ec` 文件名：`Source` 为 `cornsdk_免打包版.ec` 的模块目录叫 `小栗子sdk`（`W/module/小栗子sdk.desc.json:2`），`精易模块[v11.1.5].ec` 的目录叫 `精易模块`。推测来自 `.e` 中模块引用记录的名称字段，具体来源未确认。
+
+### 3.12 `class/tabs.desc.json`（QAQ-ETool 扩展，e2txt 无）
+
+**注意与 `order.list.txt`（§3.3）区分**：排序表是「所有程序集的写出顺序」，本文件是「**IDE 打开的标签页**」（.e 格式 `0x09007319` 编辑信息段2 的文本化）。e2txt 不输出标签页状态，组包后 IDE 标签栏为空白；本文件补上这一环。
+
+- 拆包：原 .e 有编辑信息段2 就写出（UTF-8 BOM、CRLF、无结尾换行，同 §3.1）；原段不存在则不写文件。带/不带 `-nosidecar` 都写（文本载体独立于旁路存在）。
+- 组包：文件存在就读取并把**名字重新绑定成当前 ID** 重建该段；缺失则维持旧行为（无标签页）。带旁路且实体全部沿用时，旁路的原始字节优先（光标/未知类型零损耗）；实体有增删（旧逻辑会整段丢弃该段）时改用本文件重建。
+- 按名字引用实体，跨往返存活（ID 每次组包可能重排）；模块内程序集带 `[模块名]` 前缀。名字解析不出的标签页丢弃并警告；引用的子程序已删除时该页丢弃。
+
+```json
+{
+    "Tabs": [
+        {
+            "Kind": "code",
+            "Class": "程序集1",
+            "Method": "_启动子程序",
+            "Offset": 19
+        },
+        {
+            "Form": "测试窗口",
+            "Kind": "form",
+            "Units": ["按钮1"]
+        }
+    ]
+}
+```
+
+字段（EJson 规则同 §3.1；默认值省略）：
+
+| 字段 | 适用 Kind | 含义 |
+|---|---|---|
+| `Kind` | 全部 | `code` 代码页 / `classTable` 类内表格页 / `form` 窗口设计器 / `table` 工程表格页 / `raw` 未知类型原样保留 |
+| `Class` | code, classTable | 程序集名；模块内带 `[模块名]` 前缀 |
+| `Method` | code | 子程序名（解析不出时以 `MethodIndex` 兜底，0 基下标） |
+| `Table` | classTable | 表格号 N（1 基；对应二进制 ElemId = -N） |
+| `Form` / `Units` | form | 窗口名 / 设计器中选中的单元名（组件、菜单或窗口自身） |
+| `TableKind` | table | `struct` / `global` / `dll` / `const` / `image` / `sound` |
+| `Offset` | code, classTable, table | 代码页 = 光标所在行的代码数据字节位置；表格页 = 行索引 |
+| `Column` | classTable, table | 表格列索引（代码页恒 0） |
+| `SelStart` / `SelCurrent` | code, classTable, table | 行内选区起止（相等 = 无选区） |
+| `Endpoints` | code, classTable, table | 多行选区点 `{"Elem": "子程序名"}` / `{"Table": N}` / `{"Offset": n}`（table 的端点只有 Offset） |
+| `TypeId` + `Data` | raw | 未知 TypeId（>8）的原始载荷，base64 |
+
+兜底字段（仅当拆包时名字解析不出才出现，正常产物没有）：`ClassId`、`FormId`、`MethodIndex`。`Tabs` 数组元素可为 `null`（IDE 的空占位槽）。
 
 ---
 

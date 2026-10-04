@@ -1,0 +1,16 @@
+==== spike_host pid=49504  node=D://DevelopmentFolder//²å¼ş¿ª·¢Ä¿Â¼//E//²å¼ş//¿ò¼Ü-°®Àö//main//corn//node.dll  700x420  log=C:\Users\MadeSpark\Desktop\²âÊÔ\src\mbkit\host\spike_host_t0.log
+[1] ç¦»å±çª—å£ hwnd=00830702 tid=40092
+[2] DIB ç›´æ¥ååœ¨å…±äº«å†…å­˜ä¸Šï¼ˆé›¶æ‹·è´ï¼‰bits=02f70000
+[3] node.dll å·²è½½å…¥ base=78f10000ï¼Œå¯¼å‡ºè§£æå®Œæˆ
+[4] wkeInitialize å®Œæˆ  view=0390ae08
+[5] ç»‘å®šçª—å£ + resize + æ³¨å†Œ paint å›è°ƒå®Œæˆ
+[6] wkeLoadW(file:///C:/Users/MadeSpark/Desktop/²âÊÔ/src/mbkit/host/spike.html)
+[7] è½½å…¥å®Œæˆ title=MBK-SPIKE-OK è€—æ—¶=156ms paints=1 frames=2
+==== spike_host pid=53548  node=D://DevelopmentFolder//²å¼ş¿ª·¢Ä¿Â¼//E//²å¼ş//¿ò¼Ü-°®Àö//main//corn//node.dll  700x420  log=C:\Users\MadeSpark\Desktop\²âÊÔ\src\mbkit\host\spike_host_t0.log
+[1] ç¦»å±çª—å£ hwnd=00850702 tid=56148
+[2] DIB ç›´æ¥ååœ¨å…±äº«å†…å­˜ä¸Šï¼ˆé›¶æ‹·è´ï¼‰bits=03180000
+[3] node.dll å·²è½½å…¥ base=78f10000ï¼Œå¯¼å‡ºè§£æå®Œæˆ
+[4] wkeInitialize å®Œæˆ  view=03b5ae08
+[5] ç»‘å®šçª—å£ + resize + æ³¨å†Œ paint å›è°ƒå®Œæˆ
+[6] wkeLoadW(file:///C:/Users/MadeSpark/Desktop/²âÊÔ/src/mbkit/host/spike.html)
+[7] è½½å…¥å®Œæˆ title=MBK-SPIKE-OK è€—æ—¶=188ms paints=2 frames=5

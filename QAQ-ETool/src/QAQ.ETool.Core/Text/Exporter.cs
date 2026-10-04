@@ -1,5 +1,6 @@
 using System.Text;
 using QIQI.EProjectFile;
+using QIQI.EProjectFile.EditorTabInfo;
 using QIQI.EProjectFile.Sections;
 using QAQ.ETool.Core.Model;
 
@@ -49,6 +50,7 @@ public sealed class Exporter
         Directory.CreateDirectory(dstDir);
 
         WriteClasses();
+        WriteOpenTabs();
         WriteDecls(-1, dstDir);
         for (int mi = 0; mi < _p.Modules.Count; mi++)
             WriteDecls(mi, ModuleDir(mi));
@@ -205,6 +207,141 @@ public sealed class Exporter
         for (int i = 0; i < Math.Min(a.Length, b.Length); i++)
             if (a[i] != b[i]) return a[i].CompareTo(b[i]);
         return a.Length.CompareTo(b.Length);
+    }
+
+    // ================================================================ 打开的标签页（编辑信息段2）
+    /// <summary>
+    /// 0x09007319 编辑信息段2 → class/标签页.desc.json：IDE 打开的标签页按名字带出（spec §3.4）。
+    /// 原段不存在时不写文件；名字解析不出的标签页丢弃并警告（无损场景由 .qaq/sidecar.json 字节级兜底）。
+    /// </summary>
+    private void WriteOpenTabs()
+    {
+        var tabs = _p.Doc.GetOrNull(EditorInfoSection.Key)?.Tabs;
+        if (tabs == null) return;
+        var arr = new List<object?>();
+        foreach (var t in tabs)
+        {
+            if (t == null) { arr.Add(null); continue; }
+            object? o = t switch
+            {
+                ClassEditorTabInfo c => CodeTabJson(c),
+                FormDesignerTabInfo f => FormTabJson(f),
+                PureTableEditorTabInfo p => TableTabJson(p),
+                GeneralEditorTabInfo g => new JObject
+                {
+                    ["Kind"] = "raw",
+                    ["TypeId"] = (int)g.TypeId,
+                    ["Data"] = g.Data == null ? "" : Convert.ToBase64String(g.Data),
+                },
+                _ => null,
+            };
+            if (o != null) arr.Add(o);
+        }
+        WriteJson(Path.Combine(_root, _l.Class, _l.OpenTabs), new JObject { ["Tabs"] = arr });
+    }
+
+    private static string? TableKindOf(IEditorTabInfo t) => t switch
+    {
+        StructEditorTabInfo => "struct",
+        GlobalVariableEditorTabInfo => "global",
+        DllDeclareEditorTabInfo => "dll",
+        ConstantEditorTabInfo => "const",
+        ImageResourceEditorTabInfo => "image",
+        SoundResourceEditorTabInfo => "sound",
+        _ => null,
+    };
+
+    private JObject? CodeTabJson(ClassEditorTabInfo t)
+    {
+        if (!_p.ClassById.TryGetValue(t.ClassId, out var cls) || string.IsNullOrEmpty(cls.Name))
+        {
+            _r.Warnings.Add($"标签页引用的程序集 0x{t.ClassId:X8} 无法解析为名字，已丢弃");
+            return null;
+        }
+        var o = new JObject { ["Class"] = QualifiedClassName(t.ClassId, cls.Name) };
+        if (t.ElemId < 0)
+        {
+            o["Kind"] = "classTable";
+            o["Table"] = -t.ElemId;
+        }
+        else
+        {
+            o["Kind"] = "code";
+            if (t.ElemId < cls.Methods.Count && _p.MethodById.TryGetValue(cls.Methods[t.ElemId], out var m) && !string.IsNullOrEmpty(m.Name))
+                o["Method"] = m.Name;
+            else
+                o["MethodIndex"] = (int)t.ElemId;
+        }
+        CursorJson(o, t.Offset, t.ColumnInTable, t.SelectionStart, t.SelectionCurrent);
+        var eps = new List<object?>();
+        foreach (var e in t.SelectionEndpoints ?? new List<ClassEditorEndpoint>())
+        {
+            var eo = new JObject { ["Offset"] = e.Offset };
+            if (e.ElemId < 0)
+            {
+                eo["Table"] = -e.ElemId;
+            }
+            else if (e.ElemId < cls.Methods.Count && _p.MethodById.TryGetValue(cls.Methods[e.ElemId], out var em) && !string.IsNullOrEmpty(em.Name))
+            {
+                eo["Elem"] = em.Name;
+            }
+            else if (e.ElemId < cls.Methods.Count)
+            {
+                eo["MethodIndex"] = (int)e.ElemId;
+            }
+            else
+            {
+                _r.Warnings.Add($"标签页的选择点 ElemId {e.ElemId} 超出程序集 {cls.Name} 的子程序数，已忽略");
+                continue;
+            }
+            eps.Add(eo);
+        }
+        if (eps.Count > 0) o["Endpoints"] = eps;
+        return o;
+    }
+
+    private JObject? FormTabJson(FormDesignerTabInfo t)
+    {
+        if (!_p.FormById.TryGetValue(t.FormId, out var f) || string.IsNullOrEmpty(f.Name))
+        {
+            _r.Warnings.Add($"标签页引用的窗口 0x{t.FormId:X8} 无法解析为名字，已丢弃");
+            return null;
+        }
+        var units = new List<object?>();
+        foreach (var u in t.UnitIds ?? new List<int>())
+        {
+            if (u == f.Id) { units.Add(f.Name); continue; }
+            if (_p.ElementById.TryGetValue(u, out var ue) && !string.IsNullOrEmpty(ue.Elem.Name)) { units.Add(ue.Elem.Name); continue; }
+            _r.Warnings.Add($"窗口 {f.Name} 的标签页选中单元 0x{u:X8} 无法解析为名字，已忽略");
+        }
+        var o = new JObject { ["Kind"] = "form", ["Form"] = f.Name };
+        if (units.Count > 0) o["Units"] = units;
+        return o;
+    }
+
+    private JObject TableTabJson(PureTableEditorTabInfo t)
+    {
+        var o = new JObject { ["Kind"] = "table", ["TableKind"] = TableKindOf(t) };
+        CursorJson(o, t.Offset, t.ColumnInTable, t.SelectionStart, t.SelectionCurrent);
+        if (t.SelectionEndpoints is { Count: > 0 })
+            o["Endpoints"] = t.SelectionEndpoints.Select(x => (object?)new JObject { ["Offset"] = x }).ToList();
+        return o;
+    }
+
+    /// <summary>光标/选区默认值（开头、无选区）不写，保持文件紧凑</summary>
+    private static void CursorJson(JObject o, int offset, byte column, int selStart, int selCurrent)
+    {
+        if (offset != 0) o["Offset"] = offset;
+        if (column != 0) o["Column"] = (int)column;
+        if (selStart != 0) o["SelStart"] = selStart;
+        if (selCurrent != 0) o["SelCurrent"] = selCurrent;
+    }
+
+    /// <summary>模块内的程序集带 [模块名] 前缀（与 sidecar 键约定一致）</summary>
+    private string QualifiedClassName(int classId, string name)
+    {
+        int mi = _p.ModuleIndexOf(classId);
+        return mi < 0 ? name : "[" + Importer.SafeName(_p.Modules[mi].Name) + "]" + name;
     }
 
     private List<string> RenderClass(ClassInfo cls, int moduleIndex, bool isPublic)

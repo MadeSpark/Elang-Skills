@@ -416,8 +416,10 @@ static int bind_symbols(void)
 /* ==========================================================================
  * 5b. 内核属主管理 + 内核调用编组（2026-09-25 重做）
  * ========================================================================*/
-/* 属主线程是否还活着（兼容模式判断用；K 永不退出，不走这里） */
-static int owner_thread_alive(DWORD tid)
+/* 属主线程是否还活着（兼容模式判断用；K 永不退出，不走这里）。
+ * 2026-10-01：当前没有调用点（兼容模式的属主判定已简化为「不是 K 就是兼容」），
+ * 保留为诊断辅助，显式标注 unused 以免 -Wextra 报警。 */
+static int __attribute__((unused)) owner_thread_alive(DWORD tid)
 {
     HANDLE h;
     DWORD  code = 0;
@@ -431,12 +433,14 @@ static int owner_thread_alive(DWORD tid)
     return alive;
 }
 
-/* 内核启动任务：在属主线程上执行（K 模式=由 mbk_kernel_run 编组到 K；
- * 兼容模式=就地）。加载 node.dll + 绑符号 + wkeInitialize（只此一次）。 */
-static void k_boot(void* unused)
+/* 内核「只加载、先别 initialize」：解析路径 + LoadLibrary(node.dll) + 钉住 + 绑符号。
+ * ★ 2026-10-01（v1.4）：**wkeInitialize 被移出这里**了，原因见 5c 节 ——
+ *   内核主线程 = 调 wkeInitialize 的那个线程，它必须就是创建/持有宿主窗口、
+ *   并且有消息循环的那个业务线程；一旦落在别的线程上，视图永远渲染不出来
+ *   （A/B 实测：K 上 initialize → 载入永不完结、画面空白）。 */
+static int k_boot_load_only(void)
 {
-    (void)unused;
-    if (!mbk_ensure()) return;            /* 转发层：解析路径 + 加载 node.dll + 填槽 */
+    if (!mbk_ensure()) return 0;          /* 转发层：解析路径 + 加载 node.dll + 填槽 */
     {   /* 钉住内核：从此 node.dll 常驻进程，内核全局状态由本层独占管理 */
         HMODULE pin = NULL;
         GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_PIN, "node.dll", &pin);
@@ -444,63 +448,260 @@ static void k_boot(void* unused)
     G.hNode = mbk_node();
     _snprintf(G.nodePath, sizeof(G.nodePath) - 1, "%s", MbKit_KernelPath());
     G.nodePath[sizeof(G.nodePath) - 1] = 0;
-    if (bind_symbols() != MBKIT_OK) return;
+    if (bind_symbols() != MBKIT_OK) return 0;
+    return 1;
+}
+
+/* 版本串（GetVersionString 必须在 initialize 之后调用，否则崩） */
+static void set_version(void)
+{
+    const char* vs = G.GetVersionString ? G.GetVersionString() : NULL;
+    _snprintf(G.version, sizeof(G.version) - 1,
+              "MbKit/1.4.4 (owner-thread, DllMain-safe, HWND_MESSAGE-covered)  node.dll  wke%d  %s",
+              G.GetVersion ? G.GetVersion() : 0, vs ? vs : "(?)");
+    G.version[sizeof(G.version) - 1] = 0;
+}
+
+/* 【MBKIT_K=1】旧行为：内核落在常驻线程 K 上，wkeInitialize 在 K 上执行。 */
+static void k_boot(void* unused)
+{
+    (void)unused;
+    if (!k_boot_load_only()) return;
     if (!G.IsInitialize || !G.IsInitialize()) {   /* 幂等：已初始化就不再 initialize */
         G.Initialize();
         G.initCount++;
     }
-    {   /* 版本串（GetVersionString 必须在 initialize 之后调用，否则崩） */
-        const char* vs = G.GetVersionString ? G.GetVersionString() : NULL;
-        _snprintf(G.version, sizeof(G.version) - 1,
-                  "MbKit/1.2 (export-marshal)  node.dll  wke%d  %s",
-                  G.GetVersion ? G.GetVersion() : 0, vs ? vs : "(?)");
-        G.version[sizeof(G.version) - 1] = 0;
-    }
+    set_version();
 }
 
-/* 在 tid 线程上初始化内核（幂等：已有属主则直接成功）。
- * onK=1：tid 必须是常驻线程 K（mbk_kernel_run 编组过去执行）；
- * onK=0：在**当前线程**就地初始化（兼容模式）。 */
-static int init_kernel_on(DWORD tid, int onK)
+/* ==========================================================================
+ * ★ v1.4 核心：把内核主线程钉在**当前调用线程**上
+ *
+ * 为什么必须这样（2026-10-01 实测，本机 2021 blink 内核 98096）：
+ *   A) K 模式（wkeInitialize 在常驻线程 K 上执行、所有调用编组到 K）：
+ *      `wkeLoadHTMLW` 之后 `IsLoadingCompleted == 0`、`wkeGetTitleW == NULL`、
+ *      窗口客户区一片空白 —— 页面**从来就没加载**。
+ *      （对照：`wkeWake` 这种离屏专用 API 在 K 模式下直接把进程打成 0xC0000005。）
+ *   B) 同一个进程里裸用（LoadLibrary + wkeInitialize + wkeCreateWebView +
+ *      wkeSetHandle + wkeLoadHTMLW，全在同一线程）：`succeeded=1`，
+ *      屏幕截图能看到渲染内容 —— 一切正常。
+ *   结论：miniblink 要求「内核主线程 == 窗口线程 == 有消息循环的线程」。
+ *   宿主（框架/易语言插件）的调用恰好来自那个线程，所以把属主设成调用线程即可。
+ *
+ * 同步在这里做是**安全**的：死锁只发生在「同步等**别的**线程 LoadLibrary(node.dll)」
+ * （旧版事故：调用方持着加载锁，K 拿不到锁），而本线程自己 LoadLibrary 是
+ * 递归加载锁，不会死锁（而且真实宿主进程里 node.dll 往往已经被自己的 webview
+ * 加载过，这里只是一次引用计数 +1，实测 0~1 ms）。
+ * ========================================================================*/
+static int owner_init_here(void)
 {
-    if (g_ownerTid) return MBKIT_OK;         /* 已有属主：不重复初始化 */
+    if (g_ownerTid) return (GetCurrentThreadId() == g_ownerTid) ? MBKIT_OK : MBKIT_E_STATE;
 
-    if (onK) {
+    lock();
+    if (!g_ownerTid) {
+        if (!k_boot_load_only()) {
+            unlock();
+            return MBKIT_E_NODLL;
+        }
+        /* 幂等：宿主自己已经裸调过 wkeInitialize 时（框架进程内很常见），
+         * 内核主线程就是它，我们只记账、不再重复 initialize。 */
+        if (!G.IsInitialize || !G.IsInitialize()) {
+            G.Initialize();
+            G.initCount++;
+        }
+        g_ownerTid = GetCurrentThreadId();
+        g_kMode    = 0;                  /* 属主直通：调用线程上就地执行 */
+        set_version();
+        OutputDebugStringA("[MbKit] 内核属主 = 当前调用线程（属主直通模式）\n");
+    }
+    unlock();
+    return (GetCurrentThreadId() == g_ownerTid) ? MBKIT_OK : MBKIT_E_STATE;
+}
+
+/* （旧版的 init_kernel_on —— **同步**在调用线程上等内核启动 —— 已于 2026-10-01
+ *  删除，由下方 boot_begin / MbKit_WaitKernel 的异步启动取代。原因见 5c 节注释：
+ *  同步等 LoadLibrary(node.dll) 会在「DllMain 里调 miniblink」的场景下死锁，
+ *  也会让宿主的 UI 线程在启动期卡住。） */
+
+/* ==========================================================================
+ * 5c. 内核启动 = **异步**（2026-10-01）
+ *
+ * 为什么必须异步：
+ *   宿主（聊天机器人框架）在**自己的线程**里调插件的启用/初始化回调，插件在这个
+ *   回调里同步调进 miniblink。而内核的启动要做 `LoadLibraryA(node.dll)`（33 MB、
+ *   带一堆依赖）。如果这个 LoadLibrary 发生在调用线程上、或被调用线程同步等待：
+ *     · 调用线程若正处在 **DllMain（加载锁）** 里（易语言 DLL 的 `_启动子程序`
+ *       就是在 DllMain 里跑的）—— 加载锁被自己占着，任何线程再去 LoadLibrary
+ *       都会卡住；K 卡住 → 调用线程同步等 K → **死锁 / 宿主卡死**。
+ *     · 即使不在 DllMain，让宿主的 UI 线程在启动期阻塞几秒也表现为「框架未响应」。
+ *   所以：`MbKit_EnsureKernelInit` 只**投递**启动任务就返回；真正要碰内核的调用
+ *   走 `MbKit_WaitKernel`（带消息泵地等启动完成，见 mbk_wait_pump）。
+ *
+ * 状态机：0=未启动 1=启动中 2=完成 3=失败
+ * ========================================================================*/
+#define MBKIT_BOOT_WAIT_MS 20000
+
+static volatile LONG g_bootState = 0;
+static HANDLE        g_bootDone  = NULL;
+static volatile LONG g_bootWaits = 0;
+static volatile LONG g_bootWedge = 0;      /* 启动等待超时过（诊断用） */
+
+static void k_boot_task(void* unused)
+{
+    k_boot(unused);
+    if (G.hNode && G.Initialize) {
+        g_ownerTid = mbk_kernel_tid();
+        g_kMode    = 1;
+        InterlockedExchange(&g_bootState, 2);
+    } else {
+        InterlockedExchange(&g_bootState, 3);
+    }
+    if (g_bootDone) SetEvent(g_bootDone);
+}
+
+/* 【MBKIT_K=1】是否走旧「常驻线程 K」模式（离屏/无窗口场景的逃生通道）。
+ * 默认 0 = 属主直通（内核落在调用线程上，能渲染）。 */
+static volatile LONG g_kModeWanted = -1;
+int mbk_k_mode_wanted(void)
+{
+    LONG m = g_kModeWanted;
+    if (m < 0) {
+        char v[8] = {0};
+        LONG want = 0;
+        if (GetEnvironmentVariableA("MBKIT_K", v, sizeof(v)) && v[0] == '1') want = 1;
+        InterlockedCompareExchange(&g_kModeWanted, want, -1);
+        m = g_kModeWanted;
+    }
+    return m == 1;
+}
+
+/* 开始（或复用）一次内核启动。
+ * ★ v1.4：默认路径是**同步在调用线程上**把内核建起来（见 owner_init_here 的注释），
+ *   只有 MBKIT_K=1 才走旧的「投递到 K、异步起来」路径。 */
+static int boot_begin(void)
+{
+    LONG st = g_bootState;
+
+    if (g_ownerTid) return MBKIT_OK;
+    if (st == 2) return MBKIT_OK;
+    if (st == 3) return MBKIT_E_NODLL;
+
+    if (!mbk_k_mode_wanted()) {
+        /* ★ 2026-10-02（v1.4.1）：这里**只登记、不干活**。
+         *
+         * 本函数是被「初始化类」导出（wkeInitialize / wkeInitializeEx /
+         * wkeIsInitialize / MbKit_EnsureKernelInit）调用的，而这类调用完全可能发生在
+         * **DllMain**（易语言 DLL 的 `_启动子程序` 就在这里跑）里 —— 此时加载锁由
+         * 调用线程自己持着：只要在本线程上 `LoadLibraryA(node.dll)`（或 wkeInitialize
+         * 内部拉起的线程去加载任何 DLL），加载器就会互等。实测（repro/loadprobe.exe
+         * + dllmain_kit.dll）：v1.4 同步版在 DllMain 里 300 秒都没返回，正是用户最初
+         * 报的「宿主自动载入 DLL → DLL 调 miniblink → 卡死」。
+         *
+         * 所以：这里把状态标成「已请求(1)」，真正的属主线程初始化推迟到第一个
+         * **确实要碰内核**的调用（mbk_marshal_exec → MbKit_EnsureOwner）—— 那时调用方
+         * 已经在正常的启用回调/窗口线程里，既安全又是正确的属主线程。 */
+        if (st == 0) InterlockedCompareExchange(&g_bootState, 1, 0);
+        return MBKIT_OK;
+    }
+
+    /* ---- 旧路径（MBKIT_K=1）：内核放到常驻线程 K 上，异步 ---- */
+    lock();
+    if (g_bootState == 0) {
+        if (!g_bootDone) g_bootDone = CreateEventA(NULL, TRUE, FALSE, NULL);
         if (!mbk_kernel_start()) {
+            g_bootState = 3;
+            unlock();
             seterr("无法启动常驻内核线程 K");
             return MBKIT_E_GENERIC;
         }
-        mbk_kernel_run(k_boot, NULL);
-        /* ★ K 的真实线程 id 要在 start 之后再取：调用方传进来的 tid 在
-         *   K 尚未启动时是 0（mbk_kernel_tid 的未启动语义），照抄会把
-         *   属主永久记成 0，导致每次调用都误判「内核未初始化」。 */
-        tid = mbk_kernel_tid();
-    } else {
-        k_boot(NULL);
+        g_bootState = 1;
+        /* 版本串先给「启动中」占位：k_boot 成功后会覆盖成真实版本串。
+         * 这样「取版本文本」在启动期拿到的是说明性文字而不是空串。 */
+        _snprintf(G.version, sizeof(G.version) - 1,
+                  "MbKit/1.4 (MBKIT_K=1 async-boot) 内核启动中…");
+        G.version[sizeof(G.version) - 1] = 0;
+        if (!mbk_kernel_post(k_boot_task, NULL)) {
+            g_bootState = 3;
+            unlock();
+            seterr("内核启动任务投递到线程 K 失败");
+            return MBKIT_E_GENERIC;
+        }
     }
-    if (!G.hNode || !G.Initialize) {
-        seterr("内核初始化失败：%s", MbKit_FwdError());
-        return MBKIT_E_NODLL;
-    }
-    g_ownerTid = tid;
-    g_kMode    = onK;
-    return MBKIT_OK;
+    unlock();
+    return MBKIT_OK;                 /* K 模式：不在这里等 LoadLibrary */
 }
 
-/* 【导出】确保内核已初始化。由 MbKit_Init 调用；gen_fwd.py 生成的初始化类
- * 导出（wkeInitialize/wkeInitializeEx）与导出边界编组（mbkit_fwd.c 的
- * mbk_marshal_exec）也走本函数 —— 内核从第一天起就落在常驻线程 K 上。
- * 幂等；加锁串行化（防两线程同时看到未初始化而双启动）；返回 MBKIT_OK/失败码。 */
+/* 【导出】确保内核「已开始」启动（异步/幂等，**绝不在本线程干重活**）。
+ * ★ v1.4.1：语义 = 「登记启动请求」，不再同步 LoadLibrary node.dll —— 见 boot_begin
+ *   注释（DllMain 里同步干重活会死锁）。真正建内核请用 MbKit_EnsureOwner。 */
 int __stdcall MbKit_EnsureKernelInit(void)
 {
-    int rc;
-    if (g_ownerTid) return MBKIT_OK;
-    lock();
-    if (g_ownerTid) { unlock(); return MBKIT_OK; }   /* 双检：等锁期间别人已启动 */
-    rc = init_kernel_on(mbk_kernel_tid(), 1);
-    unlock();
-    return rc;
+    return boot_begin();
 }
+
+/* 【导出】v1.4.1 新增：把内核**真正**建在「当前调用线程」上（属主直通）。
+ * 只有确实要碰内核的导出（建视图/载入/取版本…）才会走到这里，调用方此时一定是
+ * 正常的业务线程（启用回调 / 窗口线程），不会是 DllMain。MBKIT_K=1 时退化成等 K。 */
+int __stdcall MbKit_EnsureOwner(void)
+{
+    if (g_ownerTid) return MBKIT_OK;
+    if (mbk_k_mode_wanted()) return MbKit_WaitKernel(0);
+    {
+        int rc = owner_init_here();      /* 本线程 LoadLibrary(node.dll) + wkeInitialize */
+        InterlockedExchange(&g_bootState, (rc == MBKIT_OK) ? 2 : 3);
+        return rc;
+    }
+}
+
+/* 【导出】等内核启动完成。ms<=0 用默认（20s）。
+ * ★ v1.4.1：属主直通模式下「等待」= 现在就在本线程把内核建起来（阻塞但正确，
+ *   而且本线程从此就是内核属主）；K 模式仍是带泵等待。
+ * ★ 提醒：不要在 DllMain（`_启动子程序`）里调它 —— 那等于在加载锁里干重活。 */
+int __stdcall MbKit_WaitKernel(int ms)
+{
+    if (g_ownerTid) return MBKIT_OK;
+    if (!mbk_k_mode_wanted()) return MbKit_EnsureOwner();
+
+    if (g_bootState == 0) {
+        int rc = boot_begin();
+        if (rc != MBKIT_OK) return rc;
+    }
+    if (g_ownerTid || g_bootState == 2) return MBKIT_OK;
+    if (g_bootState == 3) return MBKIT_E_NODLL;
+    if (!g_bootDone) return MBKIT_E_GENERIC;
+    if (ms <= 0) ms = MBKIT_BOOT_WAIT_MS;
+
+    InterlockedIncrement(&g_bootWaits);
+    if (!mbk_wait_pump(g_bootDone, (DWORD)ms)) {
+        InterlockedExchange(&g_bootWedge, 1);
+        seterr("等内核启动超时(%d ms)：node.dll 的 LoadLibrary 被挡住。"
+               "最常见原因是在 DllMain（=易语言 DLL 的 _启动子程序）里调了 miniblink："
+               "此时加载锁由自己持有，任何线程都加载不了 DLL。请把首次调用挪到"
+               "「初始化/启用回调」或另开线程里。", ms);
+        return MBKIT_E_NODLL;
+    }
+    return (g_bootState == 2) ? MBKIT_OK : MBKIT_E_NODLL;
+}
+
+/* 内核启动状态字：0=未启动 1=启动中 2=完成 3=失败（诊断用） */
+int __stdcall MbKit_BootState(void) { return (int)g_bootState; }
+
+/* 诊断：等启动的次数 / 编组等待超时次数 / 等待期间抽掉的消息数 */
+int __stdcall MbKit_BootWaits(void)    { return (int)g_bootWaits; }
+int __stdcall MbKit_WaitTimeouts(void) { return mbk_run_timeouts(); }
+int __stdcall MbKit_PumpCount(void)    { return mbk_pump_count(); }
+
+/* 统一的内核任务投递：先「确保内核已启动」（带泵等待，见 MbKit_WaitKernel），
+ * 再编组执行。K 上重入直接就地在 K 上跑（绝不能等自己）。
+ * 内核起不来时**明确失败、不投递** —— 调用方拿到的返回值保持初始值（0/失败码），
+ * 与「安全桩」语义一致，不会踩空指针。 */
+static void krun(mbk_task_fn fn, void* arg)
+{
+    if (!mbk_on_kernel_thread() && MbKit_WaitKernel(0) != MBKIT_OK)
+        return;
+    mbk_kernel_run(fn, arg);
+}
+
 
 /* —— 供 mbkit_fwd.c（导出边界编组 / MbKit_Diag）使用的状态小口 ——
  * 注意：k_boot 在 K 上执行时 kernel_tid 已就绪；属主 tid 在 init 成功后才记账。 */
@@ -511,9 +712,8 @@ DWORD mbk_owner_tid(void)   { return g_ownerTid; }
 
 /* 当前线程此刻能否安全碰内核：
  *   未初始化            → 可（MbKit_Create 会先走 MbKit_Init）；
- *   K 模式              → 可（mbk_kernel_run 会编组到 K）；
- *   兼容模式 + 属主线程 → 可（直通，与旧版一致）；
- *   兼容模式 + 其它线程 → 不可 —— 返回失败码，绝不跨线程硬闯（硬约束 5）。 */
+ *   属主直通（默认）    → 只有属主线程可（内核主线程 = 那个线程，跨线程硬闯会崩）；
+ *   K 模式              → 可（mbk_kernel_run 会编组到 K）。 */
 static int can_kernel(void)
 {
     if (!g_ownerTid) return 1;
@@ -575,7 +775,7 @@ static long long mbk_kcall(int op, void* wv, const void* p1,
     if (!can_kernel()) return fallback;
     ZeroMemory(&k, sizeof(k));
     k.op = op; k.wv = wv; k.p1 = p1; k.a = a; k.b = b; k.f = f;
-    mbk_kernel_run(k_exec, &k);
+    krun(k_exec, &k);
     return k.ret;
 }
 
@@ -707,7 +907,7 @@ void* __stdcall MbKit_Create(void* hwnd, int x, int y, int w, int h,
                (unsigned long)g_ownerTid, (unsigned long)GetCurrentThreadId());
         return NULL;
     }
-    mbk_kernel_run(k_create, &a);
+    krun(k_create, &a);
     if (!a.ok) {
         lock(); v->used = 0; unlock();
         seterr("wkeCreateWebView 返回 NULL");
@@ -743,7 +943,7 @@ int __stdcall MbKit_Destroy(void* view)
     if (wv) {
         /* ★ 必须经 mbk_kernel_run 编组到属主线程（K 模式下就是 K）——
          *   跨线程直调 wkeDestroyWebView 会挂死（fix_same/fix_cross 实测）。 */
-        if (can_kernel()) mbk_kernel_run(k_destroy_one, &wv);
+        if (can_kernel()) krun(k_destroy_one, &wv);
         /* 不可碰内核时（兼容模式跨线程）：只放弃记账 —— 内核对象随属主会话
          * 结束由 MbKit_DetachAll 兜底回收，绝不跨线程硬闯。 */
         mbk_live_add(-1);
@@ -788,7 +988,7 @@ int __stdcall MbKit_DetachAll(void)
 
     /* 内核侧批量销毁：一次编组做完（锁外执行，避免与内核内部线程互等） */
     if (n > 0 && can_kernel()) {
-        mbk_kernel_run(k_destroy_batch, killed);
+        krun(k_destroy_batch, killed);
         mbk_live_add(-(long)n);
     }
     /* 不可碰内核时（兼容模式跨线程）：只放弃记账，内核对象由属主会话兜底 */
@@ -865,7 +1065,7 @@ int __stdcall MbKit_GetTitle(void* view, wchar_t* buf, int cch)
     if (!can_kernel()) return MBKIT_E_STATE;   /* 兼容模式跨线程：明确失败 */
     ZeroMemory(&k, sizeof(k));
     k.op = KOP_GETTITLEW; k.wv = v->wv; k.tbuf = buf; k.cch = cch;
-    mbk_kernel_run(k_exec, &k);
+    krun(k_exec, &k);
     return (int)k.ret;
 }
 
@@ -953,7 +1153,7 @@ int __stdcall MbKit_GetTitleA(void* view, char* buf, int cch)
         if (!can_kernel()) return MBKIT_E_STATE;   /* 兼容模式跨线程：明确失败 */
         ZeroMemory(&k, sizeof(k));
         k.op = KOP_GETTITLEW; k.wv = v->wv; k.tbuf = wbuf; k.cch = 1024;
-        mbk_kernel_run(k_exec, &k);
+        krun(k_exec, &k);
         rc = (int)k.ret;
         if (rc != 0) { buf[0] = 0; return rc; }
     }
@@ -1014,7 +1214,10 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
         }
     } else if (reason == DLL_PROCESS_DETACH) {
         if (!reserved) {
-            /* 进程正常退出：尽量干净地收尾（内核此时反正也要销毁） */
+            /* 进程正常退出：尽量干净地收尾（内核此时反正也要销毁）。
+             * ★ 这里必须**关掉消息泵**：DllMain(DETACH) 里再派发消息是危险的
+             *   （窗口/模块正在被拆掉）。 */
+            mbk_pump_enable(0);
             if (G.ready && G.DestroyWebView) MbKit_DetachAll();
             G_lockReady = 0;
             DeleteCriticalSection(&G_lock);

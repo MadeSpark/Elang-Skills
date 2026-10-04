@@ -1,0 +1,22 @@
+==== spike_cli tag=t0 pid=41632  node=D://DevelopmentFolder//�������Ŀ¼//E//���//���-����//main//corn//node.dll  700x420  hold=9000ms restart=1
+[init ] ctl=MBKSPK_CTL_t0_41632 frame=MBKSPK_FRM_t0_41632 evt=MBKSPK_EVT_t0_41632
+[init ] 窗口 hwnd=00c20996 客户区=700x420 tid=49652
+[spawn] 辅助进程 pid=49504  cmd="C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host.exe" "D://DevelopmentFolder//�������Ŀ¼//E//���//���-����//main//corn//node.dll" "file:///C:/Users/MadeSpark/Desktop/����/src/mbkit/host/spike.html" 700 420 "MBKSPK_CTL_t0_41632" "MBKSPK_FRM_t0_41632" "MBKSPK_EVT_t0_41632" "C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host_t0.log"
+[probe t1s           ] 共享帧非白=265920/294000 (90.45%) hash=931EFD37  窗口非白=265920  客户端paint=23  辅助进程paints=14 frames=37 内核失效=1 tick=23 status=2
+[probe t2s           ] 共享帧非白=266898/294000 (90.78%) hash=80A4687D  窗口非白=266898  客户端paint=85  辅助进程paints=47 frames=133 内核失效=3 tick=86 status=2
+[probe t3s           ] 共享帧非白=266828/294000 (90.76%) hash=A0CD58C1  窗口非白=266828  客户端paint=152  辅助进程paints=81 frames=231 内核失效=5 tick=150 status=2
+[probe before-kill   ] 共享帧非白=266795/294000 (90.75%) hash=11F929E9  窗口非白=266795  客户端paint=190  辅助进程paints=99 frames=281 内核失效=6 tick=182 status=2  BMP=C://Users//MadeSpark//Desktop//����//src//mbkit//host//shot_before-kill.bmp
+[kill ] 辅助进程已销毁（模拟插件重载）—— node.dll 随进程消亡，锁死的句柄就此释放
+[probe t4s           ] 共享帧非白=266795/294000 (90.75%) hash=11F929E9  窗口非白=266795  客户端paint=191  辅助进程paints=99 frames=281 内核失效=6 tick=182 status=2
+[reload] 重新拉起辅助进程（新一轮内核初始化）
+[spawn] 辅助进程 pid=53548  cmd="C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host.exe" "D://DevelopmentFolder//�������Ŀ¼//E//���//���-����//main//corn//node.dll" "file:///C:/Users/MadeSpark/Desktop/����/src/mbkit/host/spike.html" 700 420 "MBKSPK_CTL_t0_41632" "MBKSPK_FRM_t0_41632" "MBKSPK_EVT_t0_41632" "C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host_t0.log"
+[probe t5s           ] 共享帧非白=265920/294000 (90.45%) hash=931EFD37  窗口非白=265920  客户端paint=212  辅助进程paints=14 frames=36 内核失效=7 tick=204 status=2
+[probe t6s           ] 共享帧非白=266898/294000 (90.78%) hash=80A4687D  窗口非白=266898  客户端paint=280  辅助进程paints=48 frames=133 内核失效=9 tick=267 status=2
+[probe t7s           ] 共享帧非白=266828/294000 (90.76%) hash=A0CD58C1  窗口非白=266828  客户端paint=342  辅助进程paints=82 frames=230 内核失效=11 tick=330 status=2
+[probe after-reload  ] 共享帧非白=266828/294000 (90.76%) hash=A0CD58C1  窗口非白=266828  客户端paint=344  辅助进程paints=83 frames=232 内核失效=11 tick=331 status=2  BMP=C://Users//MadeSpark//Desktop//����//src//mbkit//host//shot_after-reload.bmp
+[probe t8s           ] 共享帧非白=266823/294000 (90.76%) hash=CB28972F  窗口非白=266823  客户端paint=404  辅助进程paints=116 frames=326 内核失效=13 tick=392 status=2
+[probe t9s           ] 共享帧非白=266869/294000 (90.77%) hash=7B4A6318  窗口非白=266869  客户端paint=466  辅助进程paints=150 frames=422 内核失效=15 tick=454 status=2
+[probe final         ] 共享帧非白=266869/294000 (90.77%) hash=7B4A6318  窗口非白=266869  客户端paint=467  辅助进程paints=151 frames=424 内核失效=15 tick=455 status=2  BMP=C://Users//MadeSpark//Desktop//����//src//mbkit//host//shot_final.bmp
+[exit ] 客户端 paint 次数=467  辅助进程 frames=424 status=2 title=MBK-SPIKE-OK
+[kill ] 辅助进程已销毁（客户端退出）—— node.dll 随进程消亡，锁死的句柄就此释放
+==== spike_cli 结束 ====

@@ -35,10 +35,12 @@ SKILLS=(
   "elang-build|ecompile.py ec_guard.py etool.py|"
 )
 
-# 第三方成品 exe：<技能名>|<来源目录>|<文件>。来源目录不在（例如没检出 QAQ-ETool 工程）就跳过，
-# 发布区里已有的 exe 保持不动。
+# 第三方成品 exe：<技能名>|<来源目录>|<文件>。来源目录不在（例如没发布过）就跳过，
+# 发布区里已有的 exe 保持不动。成品只保留 Releases：exe 用 publish 产物 + src/gui 产物，
+# 不再有 QAQ-ETool/dist / 根 dist 等中转副本。
 ASSETS=(
-  "qaq-etool-cli|QAQ-ETool/dist|QAQ-ETool.exe qaq-etool-gui.exe qaq-libinfo.exe"
+  "qaq-etool-cli|QAQ-ETool/src/QAQ.ETool.Cli/bin/Release/net8.0/win-x64/publish|QAQ-ETool.exe qaq-libinfo.exe"
+  "qaq-etool-cli|QAQ-ETool/src/gui|qaq-etool-gui.exe"
 )
 
 # 已退役的技能：发布区里残留就删掉（安装点由 install-skills.py 的退役表清理）

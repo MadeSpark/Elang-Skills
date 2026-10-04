@@ -31,8 +31,25 @@ DWORD mbk_kernel_tid(void);
 /* 当前线程是否就是 K */
 int   mbk_on_kernel_thread(void);
 
-/* 在 K 上同步执行 fn(arg)。K 上重入时就地执行；K 未就绪时兜底就地执行。 */
+/* 在 K 上同步执行 fn(arg)。K 上重入时就地执行；K 未就绪时兜底就地执行。
+ * ★ 2026-10-01：等待期间**抽取并派发本线程消息队列**（见 mbk_wait_pump），
+ *   避免「宿主 UI 线程被我们挡住、内核又要它处理窗口消息」的互等死锁。 */
 void  mbk_kernel_run(mbk_task_fn fn, void* arg);
+
+/* 投递到 K 上执行，**不等待**（用于「内核启动」这类绝不能阻塞调用方的任务）。
+ * 返回 1=已投递（或已在 K 上就地执行）。 */
+int   mbk_kernel_post(mbk_task_fn fn, void* arg);
+
+/* 等待 done 事件，期间抽消息：返回 1=已置位，0=超时。
+ * 抽消息时若遇到 WM_QUIT，会 PostQuitMessage 归还，绝不吞掉退出消息。 */
+int   mbk_wait_pump(HANDLE done, DWORD ms);
+
+/* 关/开「等待期间抽消息」（进程退出路径必须关：DllMain(DETACH) 里不能再派发消息） */
+void  mbk_pump_enable(int on);
+
+/* 诊断计数：抽掉的消息数 / 编组等待超时次数 */
+int   mbk_pump_count(void);
+int   mbk_run_timeouts(void);
 
 #ifdef __cplusplus
 }

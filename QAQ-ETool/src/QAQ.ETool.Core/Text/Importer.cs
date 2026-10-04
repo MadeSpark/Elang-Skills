@@ -83,6 +83,7 @@ public static class Importer
             Guard("decls", () => LoadDecls(_root, P.Main));
             Guard("module", LoadModules);
             Guard("class", LoadClassTree);
+            Guard("tabs", LoadOpenTabs);
             Guard("resource", LoadResources);
             Guard("icon", () =>
             {
@@ -157,6 +158,18 @@ public static class Importer
             if (v is string s) return s;
             if (v != null) bad($"键 {key} 应为字符串");
             return "";
+        }
+
+        /// <summary>可选整数字段：缺失/类型不对返回 null（不报错，报错由调用方按必需性处理）</summary>
+        private static int? OptInt(JObject o, string key)
+        {
+            if (!o.TryGetValue(key, out var v)) return null;
+            return v switch
+            {
+                long l when l >= int.MinValue && l <= int.MaxValue => (int)l,
+                double d when d == Math.Floor(d) && d >= int.MinValue && d <= int.MaxValue => (int)d,
+                _ => null,
+            };
         }
 
         // ------------------------------------------------------------ project.qtprj（GBK 无 BOM；也接受 UTF-8）
@@ -475,6 +488,95 @@ public static class Importer
             }
             foreach (var sd in DirsOrdinal(dir))
                 Scan(sd, key.Length == 0 ? Path.GetFileName(sd) : key + "/" + Path.GetFileName(sd), folders);
+        }
+
+        // ------------------------------------------------------------ class/标签页.desc.json
+        /// <summary>IDE 打开的标签页（编辑信息段2 的文本化）。文件缺失照常组包（无标签页状态，等同旧行为）。</summary>
+        private void LoadOpenTabs()
+        {
+            var path = Path.Combine(_root, _l.Class, _l.OpenTabs);
+            var o = ReadJsonObject(path);
+            if (o == null) return;
+            if (!o.TryGetValue("Tabs", out var tv) || tv is not List<object?> list) { Err(path, "缺少 Tabs 数组"); return; }
+            foreach (var item in list)
+            {
+                if (item == null) { P.OpenTabs.Add(null); continue; }
+                if (item is not JObject t) { Err(path, "Tabs 的元素应为对象或 null"); continue; }
+                var tab = Tab(path, t);
+                if (tab != null) P.OpenTabs.Add(tab);
+            }
+
+            TOpenTab? Tab(string path, JObject t)
+            {
+                void Bad(string m) => Err(path, $"Tabs 第 {P.OpenTabs.Count + 1} 项：{m}");
+                static string? OptStr(JObject o, string key) =>
+                    o.TryGetValue(key, out var v) && v is string s && s.Length > 0 ? s : null;
+                var tab = new TOpenTab();
+                switch (Str(t, "Kind", Bad))
+                {
+                    case "code":
+                        tab.Kind = TTabKind.Code;
+                        tab.Class = OptStr(t, "Class");
+                        tab.ClassId = OptInt(t, "ClassId");
+                        tab.Method = OptStr(t, "Method");
+                        tab.MethodIndex = OptInt(t, "MethodIndex");
+                        if (tab.Class == null && tab.ClassId == null) { Bad("缺少 Class/ClassId"); return null; }
+                        if (tab.Method == null && tab.MethodIndex == null) { Bad("缺少 Method/MethodIndex"); return null; }
+                        break;
+                    case "classTable":
+                        tab.Kind = TTabKind.ClassTable;
+                        tab.Class = OptStr(t, "Class");
+                        tab.ClassId = OptInt(t, "ClassId");
+                        tab.Table = OptInt(t, "Table");
+                        if (tab.Class == null && tab.ClassId == null) { Bad("缺少 Class/ClassId"); return null; }
+                        if (tab.Table is not > 0) { Bad("缺少 Table（1 基表格号）"); return null; }
+                        break;
+                    case "form":
+                        tab.Kind = TTabKind.Form;
+                        tab.Form = OptStr(t, "Form");
+                        tab.FormId = OptInt(t, "FormId");
+                        if (tab.Form == null && tab.FormId == null) { Bad("缺少 Form/FormId"); return null; }
+                        if (t.TryGetValue("Units", out var uv) && uv is List<object?> ul)
+                            foreach (var u in ul)
+                            {
+                                if (u is string us && us.Length > 0) tab.Units.Add(us);
+                                else if (u != null) Bad("Units 的元素应为字符串");
+                            }
+                        break;
+                    case "table":
+                        tab.Kind = TTabKind.Table;
+                        tab.TableKind = OptStr(t, "TableKind");
+                        if (tab.TableKind is not ("struct" or "global" or "dll" or "const" or "image" or "sound"))
+                        { Bad("TableKind 应为 struct/global/dll/const/image/sound"); return null; }
+                        break;
+                    case "raw":
+                        tab.Kind = TTabKind.Raw;
+                        tab.RawTypeId = OptInt(t, "TypeId") ?? -1;
+                        tab.RawData = t.TryGetValue("Data", out var dv) && dv is string ds ? ds : "";
+                        if (tab.RawTypeId is < 0 or > 255) { Bad("TypeId 应为 0-255 的整数"); return null; }
+                        break;
+                    default:
+                        Bad("未知 Kind，已忽略"); return null;
+                }
+                tab.Offset = OptInt(t, "Offset") ?? 0;
+                tab.Column = OptInt(t, "Column") ?? 0;
+                tab.SelStart = OptInt(t, "SelStart") ?? 0;
+                tab.SelCurrent = OptInt(t, "SelCurrent") ?? 0;
+                if (t.TryGetValue("Endpoints", out var ev) && ev is List<object?> el)
+                    foreach (var x in el)
+                    {
+                        if (x == null) continue;
+                        if (x is not JObject eo) { Bad("Endpoints 的元素应为对象"); continue; }
+                        tab.Endpoints.Add(new TTabEndpoint
+                        {
+                            Elem = OptStr(eo, "Elem"),
+                            MethodIndex = OptInt(eo, "MethodIndex"),
+                            Table = OptInt(eo, "Table"),
+                            Offset = OptInt(eo, "Offset") ?? 0,
+                        });
+                    }
+                return tab;
+            }
         }
 
         // ------------------------------------------------------------ resource/

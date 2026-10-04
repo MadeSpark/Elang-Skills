@@ -12,6 +12,8 @@ public sealed class Layout
     public string Module { get; private init; } = "";
     public string OrderList { get; private init; } = "";
     public string DirsDesc { get; private init; } = "";
+    /// <summary>打开标签页描述（编辑信息段2 的文本化，见 docs/e2txt-format-spec.md §3.12）</summary>
+    public string OpenTabs { get; private init; } = "";
     public string LibConfig { get; private init; } = "";
     public string SystemConfig { get; private init; } = "";
     public string UserConfig { get; private init; } = "";
@@ -31,7 +33,7 @@ public sealed class Layout
     public static readonly Layout English = new()
     {
         Class = "class", Config = "config", Form = "form", Resource = "resource", Module = "module",
-        OrderList = "order.list.txt", DirsDesc = "dirs.desc.json",
+        OrderList = "order.list.txt", DirsDesc = "dirs.desc.json", OpenTabs = "tabs.desc.json",
         LibConfig = "lib.config.json", SystemConfig = "system.config.json", UserConfig = "user.config.json",
         EcInitConfig = "ec.init.config.json", EpackFilesConfig = "epack.files.config.json",
         ResourceDesc = "resource.desc.json",
@@ -42,7 +44,7 @@ public sealed class Layout
     public static readonly Layout Chinese = new()
     {
         Class = "代码", Config = "配置", Form = "窗口", Resource = "资源", Module = "模块",
-        OrderList = "排序.list.txt", DirsDesc = "目录.desc.json",
+        OrderList = "排序.list.txt", DirsDesc = "目录.desc.json", OpenTabs = "标签页.desc.json",
         LibConfig = "支持库.config.json", SystemConfig = "系统.config.json", UserConfig = "用户.config.json",
         EcInitConfig = "模块.初始化.config.json", EpackFilesConfig = "易包.文件.config.json",
         ResourceDesc = "资源.desc.json",

@@ -1,0 +1,39 @@
+==== spike_host pid=19804  node=D:\DevelopmentFolder\�������Ŀ¼\E\���\���-����\main\corn\node.dll  700x420  log=C:\Users\MadeSpark\Desktop\����\src\mbkit\host\spike_host_in0.log
+[1] 离屏窗口 hwnd=00b10302 tid=21324
+[2] DIB 直接坐在共享内存上（零拷贝）bits=03c70000
+[3] 输入导出: Mouse=794d037e Wheel=794d03bf KeyDown=794d02c4 KeyPress=794d0302 SetFocus=794d3401
+[3] node.dll 已载入 base=78f10000，导出解析完成
+[4] wkeInitialize 完成  view=041f3c18
+[5] 绑定窗口 + resize + 注册 paint 回调完成
+[6] wkeLoadW(file:///C:/Users/MadeSpark/Desktop/����/src/mbkit/host/spike.html)
+[dbg] it0: pump_input 返回
+[dbg] it0: titlePoll 返回
+[dbg] it0: renderTick 返回（tick=1）
+[beat] status=1 tick=1 frames=2 in=0 drop=1 title=MBK-SPIKE-OK
+[7] 载入完成 title=MBK-SPIKE-OK 耗时=188ms paints=1 frames=2
+[dbg] it0: 循环尾
+[dbg] it1: 循环尾
+[in>] msg=0x0200 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0200 返回
+[in>] msg=0x0201 wp=0x00000001 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0201 返回
+[in>] msg=0x0202 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0202 返回
+[in>] msg=0x0200 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0200 返回
+[in>] msg=0x0201 wp=0x00000001 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0201 返回
+[in>] msg=0x0202 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0202 返回
+[in>] msg=0x0200 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0200 返回
+[in>] msg=0x0201 wp=0x00000001 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0201 返回
+[in>] msg=0x0202 wp=0x00000000 lp=0x00C8015E  (x=350 y=200)
+[in<] msg=0x0202 返回
+[beat] status=2 tick=126 frames=196 in=9 drop=1 title=CLICK 3 at 350,200
+[beat] status=2 tick=246 frames=384 in=9 drop=1 title=CLICK 3 at 350,200
+[beat] status=2 tick=373 frames=579 in=9 drop=1 title=CLICK 3 at 350,200
+[beat] status=2 tick=501 frames=774 in=9 drop=1 title=CLICK 3 at 350,200
+[beat] status=2 tick=628 frames=970 in=9 drop=1 title=CLICK 3 at 350,200
+[beat] status=2 tick=755 frames=1165 in=9 drop=1 title=CLICK 3 at 350,200

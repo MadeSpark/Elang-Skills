@@ -260,6 +260,12 @@ EXPORTS
     MbKit_KernelLoaded
     MbKit_KernelState
     MbKit_Diag
+    MbKit_EnsureKernelInit
+    MbKit_WaitKernel
+    MbKit_BootState
+    MbKit_BootWaits
+    MbKit_PumpCount
+    MbKit_WaitTimeouts
     MbKit_NodePath
     MbKit_Version
     MbKit_LastError
@@ -292,9 +298,19 @@ EXPORTS
     MbKit_CbBlocked
     MbKit_DetachView
     MbKit_AliveModule
+    MbKit_InstallVehProbe
+    MbKit_VehHits
+    MbKit_InstallMsgTrace
+    MbKit_PinCaller
+    MbKit_PinAddress
+    MbKit_KillZombieWindows
+    MbKit_ZombieScanned
+    MbKit_KillCallerWindows
+    MbKit_CallerWindowScanned
+    MbKit_CbRegionBlocked
     MbKit_KernelPath
     MbKit_FwdError
-    MbKit_EnsureKernelInit
+    MbKit_EnsureOwner
     MbKit_FwdIndex
     MbKit_KernelModule
     MbKit_MissingCount

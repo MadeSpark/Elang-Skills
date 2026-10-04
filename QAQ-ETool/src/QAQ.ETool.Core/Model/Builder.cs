@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using OpenEpl.ELibInfo;
 using QIQI.EProjectFile;
+using QIQI.EProjectFile.EditorTabInfo;
 using QIQI.EProjectFile.Sections;
 using QIQI.EProjectFile.Statements;
 using QAQ.ETool.Core.Text;
@@ -33,9 +34,9 @@ public sealed class ImportResult
 
 public sealed class SidecarStats
 {
-    public int IdsKept, IdsNew, IdsLost, CodeKept, CodeRebound, SectionsKept, SectionsDropped;
+    public int IdsKept, IdsNew, IdsLost, CodeKept, CodeRebound, SectionsKept, SectionsDropped, SectionsRebuilt;
     public override string ToString() =>
-        $"沿用 ID {IdsKept}, 新 ID {IdsNew}, 已删除 {IdsLost}; 代码沿用原字节 {CodeKept}, 按文本重绑 {CodeRebound}; 段带回 {SectionsKept}, 舍弃 {SectionsDropped}";
+        $"沿用 ID {IdsKept}, 新 ID {IdsNew}, 已删除 {IdsLost}; 代码沿用原字节 {CodeKept}, 按文本重绑 {CodeRebound}; 段带回 {SectionsKept}, 舍弃 {SectionsDropped}, 按文本重建 {SectionsRebuilt}";
 }
 
 // ===================================================================== 符号表（Builder 建、Binder 用）
@@ -205,6 +206,8 @@ public sealed class Builder
         BuildForms();
         BindCode();
 
+        _rebuiltTabs = BuildEditorInfo();
+
         var doc = new EplDocument();
         doc.Sections.Add(sys);
         doc.Sections.Add(BuildUserInfo());
@@ -223,7 +226,12 @@ public sealed class Builder
         var folders = BuildFolders();
         if (folders != null) doc.Sections.Add(folders);
         // 无旁路时保持 IDE 的写法（总带这些段）；有旁路时按原件取舍（见 ApplySidecar）
-        if (_sc != null) ApplySidecar(doc);
+        if (_sc == null)
+        {
+            // 打开的标签页（编辑信息段2）：文本层有描述就按当前 ID 重建（IDE 位置惯例在段序列尾部）
+            if (_rebuiltTabs != null) doc.Sections.Add(_rebuiltTabs);
+        }
+        else ApplySidecar(doc);
         _r.Doc = doc;
         return _r;
     }
@@ -253,15 +261,28 @@ public sealed class Builder
             // 文本不表达的段（如可丢失程序段）：旁路优先于生成的缺省段
             if (raw.Data != null && Sidecar.Passthrough(raw.Key))
             {
-                if (Sidecar.IdSensitive(raw.Key) && !allKept) { st.SectionsDropped++; continue; }
-                var data = Convert.FromBase64String(raw.Data);
-                s = new GeneralSection(raw.Name, raw.Key, raw.Optional, data);
-                if (PredefinedSections.Keys.TryGetValue(raw.Key, out var key))
+                if (raw.Key == EditorInfoSection.Key.SectionKey && !allKept && _rebuiltTabs != null)
                 {
-                    try { s = key.Parse(new QIQI.EProjectFile.Context.BlockParserContext(data, Enc, false)); }
-                    catch (Exception) { /* 解析不了就按原字节写 */ }
+                    // 实体有增删：编辑信息段2 里的原 ID 已不可靠，改用文本层按名字重建的版本
+                    s = _rebuiltTabs;
+                    st.SectionsRebuilt++;
                 }
-                st.SectionsKept++;
+                else if (Sidecar.IdSensitive(raw.Key) && !allKept)
+                {
+                    st.SectionsDropped++;
+                    continue;
+                }
+                else
+                {
+                    var data = Convert.FromBase64String(raw.Data);
+                    s = new GeneralSection(raw.Name, raw.Key, raw.Optional, data);
+                    if (PredefinedSections.Keys.TryGetValue(raw.Key, out var key))
+                    {
+                        try { s = key.Parse(new QIQI.EProjectFile.Context.BlockParserContext(data, Enc, false)); }
+                        catch (Exception) { /* 解析不了就按原字节写 */ }
+                    }
+                    st.SectionsKept++;
+                }
             }
             if (s == null) continue;
             if (s.IsOptional != raw.Optional) doc.OptionalOverrides[s] = raw.Optional;
@@ -269,6 +290,9 @@ public sealed class Builder
         }
         // 原件没有、这次新生成的段（如新建了文件夹）放在最后；空的可省略段不补
         doc.Sections.AddRange(gen.Where(x => !IsEmptySection(x)));
+        // 文本层重建的编辑信息段：原件没有该段（或旁路里缺失）时补在最后
+        if (_rebuiltTabs != null && doc.GetOrNull(EditorInfoSection.Key) == null)
+            doc.Sections.Add(_rebuiltTabs);
         doc.EofNameXored = sc.EofNameXored;
 
         // ---- 程序段头
@@ -430,6 +454,165 @@ public sealed class Builder
             _r.Warnings.Clear();
             _r.Warnings.AddRange(keep);
         }
+    }
+
+    // ================================================================ 打开的标签页（编辑信息段2）
+    private EditorInfoSection? _rebuiltTabs;
+    private const string TabsFile = "class/标签页.desc.json";
+
+    /// <summary>
+    /// class/标签页.desc.json → 编辑信息段2：把文本里的名字按当前符号表重新绑定成 ID。
+    /// 实体已删除的标签页丢弃（警告），全部解析失败时不生成该段。
+    /// </summary>
+    private EditorInfoSection? BuildEditorInfo()
+    {
+        if (_t.OpenTabs.Count == 0) return null;
+        var list = new List<IEditorTabInfo>();
+        int real = 0;
+        foreach (var t in _t.OpenTabs)
+        {
+            if (t == null) { list.Add(null!); continue; }   // 空占位：vendor 的 Tabs 契约允许 null 元素
+            var info = TabInfo(t);
+            if (info != null) { list.Add(info); real++; }
+        }
+        return real == 0 ? null : new EditorInfoSection { Tabs = list };
+    }
+
+    private IEditorTabInfo? TabInfo(TOpenTab t)
+    {
+        switch (t.Kind)
+        {
+            case TTabKind.Code:
+            case TTabKind.ClassTable:
+            {
+                var cls = FindClass(t);
+                if (cls == null) return null;
+                short elem;
+                if (t.Kind == TTabKind.Code)
+                {
+                    var sm = FindMethod(cls, t.Method, t.MethodIndex, $"程序集 {cls.T.Name} 的标签页");
+                    if (sm == null) return null;
+                    elem = (short)cls.Methods.IndexOf(sm);
+                }
+                else
+                {
+                    if (t.Table is not > 0) { Warn(TabsFile, $"程序集 {cls.T.Name} 的表格页缺少 Table"); return null; }
+                    elem = (short)-t.Table.Value;
+                }
+                var tab = new ClassEditorTabInfo
+                {
+                    ClassId = cls.Info.Id,
+                    ElemId = elem,
+                    Offset = t.Offset,
+                    ColumnInTable = (byte)t.Column,
+                    SelectionStart = t.SelStart,
+                    SelectionCurrent = t.SelCurrent,
+                    SelectionEndpoints = CodeEndpoints(cls, t),
+                };
+                return tab;
+            }
+            case TTabKind.Form:
+            {
+                SForm? f = null;
+                if (t.Form != null) FormByName.TryGetValue(t.Form, out f);
+                if (f == null && t.FormId is int fid) FormById.TryGetValue(fid, out f);
+                if (f == null) { Warn(TabsFile, $"标签页引用的窗口 {t.Form ?? $"0x{(t.FormId ?? 0):X8}"} 不存在，已丢弃"); return null; }
+                var units = new List<int>();
+                foreach (var u in t.Units)
+                {
+                    if (u == f.Name) { units.Add(f.Self?.Id ?? f.Info.Id); continue; }
+                    if (f.Elems.TryGetValue(u, out var el)) { units.Add(el.Id); continue; }
+                    Warn(TabsFile, $"窗口 {f.Name} 的标签页选中单元 {u} 不存在，已忽略");
+                }
+                return new FormDesignerTabInfo { FormId = f.Info.Id, UnitIds = units };
+            }
+            case TTabKind.Table:
+            {
+                var pt = t.TableKind switch
+                {
+                    "struct" => (PureTableEditorTabInfo?)new StructEditorTabInfo(),
+                    "global" => new GlobalVariableEditorTabInfo(),
+                    "dll" => new DllDeclareEditorTabInfo(),
+                    "const" => new ConstantEditorTabInfo(),
+                    "image" => new ImageResourceEditorTabInfo(),
+                    "sound" => new SoundResourceEditorTabInfo(),
+                    _ => null,
+                };
+                if (pt == null) { Warn(TabsFile, $"标签页的表格类型 {t.TableKind} 无法识别，已丢弃"); return null; }
+                pt.Offset = t.Offset;
+                pt.ColumnInTable = (byte)t.Column;
+                pt.SelectionStart = t.SelStart;
+                pt.SelectionCurrent = t.SelCurrent;
+                if (t.Endpoints.Count > 0) pt.SelectionEndpoints = t.Endpoints.Select(e => e.Offset).ToList();
+                return pt;
+            }
+            case TTabKind.Raw:
+                try { return new GeneralEditorTabInfo((byte)t.RawTypeId, Convert.FromBase64String(t.RawData ?? "")); }
+                catch (FormatException) { Warn(TabsFile, "标签页的原始数据不是合法 base64，已丢弃"); return null; }
+            default:
+                return null;
+        }
+    }
+
+    /// <summary>程序集名 → SClass：先按 [模块名] 前缀定位作用域，再按名字查；都失败按原始 ID 兜底</summary>
+    private SClass? FindClass(TOpenTab t)
+    {
+        string? name = t.Class;
+        if (name != null)
+        {
+            SScope? scope = Main;
+            if (name.StartsWith("[", StringComparison.Ordinal))
+            {
+                int close = name.IndexOf(']');
+                if (close > 0)
+                {
+                    var mod = name.Substring(1, close - 1);
+                    name = name.Substring(close + 1);
+                    scope = Scopes.FirstOrDefault(s => s.Mod >= 0 && (SafeName(s.Name) == mod || s.Name == mod))
+                            ?? Main;   // 模块名对不上：退回主工程再试
+                }
+            }
+            if (name.Length > 0)
+            {
+                if (scope.Classes.TryGetValue(name, out var c)) return c;
+                foreach (var s in Scopes)
+                    if (s != scope && s.Classes.TryGetValue(name, out c)) return c;
+            }
+        }
+        if (t.ClassId is int id && ClassById.TryGetValue(id, out var byId))
+        {
+            Warn(TabsFile, $"程序集 {t.Class} 按原始 ID 0x{id:X8} 兜底解析");
+            return byId;
+        }
+        Warn(TabsFile, $"标签页引用的程序集 {t.Class ?? $"0x{(t.ClassId ?? 0):X8}"} 不存在，已丢弃");
+        return null;
+    }
+
+    private SMethod? FindMethod(SClass cls, string? name, int? index, string where)
+    {
+        if (name != null && cls.MethodByName.TryGetValue(name, out var sm)) return sm;
+        if (index is int ix && ix >= 0 && ix < cls.Methods.Count) return cls.Methods[ix];
+        Warn(TabsFile, $"{where}找不到子程序 {name ?? $"下标 {index}"}，已丢弃");
+        return null;
+    }
+
+    /// <summary>多行选区端点：Elem（子程序名）/ Table（表格号）/ MethodIndex 兜底；解析不出就丢弃该端点</summary>
+    private List<ClassEditorEndpoint>? CodeEndpoints(SClass cls, TOpenTab t)
+    {
+        if (t.Endpoints.Count == 0) return null;
+        var list = new List<ClassEditorEndpoint>();
+        foreach (var e in t.Endpoints)
+        {
+            if (e.Table is int n)
+            {
+                list.Add(new ClassEditorEndpoint { ElemId = (short)-n, Offset = e.Offset });
+                continue;
+            }
+            var sm = FindMethod(cls, e.Elem, e.MethodIndex, "标签页选择点");
+            if (sm == null) continue;
+            list.Add(new ClassEditorEndpoint { ElemId = (short)cls.Methods.IndexOf(sm), Offset = e.Offset });
+        }
+        return list;
     }
 
     // ================================================================ 配置

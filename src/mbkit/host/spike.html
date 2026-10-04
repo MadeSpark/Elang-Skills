@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>MBK-SPIKE-OK</title>
+<style>
+  html,body{margin:0;padding:0;font-family:"Microsoft YaHei",sans-serif;background:#fff}
+  #dyn{height:180px;background:#2f7ad6;color:#fff;font:700 40px/180px sans-serif;text-align:center}
+  .a{height:70px;background:#e03a3a}
+  .b{height:70px;background:#22a06b}
+  .c{height:60px;background:#f2b21b}
+  .t{padding:8px;font-size:18px;color:#000}
+</style></head>
+<body>
+  <div id="dyn">DYN 0</div>
+  <div class="a"></div><div class="b"></div><div class="c"></div>
+  <div class="t" id="t">JS 未启动</div>
+  <script>
+    var i=0, nClick=0,
+        C=['#2f7ad6','#8e44ad','#16a085','#d35400','#c0392b'],
+        d=document.getElementById('dyn'), el=document.getElementById('t');
+    setInterval(function(){
+      i++;
+      d.style.background = C[i % C.length];
+      d.textContent = 'DYN ' + i;
+      el.textContent = 'JS tick ' + i + '  点击=' + nClick + '  动态内容已更新';
+    }, 500);
+    /* 全窗口可点：点击次数直接写进 document.title ⇒ 辅助进程回传 ⇒ 客户端日志可见 */
+    document.addEventListener('click', function(e){
+      nClick++;
+      document.title = 'CLICK ' + nClick + ' at ' + e.clientX + ',' + e.clientY;
+    });
+  </script>
+</body></html>
