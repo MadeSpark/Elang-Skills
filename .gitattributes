@@ -20,3 +20,8 @@
 # Windows 批处理必须 CRLF（安装技能.cmd 同时要求 GBK 编码）
 *.cmd  text eol=crlf
 *.bat  text eol=crlf
+
+# 语言统计：将 Markdown 文件纳入语言统计
+*.md   linguist-detectable=true linguist-documentation=false
+
+
