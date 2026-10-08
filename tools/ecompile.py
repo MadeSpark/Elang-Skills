@@ -615,13 +615,21 @@ def main() -> int:
             else:
                 result["error"] = "编译未产出（status=%s）" % d.get("status")
     finally:
+        # --check 的保存框只需要一个可填路径，绝不能把这个占位产物留在
+        # 保留的失败现场里；真正需要回看的内容是面板/事件日志。
+        if check_out_made and expect_out:
+            try:
+                Path(expect_out).unlink(missing_ok=True)
+            except OSError:
+                result.setdefault("cleanupWarning", []).append(
+                    "未能清理 --check 占位产物: %s" % expect_out)
         # 保留判据 = 「确实产生过值得回看的日志」**且**本次不成功：
         #   * 成功（ok）           → 日志无回看价值，删
         #   * 早早失败（没跑到 elaunch，没有 logFile）→ 原因已经在 result["error"] 里，
         #     目录里没有额外信息，删（否则会留下一个「JSON 里查不到路径」的孤儿目录）
         #   * 失败且跑到了 elaunch → 保留，并把 workdir 写进结果
         # 顺带修掉一个老毛病：只要带 --check 就一律保留工作目录，导致 (a) 成功也留、
-        # (b) 真编译失败时 JSON 里的 logFile/logUtf8 指向已被删掉的路径（悬空）。
+        # (b) 真编译失败时 JSON 里的 logFile/logUtf8 指向已被删掉的路径。
         keep = bool(result.get("logFile")) and not result.get("ok")
         if not args.workdir:
             if keep:
