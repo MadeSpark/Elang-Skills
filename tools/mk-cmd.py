@@ -73,6 +73,33 @@ echo 未检测到 Python -- 使用内置安装逻辑（装到通用根 + 已安�
 echo.
 
 rem ---------- 内置逻辑：通用根 + 探测到的各工具目录 ----------
+rem ---------- 检测 Skills Manager（公共技能库）：有则先问用户 ----------
+set "SMCLI="
+if exist "%USERPROFILE%\.skills-manager\bin\skills-manager-cli.exe" set "SMCLI=%USERPROFILE%\.skills-manager\bin\skills-manager-cli.exe"
+if not defined SMCLI (
+  where skills-manager-cli >nul 2>nul
+  if not errorlevel 1 set "SMCLI=skills-manager-cli"
+)
+if defined SMCLI (
+  echo 检测到 Skills Manager：公共技能库一份入库、各 AI 工具共享，
+  echo   无需再往每个工具的技能目录里挨个安装。
+  choice /c YN /n /m "是否直接安装到公共技能库? [Y=是 / N=按原方式逐目录安装] "
+  if not errorlevel 2 (
+    echo.
+    for /d %%S in ("%SRC%\*") do (
+      if exist "%%~fS\SKILL.md" (
+        echo   [入库] %%~nxS
+        "%SMCLI%" skills install "%%~fS" --local
+      )
+    )
+    echo.
+    echo 已完成。技能默认仅入库、未部署，请在 Skills Manager 应用里部署到各工具，
+    echo   或执行：skills-manager-cli skills deploy 技能名 --agent 工具名
+    goto :done
+  )
+  echo.
+)
+
 call :inst "%USERPROFILE%\.agents\skills" "Agent Skills 通用根"
 
 if exist "%USERPROFILE%\.claude\"          call :inst "%USERPROFILE%\.claude\skills" "Claude Code"
