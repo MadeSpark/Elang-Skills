@@ -215,7 +215,7 @@ SELF_CONTAINED = [
 SCRIPTS = {
     "elang-ai-coding": ("mkproj.py", "rtcheck.py", "efix.py", "echeck.py", "elibs.py", "etool.py"),
     "elang-debug": ("mkcage.py", "elaunch.py", "readlog.py", "ec_guard.py", "etool.py"),
-    "elang-build": ("ecompile.py", "ec_guard.py", "etool.py"),
+    "elang-build": ("ecompile.py", "ec_guard.py", "etool.py", "pever.py", "versionize.py"),
 }
 for _sk, _names in SCRIPTS.items():
     for _n in _names:

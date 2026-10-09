@@ -32,7 +32,7 @@ SKILLS=(
   "elang-ai-coding|mkproj.py rtcheck.py efix.py echeck.py elibs.py etool.py|易语言文本格式规范.md 置入代码与机器码.md Win32与DLL互操作.md 程序入口与编译验证.md 黑月编译与黑月界面类.md"
   "qaq-etool-cli||"
   "elang-debug|mkcage.py elaunch.py readlog.py ec_guard.py etool.py|"
-  "elang-build|ecompile.py ec_guard.py etool.py|"
+  "elang-build|ecompile.py ec_guard.py etool.py pever.py versionize.py|"
 )
 
 # 第三方成品 exe：<技能名>|<来源目录>|<文件>。来源目录不在（例如没发布过）就跳过，

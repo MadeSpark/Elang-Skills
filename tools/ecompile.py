@@ -61,6 +61,8 @@
 无头（默认）：**不会弹出易语言窗口**。IDE 以 `SW_HIDE` 启动 + 后台线程把它的顶层窗口
 隐藏并移到屏幕外（宿主库侧 `ELANG_AI_HIDE` 再做一层）。排障要看界面时加 `--visible`。
 （别改成「独立 Windows 桌面」：实测 e.exe 在非默认桌面上 0.04 秒就自行退出。）
+个别大型 DLL 工程若在无头编译中崩（eExitCode=0xC0000005），怀疑与窗口守护链对 IDE
+窗口的并发改写有关，可改 `--headless park`（只移出屏幕不隐藏）或 `--visible` 重试。
 
 静态编译种类（--kind，缺省 static_console）：
 
@@ -128,6 +130,22 @@ RED_LINES = """\n交付红线（违反任何一条都不准交付）:
 
 def out(msg: str) -> None:
     print(msg, file=sys.stderr)
+
+
+def _harden_stdout() -> None:
+    """让「打印结果」永远不会成为失败原因。
+
+    本机控制台是 GBK（cp936）。IDE 面板/弹窗原文里只要出现一个 GBK 编不出的字符
+    （实测：解码失败留下的 U+FFFD），`print(json.dumps(...))` 就会抛
+    UnicodeEncodeError —— 于是**编译明明成功了，调用方却只看到一段 traceback**，
+    连 JSON 都拿不到（这正是 2026-10-09 那次对照实验踩到的坑）。
+    统一改成「编不出的字符替换掉」，宁可少一个字符，也不能丢结论。
+    """
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")          # type: ignore[union-attr]
+        except Exception:                                 # noqa: BLE001
+            pass
 
 
 def prune_workdirs(keep: int = KEEP_WORKDIRS) -> None:
@@ -379,7 +397,147 @@ def t2e_if_dir(src: Path, tool: str | None, work: Path) -> tuple[Path, list]:
     return dst, restored
 
 
+def _read_user_cfg(text_dir: Path) -> dict:
+    """从文本工程里读「程序信息」（中文布局 配置/ 与英文布局 config/ 都认）。"""
+    for rel in ("配置/用户.config.json", "config/user.config.json"):
+        p = text_dir / rel
+        if p.is_file():
+            try:
+                return json.loads(p.read_text(encoding="utf-8-sig"))
+            except Exception:                             # noqa: BLE001
+                return {}
+    return {}
+
+
+def probe_program_info(src: Path, tool, work: Path) -> dict:
+    """读工程「程序信息」：WriteVersion / Name / ReleaseVersion。
+
+    输入是文本目录就直接读；是 .e 就用 QAQ-ETool 拆一次包读回来（大工程约 0.5s，
+    相对一次真编译可以忽略）。任何失败都返回 {}，绝不因为「探针」而影响编译。
+    """
+    if src.is_dir():
+        return _read_user_cfg(src)
+    if not tool:
+        return {}
+    probe = work / "probe_text"
+    try:
+        if probe.exists():
+            shutil.rmtree(probe, ignore_errors=True)
+        r = etool.run(tool, "e2t", str(src), str(probe), "-level", "2")
+    except Exception as exc:                              # noqa: BLE001
+        return {"_probeError": "e2t 探针异常: %s" % exc}
+    if not r.ok:
+        return {"_probeError": "e2t 探针失败: %s" % r.tail()}
+    return _read_user_cfg(probe)
+
+
+def version_resource_gate(dst: Path, args, src: Path, tool, work: Path) -> dict:
+    """发布门禁：产物的 Windows 版本资源（RT_VERSION）是否齐全、版本是否对得上。
+
+    背景（2026-10-09 事故）：易语言工程把「程序信息」编译成 RT_VERSION。源码只要在
+    QAQ-ETool 的 e2t→t2e 往返里丢过这条信息，产物照样编译成功、照样能跑，但
+    Windows「属性→详细信息」**所有字段全空**。只判「产物存在 + 大小 + mtime」的旧判据
+    完全看不见，于是「软件信息全空」的成品被当成成功发了出去。
+    """
+    require = args.require_versioninfo
+    info: dict = {}
+    if require is None or args.expect_version:
+        info = probe_program_info(src, tool, work)
+    auto = require is None
+    if require is None:
+        require = bool(info.get("WriteVersion"))
+    if not require and not args.expect_version:
+        return {"ok": True, "required": False, "auto": auto,
+                "skipped": "未要求（工程「程序信息」的 WriteVersion 不是 true）",
+                "writeVersion": bool(info.get("WriteVersion")),
+                "projectName": info.get("Name"),
+                "releaseVersion": info.get("ReleaseVersion"),
+                "probeError": info.get("_probeError")}
+    try:
+        import pever                                     # noqa: PLC0415
+    except Exception as exc:                              # noqa: BLE001
+        return {"ok": True, "required": bool(require), "auto": auto,
+                "warning": "pever.py 不可用，跳过版本资源校验: %s" % exc}
+    chk = pever.check_version_info(dst, args.expect_version, bool(require))
+    return {"ok": bool(chk["ok"]), "required": bool(require), "auto": auto,
+            "expectVersion": args.expect_version,
+            "present": chk.get("present"), "fields": chk.get("fields"),
+            "missing": chk.get("missing"), "mismatch": chk.get("mismatch"),
+            "warnings": chk.get("warnings"),
+            "resourceTypes": chk.get("resourceTypes"), "error": chk.get("error"),
+            "writeVersion": bool(info.get("WriteVersion")),
+            "projectName": info.get("Name")}
+
+
+def _first_line(s: str) -> str:
+    """取「程序信息」里 Description 的首段：易语言把它写成「描述\\r\\n@备注:\\r\\n备注」。"""
+    if not s:
+        return ""
+    head = str(s).split("@备注:")[0]
+    for line in head.replace("\r", "\n").split("\n"):
+        if line.strip():
+            return line.strip()
+    return ""
+
+
+def stamp_version_info(dst: Path, args, src: Path, tool, work: Path) -> dict:
+    """编译成功后补写 Windows 版本资源（RT_VERSION）。
+
+    为什么必须存在这一步（2026-10-09 查实，证据见 SKILL.md §2.2）
+    ------------------------------------------------------------
+    无头静态编译（elang_addin → FNST_RUN → FN_COMPILE_STATIC）对**免打包/易包**工程
+    （产物里嵌了 3.6 MB 的 `E2EE_IDR_DLL`）**一律不写 RT_VERSION**：
+
+    | 产物 | E2EE_IDR_DLL | IDE 编译 | 无头静态编译 |
+    |------|--------------|----------|--------------|
+    | 未开免打包的工程产物     | 无 | 1.0.0.0 | **1.0.0.0 ✔** |
+    | 免打包工程产物 exe 旧版  | 有 | 1.0.0.0 | — |
+    | 免打包工程产物 exe ×2   | 有 | —       | **空 ✘** |
+    | 免打包工程产物 dll      | 有 | —       | **空 ✘** |
+
+    而且和源码无关：同一份正式 `.e`（含作者另存的存档副本），无论是否经过
+    QAQ-ETool 往返、无论 `--kind static/static_exe`、无论中英文布局，无头编译都不带版本
+    资源；同一份源码用 IDE 编译就带。所以「改源码」这条路走不通，只能在产物上补写。
+
+    这里走的是 **Windows 官方资源 API**（BeginUpdateResource / UpdateResource /
+    EndUpdateResource，资源编辑器同款），产物仍是正常 PE。补写完由
+    `version_resource_gate` 复核，过不了照样删候选。
+    """
+    try:
+        import versionize                                 # noqa: PLC0415
+    except Exception as exc:                              # noqa: BLE001
+        return {"ok": False, "error": "versionize.py 不可用: %s" % exc}
+
+    info = probe_program_info(src, tool, work)
+    rel = info.get("ReleaseVersion") or {}
+    ver = (args.expect_version
+           or ("%s.%s" % (rel.get("Major", 1), rel.get("Minor", 0))))
+    try:
+        fv = ".".join(str(x) for x in versionize._ver_tuple(ver))
+    except SystemExit as exc:
+        return {"ok": False, "error": "版本号无法解析: %s" % exc}
+
+    strings = {
+        "Comments": args.stamp_comment or "",
+        "CompanyName": args.stamp_company or (info.get("Author") or ""),
+        "FileDescription": args.stamp_description or _first_line(info.get("Description")),
+        "FileVersion": fv,
+        "InternalName": dst.stem,
+        "LegalCopyright": args.stamp_copyright or (info.get("Copyright") or "").strip(),
+        "OriginalFilename": dst.name,
+        "ProductName": args.stamp_product_name or (info.get("Name") or dst.stem),
+        "ProductVersion": fv,
+    }
+    blob = versionize.build_version_resource(
+        strings, 2052, 1200,
+        versionize.VFT_DLL if dst.suffix.lower() == ".dll" else versionize.VFT_APP, fv, fv)
+    res = versionize.write_version_resource(dst, blob, 2052)
+    res.update({"fileVersion": fv, "strings": {k: v for k, v in strings.items() if v}})
+    return res
+
+
 def main() -> int:
+    _harden_stdout()
     ap = argparse.ArgumentParser(
         epilog=RED_LINES, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("src", nargs="?", help="输入 .e 或文本目录")
@@ -400,11 +558,32 @@ def main() -> int:
     ap.add_argument("--visible", action="store_true",
                     help="显式显示易语言窗口（等价 --headless off）")
     ap.add_argument("--headless", choices=["park", "shide", "hide", "off"],
-                    help="显式指定窗口策略。编译默认 off，避免隐藏守护链干扰 IDE 编译；"
+                    help="显式指定窗口策略。默认 hide（真无头，编译全程不弹窗）；"
                          "hide=隐藏+移出屏幕；shide=同上但主窗口走 SW_HIDE 启动；"
-                         "park=只移出屏幕、保持可见；off=显示窗口")
+                         "park=只移出屏幕、保持可见；off=显示窗口（排障用，等价 --visible）")
     ap.add_argument("--kind", choices=KINDS, default="static_console",
                     help="静态编译种类（默认 static_console）")
+    ap.add_argument("--expect-version",
+                    help="发布门禁：要求产物 FileVersion/ProductVersion 等于该版本"
+                         "（写 3.1.3 即可，产物里是 3.1.3.0）。给了就强制校验版本资源")
+    ap.add_argument("--require-versioninfo", action=argparse.BooleanOptionalAction,
+                    default=None,
+                    help="要求产物必须带 Windows 版本资源（RT_VERSION），否则判失败并删掉"
+                         "候选产物。默认 auto：工程「程序信息」里 WriteVersion=true 就自动"
+                         "开启（输入是文本目录直接读配置，是 .e 则拆包探针读回）。"
+                         "显式 --require-versioninfo / --no-require-versioninfo 可覆盖")
+    ap.add_argument("--stamp-version-info", action="store_true",
+                    help="编译成功后，用 Windows 官方资源 API 给产物补写版本资源"
+                         "（RT_VERSION），再走 --expect-version 门禁。"
+                         "★ 无头静态编译对「免打包/易包」工程（产物里嵌了 E2EE_IDR_DLL）"
+                         "一律不产出 RT_VERSION，源码怎么改都没用（2026-10-09 查实）；"
+                         "这类工程要出带「软件信息」的正式版，就得加这个开关。"
+                         "字段默认取自工程「程序信息」，可用 --stamp-* 覆盖")
+    ap.add_argument("--stamp-product-name", help="覆盖补写的「产品名称」")
+    ap.add_argument("--stamp-description", help="覆盖补写的「文件说明」")
+    ap.add_argument("--stamp-company", help="覆盖补写的「公司名称」")
+    ap.add_argument("--stamp-copyright", help="覆盖补写的「版权」")
+    ap.add_argument("--stamp-comment", help="覆盖补写的「备注」")
     ap.add_argument("--fne", help="宿主库 elang_addin.fne（默认自动定位套装内副本）")
     ap.add_argument("--home", help="易语言安装目录（默认 ELANG_HOME → 注册表 → 文件关联）")
     ap.add_argument("--etool", help="QAQ-ETool.exe 路径或其所在目录（默认 QAQ_ETOOL → "
@@ -477,10 +656,25 @@ def main() -> int:
         dst.parent.mkdir(parents=True, exist_ok=True)
         if dst.exists():
             dst.unlink()                    # 旧产物必须清掉，否则会误判成功
+    # 易语言静态编译器会在**输出目录**里留下 0 字节的 RCX*.tmp 占位文件。发布区里冒出
+    # 这些文件纯属污染（用户会问「哪来这么多 tmp」），所以记下编译前已有的，编译后只删
+    # 本次新出现的，别的一概不碰。
+    rcx_before: set = set()
+    if dst is not None and dst.parent.is_dir():
+        rcx_before = {p.name for p in dst.parent.glob("RCX*.tmp")}
 
     work = Path(args.workdir).resolve() if args.workdir \
         else Path(tempfile.mkdtemp(prefix="ecompile_"))
     work.mkdir(parents=True, exist_ok=True)
+
+    # ★ 修复（2026-10-09）：finally 里引用的 check_out_made / expect_out 从未被赋值，
+    #   于是**每一次**调用都会在 finally 抛 NameError("name 'check_out_made' is not
+    #   defined")——不仅失败被掩盖，连编译成功的 JSON 结果也一并被吞掉，调用方只能看到
+    #   一段 traceback。--check 的占位产物本来就由 elaunch 自己创建并清理
+    #   （elaunch.py: check_out_made 903-906 / safe_remove 1207-1208），ecompile 这侧
+    #   无需再删；这里显式初始化，让该分支退化为空操作。
+    check_out_made = False
+    expect_out = None
 
     try:
         # 1) 文本目录 → .e（t2e_if_dir 内部对 `项目.qtprj` 快照还原）
@@ -515,6 +709,13 @@ def main() -> int:
             cmd += ["--headless", "off"]
         elif args.headless:
             cmd += ["--headless", args.headless]
+        else:
+            # ★ 修复（2026-10-09，用户实测点名）：此前这里什么都不传，落到 elaunch 的
+            #   「编译模式默认 off」⇒ IDE 窗口全程可见，用户看得见它自动编译、自动填
+            #   保存框再关闭 —— 与本技能「无头行为（默认）」的承诺直接矛盾。
+            #   elaunch 的设计约定是「无头编译须由调用方显式声明」，那就在唯一调用方
+            #   这里显式声明 hide；要看界面排障时 --visible / --headless off 仍然可用。
+            cmd += ["--headless", "hide"]
         if args.check and args.fast:
             # 快速模式：官方 FN_PRE_COMPILE（毫秒级）。**不充分**，见 docstring。
             # 必须显式给种类 —— elaunch 的 --check 默认走的是权威真编译路径。
@@ -576,6 +777,37 @@ def main() -> int:
             result["ok"] = True
             result["output"] = str(dst)
             result["outputSize"] = dst.stat().st_size
+            # ★ 发布门禁（2026-10-09 新增）：编译成功 ≠ 发布就绪。
+            #   产物「软件信息全空」在旧判据下完全不可见，必须单独验一遍版本资源。
+            if dst.suffix.lower() in (".exe", ".dll", ".ocx", ".scr", ".cpl"):
+                # 免打包/易包工程的无头编译不带 RT_VERSION（改源码无解），需要就先补写。
+                if args.stamp_version_info:
+                    st = stamp_version_info(dst, args, src, tool, work)
+                    result["versionInfoStamped"] = st
+                    if not st.get("ok"):
+                        result["ok"] = False
+                        result["error"] = "版本资源补写失败：%s" % st.get("error")
+                        result["candidateDeleted"] = True
+                        try:
+                            dst.unlink()
+                        except OSError:
+                            result["candidateDeleted"] = False
+                if result["ok"]:
+                    vg = version_resource_gate(dst, args, src, tool, work)
+                    result["versionInfo"] = vg
+                    if not vg.get("ok"):
+                        reasons = list(vg.get("missing") or []) + list(vg.get("mismatch") or [])
+                        result["ok"] = False
+                        result["error"] = (
+                            "版本资源门禁未过（产物已删除，绝不发布「软件信息全空」的成品）："
+                            + "；".join(reasons or [vg.get("error") or "未知原因"])
+                            + "。若该工程是免打包/易包工程（产物内嵌 E2EE_IDR_DLL），"
+                              "无头编译本来就不写版本资源，请加 --stamp-version-info 补写")
+                        result["candidateDeleted"] = True
+                        try:
+                            dst.unlink()
+                        except OSError:
+                            result["candidateDeleted"] = False
             # 易模块专项闸门（2026-09-23 新增）：IDE 会强制「内部模块名 = 文件名」。
             # 名字一旦与宿主工程里原有的不同，挂在旧名字下的类/公开命令全部失联，
             # 编译期 IDE 直接 0xc0000005 崩溃（连报错都没有）。这种事故只看产物
@@ -615,6 +847,15 @@ def main() -> int:
             else:
                 result["error"] = "编译未产出（status=%s）" % d.get("status")
     finally:
+        # 清掉本次编译在输出目录里新产生的 RCX*.tmp（0 字节占位，纯污染）。
+        if dst is not None and dst.parent.is_dir():
+            for p in dst.parent.glob("RCX*.tmp"):
+                if p.name not in rcx_before:
+                    try:
+                        p.unlink()
+                        result.setdefault("tempFilesRemoved", []).append(p.name)
+                    except OSError:
+                        pass
         # --check 的保存框只需要一个可填路径，绝不能把这个占位产物留在
         # 保留的失败现场里；真正需要回看的内容是面板/事件日志。
         if check_out_made and expect_out:
