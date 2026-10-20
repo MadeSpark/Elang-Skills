@@ -1,0 +1,6 @@
+拦截 网址=https://zip2.webgetstore.com/e2930c5730913880a39fec40036fe499/6ad70d28/2026/03/08/ff412149416cbcbe6aaf67c63d2d91d6.zip?fn=XiaoLiZi_VM_Patch.zip
+拦截 文件名=XiaoLiZi_VM_Patch.zip
+拦截 总字节=1110908
+拦截 网址=https://zip2.webgetstore.com/e2930c5730913880a39fec40036fe499/6ad70d28/2026/03/08/ff412149416cbcbe6aaf67c63d2d91d6.zip?fn=XiaoLiZi_VM_Patch.zip
+拦截 文件名=XiaoLiZi_VM_Patch.zip
+拦截 总字节=1110908
