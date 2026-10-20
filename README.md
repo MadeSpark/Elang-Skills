@@ -65,7 +65,7 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 
 ## 项目结构
 
-仓库分三层：**发布区**（`Releases/`，交付给用户的成品）、**源与工具**（`src/` `tools/` `QAQ-ETool/`，构建成品的源本）、**素材与产物**（`docs/` `demos/` `支持库文档/` `out_mbkit/`）。发布区里的 `skills/*/scripts|references|assets` 是 `tools/` `docs/` `src/` 的同步副本，`tools/verify-release.py` 会断言它们与源本逐字节一致。
+仓库分三层：**发布区**（`Releases/`，交付给用户的成品）、**源与工具**（`src/` `tools/` `QAQ-ETool/`，构建成品的源本）、**素材与产物**（`docs/` `demos/` `支持库文档/` `miniblink/`）。发布区里的 `skills/*/scripts|references|assets` 是 `tools/` `docs/` `src/` 的同步副本，`tools/verify-release.py` 会断言它们与源本逐字节一致。
 
 ```
 测试/
@@ -94,13 +94,16 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 ├── demos/                        实测 demo（工程 + 示例输出）
 │   ├── 01-C盘结构输出/
 │   ├── 02-嵌套控制流压测/
-│   └── 03-Json解析测试/
+│   ├── 03-Json解析测试/
+│   └── 下载接管/                 下载接管 A/B 可运行模板（A=控制位置并取链接，B=彻底拦截只取链接；各带 exe 与 README）
 │
-├── docs/                         格式规范全文 + 开发工程说明
+├── docs/                         格式规范 + 开发工程说明 + 下载接管修复（2 篇；模块使用说明在 miniblink/）
 ├── 支持库文档/                   导出产物（77 库 / 5951 条命令 + commands.jsonl）
-├── out_mbkit/                    miniblink 模块文本产物（miniblink.e / .ec + 使用说明）
+├── miniblink/                    miniblink 模块交付目录（miniblink.e / .ec、使用说明.md、模块测试源码.e/.bak、MbKit146.dll、WebView2Loader.dll）
+├── re/                           运行验证留档（mbkit_run/evidence 原始日志）
+├── 测试.e                        小样例工程
 ├── 导出支持库文档.exe            支持库文档导出工具（成品）
-└── README.md / .gitignore / .gitattributes / .zcodeignore
+└── README.md / .gitignore / .gitattributes
 ```
 
 ## 工作流（AI 写易语言代码的标准闭环）
@@ -114,6 +117,11 @@ echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
 
 `echeck` 不依赖 IDE：用支持库文档校验每个命令调用（存在性 / 参数个数 / 可空留空）与
 块首块尾配对，把 AI 最常犯的错挡在进 IDE 之前；`rtcheck` 保证格式收敛。
+
+2026-10-20 起 `echeck` 会额外打印一行「**流程分支**」：汇总 `check_blocks` / `check_hidden_tail_gap` /
+`check_sub_tail_gap` / `check_empty_branch_gap` 四类块结构问题，**必须 `✓ 0 错误 0 警告`，任一非零即退出码 1**。
+这类「编译通过、`t2e`/`rtcheck` 全绿，但 IDE 打开弹『控制块有格式错误』或流程线串到窗口底」的缺陷，
+`ecompile --check`、`e2t`、`t2e`、`rtcheck` 全都看不见，只有它和真 IDE 能发现。
 
 唯一验收标准：**能不能在易语言 IDE 里打开并编译运行**。
 
