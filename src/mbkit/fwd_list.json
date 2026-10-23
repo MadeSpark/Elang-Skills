@@ -4762,5 +4762,96 @@
     ""
    ]
   ]
+ },
+ {
+  "cmd": "_DLL命令0A0104C5_wkeOnDownloadFinish",
+  "ret": "",
+  "lib": "main\\\\corn\\\\node.dll",
+  "name": "wkeOnDownloadFinish",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104C6_wkeSetDownloadDir",
+  "ret": "",
+  "lib": "main\\\\corn\\\\node.dll",
+  "name": "wkeSetDownloadDir",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "文本型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104C7_wkeOnDownloadStart",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDownloadStart",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
+ },
+ {
+  "cmd": "_DLL命令0A0104C8_wkeOnDownloadProgress",
+  "ret": "",
+  "lib": "main\\corn\\node.dll",
+  "name": "wkeOnDownloadProgress",
+  "conv": "cdecl",
+  "params": [
+   [
+    "_参数1",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数2",
+    "整数型",
+    ""
+   ],
+   [
+    "_参数3",
+    "整数型",
+    ""
+   ]
+  ]
  }
 ]

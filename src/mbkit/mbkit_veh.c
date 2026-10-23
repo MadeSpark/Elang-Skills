@@ -21,6 +21,8 @@
 #include <tlhelp32.h>        /* 崩溃瞬间的模块快照 */
 #include "mbkit_api.h"
 
+extern int __stdcall MbKit_DebugEnabled(void);
+
 #ifndef _MSC_VER
 #include <stdarg.h>
 #endif
@@ -69,6 +71,7 @@ static void vlog(const char* fmt, ...)
     va_list ap;
     HANDLE  h;
 
+    if (!MbKit_DebugEnabled()) return;
     va_start(ap, fmt);
     n = _vsnprintf(line, sizeof(line) - 3, fmt, ap);
     va_end(ap);
@@ -158,11 +161,19 @@ static LONG WINAPI veh_probe(EXCEPTION_POINTERS* ep)
     DWORD  code;
     void*  where;
     char   n1[220];
-    LONG   n = InterlockedIncrement(&g_vehCount);
+    LONG   n;
 
     if (!ep || !ep->ExceptionRecord) return EXCEPTION_CONTINUE_SEARCH;
     code  = ep->ExceptionRecord->ExceptionCode;
     where = ep->ExceptionRecord->ExceptionAddress;
+    /* Thread names (0x406D1388), debug notifications and handled C++/COM
+       exceptions are normal engine control flow. Inspecting windows from a
+       Blink naming exception deadlocked its creator, which was waiting for it. */
+    if (code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_IN_PAGE_ERROR &&
+        code != EXCEPTION_ILLEGAL_INSTRUCTION && code != EXCEPTION_STACK_OVERFLOW &&
+        code != 0xC0000374u && code != 0xC0000409u)
+        return EXCEPTION_CONTINUE_SEARCH;
+    n = InterlockedIncrement(&g_vehCount);
 
     vlog("========================================================================");
     vlog("[VEH #%ld] 异常 0x%08X  线程 tid=%u", n, (unsigned)code, GetCurrentThreadId());
@@ -214,12 +225,15 @@ static LONG WINAPI veh_probe(EXCEPTION_POINTERS* ep)
     vlog("   崩溃瞬间仍在加载器链表里的模块（★段内就是「出错指令」所属的那一段）：");
     dump_modules((void*)(UINT_PTR)(ep->ContextRecord ? ep->ContextRecord->Eip : 0));
     vlog("   崩溃瞬间进程内仍存在的窗口：");
-    dump_process_windows();
+    /* Never send synchronous HWND messages from a VEH: the UI thread may be
+       blocked on the faulting thread or may already be tearing down. */
 
     return EXCEPTION_CONTINUE_SEARCH;   /* 只观测，交给宿主自己的处理器 */
 }
 
-const char* __stdcall MbKit_InstallVehProbe(void)
+/* 公共安装体。withMsgTrace=1 时才装消息钩子（DllMain 里不能装 —— 加载锁里
+ *  SetWindowsHookEx 有死锁风险，而本探针本身就要在 DllMain 里自动生效）。 */
+static const char* install_veh_common(int withMsgTrace)
 {
     char dir[MAX_PATH];
     PFN_ADDVEH add;
@@ -227,7 +241,7 @@ const char* __stdcall MbKit_InstallVehProbe(void)
     if (g_veh) return g_vehLog;
 
     dir[0] = 0;
-    if (!GetModuleFileNameA(NULL, dir, MAX_PATH)) return "";
+    if (!GetModuleFileNameA(NULL, dir, MAX_PATH)) dir[0] = 0;
     {   /* 砍到目录 */
         char* p = dir;
         char* last = dir;
@@ -235,7 +249,7 @@ const char* __stdcall MbKit_InstallVehProbe(void)
         if (last > dir) *last = 0;
     }
     _snprintf(g_vehLog, sizeof(g_vehLog) - 1, "%s\\mb_veh_%u.log",
-              dir, (unsigned)GetCurrentProcessId());
+              dir[0] ? dir : ".", (unsigned)GetCurrentProcessId());
     g_vehLog[sizeof(g_vehLog) - 1] = 0;
 
     /* 开一枪「活着的标记」，便于确认探针确实装上了 */
@@ -249,9 +263,32 @@ const char* __stdcall MbKit_InstallVehProbe(void)
     g_veh = add(1 /* 先于我之外的处理器 */, (PVOID)veh_probe);
     vlog("[VEH] AddVectoredExceptionHandler -> %p（先手处理 %s）", g_veh, g_veh ? "已生效" : "失败");
 
-    /* 顺带把消息跟踪也架上：空窗期里 user32 派发到什么窗口、什么消息，先记一笔 */
-    MbKit_InstallMsgTrace();
+    if (withMsgTrace) {
+        /* 顺带把消息跟踪也架上：空窗期里 user32 派发到什么窗口、什么消息，先记一笔 */
+        MbKit_InstallMsgTrace();
+    }
     return g_vehLog;
+}
+
+const char* __stdcall MbKit_InstallVehProbe(void)
+{
+    if (!MbKit_DebugEnabled()) return "";
+    return install_veh_common(1);
+}
+
+void mbk_veh_debug_enable(void)
+{
+    install_veh_common(0);
+}
+
+/* ★ 2026-10-13：DllMain 里自动装（只装 VEH，不装消息钩子）。
+ *   用于「宿主在插件初始化期崩溃/卡死」的现场取证。 */
+void mbk_veh_auto(void)
+{
+    char enabled[8] = {0};
+    if (!MbKit_DebugEnabled()) return;
+    if (GetEnvironmentVariableA("MBKIT_VEH", enabled, sizeof(enabled)) && enabled[0] == '1')
+        install_veh_common(0);
 }
 
 int __stdcall MbKit_VehHits(void) { return (int)g_vehCount; }
@@ -593,6 +630,7 @@ static void dump_modules(void* target)
 int __stdcall MbKit_InstallMsgTrace(void)
 {
     DWORD tid = GetCurrentThreadId();
+    if (!MbKit_DebugEnabled()) return 0;
     if (g_msgHook) return 1;
     vlog("------------------------------------------------------------------------");
     vlog("[TRACE] 装消息跟踪钩子（WH_GETMESSAGE，线程 tid=%u）", (unsigned)tid);
@@ -604,4 +642,3 @@ int __stdcall MbKit_InstallMsgTrace(void)
     vlog("------------------------------------------------------------------------");
     return g_msgHook ? 1 : 0;
 }
-

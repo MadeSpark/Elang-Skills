@@ -1,0 +1,4 @@
+/* webview2.rc —— WebView2Loader.dll 内嵌为 RCDATA 资源。
+ * 资源 id = MBKWV_RID_LOADER = 101（与 mbk_webview.cpp 一致）。
+ * windres 产出的 .o 会被链进 MbKit.dll。 */
+101 RCDATA "vendor/webview2/WebView2Loader.dll"

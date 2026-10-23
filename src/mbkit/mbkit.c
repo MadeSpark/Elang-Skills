@@ -173,9 +173,63 @@ static int              G_lockReady = 0;
  * ========================================================================*/
 static DWORD g_ownerTid = 0;      /* 内核属主线程（0=未初始化） */
 static int   g_kMode    = 0;      /* 1=K 模式（编组）  0=兼容模式（属主直通） */
+static volatile LONG g_debugEnabled = 0;
+
+int __stdcall MbKit_DebugEnabled(void)
+{
+    return InterlockedCompareExchange((LONG*)&g_debugEnabled, 0, 0) ? 1 : 0;
+}
+
+extern void mbk_veh_debug_enable(void);
+
+int __stdcall MbKit_SetDebug(int on)
+{
+    int enabled = on ? 1 : 0;
+    InterlockedExchange((LONG*)&g_debugEnabled, enabled);
+    if (enabled) mbk_veh_debug_enable();
+    return enabled;
+}
+
 
 static void lock(void)   { if (G_lockReady) EnterCriticalSection(&G_lock); }
 static void unlock(void) { if (G_lockReady) LeaveCriticalSection(&G_lock); }
+
+/* ---- 临时诊断（2026-10-13 卡死定位）：把内核启动关键节点追加写到
+ *      %TEMP%\mbkit-trace-<pid>.log。只写文件、不碰内核，安全。 ---- */
+static void mbtrace(const char* fmt, ...)
+{
+    char     path[MAX_PATH];
+    char     buf[1024];
+    DWORD    pid = GetCurrentProcessId();
+    DWORD    tid = GetCurrentThreadId();
+    int      n;
+    HANDLE   h;
+    DWORD    w;
+    char     tmp[MAX_PATH];
+    va_list  ap;
+
+    if (!MbKit_DebugEnabled()) return;
+    if (GetTempPathA(sizeof(tmp) - 12, tmp) == 0) { tmp[0] = '.'; tmp[1] = 0; }
+    _snprintf(path, sizeof(path) - 1, "%smbkit-trace-%lu.log", tmp, (unsigned long)pid);
+    path[sizeof(path) - 1] = 0;
+
+    n = _snprintf(buf, sizeof(buf) - 8, "[%lu.pid%lu.%lu] ",
+                  (unsigned long)GetTickCount(), (unsigned long)pid, (unsigned long)tid);
+    if (n < 0) n = 0;
+    va_start(ap, fmt);
+    _vsnprintf(buf + n, sizeof(buf) - n - 4, fmt, ap);
+    va_end(ap);
+    strcat(buf, "\r\n");
+
+    h = CreateFileA(path, FILE_APPEND_DATA,
+                    FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                    NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (h != INVALID_HANDLE_VALUE) {
+        SetFilePointer(h, 0, NULL, FILE_END);
+        WriteFile(h, buf, (DWORD)strlen(buf), &w, NULL);
+        CloseHandle(h);
+    }
+}
 
 static void seterr(const char* fmt, ...)
 {
@@ -440,7 +494,9 @@ static int __attribute__((unused)) owner_thread_alive(DWORD tid)
  *   （A/B 实测：K 上 initialize → 载入永不完结、画面空白）。 */
 static int k_boot_load_only(void)
 {
-    if (!mbk_ensure()) return 0;          /* 转发层：解析路径 + 加载 node.dll + 填槽 */
+    mbtrace("k_boot_load_only: enter");
+    if (!mbk_ensure()) { mbtrace("k_boot_load_only: mbk_ensure FAILED"); return 0; }   /* 转发层：解析路径 + 加载 node.dll + 填槽 */
+    mbtrace("k_boot_load_only: mbk_ensure ok");
     {   /* 钉住内核：从此 node.dll 常驻进程，内核全局状态由本层独占管理 */
         HMODULE pin = NULL;
         GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_PIN, "node.dll", &pin);
@@ -448,7 +504,9 @@ static int k_boot_load_only(void)
     G.hNode = mbk_node();
     _snprintf(G.nodePath, sizeof(G.nodePath) - 1, "%s", MbKit_KernelPath());
     G.nodePath[sizeof(G.nodePath) - 1] = 0;
-    if (bind_symbols() != MBKIT_OK) return 0;
+    mbtrace("k_boot_load_only: node=%p path=%s", (void*)G.hNode, G.nodePath);
+    if (bind_symbols() != MBKIT_OK) { mbtrace("k_boot_load_only: bind_symbols FAILED"); return 0; }
+    mbtrace("k_boot_load_only: bind_symbols ok");
     return 1;
 }
 
@@ -457,10 +515,14 @@ static void set_version(void)
 {
     const char* vs = G.GetVersionString ? G.GetVersionString() : NULL;
     _snprintf(G.version, sizeof(G.version) - 1,
-              "MbKit/1.4.4 (owner-thread, DllMain-safe, HWND_MESSAGE-covered)  node.dll  wke%d  %s",
+              "MbKit/1.4.5 (owner-thread, DllMain-safe, HWND_MESSAGE-covered)  node.dll  wke%d  %s",
               G.GetVersion ? G.GetVersion() : 0, vs ? vs : "(?)");
     G.version[sizeof(G.version) - 1] = 0;
 }
+
+/* ★ 临时诊断（2026-10-11）：wkeInitialize 返回时刻的 GetTickCount()。
+ *   回答「首次 load 时内核虽 can_kernel，但是否尚未 warm」。0 = 尚未初始化。 */
+static volatile DWORD g_ownerInitTick = 0;
 
 /* 【MBKIT_K=1】旧行为：内核落在常驻线程 K 上，wkeInitialize 在 K 上执行。 */
 static void k_boot(void* unused)
@@ -471,6 +533,7 @@ static void k_boot(void* unused)
         G.Initialize();
         G.initCount++;
     }
+    g_ownerInitTick = GetTickCount();             /* ★ 临时：K 模式初始化完成时刻 */
     set_version();
 }
 
@@ -495,23 +558,33 @@ static void k_boot(void* unused)
  * ========================================================================*/
 static int owner_init_here(void)
 {
+    mbtrace("owner_init_here: enter ownerTid=%lu", (unsigned long)g_ownerTid);
     if (g_ownerTid) return (GetCurrentThreadId() == g_ownerTid) ? MBKIT_OK : MBKIT_E_STATE;
 
+    mbtrace("owner_init_here: locking");
     lock();
+    mbtrace("owner_init_here: lock acquired");
     if (!g_ownerTid) {
         if (!k_boot_load_only()) {
             unlock();
+            mbtrace("owner_init_here: load_only failed -> E_NODLL");
             return MBKIT_E_NODLL;
         }
+        mbtrace("owner_init_here: load_only ok, calling IsInitialize");
         /* 幂等：宿主自己已经裸调过 wkeInitialize 时（框架进程内很常见），
          * 内核主线程就是它，我们只记账、不再重复 initialize。 */
         if (!G.IsInitialize || !G.IsInitialize()) {
+            mbtrace("owner_init_here: calling G.Initialize()");
             G.Initialize();
             G.initCount++;
+            mbtrace("owner_init_here: G.Initialize() returned");
         }
         g_ownerTid = GetCurrentThreadId();
         g_kMode    = 0;                  /* 属主直通：调用线程上就地执行 */
+        g_ownerInitTick = GetTickCount();/* ★ 临时：wkeInitialize 返回时刻 */
+        mbtrace("owner_init_here: set_version()...");
         set_version();
+        mbtrace("owner_init_here: DONE ownerTid=%lu", (unsigned long)g_ownerTid);
         OutputDebugStringA("[MbKit] 内核属主 = 当前调用线程（属主直通模式）\n");
     }
     unlock();
@@ -581,6 +654,8 @@ int mbk_k_mode_wanted(void)
 static int boot_begin(void)
 {
     LONG st = g_bootState;
+    mbtrace("boot_begin: st=%ld ownerTid=%lu kMode=%d", (long)st,
+            (unsigned long)g_ownerTid, (int)mbk_k_mode_wanted());
 
     if (g_ownerTid) return MBKIT_OK;
     if (st == 2) return MBKIT_OK;
@@ -636,7 +711,9 @@ static int boot_begin(void)
  *   注释（DllMain 里同步干重活会死锁）。真正建内核请用 MbKit_EnsureOwner。 */
 int __stdcall MbKit_EnsureKernelInit(void)
 {
-    return boot_begin();
+    int rc = boot_begin();
+    mbtrace("MbKit_EnsureKernelInit -> %d", rc);
+    return rc;
 }
 
 /* 【导出】v1.4.1 新增：把内核**真正**建在「当前调用线程」上（属主直通）。
@@ -644,11 +721,13 @@ int __stdcall MbKit_EnsureKernelInit(void)
  * 正常的业务线程（启用回调 / 窗口线程），不会是 DllMain。MBKIT_K=1 时退化成等 K。 */
 int __stdcall MbKit_EnsureOwner(void)
 {
+    mbtrace("MbKit_EnsureOwner: enter ownerTid=%lu", (unsigned long)g_ownerTid);
     if (g_ownerTid) return MBKIT_OK;
     if (mbk_k_mode_wanted()) return MbKit_WaitKernel(0);
     {
         int rc = owner_init_here();      /* 本线程 LoadLibrary(node.dll) + wkeInitialize */
         InterlockedExchange(&g_bootState, (rc == MBKIT_OK) ? 2 : 3);
+        mbtrace("MbKit_EnsureOwner -> %d (ownerTid=%lu)", rc, (unsigned long)g_ownerTid);
         return rc;
     }
 }
@@ -685,6 +764,15 @@ int __stdcall MbKit_WaitKernel(int ms)
 
 /* 内核启动状态字：0=未启动 1=启动中 2=完成 3=失败（诊断用） */
 int __stdcall MbKit_BootState(void) { return (int)g_bootState; }
+
+/* 【内部，不导出】从 wkeInitialize 返回至今的毫秒数；未初始化返回 -1。
+ * 供编组层诊断（mbkit_fwd.c 的导航后验）判断「内核 can_kernel 但尚未 warm」。 */
+int mbk_owner_init_ms(void)
+{
+    DWORD t = g_ownerInitTick;
+    if (!t) return -1;
+    return (int)(GetTickCount() - t);
+}
 
 /* 诊断：等启动的次数 / 编组等待超时次数 / 等待期间抽掉的消息数 */
 int __stdcall MbKit_BootWaits(void)    { return (int)g_bootWaits; }
@@ -951,29 +1039,206 @@ int __stdcall MbKit_Destroy(void* view)
     return MBKIT_OK;
 }
 
+/* 2026-10-19 修复（memreg 100 轮只回收 36 个）：k_destroy_batch 里的
+ *   G.SetHandle / G.DestroyWebView 是**导出桩**（edgewebview 下 g_hNode=自身），
+ *   桩会重进编组层 → mbk_defer_destroy() 把刚弹出队列的 view 又登记回去，
+ *   待回收队列永远排不空；MB_DQ_CAP=64 灌满后靠「队列满」才落回同步销毁，
+ *   于是每次运行固定有 64 个 WV 永不 delete（有界泄漏 + g_liveViews 僵尸项）。
+ *   批量销毁期间置位本标志，桩重入的销毁直接穿透到真实现。 */
+static volatile LONG g_dqb_busy = 0;
+
 /* DetachAll 的内核侧批量销毁任务（在属主线程上执行） */
 static void k_destroy_batch(void* p)
 {
     void** killed = (void**)p;
     int    i;
+    LONG   prev = InterlockedExchange(&g_dqb_busy, 1);
     for (i = 0; i < MB_MAX_VIEW && killed[i]; i++) {
         clear_view_cbs(killed[i]);
         G.SetHandle(killed[i], NULL);
         G.DestroyWebView(killed[i]);
     }
+    InterlockedExchange(&g_dqb_busy, prev);
 }
 
-int __stdcall MbKit_DetachAll(void)
+/* ==========================================================================
+ * 7b. view「延迟回收」—— 把内核销毁动作移出插件卸载窗口（2026-10-10，任务5）
+ *
+ * 现象：插件卸载窗口里同步 wkeDestroyWebView → Chromium 拆除其工作线程 → 线程
+ *   退出要抢加载器锁；此刻加载器正 LdrUnloadDll、插件又发起 LoadLibraryA ⇒ 三方
+ *   交叉死锁，宿主卡死。
+ * 做法：把 wkeDestroyWebView 改为「延迟回收」—— 登记到本队列，延迟（默认 400ms，
+ *   可用环境变量 MBKIT_DESTROY_DELAY_MS 覆盖）后由 MbKit 回收；期间同一 view 若又
+ *   被绑定/使用（下一次内核调用以该 view 为首参）则取消回收。DetachAll 的
+ *   「回调解绑 + 记账摘除」仍同步完成，只有内核侧 wkeDestroyWebView 被推迟。
+ *
+ * ★ 线程亲和适配（关键）：miniblink 要求内核只在属主线程上碰。属主直通模式下，
+ *   回收**只能由属主线程**执行 —— 于是由属主线程在下一次编组入口（到点后）回收
+ *   （mbkit_fwd.c 在 can_kernel 的编组入口调 mbk_flush_deferred_destroy）；专用
+ *   回收线程在 K 模式下驱动回收（mbk_kernel_run 会编组到 K）。二者共用同一队列
+ *   与到时判定。
+ * ========================================================================*/
+#define MB_DQ_CAP         64
+#define MB_DQ_DEFAULT_MS  400
+
+static void*  g_dq_wv[MB_DQ_CAP];          /* 待回收的 wkeWebView（raw 指针） */
+static DWORD  g_dq_at[MB_DQ_CAP];          /* 登记时刻（GetTickCount） */
+static int    g_dq_n = 0;                  /* 队列长度（G_lock 保护） */
+static volatile LONG g_dq_count = 0;       /* == g_dq_n 的无锁快照（入口 O(1) 快检用） */
+static HANDLE g_dq_thread = NULL;          /* 专用回收线程（懒启动；K 模式驱动回收） */
+static volatile LONG g_dq_delay = -1;      /* 延迟毫秒（-1=未解析） */
+static volatile LONG g_dq_deferred  = 0;   /* 诊断：累计登记数 */
+static volatile LONG g_dq_cancelled = 0;   /* 诊断：复用取消数 */
+static volatile LONG g_dq_reclaimed = 0;   /* 诊断：实际回收批次数 */
+static volatile LONG g_dq_flushing  = 0;   /* 回收进行中（防重入：销毁触发回调再入） */
+
+int mbk_flush_deferred_destroy(void);      /* 前向声明（dq_worker 用到） */
+
+static DWORD dq_delay_ms(void)
+{
+    LONG d = g_dq_delay;
+    if (d < 0) {
+        char  v[16] = {0};
+        DWORD ms = MB_DQ_DEFAULT_MS;
+        if (GetEnvironmentVariableA("MBKIT_DESTROY_DELAY_MS", v, sizeof(v)) && v[0]) {
+            long x = atol(v);
+            if (x < 0)     x = 0;
+            if (x > 60000) x = 60000;
+            ms = (DWORD)x;
+        }
+        InterlockedCompareExchange(&g_dq_delay, (LONG)ms, -1);
+        d = g_dq_delay;
+    }
+    return (DWORD)d;
+}
+
+/* 专用回收线程：K 模式下驱动回收（mbk_kernel_run 会把销毁编组到线程 K）。
+ * 属主直通模式下本线程不是内核属主，跨线程碰内核会挂 —— 这里不碰，交给属主线程
+ * 在下一次编组入口回收（见 mbk_flush_deferred_destroy 的调用点）。 */
+static DWORD WINAPI dq_worker(LPVOID pv)
+{
+    (void)pv;
+    for (;;) {
+        Sleep(50);
+        if (mbk_owner_mode() && mbk_owner_tid() != 0)
+            mbk_flush_deferred_destroy();
+    }
+    return 0;
+}
+
+/* 登记一个 view 到延迟回收队列。返回 1=已登记（调用方不要同步销毁）；0=队列满
+ * 或回收线程起不来（调用方落回同步销毁，保持旧行为）。 */
+int mbk_defer_destroy(void* wv)
+{
+    int i;
+    if (!wv) return 0;
+    /* 批量销毁窗口内的销毁请求（经导出桩重入）不再延迟，否则会自我重登记，
+     * 队列永远排不空 —— 见 k_destroy_batch 上方说明。 */
+    if (InterlockedCompareExchange(&g_dqb_busy, 0, 0) != 0) return 0;
+    lock();
+    for (i = 0; i < g_dq_n; i++) {
+        if (g_dq_wv[i] == wv) { g_dq_at[i] = GetTickCount(); unlock(); return 1; }  /* 已在队：刷新计时 */
+    }
+    if (g_dq_n >= MB_DQ_CAP) { unlock(); return 0; }
+    if (!g_dq_thread) {
+        DWORD tid = 0;
+        g_dq_thread = CreateThread(NULL, 0, dq_worker, NULL, 0, &tid);
+        if (!g_dq_thread) { unlock(); return 0; }   /* 起不来：调用方同步销毁 */
+    }
+    g_dq_wv[g_dq_n] = wv;
+    g_dq_at[g_dq_n] = GetTickCount();
+    g_dq_n++;
+    g_dq_count = g_dq_n;
+    InterlockedIncrement(&g_dq_deferred);
+    unlock();
+    return 1;
+}
+
+/* 复用取消：同一 view 又被绑定/使用 → 撤下待回收登记。返回 1=取消成功。 */
+int mbk_cancel_destroy(void* wv)
+{
+    int i;
+    if (!wv) return 0;
+    lock();
+    for (i = 0; i < g_dq_n; i++) {
+        if (g_dq_wv[i] == wv) {
+            g_dq_n--;
+            g_dq_wv[i] = g_dq_wv[g_dq_n];
+            g_dq_at[i] = g_dq_at[g_dq_n];
+            g_dq_count = g_dq_n;
+            InterlockedIncrement(&g_dq_cancelled);
+            unlock();
+            return 1;
+        }
+    }
+    unlock();
+    return 0;
+}
+
+/* 是否存在待回收项（供转发层入口做 O(1) 无锁快检）。 */
+int mbk_destroy_pending(void) { return (int)g_dq_count; }
+
+/* 诊断：view 延迟回收队列计数（供 MbKit_Diag 读取）。 */
+void mbk_destroy_stats(long* deferred, long* cancelled, long* reclaimed, int* qlen)
+{
+    if (deferred)  *deferred  = (long)g_dq_deferred;
+    if (cancelled) *cancelled = (long)g_dq_cancelled;
+    if (reclaimed) *reclaimed = (long)g_dq_reclaimed;
+    if (qlen)      *qlen      = (int)g_dq_count;
+}
+
+/* 回收已到期的项。**必须由属主线程调用**（属主直通）——转发层在「确认当前线程
+ * 可碰内核（can_kernel）」的编组入口调用；K 模式下回收线程也可调用（krun 会编组到
+ * K）。内部仍以 mbk_can_kernel() 兜底：不可碰内核则原样返回、绝不碰内核。 */
+int mbk_flush_deferred_destroy(void)
+{
+    void* due[MB_MAX_VIEW];
+    int   nd = 0, i;
+    DWORD now, delay;
+
+    if (!mbk_can_kernel()) return 0;
+    /* 防重入：销毁过程若触发回调、回调又经编组入口进来，挡掉嵌套回收（剩余项留给下一轮） */
+    if (InterlockedCompareExchange(&g_dq_flushing, 1, 0) != 0) return 0;
+
+    delay = dq_delay_ms();
+    now   = GetTickCount();
+
+    lock();
+    for (i = 0; i < g_dq_n; ) {
+        if ((int)(now - g_dq_at[i]) >= (int)delay) {
+            if (nd < MB_MAX_VIEW) due[nd++] = g_dq_wv[i];
+            g_dq_n--;
+            g_dq_wv[i] = g_dq_wv[g_dq_n];
+            g_dq_at[i] = g_dq_at[g_dq_n];
+        } else {
+            i++;
+        }
+    }
+    g_dq_count = g_dq_n;
+    unlock();
+
+    if (nd > 0) {
+        while (nd < MB_MAX_VIEW) due[nd++] = NULL;   /* NULL 结尾，喂给批量销毁 */
+        krun(k_destroy_batch, due);                  /* 属主线程上：清回调 + SetHandle(NULL) + DestroyWebView */
+        InterlockedIncrement(&g_dq_reclaimed);
+    }
+    InterlockedExchange(&g_dq_flushing, 0);
+    return (nd > 0) ? 1 : 0;
+}
+
+/* DetachAll 的真正实现。defer_destroy=1：内核侧 wkeDestroyWebView 走延迟回收
+ * （移出插件卸载窗口）；=0：同步批量销毁（仅用于进程退出，那时不能再拉起线程）。
+ * 「回调解绑 + 记账摘除」无论哪种模式都**同步完成** —— 热重载契约不弱化。 */
+static int detach_all_impl(int defer_destroy)
 {
     void* killed[MB_MAX_VIEW];
-    int   n = 0, i;
+    int   total = 0, i;
 
-    /* ★ 先注销「回调登记层」里全部仍活动的代理回调。
-     * 这是热重载契约的第一步：业务 DLL 在卸载前调用本函数，
-     * 内核手里就不再持有任何指向业务模块的指针。 */
+    /* ★ 第一步（同步）：注销回调登记层里全部仍活动的代理回调。
+     * 业务 DLL 在卸载前调用本函数，内核手里就不再持有指向业务模块的指针。 */
     mb_cb_detach_all();
 
-    /* 再在锁内摘掉全部登记 —— 业务 DLL 此刻起已不可能再被回调进来 */
+    /* 第二步（同步）：锁内摘掉全部登记 —— 业务 DLL 此刻起已不可能再被回调进来 */
     lock();
     for (i = 0; i < MB_MAX_VIEW; i++) {
         MBVIEW* v = &G.views[i];
@@ -981,18 +1246,37 @@ int __stdcall MbKit_DetachAll(void)
         v->cb = NULL;
         v->hOwner = NULL;
         v->user = NULL;
-        if (v->wv) { killed[n++] = v->wv; v->wv = NULL; }
+        if (v->wv) { killed[total++] = v->wv; v->wv = NULL; }
         v->used = 0;
     }
     unlock();
 
-    /* 内核侧批量销毁：一次编组做完（锁外执行，避免与内核内部线程互等） */
-    if (n > 0 && can_kernel()) {
-        krun(k_destroy_batch, killed);
-        mbk_live_add(-(long)n);
+    /* 第三步：内核侧销毁 */
+    if (total > 0 && can_kernel()) {
+        if (defer_destroy) {
+            void* sync[MB_MAX_VIEW];
+            int   ns = 0, j, t;
+            for (j = 0; j < total; j++)
+                if (!mbk_defer_destroy(killed[j])) sync[ns++] = killed[j];
+            if (ns > 0) {                          /* 队列满/起不来：剩下的同步销毁，不漏 */
+                for (t = ns; t < MB_MAX_VIEW; t++) sync[t] = NULL;
+                krun(k_destroy_batch, sync);
+            }
+        } else {
+            int t;
+            for (t = total; t < MB_MAX_VIEW; t++) killed[t] = NULL;   /* NULL 结尾（修正原依赖未初始化栈） */
+            krun(k_destroy_batch, killed);
+        }
+        mbk_live_add(-(long)total);
     }
     /* 不可碰内核时（兼容模式跨线程）：只放弃记账，内核对象由属主会话兜底 */
-    return n;
+    return total;
+}
+
+int __stdcall MbKit_DetachAll(void)
+{
+    /* 默认：内核侧 wkeDestroyWebView 延迟回收，移出插件卸载/加载窗口 */
+    return detach_all_impl(1);
 }
 
 int __stdcall MbKit_LiveCount(void)
@@ -1193,6 +1477,11 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
         InitializeCriticalSection(&G_lock);
         G_lockReady = 1;
 
+        /* ★ 2026-10-13 诊断：自动装崩溃探针（只装 VEH，不碰消息钩子），
+         *   用于抓「宿主在插件初始化期崩/卡」的现场。 */
+        { extern void mbk_veh_auto(void); mbk_veh_auto(); }
+        mbtrace("DllMain: PROCESS_ATTACH done pid=%lu", (unsigned long)GetCurrentProcessId());
+
         /* ★ 把自己钉在进程里：业务 DLL 任意卸载/重载都动不了本层。
          *   ⚠️ 手工映射边界（小栗子 PE 加载器）：MbKit 不在加载器链表时
          *   GetModuleHandleExA(PIN) 会失败 —— 退化路径 = 用自身路径主动
@@ -1218,7 +1507,8 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved)
              * ★ 这里必须**关掉消息泵**：DllMain(DETACH) 里再派发消息是危险的
              *   （窗口/模块正在被拆掉）。 */
             mbk_pump_enable(0);
-            if (G.ready && G.DestroyWebView) MbKit_DetachAll();
+            /* ★ 任务5：进程退出路径必须**同步**销毁（reserved!=0 时不能再拉起/等待回收线程） */
+            if (G.ready && G.DestroyWebView) detach_all_impl(0);
             G_lockReady = 0;
             DeleteCriticalSection(&G_lock);
         }

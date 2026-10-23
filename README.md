@@ -16,6 +16,7 @@
 | `Releases/Elang-AiTools/skills/elang-debug/` | **调试技能**：给 `.e` 加壳声明宿主库 → 程序化触发易语言 IDE 的「调试运行」→ 流式收调试框日志 → 输出结果 JSON（`ok`/`stopped`/`crashed`/`timeout`）。自包含（宿主库 `.fne` + 两个脚本都在包内） |
 | `Releases/Elang-AiTools/skills/elang-build/` | **无头编译技能**：不开 IDE 把 `.e` **静态编译**成原生 exe/dll——自家宿主库链路（`ecompile.py` 一条命令：加壳→触发官方 FNST_RUN 静态编译功能号→进程内自动填产物对话框→收尾自证，实测可用）；不依赖任何第三方工具。自包含 |
 | `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch`/`ecompile` 等工程脚本 |
+| `tools/emodfix/` | **易模块完整性检查/修复**：检查 .e 的易模块 `DefinedIds` 声明与实际方法数是否一致；从完整供体恢复缺失模块方法，并同步 `0x0D` 的 `FileNames` 并行数组。这是新建按钮事件无效的根因修复工具（`check`/`restore`） |
 
 技能遵循 **Agent Skills 开放规范**（agentskills.io），frontmatter 只有 `name` + `description`，
 一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 4 技能）。

@@ -35,18 +35,25 @@ case ":$PATH:" in *":$GCCDIR:"*) ;; *) PATH="$GCCDIR:$PATH"; export PATH ;; esac
 
 CFLAGS_COMMON=(-m32 -O2 -Wall -Wextra -Wno-unused-parameter -Wno-cast-function-type -I.
                -finput-charset=UTF-8 -fexec-charset=GBK)
+CXXFLAGS_COMMON=(-m32 -O2 -Wall -Wno-unused-parameter -Wno-cast-function-type -I.
+                 -Ivendor/webview2
+                 -finput-charset=UTF-8 -fexec-charset=GBK -std=c++17)
 DLLFLAGS=(-shared -Wl,--kill-at -static -s)
 EXEFLAGS=(-static -s -luser32 -lgdi32)
+# mbk_webview.cpp 用到的 Windows 库：COM(ole32/oleaut32)、shell32(SHGetFolderPathW)、
+# uuid(__uuidof 的 IID_IUnknown)、stdc++(C++ 运行时)
+WVLIBS=(-lole32 -loleaut32 -lshell32 -luuid -lstdc++ -static-libgcc -static-libstdc++)
 
 echo "[build] gcc -> $("$GCC" --version | head -1)"
 
 PY="${PY:-C:/Users/MadeSpark/.workbuddy/binaries/python/versions/3.13.12/python.exe}"
 
-echo "[build] 0/5 重新生成转发层（gen_thunk.c/.def/.h）"
+echo "[build] 0/6 重新生成转发层（gen_thunk.c/.def/.h）+ edgewebview 绑定表"
 # ★ 必须重生成：gen_fwd.def 决定导出表。2026-09-25 发现它漏导出 19 个 MbKit_* 接口，
 #   导致 host_reload.exe 的 GetProcAddress 失败、run_tests.sh 整条回归链静默失效。
 #   重生成后立刻核对「mbkit_api.h 里声明的每个 MbKit_* 都在 .def 里」，漏一个就中止。
 "$PY" gen_fwd.py >/dev/null
+"$PY" gen_webview.py >/dev/null
 missing="$(sed -n 's/.*__stdcall[[:space:]]\{1,\}\(MbKit_[A-Za-z0-9_]*\)[[:space:]]*(.*/\1/p' \
              mbkit_api.h mbkit.c mbkit_fwd.c mbkit_cb.c 2>/dev/null | sort -u \
            | while read -r n; do grep -qx "    $n" gen_fwd.def || echo "$n"; done)"
@@ -58,31 +65,46 @@ fi
 # 导出边界编组自检：gen_thunk.c 必须已生成且执行体表非空，否则中止
 [ -s gen_thunk.c ] || { echo "!! gen_fwd.py 没有产出 gen_thunk.c"; exit 1; }
 grep -q "mbk_tramps" gen_thunk.c || { echo "!! gen_thunk.c 缺少 mbk_tramps 执行体表"; exit 1; }
+[ -s gen_webview_bind.h ] || { echo "!! gen_webview.py 没有产出 gen_webview_bind.h"; exit 1; }
 
-echo "[build] 1/5 MbKit.dll"
-# 四个 C 单元 + 一个生成的编组层：
-#   mbkit.c      常驻层与高层接口（view 管理、事件转发、自 PIN、内核落 K）
-#   mbkit_fwd.c  转发层：懒加载 node.dll、填 _mbk_slots[] + mbk_marshal_exec 编组执行
-#   mbkit_cb.c   22 个回调注册类的拦截：内核只见 MbKit 的 wrapper，业务 thunk 只作数据
-#   mbk_thread.c 常驻内核线程 K + 同步任务编组（内核亲和的唯一解）
-#   gen_thunk.c  252 个 wke*/js* 的编组 thunk（真实签名收参打包 + K 侧签名化执行体）
+echo "[build] 1/6 编译 WebView2 后端 + 内嵌资源"
+# windres 把 WebView2Loader.dll 打成 RCDATA 资源（id=101），供 mbk_webview.cpp
+# 首次使用时释放到磁盘再 LoadLibrary —— 保持「模块只释放 MbKit144.dll 一个文件」。
+WINDRES="${WINDRES:-$GCCDIR/windres.exe}"
+if [ ! -x "$WINDRES" ] && command -v windres >/dev/null 2>&1; then WINDRES=windres; fi
+"$WINDRES" -i webview2.rc -o webview2_res.o -O coff
+# C++ 后端（WebView2 适配层）。-Ivendor/webview2 指向 NuGet 里 vendor 的头文件。
+"$GCCDIR/g++.exe" "${CXXFLAGS_COMMON[@]}" -c mbk_webview.cpp -o mbk_webview.o
+
+echo "[build] 2/6 MbKit.dll"
+# C 单元先用 gcc 编成 .o（g++ 会把 .c 当 C++ 编，gen_thunk.c 的指定初始化器
+# 在 C++ 下是 "sorry, unimplemented"），最后用 g++ 链接（拉进 libstdc++）。
+"$GCC" "${CFLAGS_COMMON[@]}" -c mbkit.c      -o mbkit.o
+"$GCC" "${CFLAGS_COMMON[@]}" -c mbkit_fwd.c  -o mbkit_fwd.o
+"$GCC" "${CFLAGS_COMMON[@]}" -c mbkit_cb.c   -o mbkit_cb.o
+"$GCC" "${CFLAGS_COMMON[@]}" -c mbk_thread.c -o mbk_thread.o
+"$GCC" "${CFLAGS_COMMON[@]}" -c mbkit_veh.c  -o mbkit_veh.o
+"$GCC" "${CFLAGS_COMMON[@]}" -c gen_thunk.c  -o gen_thunk.o
 # 导出名由 gen_fwd.def 显式指定 —— 易语言 .DLL命令 依赖朴素名（无 _ 前缀、无 @N）
-"$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -o MbKit.dll \
-    mbkit.c mbkit_fwd.c mbkit_cb.c mbk_thread.c gen_thunk.c gen_fwd.def
+# 注意：库必须在 .o 之后（GCC 左→右链接，否则 -loleaut32/-luuid 不生效）
+"$GCCDIR/g++.exe" "${DLLFLAGS[@]}" -o MbKit.dll \
+    mbkit.o mbkit_fwd.o mbkit_cb.o mbk_thread.o mbkit_veh.o gen_thunk.o \
+    mbk_webview.o webview2_res.o gen_fwd.def \
+    "${WVLIBS[@]}"
 
-echo "[build] 2/5 biz_v1.dll / biz_v2.dll"
+echo "[build] 3/6 biz_v1.dll / biz_v2.dll"
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -Wl,--image-base,0x62000000 -o biz_v1.dll mb_biz.c
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -Wl,--image-base,0x63000000 -o biz_v2.dll mb_biz.c
 
-echo "[build] 3/5 legacy_v1.dll / legacy_v2.dll"
+echo "[build] 4/6 legacy_v1.dll / legacy_v2.dll"
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -Wl,--image-base,0x64000000 -o legacy_v1.dll mb_legacy.c
 "$GCC" "${CFLAGS_COMMON[@]}" "${DLLFLAGS[@]}" -Wl,--image-base,0x65000000 -o legacy_v2.dll mb_legacy.c
 
-echo "[build] 4/5 host_reload.exe"
+echo "[build] 5/6 host_reload.exe"
 # 注意：-l 库必须排在源文件**之后**，否则链接器先处理库、此时符号还没被引用，会报 undefined
 "$GCC" "${CFLAGS_COMMON[@]}" -o host_reload.exe host_reload.c "${EXEFLAGS[@]}"
 
-echo "[build] 5/5 产物核对"
+echo "[build] 6/6 产物核对"
 ls -la MbKit.dll biz_v1.dll biz_v2.dll legacy_v1.dll legacy_v2.dll host_reload.exe
 
 echo

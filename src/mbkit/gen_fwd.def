@@ -181,6 +181,9 @@ EXPORTS
     wkeOnDocumentReady
     wkeOnDocumentReady2
     wkeOnDownload
+    wkeOnDownloadFinish
+    wkeOnDownloadProgress
+    wkeOnDownloadStart
     wkeOnLoadUrlBegin
     wkeOnLoadUrlEnd
     wkeOnLoadingFinish
@@ -215,6 +218,7 @@ EXPORTS
     wkeSetDebugConfig
     wkeSetDeviceParameter
     wkeSetDirty
+    wkeSetDownloadDir
     wkeSetDragDropEnable
     wkeSetDragEnable
     wkeSetDragFiles
@@ -254,12 +258,18 @@ EXPORTS
     wkeWebFrameGetMainFrame
     wkeWebFrameGetMainWorldScriptContext
     MbKit_Init
+    MbKit_SetDebug
+    MbKit_DebugEnabled
     MbKit_IsReady
     MbKit_SetNodePath
     MbKit_ConfigNodePath
     MbKit_KernelLoaded
     MbKit_KernelState
     MbKit_Diag
+    MbKit_HasWebViewEnv
+    MbKit_KernelMode
+    MbKit_SetForceNodeKernel
+    MbKit_WebViewDiag
     MbKit_EnsureKernelInit
     MbKit_WaitKernel
     MbKit_BootState

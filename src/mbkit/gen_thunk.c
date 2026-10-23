@@ -2811,6 +2811,40 @@ unsigned __cdecl wkeNetStartUrlRequest(unsigned a0, unsigned a1, unsigned a2, un
     return c.ret.u;
 }
 
+static void tr_wkeOnDownloadProgress(MBKCALL* c)
+{
+    void (*fn)(unsigned a0, unsigned a1, unsigned a2) = (void (__cdecl *)(unsigned a0, unsigned a1, unsigned a2))c->real;
+    fn((unsigned)c->a[0], (unsigned)c->a[1], (unsigned)c->a[2]);
+}
+
+void __cdecl wkeOnDownloadProgress(unsigned a0, unsigned a1, unsigned a2)
+{
+    MBKCALL c;
+    ZeroMemory(&c, sizeof(c));
+    c.idx = MBK_IDX_wkeOnDownloadProgress; c.tramp = tr_wkeOnDownloadProgress; c.kind = 0;
+    c.a[0] = (long long)(unsigned)a0;
+    c.a[1] = (long long)(unsigned)a1;
+    c.a[2] = (long long)(unsigned)a2;
+    mbk_marshal_exec(&c);
+}
+
+static void tr_wkeOnDownloadStart(MBKCALL* c)
+{
+    void (*fn)(unsigned a0, unsigned a1, unsigned a2) = (void (__cdecl *)(unsigned a0, unsigned a1, unsigned a2))c->real;
+    fn((unsigned)c->a[0], (unsigned)c->a[1], (unsigned)c->a[2]);
+}
+
+void __cdecl wkeOnDownloadStart(unsigned a0, unsigned a1, unsigned a2)
+{
+    MBKCALL c;
+    ZeroMemory(&c, sizeof(c));
+    c.idx = MBK_IDX_wkeOnDownloadStart; c.tramp = tr_wkeOnDownloadStart; c.kind = 0;
+    c.a[0] = (long long)(unsigned)a0;
+    c.a[1] = (long long)(unsigned)a1;
+    c.a[2] = (long long)(unsigned)a2;
+    mbk_marshal_exec(&c);
+}
+
 static void tr_wkePaint(MBKCALL* c)
 {
     void (*fn)(unsigned a0, unsigned a1, unsigned a2) = (void (__cdecl *)(unsigned a0, unsigned a1, unsigned a2))c->real;
@@ -3150,6 +3184,22 @@ void __cdecl wkeSetDirty(unsigned a0, unsigned a1)
     MBKCALL c;
     ZeroMemory(&c, sizeof(c));
     c.idx = MBK_IDX_wkeSetDirty; c.tramp = tr_wkeSetDirty; c.kind = 0;
+    c.a[0] = (long long)(unsigned)a0;
+    c.a[1] = (long long)(unsigned)a1;
+    mbk_marshal_exec(&c);
+}
+
+static void tr_wkeSetDownloadDir(MBKCALL* c)
+{
+    void (*fn)(unsigned a0, unsigned a1) = (void (__cdecl *)(unsigned a0, unsigned a1))c->real;
+    fn((unsigned)c->a[0], (unsigned)c->a[1]);
+}
+
+void __cdecl wkeSetDownloadDir(unsigned a0, unsigned a1)
+{
+    MBKCALL c;
+    ZeroMemory(&c, sizeof(c));
+    c.idx = MBK_IDX_wkeSetDownloadDir; c.tramp = tr_wkeSetDownloadDir; c.kind = 0;
     c.a[0] = (long long)(unsigned)a0;
     c.a[1] = (long long)(unsigned)a1;
     mbk_marshal_exec(&c);
@@ -3817,6 +3867,12 @@ static void tr_wkeOnDownload(MBKCALL* c)
     fn((unsigned)c->a[0], (unsigned)c->a[1], (unsigned)c->a[2]);
 }
 
+static void tr_wkeOnDownloadFinish(MBKCALL* c)
+{
+    void (*fn)(unsigned a0, unsigned a1, unsigned a2) = (void (__cdecl *)(unsigned a0, unsigned a1, unsigned a2))c->real;
+    fn((unsigned)c->a[0], (unsigned)c->a[1], (unsigned)c->a[2]);
+}
+
 static void tr_wkeOnLoadUrlBegin(MBKCALL* c)
 {
     void (*fn)(unsigned a0, unsigned a1, unsigned a2) = (void (__cdecl *)(unsigned a0, unsigned a1, unsigned a2))c->real;
@@ -4095,77 +4151,81 @@ const mbk_tramp_fn mbk_tramps[MBK_ALL_COUNT] = {
     [177] = tr_wkeOnDocumentReady,
     [178] = tr_wkeOnDocumentReady2,
     [179] = tr_wkeOnDownload,
-    [180] = tr_wkeOnLoadUrlBegin,
-    [181] = tr_wkeOnLoadUrlEnd,
-    [182] = tr_wkeOnLoadingFinish,
-    [183] = tr_wkeOnMouseOverUrlChanged,
-    [184] = tr_wkeOnNavigation,
-    [185] = tr_wkeOnPaintUpdated,
-    [186] = tr_wkeOnPromptBox,
-    [187] = tr_wkeOnTitleChanged,
-    [188] = tr_wkeOnURLChanged,
-    [189] = tr_wkeOnURLChanged2,
-    [190] = tr_wkeOnWillMediaLoad,
-    [191] = tr_wkeOnWillReleaseScriptContext,
-    [192] = tr_wkeOnWindowClosing,
-    [193] = tr_wkeOnWindowDestroy,
-    [194] = tr_wkePaint,
-    [195] = tr_wkePaint2,
-    [196] = tr_wkePerformCookieCommand,
-    [197] = tr_wkePostURL,
-    [198] = tr_wkePostURLW,
-    [199] = tr_wkeReload,
-    [200] = tr_wkeRepaintIfNeeded,
-    [201] = tr_wkeResize,
-    [202] = tr_wkeResizeWindow,
-    [203] = tr_wkeRunJS,
-    [204] = tr_wkeRunJSW,
-    [205] = tr_wkeRunJsByFrame,
-    [206] = tr_wkeSetCookie,
-    [207] = tr_wkeSetCookieEnabled,
-    [208] = tr_wkeSetCookieJarFullPath,
-    [209] = tr_wkeSetCookieJarPath,
-    [210] = tr_wkeSetCspCheckEnable,
-    [211] = tr_wkeSetDebugConfig,
-    [212] = tr_wkeSetDeviceParameter,
-    [213] = tr_wkeSetDirty,
-    [214] = tr_wkeSetDragDropEnable,
-    [215] = tr_wkeSetDragEnable,
-    [216] = tr_wkeSetDragFiles,
-    [217] = tr_wkeSetEditable,
-    [218] = tr_wkeSetFileSystem,
-    [219] = tr_wkeSetFocus,
-    [220] = tr_wkeSetHandle,
-    [221] = tr_wkeSetHandleOffset,
-    [222] = tr_wkeSetHeadlessEnabled,
-    [223] = tr_wkeSetLocalStorageFullPath,
-    [224] = tr_wkeSetMediaVolume,
-    [225] = tr_wkeSetMemoryCacheEnable,
-    [226] = tr_wkeSetMouseEnabled,
-    [227] = tr_wkeSetName,
-    [228] = tr_wkeSetNavigationToNewWindowEnable,
-    [229] = tr_wkeSetNpapiPluginsEnabled,
-    [230] = tr_wkeSetProxy,
-    [231] = tr_wkeSetResourceGc,
-    [232] = tr_wkeSetStringW,
-    [233] = tr_wkeSetTouchEnabled,
-    [234] = tr_wkeSetTransparent,
-    [235] = tr_wkeSetUserAgent,
-    [236] = tr_wkeSetUserAgentW,
-    [237] = tr_wkeSetUserKeyValue,
-    [238] = tr_wkeSetViewNetInterface,
-    [239] = tr_wkeSetViewProxy,
-    [240] = tr_wkeSetWindowTitleW,
-    [241] = tr_wkeSetZoomFactor,
-    [242] = tr_wkeShowDevtools,
-    [243] = tr_wkeShowWindow,
-    [244] = tr_wkeSleep,
-    [245] = tr_wkeStopLoading,
-    [246] = tr_wkeUpdate,
-    [247] = tr_wkeUtilSerializeToMHTML,
-    [248] = tr_wkeVisitAllCookie,
-    [249] = tr_wkeWake,
-    [250] = tr_wkeWebFrameGetMainFrame,
-    [251] = tr_wkeWebFrameGetMainWorldScriptContext,
+    [180] = tr_wkeOnDownloadFinish,
+    [181] = tr_wkeOnDownloadProgress,
+    [182] = tr_wkeOnDownloadStart,
+    [183] = tr_wkeOnLoadUrlBegin,
+    [184] = tr_wkeOnLoadUrlEnd,
+    [185] = tr_wkeOnLoadingFinish,
+    [186] = tr_wkeOnMouseOverUrlChanged,
+    [187] = tr_wkeOnNavigation,
+    [188] = tr_wkeOnPaintUpdated,
+    [189] = tr_wkeOnPromptBox,
+    [190] = tr_wkeOnTitleChanged,
+    [191] = tr_wkeOnURLChanged,
+    [192] = tr_wkeOnURLChanged2,
+    [193] = tr_wkeOnWillMediaLoad,
+    [194] = tr_wkeOnWillReleaseScriptContext,
+    [195] = tr_wkeOnWindowClosing,
+    [196] = tr_wkeOnWindowDestroy,
+    [197] = tr_wkePaint,
+    [198] = tr_wkePaint2,
+    [199] = tr_wkePerformCookieCommand,
+    [200] = tr_wkePostURL,
+    [201] = tr_wkePostURLW,
+    [202] = tr_wkeReload,
+    [203] = tr_wkeRepaintIfNeeded,
+    [204] = tr_wkeResize,
+    [205] = tr_wkeResizeWindow,
+    [206] = tr_wkeRunJS,
+    [207] = tr_wkeRunJSW,
+    [208] = tr_wkeRunJsByFrame,
+    [209] = tr_wkeSetCookie,
+    [210] = tr_wkeSetCookieEnabled,
+    [211] = tr_wkeSetCookieJarFullPath,
+    [212] = tr_wkeSetCookieJarPath,
+    [213] = tr_wkeSetCspCheckEnable,
+    [214] = tr_wkeSetDebugConfig,
+    [215] = tr_wkeSetDeviceParameter,
+    [216] = tr_wkeSetDirty,
+    [217] = tr_wkeSetDownloadDir,
+    [218] = tr_wkeSetDragDropEnable,
+    [219] = tr_wkeSetDragEnable,
+    [220] = tr_wkeSetDragFiles,
+    [221] = tr_wkeSetEditable,
+    [222] = tr_wkeSetFileSystem,
+    [223] = tr_wkeSetFocus,
+    [224] = tr_wkeSetHandle,
+    [225] = tr_wkeSetHandleOffset,
+    [226] = tr_wkeSetHeadlessEnabled,
+    [227] = tr_wkeSetLocalStorageFullPath,
+    [228] = tr_wkeSetMediaVolume,
+    [229] = tr_wkeSetMemoryCacheEnable,
+    [230] = tr_wkeSetMouseEnabled,
+    [231] = tr_wkeSetName,
+    [232] = tr_wkeSetNavigationToNewWindowEnable,
+    [233] = tr_wkeSetNpapiPluginsEnabled,
+    [234] = tr_wkeSetProxy,
+    [235] = tr_wkeSetResourceGc,
+    [236] = tr_wkeSetStringW,
+    [237] = tr_wkeSetTouchEnabled,
+    [238] = tr_wkeSetTransparent,
+    [239] = tr_wkeSetUserAgent,
+    [240] = tr_wkeSetUserAgentW,
+    [241] = tr_wkeSetUserKeyValue,
+    [242] = tr_wkeSetViewNetInterface,
+    [243] = tr_wkeSetViewProxy,
+    [244] = tr_wkeSetWindowTitleW,
+    [245] = tr_wkeSetZoomFactor,
+    [246] = tr_wkeShowDevtools,
+    [247] = tr_wkeShowWindow,
+    [248] = tr_wkeSleep,
+    [249] = tr_wkeStopLoading,
+    [250] = tr_wkeUpdate,
+    [251] = tr_wkeUtilSerializeToMHTML,
+    [252] = tr_wkeVisitAllCookie,
+    [253] = tr_wkeWake,
+    [254] = tr_wkeWebFrameGetMainFrame,
+    [255] = tr_wkeWebFrameGetMainWorldScriptContext,
 };
 

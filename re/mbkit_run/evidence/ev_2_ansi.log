@@ -1,0 +1,22 @@
+======================================================================
+ MbKit hot-reload harness
+======================================================================
+ mode      : ansi
+ rounds    : 1
+ host exe  : C:\Users\MadeSpark\Desktop\测试\src\mbkit\host_reload.exe
+ cwd       : (used by the legacy path to resolve main\corn\node.dll)
+ node.dll  : found at <cwd>\main\corn\node.dll
+
+ off-screen window created: HWND=0x00B61804
+
+== mode=ansi : 验证 MbKit_LoadHtmlA / MbKit_GetTitleA（GBK 往返）==
+  [PASS] MbKit_LoadHtmlA 载入完成
+   want = "中文标题ABC"
+   got  = "中文标题ABC"
+  [PASS] MbKit_GetTitleA 往返一致（GBK 中文无损）
+   RunJsA rc=27295696  title now = "ANSI-2"
+  [PASS] MbKit_RunJsA 生效（JS 已改掉标题）
+
+======================================================================
+ SUMMARY  ansi :  3 passed / 0 failed
+======================================================================

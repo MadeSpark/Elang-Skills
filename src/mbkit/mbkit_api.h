@@ -69,6 +69,9 @@ typedef void (__stdcall *MbEventCb)(void* user, int ev, void* p1, void* p2);
  *   6) 裸名 node.dll（走系统搜索序）
  * 幂等：重复调用只返回首次结果。node.dll 会被 PIN 住，**永不卸载**。 */
 int          __stdcall MbKit_Init(const char* nodeDllPathOrNull);
+/* 调试文件开关：默认关闭。置为 1 后才允许创建 mbkit-trace、mbkit-webview、mb_veh 文件。 */
+int          __stdcall MbKit_SetDebug(int on);
+int          __stdcall MbKit_DebugEnabled(void);
 /* 常驻层是否已就绪（内核已 initialize） */
 int          __stdcall MbKit_IsReady(void);
 
@@ -94,6 +97,25 @@ int          __stdcall MbKit_KernelState(void);
 const char*  __stdcall MbKit_Diag(void);
 
 /* --------------------------------------------------------------------------
+ * edgewebview（WebView2）内核（v1.4.5）
+ *
+ *   内核选择规则（见 mbkit_fwd.c 的 bind_all）：
+ *     1) 强制使用node内核 = 真                        → 一定走 node.dll
+ *     2) 本机检测到 WebView2 Runtime（且未强制 node）  → 走 edgewebview（默认）
+ *     3) 都不满足 / edgewebview 起不来                 → 走 node.dll（原路回退）
+ *
+ *   MbKit_HasWebViewEnv()     —— 本机是否装了 WebView2 Runtime（1=有）。只读探测。
+ *   MbKit_KernelMode()        —— 当前实际内核：0=尚未加载 1=node.dll 2=edgewebview
+ *   MbKit_SetForceNodeKernel()—— 「强制使用node内核」开关。只在内核尚未加载时
+ *                                接受修改；加载后只能查询（返回 0）。
+ *   MbKit_WebViewDiag()       —— edgewebview 的一行式诊断（Runtime 版本 / 启动结果）。
+ * ------------------------------------------------------------------------*/
+int          __stdcall MbKit_HasWebViewEnv(void);
+int          __stdcall MbKit_KernelMode(void);
+int          __stdcall MbKit_SetForceNodeKernel(int on);
+const char*  __stdcall MbKit_WebViewDiag(void);
+
+/* --------------------------------------------------------------------------
  * 内核启动：**异步**（2026-10-01）
  *
  *   MbKit_EnsureKernelInit() —— 只把「启动内核」投递到常驻线程 K 就返回，
@@ -113,6 +135,9 @@ int          __stdcall MbKit_EnsureKernelInit(void);
 int          __stdcall MbKit_WaitKernel(int ms);
 int          __stdcall MbKit_BootState(void);
 int          __stdcall MbKit_BootWaits(void);
+/* 内部（**不导出**：gen_fwd.def 未列出）：从 wkeInitialize 返回至今的毫秒数；
+ * 尚未初始化返回 -1。仅供编组层诊断用，回答「首次 load 时内核是否还没 warm」。 */
+int          mbk_owner_init_ms(void);
 int          __stdcall MbKit_PumpCount(void);
 int          __stdcall MbKit_WaitTimeouts(void);
 

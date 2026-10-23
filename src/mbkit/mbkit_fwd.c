@@ -16,11 +16,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "gen_fwd.h"
 #include "mbkit_api.h"
 #include "mbk_marshal.h"
 #include "mbk_thread.h"
+#include "mbk_webview.h"
+
+extern int __stdcall MbKit_DebugEnabled(void);
 
 /* 内核导出地址表：与 gen_fwd.h 的 MBK_IDX_* 一一对应 */
 void* mbk_slots[MBK_ALL_COUNT];
@@ -30,6 +34,33 @@ static LONG             g_state   = 0;     /* 0=未初始化 1=已就绪 2=已�
 static char             g_nodePath[MAX_PATH];
 static char             g_fwdErr[512];
 static LONG             g_fatalShown = 0;
+
+/* ---- 临时诊断（2026-10-13 卡死定位）：转发层关键节点 ---- */
+static void fwd_trace(const char* fmt, ...)
+{
+    char     path[MAX_PATH], buf[1024], tmp[MAX_PATH];
+    DWORD    pid = GetCurrentProcessId(), tid = GetCurrentThreadId();
+    int      n; HANDLE h; DWORD w; va_list ap;
+    if (!MbKit_DebugEnabled()) return;
+    if (GetTempPathA(sizeof(tmp) - 12, tmp) == 0) { tmp[0] = '.'; tmp[1] = 0; }
+    _snprintf(path, sizeof(path) - 1, "%smbkit-trace-%lu.log", tmp, (unsigned long)pid);
+    path[sizeof(path) - 1] = 0;
+    n = _snprintf(buf, sizeof(buf) - 8, "[%lu.pid%lu.%lu] ",
+                  (unsigned long)GetTickCount(), (unsigned long)pid, (unsigned long)tid);
+    if (n < 0) n = 0;
+    va_start(ap, fmt);
+    _vsnprintf(buf + n, sizeof(buf) - n - 4, fmt, ap);
+    va_end(ap);
+    strcat(buf, "\r\n");
+    h = CreateFileA(path, FILE_APPEND_DATA,
+                    FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                    NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (h != INVALID_HANDLE_VALUE) {
+        SetFilePointer(h, 0, NULL, FILE_END);
+        WriteFile(h, buf, (DWORD)strlen(buf), &w, NULL);
+        CloseHandle(h);
+    }
+}
 
 /* --------------------------------------------------------------------------
  * 内核路径解析
@@ -344,6 +375,14 @@ extern int __stdcall MbKit_EnsureKernelInit(void);
 /* mbkit.c【导出】v1.4.1：真正把内核建在**当前调用线程**上（重活；DllMain 里不许调） */
 extern int __stdcall MbKit_EnsureOwner(void);
 
+/* mbkit.c：view 销毁「延迟回收」队列（任务5，2026-10-10）—— 把 wkeDestroyWebView 移出
+ * 插件卸载窗口；属主直通下由属主线程在编组入口回收（见 mbkit.c 7b 节）。 */
+extern int  mbk_defer_destroy(void* wv);
+extern int  mbk_cancel_destroy(void* wv);
+extern int  mbk_destroy_pending(void);
+extern int  mbk_flush_deferred_destroy(void);
+extern void mbk_destroy_stats(long* deferred, long* cancelled, long* reclaimed, int* qlen);
+
 /* 初始化类导出：只登记启动、立即返回，**不碰内核**。
  * 这批 API 的特性就是「调完不代表内核已经起来」（wkeIsInitialize 本来就是查询），
  * 所以推迟完全符合语义；而把它们做成重活正是 DllMain 死锁的来源。 */
@@ -367,7 +406,573 @@ static void marshal_trampoline(void* p)
         c->ret.u = 0;
         return;
     }
-    c->tramp(c);
+        c->tramp(c);
+}
+
+/* ==========================================================================
+ * ★ 2026-10-10 新增：内核「未就绪 / 不可用」时的语义修复（白屏根因）
+ *
+ * 背景（实测）：兼容模式（内核被某业务线程裸初始化、属主不可迁移）下，非属主
+ *   线程发起的内核调用以前直接 `c->ret.u = 0; return;`。对 wkeLoadFile / LoadURL /
+ *   LoadHTML 这类**发起导航**的 void 调用，这就是「静默丢弃」——日志停在
+ *   「开始载入…」、此后既无 [Console] 也无 page_ready，画面永远单一底色（白屏）。
+ *   它不是崩溃、不是卡死（183 条线程栈里没有一条含 MbKit）。修复分两处：
+ *     A) 属主未就绪：不再直接丢弃，退化为有界等待（复用既有等待原语 MbKit_WaitKernel）；
+ *     B) 兼容模式跨线程：导航类调用压进静态环形队列，待内核可用时按序重放；
+ *        非导航类保持原样返回 0（不能推迟的语义）。
+ *   内核已就绪的正常路径语义与性能逐字不变 —— 新逻辑只挂在这两个「未就绪/不可用」
+ *   分支里（入口处仅多一次 volatile 读的 O(1) 快检）。
+ * ========================================================================*/
+
+/* 有限等待里的「抽消息小睡」：借既有 mbk_wait_pump 抽取并派发本线程消息 ms 毫秒
+ * （而非新造 Sleep 轮询 —— 保证等待属主就绪期间 UI/内核消息不被饿死）。
+ * 手法：一个临时**永不置位**事件；mbk_wait_pump 对未置位事件按 30ms 分片
+ *   MsgWaitForMultipleObjects + PeekMessage/DispatchMessage，到点返回 0。 */
+static void mbk_pump_pause(DWORD ms)
+{
+    HANDLE evt = CreateEventA(NULL, TRUE, FALSE, NULL);
+    if (evt) {
+        mbk_wait_pump(evt, ms);        /* 未置位 → 分片抽消息，到点返回 0 */
+        CloseHandle(evt);
+    } else {
+        mbk_wait_pump(NULL, ms);       /* 退化：等 ms 毫秒 */
+    }
+}
+
+/* 「发起导航」类导出：都是 void 返回的导航动作，推迟到内核可用时再执行不破坏语义。
+ * 名字以 gen_fwd.h 的 mbk_fwd_names[] 实际字符串为准（内核无裸 wkeLoad / wkeLoadFile）。 */
+static int is_navigation_class(const char* n)
+{
+    return !strcmp(n, "wkeLoadFileW")           ||
+           !strcmp(n, "wkeLoadHTML")            ||
+           !strcmp(n, "wkeLoadHTMLW")           ||
+           !strcmp(n, "wkeLoadHtmlWithBaseUrl") ||
+           !strcmp(n, "wkeLoadURL")             ||
+           !strcmp(n, "wkeLoadURLW")            ||
+           !strcmp(n, "wkeLoadW");
+}
+
+/* 取一个「单参 → u32」的内核 getter（如 wkeIsLoading(wv)），返回值为其 ret.u。
+ *   ★ 硬约束：只在属主线程上调用（绝不对非属主线程碰内核）；调用方负责判定。 */
+static unsigned mbk_kernel_get_u32(int idx, unsigned a0)
+{
+    MBKCALL q;
+    if (idx < 0 || idx >= MBK_ALL_COUNT) return 0;
+    ZeroMemory(&q, sizeof(q));
+    q.idx   = idx;
+    q.tramp = mbk_tramps[idx];
+    q.kind  = 1;                 /* u32 返回（gen_thunk.c 里同 kind） */
+    q.a[0]  = (long long)a0;
+    if (!q.tramp) return 0;
+    mbk_kernel_run(marshal_trampoline, &q);
+    return q.ret.u;
+}
+
+/* 导航类导出就地执行完成后的「后验」诊断：wv = c->a[0]（导航 API 首参即 webview）。
+ * 判据：若失败轮三条 getter 全 0（且 initCount/bootState 与成功轮一致），
+ *       即证实「内核没接住这次 load」——主假设成立。 */
+static void nav_after_trace(const MBKCALL* c)
+{
+    unsigned wv        = (unsigned)c->a[0];
+    unsigned loading   = 0;
+    unsigned completed = 0;
+    unsigned failed    = 0;
+    int      onOwner   = (mbk_owner_tid() != 0 && mbk_owner_tid() == GetCurrentThreadId());
+
+    if (wv && onOwner && mbk_can_kernel()) {
+        loading   = mbk_kernel_get_u32(MBK_IDX_wkeIsLoading,          wv);
+        completed = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingCompleted, wv);
+        failed    = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingFailed,    wv);
+    }
+    (void)loading; (void)completed; (void)failed;   /* 原诊断日志已删：仅保留 getter 读序 */
+}
+
+/* ==========================================================================
+ * ★ 2026-10-11：首次导航的「延迟复查」+ 可选「自愈重发」
+ *
+ * 目的（定性白屏）：原「导航返回瞬间的一次采样」只看瞬时状态；白屏轮读到的
+ *   loading=1/completed=0/failed=0 只说明「当时还没完」，不能区分——
+ *     (A) completed 永远 0  ⇒ 导航真的永不完成（内核任务丢了）；
+ *     (B) 几秒后 completed=1 ⇒ 载入其实完成，白是渲染/呈现层。
+ *   故补 t≈1000/3000/6000ms 三次复查。
+ *
+ * ★ 定时机制（关键约束）：**属主直通模式下没有常驻线程 K**（mbk_kernel_tid()==0）。
+ *   因此**绝不能**用 CreateTimerQueueTimer/独立定时线程去 marshal —— mbk_kernel_run
+ *   在非属主线程上会把任务投到**不存在的 K** 上，等满 60s 超时且**回调根本不执行**
+ *   （见 mbk_thread.c）。所以采样改由**后续 mbk_marshal_exec 入口**驱动：这些入口
+ *   天然发生在属主线程（插件会自己轮询 wkeIsLoading），既保证「属主线程执行」，
+ *   又零新增线程/定时器。属主直通无 K ⇒ 这是唯一安全且最省的定时方式。
+ *
+ * 自愈重发：环境变量 MBKIT_NAV_RETRY_MS>0 时启用；到点仍 completed==0&&failed==0
+ *   就用**原样参数**重发同一条导航，同一 view 最多 3 次；完成即停。默认关闭（A/B）。
+ * ========================================================================*/
+#define MBK_NAV_MAXV    4                       /* 最多跟踪 4 个 view 的首次导航 */
+#define MBK_NAV_SAMPLES 3                       /* 每个 view 最多复查 3 次 */
+#define MBK_NAV_KICKS   40                      /* 每个 view 最多踢动 40 次 */
+#define MBK_NAV_PATHW   300                     /* 留存的宽路径长度（含 0） */
+static const DWORD kNvSampleMs[MBK_NAV_SAMPLES] = { 1000, 3000, 6000 };
+
+typedef struct {
+    volatile LONG active;                       /* 1=仍需复查（仅属主线程读写） */
+    volatile LONG kickOn;                       /* 1=仍需踢动（仅属主线程读写） */
+    int           used;                         /* 该槽是否被占用（粘性，保「首次」语义） */
+    unsigned      wv;                           /* webview 指针（低 32 位） */
+    int           idx;                          /* 原导航导出 idx */
+    long long     a[12];                        /* 原样参数（供复查定位 + 自愈重发） */
+    DWORD         tick;                         /* 原导航返回时刻（GetTickCount） */
+    int           shots;                        /* 已复查次数 0..3 */
+    int           retry;                        /* 已重发次数 0..3 */
+    int           kickNext;                     /* 下一次踢动序号 0..40 */
+    int           hasPath;                      /* 1 = pathW 有效（wkeLoadFileW 才有） */
+    int           delivered;                    /* 1 = 已做过一次内容投递 */
+    wchar_t       pathW[MBK_NAV_PATHW];         /* 原始宽路径（导航返回瞬间留存） */
+} MBKNAV;
+
+static MBKNAV        g_nv[MBK_NAV_MAXV];
+static volatile LONG g_nvAny     = 0;           /* 非 0 = 表里尚有「复查」项（快检） */
+static volatile LONG g_nvKickAny = 0;           /* 非 0 = 表里尚有「踢动」项（快检） */
+
+/* MBKIT_NAV_PREREAD（默认 "1"=开）：wkeLoadFileW 转发前先由 MbKit 自己读一遍文件。 */
+static volatile LONG g_nvPreread = -1;
+static int nv_preread_on(void)
+{
+    LONG v = g_nvPreread;
+    if (v < 0) {
+        char buf[16] = {0};
+        LONG on = 1;
+        if (GetEnvironmentVariableA("MBKIT_NAV_PREREAD", buf, sizeof(buf)))
+            on = (buf[0] == '0') ? 0 : 1;
+        InterlockedCompareExchange(&g_nvPreread, on, -1);
+        v = g_nvPreread;
+    }
+    return v == 1;
+}
+
+/* MBKIT_NAV_HTML_MS（默认 600，0=关）：复查到点仍卡住则改由 MbKit 投递内容。 */
+static volatile LONG g_nvHtmlMs = -1;
+static int nv_html_ms(void)
+{
+    LONG v = g_nvHtmlMs;
+    if (v < 0) {
+        char buf[16] = {0};
+        LONG ms = 600;
+        if (GetEnvironmentVariableA("MBKIT_NAV_HTML_MS", buf, sizeof(buf))) {
+            ms = (LONG)atoi(buf);
+            if (ms < 0) ms = 0;
+        }
+        InterlockedCompareExchange(&g_nvHtmlMs, ms, -1);
+        v = g_nvHtmlMs;
+    }
+    return (int)v;
+}
+
+/* MBKIT_NAV_HTML（默认 "1"=开；置 "0" 完全关闭内容投递，用于 A/B）。 */
+static volatile LONG g_nvHtmlOn = -1;
+static int nv_html_on(void)
+{
+    LONG v = g_nvHtmlOn;
+    if (v < 0) {
+        char buf[16] = {0};
+        LONG on = 1;
+        if (GetEnvironmentVariableA("MBKIT_NAV_HTML", buf, sizeof(buf)))
+            on = (buf[0] == '0') ? 0 : 1;
+        InterlockedCompareExchange(&g_nvHtmlOn, on, -1);
+        v = g_nvHtmlOn;
+    }
+    return v == 1;
+}
+
+/* 在**属主线程**上唤醒内核一次（wkeWake(wv)，void）。调用方保证 onOwner && can_kernel。 */
+static void nv_wake_view(unsigned wv)
+{
+    MBKCALL q;
+    if (!wv) return;
+    ZeroMemory(&q, sizeof(q));
+    q.idx   = MBK_IDX_wkeWake;
+    q.tramp = mbk_tramps[MBK_IDX_wkeWake];
+    q.kind  = 0;                 /* void 返回（gen_thunk.c 同 kind） */
+    q.a[0]  = (long long)wv;
+    if (!q.tramp) return;
+    mbk_kernel_run(marshal_trampoline, &q);
+}
+
+/* 导航返回后立刻唤醒一次（env MBKIT_NAV_WAKE）。仅属主线程调用。 */
+static void nav_wake_once(const MBKCALL* c)
+{
+    unsigned wv = (unsigned)c->a[0];
+    nv_wake_view(wv);
+}
+
+/* 反复踢动：对「首次导航」的 view，从导航返回起每 kickMs 毫秒在属主线程上唤醒一次
+ * （最多 MBK_NAV_KICKS 次），completed||failed 非 0 即停。定时同样由后续编组入口驱动
+ * （属主直通无 K，见上）；每次入口至多踢一次，避免突发。 */
+static void nav_kick_tick(void)
+{
+    DWORD now    = GetTickCount();
+    int   kickMs = 0;                     /* MBKIT_NAV_KICK_MS 解析器已删：恒为 0（关闭） */
+    int   i, anyLeft = 0;
+
+    if (kickMs <= 0) { InterlockedExchange(&g_nvKickAny, 0); return; }
+
+    for (i = 0; i < MBK_NAV_MAXV; i++) {
+        MBKNAV*  n = &g_nv[i];
+        DWORD    due;
+        unsigned loading, completed, failed;
+
+        if (!n->kickOn) continue;
+        if (n->kickNext >= MBK_NAV_KICKS) { n->kickOn = 0; continue; }
+        due = (DWORD)(n->kickNext + 1) * (DWORD)kickMs;
+        if (now - n->tick < due) { anyLeft = 1; continue; }   /* 未到下一次踢动 */
+
+        nv_wake_view(n->wv);                                  /* 属主线程：先踢 */
+        loading = completed = failed = 0;
+        if (n->wv) {
+            loading   = mbk_kernel_get_u32(MBK_IDX_wkeIsLoading,          n->wv);
+            completed = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingCompleted, n->wv);
+            failed    = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingFailed,    n->wv);
+        }
+        n->kickNext++;
+        (void)loading; (void)completed; (void)failed;   /* 原诊断日志已删 */
+        if (completed || failed || n->kickNext >= MBK_NAV_KICKS) n->kickOn = 0;
+        if (n->kickOn) anyLeft = 1;
+    }
+    InterlockedExchange(&g_nvKickAny, anyLeft ? 1 : 0);
+}
+
+/* ==========================================================================
+ * ★ 2026-10-11：白屏根因修复（写读竞争）——预读 + 内容投递
+ *
+ * 根因（决定性实验）：插件「写到文件(示例网页) → 1ms 后 载入文件(同一路径)」。
+ *   写入这个动作破坏了内核对该 file:// 的读取：内核收下导航（loading=1）但任务
+ *   永不执行（completed/failed 永远 0）；且重发同一条 wkeLoadFileW 无效
+ *   ⇒ 内核疑似按 URL 记住「加载中」，必须换投递方式。
+ *   修法两步：
+ *     ① 预读：转发前先由 MbKit 用「全文共享」打开并读完全部字节，把「刚写完的
+ *        文件第一次被读」消耗在 MbKit 侧；
+ *     ② 内容投递：复查到点仍卡住 ⇒ 再读一遍文件，不经内核文件加载器，
+ *        直接 wkeLoadHtmlWithBaseUrl(wv, 字节内容, file:///目录) 交给内核。
+ * ========================================================================*/
+
+/* 读整个文件（全文共享打开，不与「刚写完」的写入者互斥）。
+ * 返回 0=成功（*outBuf 需调用方 HeapFree，*outLen=字节数）；1=打不开；2=读失败。
+ * 共试 3 次（首试 + 重试 2 次），失败间隔 30ms。 */
+static int nv_read_file_all(const wchar_t* path, unsigned char** outBuf, unsigned* outLen)
+{
+    int attempt;
+
+    if (outBuf) *outBuf = NULL;
+    if (outLen) *outLen = 0;
+    if (!path || !path[0]) return 1;
+
+    for (attempt = 0; attempt < 3; attempt++) {
+        HANDLE h = CreateFileW(path, GENERIC_READ,
+                               FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                               NULL, OPEN_EXISTING, 0, NULL);
+        if (h == INVALID_HANDLE_VALUE) {
+            if (attempt < 2) { Sleep(30); continue; }
+            return 1;
+        }
+        {
+            DWORD          size = GetFileSize(h, NULL);
+            unsigned char* buf;
+            unsigned       done = 0;
+
+            if (size == INVALID_FILE_SIZE || size == 0) { CloseHandle(h); return 2; }
+            buf = (unsigned char*)HeapAlloc(GetProcessHeap(), 0, (SIZE_T)size + 1);
+            if (!buf) { CloseHandle(h); return 2; }
+            while (done < (unsigned)size) {
+                DWORD got = 0;
+                if (!ReadFile(h, buf + done, size - done, &got, NULL) || got == 0) break;
+                done += got;
+            }
+            CloseHandle(h);
+            if (done != (unsigned)size) {
+                HeapFree(GetProcessHeap(), 0, buf);
+                return 2;
+            }
+            buf[done] = 0;
+            if (outBuf) *outBuf = buf; else HeapFree(GetProcessHeap(), 0, buf);
+            if (outLen) *outLen = (unsigned)done;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/* 由宽路径取目录并构造 file:/// URL（宽字符，反斜杠归一为正斜杠）。返回字符数。 */
+static int nv_base_url_wide(const wchar_t* pathW, wchar_t* outW, int capW)
+{
+    static const wchar_t kPre[] = L"file:///";
+    int n = 0, m, p = 0, i;
+
+    if (!pathW || !outW || capW < 16) return 0;
+    outW[0] = 0;
+    while (pathW[n]) n++;
+    m = n;
+    while (m > 0 && pathW[m - 1] != L'\\' && pathW[m - 1] != L'/') m--;
+    if (m <= 0) return 0;
+
+    for (i = 0; kPre[i] && p < capW - 1; i++, p++) outW[p] = kPre[i];
+    for (i = 0; i < m && p < capW - 1; i++, p++)
+        outW[p] = (pathW[i] == L'\\') ? L'/' : pathW[i];
+    outW[p] = 0;
+    return p;
+}
+
+/* 内容投递：不经内核文件加载器，把文件字节用 wkeLoadHtmlWithBaseUrl 直接交给内核。
+ * ★ wkeLoadHtmlWithBaseUrl 真实签名（gen_fwd.h idx143 / fwd_list.json）：3 参 cdecl、
+ *   (wkeWebView, const utf8* html, const utf8* baseUrl) —— 两串都是 char*（utf8）。
+ *   故 html 传文件原始字节，base 由宽 URL 转 UTF-8。仅属主线程调用。 */
+static void nav_deliver_html(MBKNAV* n, int elapsedMs)
+{
+    unsigned char* html   = NULL;
+    unsigned       hlen   = 0;
+    int            rc;
+    wchar_t        baseW[600];
+    char           base8[2400];
+    MBKCALL        q;
+    unsigned       loading = 0, completed = 0, failed = 0;
+
+    if (!n->wv || !n->hasPath) return;
+
+    rc = nv_read_file_all(n->pathW, &html, &hlen);
+    if (rc != 0 || !html) {
+        return;                                  /* 原诊断日志已删：读不到放弃投递 */
+    }
+
+    baseW[0] = 0;
+    base8[0] = 0;
+    if (nv_base_url_wide(n->pathW, baseW, 600) > 0)
+        WideCharToMultiByte(CP_UTF8, 0, baseW, -1, base8, sizeof(base8), NULL, NULL);
+
+    (void)hlen;                                  /* 原诊断日志已删 */
+
+    ZeroMemory(&q, sizeof(q));
+    q.idx   = MBK_IDX_wkeLoadHtmlWithBaseUrl;
+    q.tramp = mbk_tramps[MBK_IDX_wkeLoadHtmlWithBaseUrl];
+    q.kind  = 0;                                 /* void 返回 */
+    q.a[0]  = (long long)n->wv;
+    q.a[1]  = (long long)(UINT_PTR)html;
+    q.a[2]  = (long long)(UINT_PTR)base8;
+    if (q.tramp) mbk_kernel_run(marshal_trampoline, &q);
+    HeapFree(GetProcessHeap(), 0, html);
+
+    loading   = mbk_kernel_get_u32(MBK_IDX_wkeIsLoading,          n->wv);
+    completed = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingCompleted, n->wv);
+    failed    = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingFailed,    n->wv);
+    (void)loading; (void)completed; (void)failed;   /* 原诊断日志已删：保留 getter 读序 */
+    (void)elapsedMs;
+}
+
+/* 登记「该 view 的首次导航」。同一 view 只登记一次（used 粘性）。
+ * 仅属主线程调用（与复查同线程 ⇒ 无需加锁）。 */
+static void nav_track_begin(const MBKCALL* c)
+{
+    unsigned wv = (unsigned)c->a[0];
+    int      i, slot = -1;
+
+    if (!wv) return;
+    for (i = 0; i < MBK_NAV_MAXV; i++) {
+        if (g_nv[i].used && g_nv[i].wv == wv) return;    /* 该 view 已登记过首次 */
+        if (!g_nv[i].used && slot < 0) slot = i;
+    }
+    if (slot < 0) return;                                /* 表满：放弃（不刷屏） */
+
+    {
+        MBKNAV* n = &g_nv[slot];
+        int     k;
+        for (k = 0; k < 12; k++) n->a[k] = c->a[k];
+        n->wv       = wv;
+        n->idx      = c->idx;
+        n->tick     = GetTickCount();
+        n->shots    = 0;
+        n->retry    = 0;
+        n->kickNext = 0;
+        n->kickOn   = 0;      /* MBKIT_NAV_KICK_MS 解析器已删：恒为 0（关闭） */
+        n->used     = 1;
+        n->active   = 1;
+        n->delivered = 0;
+        /* ★ 留存原始宽路径（此刻调用方缓冲仍存活），供内容投递用。
+         *   仅 wkeLoadFileW(idx140)：a[1] = wchar_t* 路径。 */
+        n->hasPath = 0;
+        n->pathW[0] = 0;
+        if (c->idx == MBK_IDX_wkeLoadFileW && c->a[1] != 0) {
+            const wchar_t* src = (const wchar_t*)(UINT_PTR)(unsigned)c->a[1];
+            int i = 0;
+            while (i < MBK_NAV_PATHW - 1 && src && src[i]) { n->pathW[i] = src[i]; i++; }
+            n->pathW[i] = 0;
+            n->hasPath = (i > 0) ? 1 : 0;
+        }
+        InterlockedExchange(&g_nvAny, 1);
+        if (n->kickOn) InterlockedExchange(&g_nvKickAny, 1);
+    }
+}
+
+/* 延迟复查：仅在属主线程、由后续 mbk_marshal_exec 入口调用。到点即回读三条 getter
+ * （同一条编组路径）并落诊断；满足条件时按 env 设置自愈重发。 */
+static void nav_timed_recheck(void)
+{
+    DWORD now = GetTickCount();
+    int   i, anyLeft = 0;
+
+    for (i = 0; i < MBK_NAV_MAXV; i++) {
+        MBKNAV*  n = &g_nv[i];
+        DWORD    elapsed, due;
+        unsigned loading, completed, failed;
+
+        if (!n->active) continue;
+        if (n->shots >= MBK_NAV_SAMPLES) { n->active = 0; continue; }
+
+        elapsed = now - n->tick;
+        due     = kNvSampleMs[n->shots];
+        if (elapsed < due) { anyLeft = 1; continue; }     /* 未到下一个采样点 */
+
+        loading = completed = failed = 0;
+        if (n->wv) {
+            loading   = mbk_kernel_get_u32(MBK_IDX_wkeIsLoading,          n->wv);
+            completed = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingCompleted, n->wv);
+            failed    = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingFailed,    n->wv);
+        }
+        (void)loading;                                /* 原诊断日志已删 */
+        n->shots++;
+
+        /* ★ 内容投递（优先于重发，2026-10-11）：到点仍 completed==0&&failed==0 ⇒ 内核
+         *   按 URL 记住「加载中」，重发同一条 wkeLoadFileW 无效 —— 改由 MbKit 自己读
+         *   文件、不经内核文件加载器，用 wkeLoadHtmlWithBaseUrl 直接投递内容。
+         *   同一 view 最多投递 1 次；投递后由后续的定时复查采样继续观察结果。 */
+        if (nv_html_on() && nv_html_ms() > 0 && !n->delivered &&
+            completed == 0 && failed == 0 && (int)elapsed >= nv_html_ms()) {
+            n->delivered = 1;
+            nav_deliver_html(n, (int)elapsed);
+        }
+        /* 自愈重发：MBKIT_NAV_RETRY_MS 解析器已删 → 恒不启用（分支保留为死代码）。 */
+        else if (0 && completed == 0 && failed == 0 && n->retry < 3 &&
+                 (int)elapsed >= 0) {
+            MBKCALL  again;
+            int      k;
+            unsigned l2 = 0, c2 = 0, f2 = 0;
+
+            ZeroMemory(&again, sizeof(again));
+            again.idx   = n->idx;
+            again.tramp = mbk_tramps[n->idx];
+            again.kind  = 0;                              /* 导航类均为 void 返回 */
+            for (k = 0; k < 12; k++) again.a[k] = n->a[k];
+
+            n->retry++;
+            mbk_kernel_run(marshal_trampoline, &again);
+
+            if (n->wv) {
+                l2 = mbk_kernel_get_u32(MBK_IDX_wkeIsLoading,          n->wv);
+                c2 = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingCompleted, n->wv);
+                f2 = mbk_kernel_get_u32(MBK_IDX_wkeIsLoadingFailed,    n->wv);
+            }
+            (void)l2; (void)c2; (void)f2;                 /* 原诊断日志已删 */
+            if (c2 || f2) n->active = 0;                  /* 已了结即停 */
+        }
+
+        if (completed || failed) n->active = 0;           /* 已了结，停止复查 */
+        if (n->shots >= MBK_NAV_SAMPLES) n->active = 0;   /* 每 view 最多 3 条 */
+        if (n->active) anyLeft = 1;
+    }
+    InterlockedExchange(&g_nvAny, anyLeft ? 1 : 0);
+}
+
+/* 推迟重放队列：容量 32 的静态环形缓冲；仅在「兼容模式跨线程」的不可用分支里写入，
+ * 在本 TU 静态锁（Interlocked 自旋）保护下操作。 */
+#define MBK_DEFER_CAP 32
+typedef struct {
+    int       idx;
+    int       kind;
+    long long a[12];
+} MBKDEFER;
+
+static MBKDEFER      g_defer[MBK_DEFER_CAP];
+static volatile LONG g_deferHead    = 0;   /* 生产位（写） */
+static volatile LONG g_deferTail    = 0;   /* 消费位（读） */
+static volatile LONG g_deferLock    = 0;   /* Interlocked 自旋锁 */
+static volatile LONG g_deferPending = 0;   /* 非 0 = 队列里有待重放项 */
+static volatile LONG g_deferDrops   = 0;   /* 队列满而丢弃的导航调用数（诊断） */
+static volatile LONG g_replaying    = 0;   /* 重放进行中（防嵌套重放） */
+
+static void mbk_defer_lock(void)
+{
+    int spin = 0;
+    while (InterlockedCompareExchange(&g_deferLock, 1, 0) != 0) {
+        if (++spin > 4000) { Sleep(0); spin = 0; }
+    }
+}
+static void mbk_defer_unlock(void) { InterlockedExchange(&g_deferLock, 0); }
+
+/* 入队（满则丢弃并计数）。返回 1=已入队。 */
+static int mbk_defer_push(const MBKCALL* c)
+{
+    int ok = 1;
+    mbk_defer_lock();
+    if ((g_deferHead + 1) % MBK_DEFER_CAP == g_deferTail) {
+        ok = 0;
+        InterlockedIncrement(&g_deferDrops);
+    } else {
+        MBKDEFER* d = &g_defer[g_deferHead];
+        int i;
+        d->idx  = c->idx;
+        d->kind = c->kind;
+        for (i = 0; i < 12; i++) d->a[i] = c->a[i];
+        g_deferHead = (g_deferHead + 1) % MBK_DEFER_CAP;
+        InterlockedExchange(&g_deferPending, 1);
+    }
+    mbk_defer_unlock();
+    /* 原诊断日志已删（推迟入队 成功/失败 各一条） */
+    return ok;
+}
+
+/* 出队到 out。返回 1=取到；队列转空时清 pending。 */
+static int mbk_defer_pop(MBKCALL* out)
+{
+    int got = 0;
+    mbk_defer_lock();
+    if (g_deferTail != g_deferHead) {
+        MBKDEFER* d = &g_defer[g_deferTail];
+        int i;
+        out->idx  = d->idx;
+        out->kind = d->kind;
+        for (i = 0; i < 12; i++) out->a[i] = d->a[i];
+        g_deferTail = (g_deferTail + 1) % MBK_DEFER_CAP;
+        got = 1;
+        if (g_deferTail == g_deferHead) InterlockedExchange(&g_deferPending, 0);
+    }
+    mbk_defer_unlock();
+    return got;
+}
+
+/* 按序重放：仅在「内核可用」时调用（mbk_marshal_exec 入口处）。构造临时 MBKCALL
+ * 走同一条正常执行路径（mbk_kernel_run → marshal_trampoline）；重放失败（载荷非法
+ * 或内核缺该导出）落诊断。中途内核又不可用则停下，剩余项留给下一轮。 */
+static void mbk_replay_deferred(void)
+{
+    MBKCALL tmp;
+    int     replayed = 0;
+    /* 防重入：重放某个导航调用时，内核可能同步回调业务函数，业务再经 mbk_marshal_exec
+     * 进来 —— 用一个标志挡掉嵌套重放，避免无界递归（剩余项留给下一轮）。 */
+    if (InterlockedCompareExchange(&g_replaying, 1, 0) != 0) {
+        return;                                       /* 原诊断日志已删（跳过） */
+    }
+    for (;;) {
+        if (!g_deferPending) break;
+        if (mbk_owner_tid() == 0 || !mbk_can_kernel()) break;
+        ZeroMemory(&tmp, sizeof(tmp));
+        if (!mbk_defer_pop(&tmp)) break;
+        if (tmp.idx < 0 || tmp.idx >= MBK_ALL_COUNT ||
+            (tmp.tramp = mbk_tramps[tmp.idx]) == NULL) {
+            continue;                                 /* 原诊断日志已删（载荷非法） */
+        }
+        if (!mbk_slots[tmp.idx] || mbk_slots[tmp.idx] == (void*)&mbk_missing_stub) {
+            continue;                                 /* 原诊断日志已删（内核缺导出） */
+        }
+        mbk_kernel_run(marshal_trampoline, &tmp);
+        replayed++;
+    }
+    (void)replayed;                                   /* 原诊断日志已删 */
+    InterlockedExchange(&g_replaying, 0);
 }
 
 void mbk_marshal_exec(MBKCALL* c)
@@ -378,6 +983,35 @@ void mbk_marshal_exec(MBKCALL* c)
         InterlockedIncrement(&g_marshalFail);
         if (c) c->ret.u = 0;
         return;
+    }
+
+    /* 本调用是否为导航类（热路径分类，原样保留；仅其追踪日志已删） */
+    int nav_cls = is_navigation_class(mbk_fwd_names[c->idx]);
+    (void)nav_cls;
+
+    /* ★ 任务5（2026-10-10）：view 销毁「延迟回收」—— 把 wkeDestroyWebView 移出插件
+     *   卸载窗口（同步销毁 → Chromium 拆线程抢加载器锁 → 与 LdrUnloadDll / LoadLibraryA
+     *   三方死锁）。改为登记到延迟队列，由属主线程（或 K 模式回收线程）在 ~400ms 后回收。
+     *   期间同一 view 又被绑定/使用（下一次内核调用以该 view 为首参）则取消回收。
+     *   队列满 / 回收线程起不来 → mbk_defer_destroy 返回 0，落回同步执行（旧行为）。 */
+    if (c->idx == MBK_IDX_wkeDestroyWebView) {
+        if (mbk_defer_destroy((void*)(UINT_PTR)(unsigned)c->a[0])) { c->ret.u = 0; return; }
+    } else if (mbk_destroy_pending()) {
+        void* wv = (void*)(UINT_PTR)(unsigned)c->a[0];
+        if (wv) mbk_cancel_destroy(wv);      /* 复用取消：该 view 又被使用了 */
+    }
+
+    /* ★ 新增（白屏修复）：上一轮内核不可用时被推迟的导航调用，见本轮内核已可用则
+     *   按序重放。队列为空时仅一次 volatile 读（O(1) 快检），就绪路径不受影响。 */
+    if (g_deferPending && mbk_owner_tid() != 0 && mbk_can_kernel())
+        mbk_replay_deferred();
+
+    /* ★ 2026-10-11：首次导航的延迟复查（t≈1/3/6s）与（可选）反复踢动。**只在属主线程**、
+     *   由后续编组入口驱动（属主直通无 K，定时器线程 marshal 会投到不存在的 K 上等 60s
+     *   且不执行，故不用定时器/后台线程）。两个 any 都是快检，未登记时热路径零开销。 */
+    if (!mbkwv_active() && mbk_owner_tid() != 0 && mbk_owner_tid() == GetCurrentThreadId() && mbk_can_kernel()) {
+        if (g_nvAny)     nav_timed_recheck();
+        if (g_nvKickAny) nav_kick_tick();
     }
 
     /* ★ 2026-10-01 v1.4 重做「首次调用」的时序（关键）：
@@ -409,8 +1043,29 @@ void mbk_marshal_exec(MBKCALL* c)
             return;
         }
         if (!mbk_k_mode_wanted()) {
-            if (MbKit_EnsureOwner() != MBKIT_OK) {
-                InterlockedIncrement(&g_marshalFail);
+            /* ★ 修订（2026-10-10）：属主直通模式下 MbKit_WaitKernel 等的是 **K 模式**
+             *   的异步启动事件(g_bootDone，由 k_boot_task 置位)；而属主直通模式压根
+             *   没有 k_boot_task —— 盲等 20s 必然满等，把「白屏」恶化成「每次内核调用
+             *   卡 20 秒」。改为：重试 MbKit_EnsureOwner 最多 3 次、每次间隔 ~50ms，
+             *   间隔里抽取并派发本线程消息（复用 mbk_wait_pump，不新造 Sleep 轮询）。
+             *   3 次仍失败 → 导航类入队重放、其它类返回 0，并落诊断。 */
+            int   rc = MBKIT_OK;
+            int   attempt;
+            for (attempt = 0; attempt < 3; attempt++) {
+                rc = MbKit_EnsureOwner();
+                if (rc == MBKIT_OK) break;
+                if (attempt < 2) mbk_pump_pause(50);
+            }
+            if (rc != MBKIT_OK) {
+                int   nav = is_navigation_class(mbk_fwd_names[c->idx]);
+                DWORD gle = GetLastError();
+                if (nav && mbk_defer_push(c)) {
+                    /* 原诊断日志已删（导航调用已推迟重放） */
+                } else {
+                    InterlockedIncrement(&g_marshalFail);
+                    /* 原诊断日志已删（丢弃调用） */
+                }
+                (void)gle;
                 c->ret.u = 0;
                 return;
             }
@@ -428,6 +1083,17 @@ void mbk_marshal_exec(MBKCALL* c)
     /* 兼容模式（内核被某业务线程裸初始化绑死、无法迁移）且当前是别的线程：
      * 明确失败 —— 返回 0，绝不跨线程硬闯（硬约束：宁可降级不可崩宿主）。 */
     if (!mbk_can_kernel()) {
+        /* ★ 新增（白屏修复）：兼容模式跨线程时，导航类调用不再静默丢弃 —— 压进
+         *   静态环形队列，待内核可用时在下一次编组入口按序重放；非导航类保持原样。 */
+        if (is_navigation_class(mbk_fwd_names[c->idx])) {
+            if (!mbk_defer_push(c)) {
+                /* 原诊断日志已删（推迟队列已满，丢弃） */
+            } else {
+                /* 原诊断日志已删（已入队待重放） */
+            }
+            c->ret.u = 0;
+            return;
+        }
         InterlockedIncrement(&g_marshalFail);
         c->ret.u = 0;
         return;
@@ -441,7 +1107,31 @@ void mbk_marshal_exec(MBKCALL* c)
         InterlockedIncrement(&g_marshalCross);
 
     /* 属主线程上调用 → 就地执行（回调重入安全）；否则投递到 K 同步等待 */
+
+    /* ★ 2026-10-11（白屏根因=写读竞争）：wkeLoadFileW 转发前先由 MbKit 自己读一遍
+     *   文件（全文共享打开），把「刚写完的文件第一次被读」消耗在 MbKit 侧。
+     *   读不到不阻断 —— 照常按原路径转发。env MBKIT_NAV_PREREAD 默认开。 */
+    if (!mbkwv_active() && c->idx == MBK_IDX_wkeLoadFileW && nv_preread_on()) {
+        const wchar_t* p  = (const wchar_t*)(UINT_PTR)(unsigned)c->a[1];
+        unsigned char* b  = NULL;
+        unsigned       bl = 0;
+        int            rc = nv_read_file_all(p, &b, &bl);
+        (void)rc; (void)bl;                           /* 原诊断日志已删 */
+        if (b) HeapFree(GetProcessHeap(), 0, b);
+    }
+
     mbk_kernel_run(marshal_trampoline, c);
+    if (nav_cls && !mbkwv_active()) {
+        int onOwner = (mbk_owner_tid() != 0 && mbk_owner_tid() == GetCurrentThreadId());
+        nav_after_trace(c);                              /* 原诊断采样：保留 getter 读序，日志已删 */
+        if (onOwner && 0) nav_wake_once(c);              /* MBKIT_NAV_WAKE 解析器已删：恒不启用 */
+        if (onOwner) nav_track_begin(c);                 /* 登记首次导航：复查 + 踢动 */
+    }
+
+    /* ★ 任务5：本次调用已在属主线程上跑完（can_kernel 已通过），顺带回收已到期的
+     *   待销毁 view —— 保证 wkeDestroyWebView 的延迟回收由属主线程执行、且在卸载窗口外。 */
+    if (mbk_destroy_pending())
+        mbk_flush_deferred_destroy();
 }
 
 /* 三参便捷版：签名 (void*,void*,void*) -> 整数 —— 回调登记类（mbkit_cb.c）
@@ -505,6 +1195,36 @@ static void bind_all(void)
     int critMiss = 0;
     int i;
 
+    /* ---- edgewebview 内核优先（除非「强制使用node内核」= 真）----
+     * mbkwv_bind 会做 Runtime 探测 + 槽表装填 + 关键 API 校验；
+     * 成功返回 1 时本层把 g_hNode 指向 MbKit.dll 自己 —— bind_symbols 靠
+     * GetProcAddress(g_hNode, "wkeXxx") 取到 gen_thunk.c 的编组 thunk，
+     * thunk 再 marshal 进 mbk_slots（= 本层填的 edgewebview 实现）。
+     * 这样 mbkit.c 的 bind_symbols 一行不用改，且保持「单文件」契约。 */
+    fwd_trace("bind_all: enter (forced=%d cfgPath=[%s])", mbkwv_is_forced(), g_cfgPath);
+    if (!mbkwv_is_forced()) {
+        HMODULE self = NULL;
+        /* 先全槽填安全桩 —— mbkwv_bind 只覆盖有实现的槽，
+         * 未实现的槽若保持 NULL 会 jmp 0 崩溃。 */
+        fill_safe_stubs();
+        GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
+                         | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                         (LPCSTR)(UINT_PTR)&bind_all, &self);
+        fwd_trace("bind_all: calling mbkwv_bind self=%p ...", (void*)self);
+        if (self && mbkwv_bind((void**)mbk_slots, MBK_ALL_COUNT,
+                               mbk_fwd_names, (void*)self)) {
+            g_hNode = self;                    /* bind_symbols 从自身取 thunk */
+            g_nodePath[0] = 0;                 /* 没有 node.dll 路径 */
+            copy_str(g_fwdErr, sizeof(g_fwdErr), "");
+            fwd_trace("bind_all: edgewebview 接管 OK");
+            OutputDebugStringA("[MbKit] edgewebview 内核已接管（WebView2）\n");
+            return;
+        }
+        fwd_trace("bind_all: mbkwv_bind 返回 0 -> 回退 node.dll");
+        /* edgewebview 不可用 / 探测失败 → 落回 node.dll 原路
+         * fill_safe_stubs 已填过，node 路径的 fill_slots 会覆盖全部槽 */
+    }
+
     if (!resolve_node(g_nodePath)) {
         if (g_cfgMiss) {
             /* 显式设置了路径却没找到：**不静默回退**，明确报错。
@@ -518,7 +1238,9 @@ static void bind_all(void)
         g_nodePath[MAX_PATH - 1] = 0;
     }
 
+    fwd_trace("bind_all: LoadLibraryA(node) path=[%s] ...", g_nodePath);
     g_hNode = LoadLibraryA(g_nodePath);
+    fwd_trace("bind_all: LoadLibraryA(node) -> %p err=%lu", (void*)g_hNode, (unsigned long)GetLastError());
     if (!g_hNode) {
         char  tried[MAX_PATH];
         DWORD e1 = GetLastError();
@@ -564,14 +1286,19 @@ static void bind_all(void)
 int mbk_ensure(void)
 {
     LONG s = g_state;
+    fwd_trace("mbk_ensure: enter state=%ld", (long)s);
     if (s == 1) return 1;
     if (s == 2) return 0;
 
     if (InterlockedCompareExchange(&g_state, 0x7FFFFFFF, 0) == 0) {
+        fwd_trace("mbk_ensure: bind_all BEGIN");
         bind_all();                                   /* 只有一个线程进来 */
+        fwd_trace("mbk_ensure: bind_all END hNode=%p", (void*)g_hNode);
         InterlockedExchange(&g_state, g_hNode ? 1 : 2);
     } else {
+        fwd_trace("mbk_ensure: another thread binding, waiting...");
         while ((s = g_state) == 0x7FFFFFFF) Sleep(1); /* 等价于等待发布 */
+        fwd_trace("mbk_ensure: wait done state=%ld", (long)s);
     }
     return g_state == 1;
 }
@@ -650,6 +1377,11 @@ int mbk_set_node_path(const char* p)
     copy_str(req, sizeof(req), p);
     trim_inplace(req);
 
+    /* edgewebview 已接管：路径设置变成幂等门闩（返回 1），不再检查 node.dll 路径。
+     * 插件重复启用时 WKE设置node路径 会被再调一次，必须保持「成功」契约，
+     * 否则业务整段跳过绑定与载入（窗口空白）。 */
+    if (mbkwv_active()) return 1;
+
     if (g_state == 0) {                  /* 尚未加载：记下配置即可 */
         copy_str(g_cfgPath, sizeof(g_cfgPath), req);
         g_cfgSet = (g_cfgPath[0] != 0);
@@ -710,6 +1442,7 @@ const char* __stdcall MbKit_Diag(void)
     static char buf[2000];
     char exeDir[MAX_PATH], cwd[MAX_PATH];
     char bootLine[256];
+    char destroyLine[256];
     const char* stateTxt =
         (g_state == 1) ? "已加载" :
         (g_state == 2) ? "加载失败" :
@@ -744,6 +1477,17 @@ const char* __stdcall MbKit_Diag(void)
         bootLine[sizeof(bootLine) - 1] = 0;
     }
 
+    {
+        /* ★ 任务5：view 延迟回收队列计数 —— 观察「卸载窗口外回收」是否生效 */
+        long dfr = 0, cxl = 0, rcl = 0;
+        int  ql  = 0;
+        mbk_destroy_stats(&dfr, &cxl, &rcl, &ql);
+        _snprintf(destroyLine, sizeof(destroyLine) - 1,
+                  "  view 延迟回收 : 待回收 %d 个   累计登记 %ld   复用取消 %ld   已回收 %ld 批\n",
+                  ql, dfr, cxl, rcl);
+        destroyLine[sizeof(destroyLine) - 1] = 0;
+    }
+
     _snprintf(buf, sizeof(buf) - 1,
         "MbKit 自检\n"
         "  内核状态     : %s\n"
@@ -762,6 +1506,7 @@ const char* __stdcall MbKit_Diag(void)
          *   不重绘（撕裂）」唯一能在**用户真机**里读到的直接指标。
          *   被挡 > 0 说明仍有回调被存活校验拦下；正常应为 0。 */
         "  回调登记     : %d 个（存活 %d）  命中 %d  被挡 %d\n"
+        "%s"
         "  说明         : 被挡 > 0 表示有回调因「业务身份判不出/已失效」被拦；\n"
         "                 正常应为 0。若持续增长，请把本行反馈给维护者。\n",
         stateTxt,
@@ -776,7 +1521,32 @@ const char* __stdcall MbKit_Diag(void)
         g_missingList[0] ? g_missingList : "(无)",
         g_fwdErr[0] ? g_fwdErr : "(无)",
         (long)g_marshalTotal, (long)g_marshalCross, (long)g_marshalFail,
-        MbKit_CbCount(), MbKit_CbLive(), MbKit_CbHits(), MbKit_CbBlocked());
+        MbKit_CbCount(), MbKit_CbLive(), MbKit_CbHits(), MbKit_CbBlocked(),
+        destroyLine);
     buf[sizeof(buf) - 1] = 0;
     return buf;
+}
+
+/* --------------------------------------------------------------------------
+ * edgewebview（WebView2）内核接口（v1.4.5）
+ * ------------------------------------------------------------------------*/
+int __stdcall MbKit_HasWebViewEnv(void)
+{
+    return mbkwv_available();
+}
+
+int __stdcall MbKit_KernelMode(void)
+{
+    if (g_state != 1) return 0;          /* 尚未加载 / 失败 / 加载中 */
+    return mbkwv_active() ? 2 : 1;       /* 1=node.dll  2=edgewebview */
+}
+
+int __stdcall MbKit_SetForceNodeKernel(int on)
+{
+    return mbkwv_set_force(on);
+}
+
+const char* __stdcall MbKit_WebViewDiag(void)
+{
+    return mbkwv_diag();
 }

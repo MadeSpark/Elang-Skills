@@ -67,6 +67,7 @@ INTERCEPT = set([
     "wkeOnAlertBox", "wkeOnConfirmBox", "wkeOnConsole", "wkeOnCreateView",
     "wkeOnDidCreateScriptContext", "wkeOnDocumentReady", "wkeOnDocumentReady2",
     "wkeOnDownload", "wkeOnLoadUrlBegin", "wkeOnLoadUrlEnd", "wkeOnLoadingFinish",
+    "wkeOnDownloadFinish",
     "wkeOnMouseOverUrlChanged", "wkeOnNavigation", "wkeOnPaintUpdated",
     "wkeOnPromptBox", "wkeOnTitleChanged", "wkeOnURLChanged", "wkeOnURLChanged2",
     "wkeOnWillMediaLoad", "wkeOnWillReleaseScriptContext", "wkeOnWindowClosing",

@@ -6,8 +6,8 @@
 #define MBK_GEN_FWD_H
 
 /* _mbk_slots[] 覆盖全部 API（含被 C 侧接管者），下标见 MBK_IDX_* */
-#define MBK_ALL_COUNT 252
-#define MBK_FWD_COUNT 230   /* 其中走汇编转发桩的 */
+#define MBK_ALL_COUNT 256
+#define MBK_FWD_COUNT 233   /* 其中走汇编转发桩的 */
 
 /* 由 mbkit_fwd.c 提供 */
 extern void* mbk_slots[MBK_ALL_COUNT];
@@ -195,6 +195,9 @@ static const char* const mbk_fwd_names[MBK_ALL_COUNT]
     "wkeOnDocumentReady",
     "wkeOnDocumentReady2",
     "wkeOnDownload",
+    "wkeOnDownloadFinish",
+    "wkeOnDownloadProgress",
+    "wkeOnDownloadStart",
     "wkeOnLoadUrlBegin",
     "wkeOnLoadUrlEnd",
     "wkeOnLoadingFinish",
@@ -229,6 +232,7 @@ static const char* const mbk_fwd_names[MBK_ALL_COUNT]
     "wkeSetDebugConfig",
     "wkeSetDeviceParameter",
     "wkeSetDirty",
+    "wkeSetDownloadDir",
     "wkeSetDragDropEnable",
     "wkeSetDragEnable",
     "wkeSetDragFiles",
@@ -450,80 +454,84 @@ static const char* const mbk_fwd_names[MBK_ALL_COUNT]
 #define MBK_IDX_wkeOnDocumentReady                   177
 #define MBK_IDX_wkeOnDocumentReady2                  178
 #define MBK_IDX_wkeOnDownload                        179
-#define MBK_IDX_wkeOnLoadUrlBegin                    180
-#define MBK_IDX_wkeOnLoadUrlEnd                      181
-#define MBK_IDX_wkeOnLoadingFinish                   182
-#define MBK_IDX_wkeOnMouseOverUrlChanged             183
-#define MBK_IDX_wkeOnNavigation                      184
-#define MBK_IDX_wkeOnPaintUpdated                    185
-#define MBK_IDX_wkeOnPromptBox                       186
-#define MBK_IDX_wkeOnTitleChanged                    187
-#define MBK_IDX_wkeOnURLChanged                      188
-#define MBK_IDX_wkeOnURLChanged2                     189
-#define MBK_IDX_wkeOnWillMediaLoad                   190
-#define MBK_IDX_wkeOnWillReleaseScriptContext        191
-#define MBK_IDX_wkeOnWindowClosing                   192
-#define MBK_IDX_wkeOnWindowDestroy                   193
-#define MBK_IDX_wkePaint                             194
-#define MBK_IDX_wkePaint2                            195
-#define MBK_IDX_wkePerformCookieCommand              196
-#define MBK_IDX_wkePostURL                           197
-#define MBK_IDX_wkePostURLW                          198
-#define MBK_IDX_wkeReload                            199
-#define MBK_IDX_wkeRepaintIfNeeded                   200
-#define MBK_IDX_wkeResize                            201
-#define MBK_IDX_wkeResizeWindow                      202
-#define MBK_IDX_wkeRunJS                             203
-#define MBK_IDX_wkeRunJSW                            204
-#define MBK_IDX_wkeRunJsByFrame                      205
-#define MBK_IDX_wkeSetCookie                         206
-#define MBK_IDX_wkeSetCookieEnabled                  207
-#define MBK_IDX_wkeSetCookieJarFullPath              208
-#define MBK_IDX_wkeSetCookieJarPath                  209
-#define MBK_IDX_wkeSetCspCheckEnable                 210
-#define MBK_IDX_wkeSetDebugConfig                    211
-#define MBK_IDX_wkeSetDeviceParameter                212
-#define MBK_IDX_wkeSetDirty                          213
-#define MBK_IDX_wkeSetDragDropEnable                 214
-#define MBK_IDX_wkeSetDragEnable                     215
-#define MBK_IDX_wkeSetDragFiles                      216
-#define MBK_IDX_wkeSetEditable                       217
-#define MBK_IDX_wkeSetFileSystem                     218
-#define MBK_IDX_wkeSetFocus                          219
-#define MBK_IDX_wkeSetHandle                         220
-#define MBK_IDX_wkeSetHandleOffset                   221
-#define MBK_IDX_wkeSetHeadlessEnabled                222
-#define MBK_IDX_wkeSetLocalStorageFullPath           223
-#define MBK_IDX_wkeSetMediaVolume                    224
-#define MBK_IDX_wkeSetMemoryCacheEnable              225
-#define MBK_IDX_wkeSetMouseEnabled                   226
-#define MBK_IDX_wkeSetName                           227
-#define MBK_IDX_wkeSetNavigationToNewWindowEnable    228
-#define MBK_IDX_wkeSetNpapiPluginsEnabled            229
-#define MBK_IDX_wkeSetProxy                          230
-#define MBK_IDX_wkeSetResourceGc                     231
-#define MBK_IDX_wkeSetStringW                        232
-#define MBK_IDX_wkeSetTouchEnabled                   233
-#define MBK_IDX_wkeSetTransparent                    234
-#define MBK_IDX_wkeSetUserAgent                      235
-#define MBK_IDX_wkeSetUserAgentW                     236
-#define MBK_IDX_wkeSetUserKeyValue                   237
-#define MBK_IDX_wkeSetViewNetInterface               238
-#define MBK_IDX_wkeSetViewProxy                      239
-#define MBK_IDX_wkeSetWindowTitleW                   240
-#define MBK_IDX_wkeSetZoomFactor                     241
-#define MBK_IDX_wkeShowDevtools                      242
-#define MBK_IDX_wkeShowWindow                        243
-#define MBK_IDX_wkeSleep                             244
-#define MBK_IDX_wkeStopLoading                       245
-#define MBK_IDX_wkeUpdate                            246
-#define MBK_IDX_wkeUtilSerializeToMHTML              247
-#define MBK_IDX_wkeVisitAllCookie                    248
-#define MBK_IDX_wkeWake                              249
-#define MBK_IDX_wkeWebFrameGetMainFrame              250
-#define MBK_IDX_wkeWebFrameGetMainWorldScriptContext 251
+#define MBK_IDX_wkeOnDownloadFinish                  180
+#define MBK_IDX_wkeOnDownloadProgress                181
+#define MBK_IDX_wkeOnDownloadStart                   182
+#define MBK_IDX_wkeOnLoadUrlBegin                    183
+#define MBK_IDX_wkeOnLoadUrlEnd                      184
+#define MBK_IDX_wkeOnLoadingFinish                   185
+#define MBK_IDX_wkeOnMouseOverUrlChanged             186
+#define MBK_IDX_wkeOnNavigation                      187
+#define MBK_IDX_wkeOnPaintUpdated                    188
+#define MBK_IDX_wkeOnPromptBox                       189
+#define MBK_IDX_wkeOnTitleChanged                    190
+#define MBK_IDX_wkeOnURLChanged                      191
+#define MBK_IDX_wkeOnURLChanged2                     192
+#define MBK_IDX_wkeOnWillMediaLoad                   193
+#define MBK_IDX_wkeOnWillReleaseScriptContext        194
+#define MBK_IDX_wkeOnWindowClosing                   195
+#define MBK_IDX_wkeOnWindowDestroy                   196
+#define MBK_IDX_wkePaint                             197
+#define MBK_IDX_wkePaint2                            198
+#define MBK_IDX_wkePerformCookieCommand              199
+#define MBK_IDX_wkePostURL                           200
+#define MBK_IDX_wkePostURLW                          201
+#define MBK_IDX_wkeReload                            202
+#define MBK_IDX_wkeRepaintIfNeeded                   203
+#define MBK_IDX_wkeResize                            204
+#define MBK_IDX_wkeResizeWindow                      205
+#define MBK_IDX_wkeRunJS                             206
+#define MBK_IDX_wkeRunJSW                            207
+#define MBK_IDX_wkeRunJsByFrame                      208
+#define MBK_IDX_wkeSetCookie                         209
+#define MBK_IDX_wkeSetCookieEnabled                  210
+#define MBK_IDX_wkeSetCookieJarFullPath              211
+#define MBK_IDX_wkeSetCookieJarPath                  212
+#define MBK_IDX_wkeSetCspCheckEnable                 213
+#define MBK_IDX_wkeSetDebugConfig                    214
+#define MBK_IDX_wkeSetDeviceParameter                215
+#define MBK_IDX_wkeSetDirty                          216
+#define MBK_IDX_wkeSetDownloadDir                    217
+#define MBK_IDX_wkeSetDragDropEnable                 218
+#define MBK_IDX_wkeSetDragEnable                     219
+#define MBK_IDX_wkeSetDragFiles                      220
+#define MBK_IDX_wkeSetEditable                       221
+#define MBK_IDX_wkeSetFileSystem                     222
+#define MBK_IDX_wkeSetFocus                          223
+#define MBK_IDX_wkeSetHandle                         224
+#define MBK_IDX_wkeSetHandleOffset                   225
+#define MBK_IDX_wkeSetHeadlessEnabled                226
+#define MBK_IDX_wkeSetLocalStorageFullPath           227
+#define MBK_IDX_wkeSetMediaVolume                    228
+#define MBK_IDX_wkeSetMemoryCacheEnable              229
+#define MBK_IDX_wkeSetMouseEnabled                   230
+#define MBK_IDX_wkeSetName                           231
+#define MBK_IDX_wkeSetNavigationToNewWindowEnable    232
+#define MBK_IDX_wkeSetNpapiPluginsEnabled            233
+#define MBK_IDX_wkeSetProxy                          234
+#define MBK_IDX_wkeSetResourceGc                     235
+#define MBK_IDX_wkeSetStringW                        236
+#define MBK_IDX_wkeSetTouchEnabled                   237
+#define MBK_IDX_wkeSetTransparent                    238
+#define MBK_IDX_wkeSetUserAgent                      239
+#define MBK_IDX_wkeSetUserAgentW                     240
+#define MBK_IDX_wkeSetUserKeyValue                   241
+#define MBK_IDX_wkeSetViewNetInterface               242
+#define MBK_IDX_wkeSetViewProxy                      243
+#define MBK_IDX_wkeSetWindowTitleW                   244
+#define MBK_IDX_wkeSetZoomFactor                     245
+#define MBK_IDX_wkeShowDevtools                      246
+#define MBK_IDX_wkeShowWindow                        247
+#define MBK_IDX_wkeSleep                             248
+#define MBK_IDX_wkeStopLoading                       249
+#define MBK_IDX_wkeUpdate                            250
+#define MBK_IDX_wkeUtilSerializeToMHTML              251
+#define MBK_IDX_wkeVisitAllCookie                    252
+#define MBK_IDX_wkeWake                              253
+#define MBK_IDX_wkeWebFrameGetMainFrame              254
+#define MBK_IDX_wkeWebFrameGetMainWorldScriptContext 255
 
-#define MBK_INTERCEPT_COUNT 22
+#define MBK_INTERCEPT_COUNT 23
 /* 内核真函数取值宏 */
 #define MBK_REAL(idx) (mbk_slots[idx])
 
