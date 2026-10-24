@@ -16,8 +16,8 @@ echeck —— 易语言文本源码静态检查（不依赖易语言 IDE）
 退出码：0 = 通过；1 = 不通过（有错误，或「流程分支」门禁有任何错误）。
 
 流程分支门禁（2026-10-24 起，本文件最高优先级、编译前强制）：
-    流程分支类检查 —— 块结构配对/缩进、隐藏块尾后的空行、子程序末尾块尾的空行、
-    空分支占位空行、`.如果` 缺 `.否则`、循环块首参数 —— 一律**错误级**：
+    流程分支类检查 —— 块结构配对/缩进、隐藏块尾后的空行、块尾回退到更浅隐藏块尾、
+    子程序末尾块尾的空行、空分支占位空行、`.如果` 缺 `.否则`、循环块首参数 —— 一律**错误级**：
     只进 errs，绝不进 warns；只要报出任何一条，退出码就是 1。
     **流程分支不允许出现警告**：不再存在「流程分支警告」这一档，也不允许把
     流程分支问题降级成提示后放行。
@@ -215,8 +215,9 @@ def check_hidden_tail_gap(path, lines, errs):
        IDE 实开无弹框、剪贴板控制块模型 87/87 与 107/107 行完整、无丢行断线。
        原生代码里少见只是书写习惯，继续当缺陷查会让**正确的交付件永远报 ⚠**，
        与「流程分支 0 警告」的硬规则直接冲突，故整条删除而不是降级成提示。
-    只查隐藏块尾：显式块尾（判断结束/计次循环尾等）IDE 会画可见收尾线，
-    原生代码里显式块尾紧贴块首、紧贴中段标记都是合法写法，查了就是误报。
+    只查隐藏块尾后的衔接：显式块尾（判断结束/计次循环尾等）→块首/中段/显式块尾
+    仍不查（IDE 会画可见收尾线，查了就是误报）。但「任意块尾→更浅隐藏块尾」
+    是另一条规则⑥，由 check_unwind_tail_gap 单独判，不在这里重复。
     隐藏块尾 → 空行 → .子程序 等声明行、隐藏块尾紧贴同缩进块首都是合法写法
     （用户 IDE 负对照实测：case7 隐藏块尾紧贴块首渲染正常）。
     （统计基准：未经打包往返的原生代码里，「隐藏块尾→中段标记」0 处紧贴、
@@ -238,7 +239,8 @@ def check_hidden_tail_gap(path, lines, errs):
         if next_kw not in TAIL_KIND and next_kw not in ("否则", "默认", "判断"):
             continue  # 只查「隐藏块尾 → 块尾/中段标记」衔接，其余写法合法
         if not gaps:
-            # 相邻块尾 = 合法嵌套收口（见 docstring 规则① 的删除说明），只处理中段标记
+            # 相邻块尾：本函数不判（反方向「隐藏尾→显式尾」合法）；
+            # 「任意块尾→更浅隐藏块尾」由 check_unwind_tail_gap 判。
             if next_kw not in ("否则", "默认", "判断"):
                 continue
             errs.append(
@@ -252,6 +254,58 @@ def check_hidden_tail_gap(path, lines, errs):
                     f"{path}:{ln} 「.{kw}」后的空行缩进 {g_ind} ≠ 本行缩进 {indent}"
                     f"→ IDE 流程线对不齐（把空行改成 {indent} 空格缩进）")
                 break  # 同一位置只报一条，避免刷屏淹掉真问题
+
+
+def check_unwind_tail_gap(path, lines, errs):
+    """规则⑥：块尾 A 后紧贴更浅的隐藏块尾 B 时，中间必须有一条与 A 同缩进的空行。
+
+    2026-10-24 实证（会话 session-e0f8c9bd-... 的「格式化字节数」）：
+        .如果结束          ← 8 空格（内层块尾）
+        .如果真结束        ← 4 空格（外层隐藏块尾），中间没有空行
+    IDE 会把外层隐藏块尾的收口箭头挂到内层最后一个返回语句上，红线从
+    格式化字节数 的两个 KB/MB 分支一路串到后面；补一条 8 空格空行后恢复。
+
+    规则只看块尾与缩进关系，不匹配子程序名：
+      · A 是任意块尾（.判断结束 / .如果结束 / .如果真结束 / .计次循环尾 …）；
+      · B 是隐藏块尾（.如果真结束 / .如果结束），且 B 的缩进比 A 更浅；
+      · 要求 A、B 之间至少有一条与 A 同缩进的空行；没有空行或缩进不对 → 错误。
+
+    全量修复工程（274 个文件）实测：该形态 129 处全部带 A 缩进空行；
+    修复前 11 处紧贴全部是缺陷，补空行后 0 处。大项目基线（同一工程的旧版）
+    命中 8 处，经会话逐条核对都是同一类未修复缺陷，不是误报；全量修复版 0 处。
+    """
+    n = len(lines)
+    for ln, raw in enumerate(lines, 1):
+        indent, kw = parse_kw(raw)
+        if kw not in TAIL_KIND:
+            continue
+        j = ln  # 下一行下标（0 基）
+        gaps = []
+        while j < n and lines[j].strip() == "":
+            gaps.append(lines[j])
+            j += 1
+        if j >= n:
+            continue
+        next_indent, next_kw = parse_kw(lines[j])
+        if next_kw not in HIDDEN_TAIL_KIND:
+            continue
+        if next_indent is None or next_indent >= indent:
+            continue
+        if gaps and kw in HIDDEN_TAIL_KIND:
+            # 隐藏块尾→隐藏块尾的空行缩进错误已由 check_hidden_tail_gap 报过，
+            # 这里只补它没管的「无空行」分支，避免同一位置刷两条。
+            continue
+        indents = [len(g) - len(g.lstrip()) for g in gaps]
+        if any(g == indent for g in indents):
+            continue
+        if not gaps:
+            reason = "中间没有空行"
+        else:
+            reason = f"中间的空行缩进为 {indents}，不是 {indent}"
+        errs.append(
+            f"{path}:{ln} 块尾「.{kw}」与更浅的隐藏块尾「.{next_kw}」（第{j + 1}行）之间{reason}"
+            f" → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线）；"
+            f"在该行后补一个 {indent} 空格缩进的空行")
 
 
 def check_sub_tail_gap(path, lines, errs):
@@ -577,6 +631,7 @@ def run_branch_checks(texts, errs):
         be = len(errs)
         check_blocks(rel, lines, errs)
         check_hidden_tail_gap(rel, lines, errs)
+        check_unwind_tail_gap(rel, lines, errs)
         check_sub_tail_gap(rel, lines, errs)
         check_empty_branch_gap(rel, lines, errs)
         check_if_needs_else(rel, lines, errs)
