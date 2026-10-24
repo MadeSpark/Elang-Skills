@@ -124,7 +124,7 @@ echeck 流程分支硬门禁（--branch-only，错误级）+ 静态语义检查
 `check_unwind_tail_gap` / `check_sub_tail_gap` / `check_empty_branch_gap` / `check_if_needs_else` / `check_loop_head_args`
 七类块结构问题，**必须 `✓ 0 错误`，任一即退出码 1**。流程分支问题一律按错误处理，没有警告档；
 其中规则⑥专门抓「块尾 A 后紧贴更浅的隐藏块尾 B」——例如 `.如果结束`@8 后直接 `.如果真结束`@4，
-必须在 A 后补一条与 A 同缩进的空行（`格式化字节数` 的 KB/MB 两段即此缺陷）。
+A、B 之间的每条空行都必须与 A 同缩进（`格式化字节数` 的 KB/MB 两段即此缺陷）。
 `ecompile.py` 在编译前强制跑 `echeck.py --branch-only`，门禁不过就拒绝启动编译器（返回码 3）。
 这类「编译通过、`t2e`/`rtcheck` 全绿，但 IDE 打开弹『控制块有格式错误』或流程线串到窗口底」的缺陷，
 单看 `ecompile --check`、`e2t`、`t2e`、`rtcheck` 全都看不见，只有流程分支门禁和真 IDE 能发现。

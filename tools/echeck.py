@@ -257,7 +257,7 @@ def check_hidden_tail_gap(path, lines, errs):
 
 
 def check_unwind_tail_gap(path, lines, errs):
-    """规则⑥：块尾 A 后紧贴更浅的隐藏块尾 B 时，中间必须有一条与 A 同缩进的空行。
+    """规则⑥：块尾 A 后紧贴更浅的隐藏块尾 B 时，中间的空行必须全部与 A 同缩进。
 
     2026-10-24 实证（会话 session-e0f8c9bd-... 的「格式化字节数」）：
         .如果结束          ← 8 空格（内层块尾）
@@ -268,11 +268,14 @@ def check_unwind_tail_gap(path, lines, errs):
     规则只看块尾与缩进关系，不匹配子程序名：
       · A 是任意块尾（.判断结束 / .如果结束 / .如果真结束 / .计次循环尾 …）；
       · B 是隐藏块尾（.如果真结束 / .如果结束），且 B 的缩进比 A 更浅；
-      · 要求 A、B 之间至少有一条与 A 同缩进的空行；没有空行或缩进不对 → 错误。
+      · 要求 A、B 之间的**每一条空行**都与 A 同缩进；没有空行或任一条缩进不对 → 错误。
+      · 隐藏 A 且已有空行时委托 check_hidden_tail_gap 检查，本函数只补它的无空行分支；
+        显式 A 在本函数内按同一「全部同缩进」口径检查，避免两套松紧不一致。
 
     全量修复工程（274 个文件）实测：该形态 129 处全部带 A 缩进空行；
     修复前 11 处紧贴全部是缺陷，补空行后 0 处。大项目基线（同一工程的旧版）
-    命中 8 处，经会话逐条核对都是同一类未修复缺陷，不是误报；全量修复版 0 处。
+    命中 8 处同形态；全量修复版已全部补 A 缩进空行并 0 命中。未逐处做 IDE
+    截图，因此这里只按形态判错，不把「每一处都有独立 IDE 证据」写死。
     """
     n = len(lines)
     for ln, raw in enumerate(lines, 1):
@@ -296,12 +299,12 @@ def check_unwind_tail_gap(path, lines, errs):
             # 这里只补它没管的「无空行」分支，避免同一位置刷两条。
             continue
         indents = [len(g) - len(g.lstrip()) for g in gaps]
-        if any(g == indent for g in indents):
+        if gaps and all(g == indent for g in indents):
             continue
         if not gaps:
             reason = "中间没有空行"
         else:
-            reason = f"中间的空行缩进为 {indents}，不是 {indent}"
+            reason = f"中间的空行缩进为 {indents}，必须全部为 {indent}"
         errs.append(
             f"{path}:{ln} 块尾「.{kw}」与更浅的隐藏块尾「.{next_kw}」（第{j + 1}行）之间{reason}"
             f" → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线）；"
