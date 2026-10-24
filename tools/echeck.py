@@ -10,18 +10,22 @@ echeck —— 易语言文本源码静态检查（不依赖易语言 IDE）
 
 用法：
     python echeck.py <文本目录|单个 .e.txt> [--lib <commands.jsonl>] [--json]
+    python echeck.py <文本目录|单个 .e.txt> --branch-only [--json]
+    # --branch-only 只跑流程分支门禁；ecompile.py 在编译前强制调用它。
 
-退出码：0 = 通过；1 = 不通过（有错误，或「流程分支」门禁里有任何警告/错误）。
+退出码：0 = 通过；1 = 不通过（有错误，或「流程分支」门禁有任何错误）。
 
-流程分支门禁（2026-10-20 收紧，本文件最高优先级的规则）：
-    流程分支类检查 —— 块结构配对、隐藏块尾后的空行、子程序末尾块尾的空行、
-    空分支占位空行 —— 一律**阻断级**：只要这些检查报出任何一条，无论打印成
-    ✗ 还是 ⚠，退出码都是 1，结论行会单独打印「流程分支：✗」。
-    **流程分支不允许出现任何警告/错误**
-    （即不允许把流程分支问题降级成「提示」后放行，也不允许「警告不算通过」）。
-    原因：2026-10-20 的 A/B demo 事故里 check_sub_tail_gap 明明报了缺陷
-    （`B:101` / `A:121`），结论却打印「✓ 通过（错误 0，警告 3）」、退出码 0，
-    坏 .e 就这样交付了。验收闸门必须由退出码保证，不能靠人读警告。
+流程分支门禁（2026-10-24 起，本文件最高优先级、编译前强制）：
+    流程分支类检查 —— 块结构配对/缩进、隐藏块尾后的空行、子程序末尾块尾的空行、
+    空分支占位空行、`.如果` 缺 `.否则`、循环块首参数 —— 一律**错误级**：
+    只进 errs，绝不进 warns；只要报出任何一条，退出码就是 1。
+    **流程分支不允许出现警告**：不再存在「流程分支警告」这一档，也不允许把
+    流程分支问题降级成提示后放行。
+    原因：2026-10-20 的 A/B demo 事故里 check_sub_tail_gap 报了缺陷，结论却打印
+    「✓ 通过（错误 0，警告 3）」、退出码 0；2026-10-24 又发现同一检查对
+    「子程序末行是显式块尾」只报警告，导致 14 处真实缺陷仍能带着警告进入编译。
+    现在这些检查全部按错误处理，且 ecompile.py 在编译前用 --branch-only 强制门禁，
+    不解决就不允许编译。
 
 其余检查的分级口径：
     「错误」= 有实证的、IDE 加载后可以直接看见后果的写法（丢块尾、红线越界、
@@ -145,8 +149,8 @@ def parse_calls(line):
     return res
 
 
-def check_blocks(path, lines, errs, warns):
-    """块首/块尾配对 + 缩进 + 中段标记合法性"""
+def check_blocks(path, lines, errs):
+    """块首/块尾配对 + 缩进 + 中段标记合法性（全部为流程分支错误）"""
     stack = []
     for ln, raw in enumerate(lines, 1):
         line = strip_comment(raw)
@@ -162,7 +166,7 @@ def check_blocks(path, lines, errs, warns):
                 if not stack or stack[-1][0] != MID_EXPECT[kind]:
                     errs.append(f"{path}:{ln} 「.{kw}」不在对应块内（栈顶=" + (stack[-1][0] if stack else "空") + "）")
                 elif stack[-1][1] != indent:
-                    warns.append(f"{path}:{ln} 「.{kw}」缩进 {indent} 与块首 {stack[-1][1]} 不一致")
+                    errs.append(f"{path}:{ln} 「.{kw}」缩进 {indent} 与块首 {stack[-1][1]} 不一致（流程线会串）")
             else:
                 stack.append((kind, indent, ln))
         elif kw in TAIL_KIND:
@@ -250,58 +254,45 @@ def check_hidden_tail_gap(path, lines, errs):
                 break  # 同一位置只报一条，避免刷屏淹掉真问题
 
 
-def check_sub_tail_gap(path, lines, errs, warns):
+def check_sub_tail_gap(path, lines, errs):
     """规则②：子程序末行是块尾时，其后到下一个 .子程序 之间必须存在
     至少一条与块尾同缩进的空行，否则 IDE 流程线会断开并串到下一个子程序。
     （末行是普通语句 → 不检查。）
 
-    ⚠️ 本检查属于「流程分支门禁」：报出的每一条都会让退出码变成 1
-    （中段/显式块尾这类仅打印为 ⚠ 的也阻断，见文件头 docstring）。
+    ⚠️ 2026-10-24 起本检查的**每一档都是错误**，不再有「只报警告」的分级：
+      · 文件最后一个子程序 + 隐藏块尾（.如果真结束 / .如果结束）→ 错误；
+      · 隐藏块尾后面还跟着 .子程序 → 错误；
+      · 显式块尾（.判断循环尾 / .计次循环尾 等）→ 错误；
+      · 有同缩进空行但缩进不对 → 错误。
 
-    分级（2026-10-20 细化）：
-      · 末行是隐藏块尾（.如果真结束 / .如果结束）**而且是文件最后一个子程序**
-        → 错误；
-      · 其余情况（隐藏块尾后面还跟着 .子程序、或显式块尾）→ 仍只算警告。
+    为什么显式块尾/中段也要升错误：2026-10-24 的实测工程里，同一检查对
+    「子程序末行是 .判断循环尾 / .计次循环尾」只报 ⚠，结果 14 处缺空行仍能带着
+    警告进入编译。用户明确要求流程线不允许出现任何警告；流程分支问题必须按错误
+    处理，ecompile.py 也会在编译前用 --branch-only 强制拦下。
 
-    ⚠️ 为什么「文件最后一个子程序 + 隐藏块尾」必须是错误。实证：demos\\下载接管
-    的 A/B demo 就这样交付出去了 —— 最后那个子程序「记录日志」末行是
-    `.如果真结束`，其后只有 0 缩进的空行，文本流随即结束。后果是实打实的加载期
-    缺陷，不是「可能串线」：
-      · IDE 打开该 .e 弹「控制块有格式错误」；
-      · 即使不弹框，IDE 解析出的控制块模型会丢掉这最后一行块尾（剪贴板模型比
-        e2t 文本少一行，diff 恰为 `insert '.如果真结束'`），红色流程线从块首一路
-        画到窗口底部（用户截图：记录日志 74~81 行之后没有收尾线）；
-      · `ecompile.py --check`、`e2t`、`t2e`、`rtcheck` 全部照常通过，只有「IDE
-        真正打开」或「IDE 编辑器 Ctrl+A/C 取控制块模型」才看得见。
-    所以这一档必须让结论变成 ✗，不能再以 warning 形式被「错误 0」放行。
-
-    为什么只限「文件末尾」，中段与显式块尾维持警告 —— 三条回归证据：
-      1. 隐藏块尾在中段时，下一个 `.子程序`（0 缩进）本身就会把块关掉：原始 e2ee
-         工程（45 文件 / 1456 子程序）本规则命中 14 处，全是这种中段写法，IDE
-         渲染一直正常 ⇒ 中段升错误就是误报。
-      2. QAQ-ETool 大项目语料（tests\\baseline\\大项目测试，166 错 70 警）若把显式
-         块尾也计入错误，会新增 14 条命中，全在 消息cmd解析及自检等.static.e.txt 的
-         「子程序末行是 .判断循环尾 / .计次循环尾 + 无 4 空格空行」上，而那是能
-         正常编译运行的真实工程 ⇒ 显式块尾只能是警告（本次收窄后该语料 166/70
-         与改前完全一致）。
-      3. 反过来，A/B 两个 demo 的缺陷位置都在**文件最后一个子程序**，且剪贴板模型
-         丢的就是文件的最后一行 ⇒ 错误档正好覆盖实证过的那一类，不多不少。
+    证据（两类都已在 IDE 侧确认会串线/丢块尾）：
+      · 隐藏块尾在文件末尾：demos\\下载接管 的 A/B demo 最后那个子程序末行是
+        `.如果真结束`，其后只有 0 缩进空行；IDE 打开弹「控制块有格式错误」，
+        流程线拖到窗口底，剪贴板模型丢掉最后一行块尾。
+      · 显式块尾在子程序末尾：QAQ-ETool 大项目语料 消息cmd解析及自检等.static.e.txt
+        有 14 处 `.判断循环尾` / `.计次循环尾` 后没有同缩进空行；历史版本
+        「能渲染」不能作为放行依据，流程分支门禁从 2026-10-24 起不再接受该形态。
     """
     n = len(lines)
     body_start = None
     for i, raw in enumerate(lines):
         if SUB_RE.match(strip_comment(raw)):
             if body_start is not None:
-                _check_sub_tail_body(path, lines, body_start, i, errs, warns,
-                                 closed_by_sub=True)
+                _check_sub_tail_body(path, lines, body_start, i, errs,
+                                     closed_by_sub=True)
             body_start = i + 1
     if body_start is not None:
-        _check_sub_tail_body(path, lines, body_start, n, errs, warns,
+        _check_sub_tail_body(path, lines, body_start, n, errs,
                              closed_by_sub=False)
 
 
-def _check_sub_tail_body(path, lines, start, end, errs, warns, closed_by_sub):
-    """检查 [start, end) 范围内单个子程序体的末尾空行规则"""
+def _check_sub_tail_body(path, lines, start, end, errs, closed_by_sub):
+    """检查 [start, end) 范围内单个子程序体的末尾空行规则（错误级）"""
     last = None
     for i in range(end - 1, start - 1, -1):
         if lines[i].strip() != "":
@@ -319,25 +310,15 @@ def _check_sub_tail_body(path, lines, start, end, errs, warns, closed_by_sub):
             g_ind = len(lines[i]) - len(lines[i].lstrip())
             if g_ind == indent:
                 return  # 找到同缩进空行 → 合格
-    hidden = kw in HIDDEN_TAIL_KIND
-    # 只有「文件最后一行代码是隐藏块尾、后面没有同缩进空行」才升错误（实证见 docstring）
-    fatal = hidden and not closed_by_sub
-    out = errs if fatal else warns
     where = "下一个 .子程序" if closed_by_sub else "文件末尾"
-    if fatal:
-        tail = ("→ IDE 会丢掉这最后一行块尾：红线会越过最后一行画到窗口底部"
-                "（隐藏块尾没有自己的收尾线，全凭这行空行收口；到文件末尾"
-                "又没有下一个 .子程序 兜底）")
-    elif hidden:
-        tail = "→ IDE 流程线会断开并串到下一个子程序（中段多半被下一个 .子程序 收住，实测多可正常渲染）"
-    else:
-        tail = "→ IDE 流程线会断开并串到下一个子程序"
+    tail = ("→ IDE 流程线会断开并串到下一个子程序；若是文件最后一个子程序，"
+            "红线会越过最后一行画到窗口底部")
     if not has_blank:
-        out.append(
+        errs.append(
             f"{path}:{last + 1} 子程序末行是块尾「.{kw}」，其后到{where}之间没有空行 {tail}"
             f"（在该行后面补一个 {indent} 空格缩进的空行）")
     else:
-        out.append(
+        errs.append(
             f"{path}:{last + 1} 子程序末行是块尾「.{kw}」，其后到{where}之间没有 {indent} 空格缩进的空行 {tail}"
             f"（把空行补成 {indent} 空格缩进）")
 
@@ -574,11 +555,47 @@ def safe_relpath(path):
         return os.path.abspath(path)
 
 
+def read_texts(files):
+    """读取全部 .e.txt，返回 {相对路径: 行列表}。"""
+    texts = {}
+    for f in files:
+        rel = safe_relpath(f)
+        with open(f, "r", encoding="utf-8-sig") as fh:
+            lines = fh.read().replace("\r\n", "\n").split("\n")
+        texts[rel] = lines
+    return texts
+
+
+def run_branch_checks(texts, errs):
+    """跑全部流程分支检查，**只产生错误**，绝不产生警告。
+
+    返回的 branch 字典同时供人读输出、JSON 和 ecompile.py 的编译前门禁使用：
+      {"errors": N, "warnings": 0, "passed": bool, "messages": [...]}
+    """
+    branch = {"errors": 0, "warnings": 0, "passed": False, "messages": []}
+    for rel, lines in texts.items():
+        be = len(errs)
+        check_blocks(rel, lines, errs)
+        check_hidden_tail_gap(rel, lines, errs)
+        check_sub_tail_gap(rel, lines, errs)
+        check_empty_branch_gap(rel, lines, errs)
+        check_if_needs_else(rel, lines, errs)
+        check_loop_head_args(rel, lines, errs)
+        new = errs[be:]
+        branch["errors"] += len(new)
+        branch["messages"].extend(new)
+    branch["warnings"] = 0
+    branch["passed"] = branch["errors"] == 0
+    return branch
+
+
 def main():
     ap = argparse.ArgumentParser(description="易语言文本源码静态检查（块结构 + 命令/参数）")
     ap.add_argument("src", help="文本目录或单个 .e.txt")
     ap.add_argument("--lib", help="commands.jsonl 路径（缺省自动找 ../支持库文档 或 技能 assets 产物）")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--branch-only", action="store_true",
+                    help="只跑流程分支门禁（ecompile.py 编译前强制调用）；退出码只由流程分支决定")
     args = ap.parse_args()
 
     src = os.path.abspath(args.src)
@@ -586,6 +603,29 @@ def main():
              sorted(glob.glob(os.path.join(src, "**", "*.e.txt"), recursive=True)))
     if not files:
         raise SystemExit("没有找到 .e.txt 文件")
+
+    texts = read_texts(files)
+    errs = []
+    branch = run_branch_checks(texts, errs)
+    branch_ok = branch["passed"]
+
+    # --branch-only：编译前门禁专用。不做命令/库表检查，避免把检查器噪音带进编译链。
+    if args.branch_only:
+        if args.json:
+            print(json.dumps({"errors": errs, "warnings": [],
+                              "branch": branch, "lib": False,
+                              "branchOnly": True},
+                             ensure_ascii=False, indent=2))
+        else:
+            print(f"检查文件 {len(files)} 个；仅流程分支门禁")
+            for e in errs:
+                print("  ✗ " + e)
+            if branch_ok:
+                print("流程分支: ✓ 0 错误（硬规则：流程分支问题一律为错误，任一即不通过）")
+            else:
+                print(f"流程分支: ✗ 错误 {branch['errors']}"
+                      "（硬规则：流程分支问题一律为错误，不解决不准编译）")
+        return 0 if branch_ok else 1
 
     # 支持库文档：--lib → elibs 自动定位（./支持库文档、缓存；都没有就调技能自带导出器生成）
     idx, lib_path = None, args.lib
@@ -599,30 +639,12 @@ def main():
         print(f"（支持库文档不可用：{e}）", file=sys.stderr)
     lib = idx.cmds if idx else load_lib(lib_path)
 
-    errs, warns, subs = [], [], {}
-    # 流程分支门禁计数：e = 错误条数，w = 警告条数；任一非零 → 退出码 1
-    branch = {"e": 0, "w": 0}
-    texts = {}
-    for f in files:
-        rel = safe_relpath(f)
-        with open(f, "r", encoding="utf-8-sig") as fh:
-            lines = fh.read().replace("\r\n", "\n").split("\n")
-        texts[rel] = lines
+    warns, subs = [], {}
+    for lines in texts.values():
         collect_subs(lines, subs)
         collect_dllcmds(lines, subs)
 
     for rel, lines in texts.items():
-        # 流程分支门禁：这四项是「块结构 + 流程分支格式」，它们新增的
-        # 错误/警告条数直接计入 branch（错误也照常进 errs）。
-        be, bw = len(errs), len(warns)
-        check_blocks(rel, lines, errs, warns)
-        check_hidden_tail_gap(rel, lines, errs)
-        check_sub_tail_gap(rel, lines, errs, warns)
-        check_empty_branch_gap(rel, lines, errs)
-        branch["e"] += len(errs) - be
-        branch["w"] += len(warns) - bw
-        check_if_needs_else(rel, lines, errs)
-        check_loop_head_args(rel, lines, errs)
         check_calls(rel, lines, subs, lib, errs, warns)
 
     # 库表检查：命令/类型/常量存在于本机支持库，但所属库不在工程库表里
@@ -637,12 +659,10 @@ def main():
             errs.append(f"{f}:{ln} {kind}「{name}」属于支持库 {'/'.join(sorted(libs))}，"
                         f"但库表未引用{more} → elibs.py <文本目录> --fix")
 
-    branch_ok = branch["e"] == 0 and branch["w"] == 0
     if args.json:
         print(json.dumps({"errors": errs, "warnings": warns,
-                          "branch": {"errors": branch["e"], "warnings": branch["w"],
-                                     "passed": branch_ok},
-                          "lib": bool(lib)},
+                          "branch": branch, "lib": bool(lib),
+                          "branchOnly": False},
                          ensure_ascii=False, indent=2))
     else:
         print(f"检查文件 {len(files)} 个；支持库清单: {'已加载 ' + str(lib_path) if lib else '未找到（跳过命令校验）'}")
@@ -651,10 +671,10 @@ def main():
         for w in warns:
             print("  ⚠ " + w)
         if branch_ok:
-            print("流程分支: ✓ 0 错误 0 警告（硬规则：任一非零即不通过）")
+            print("流程分支: ✓ 0 错误（硬规则：流程分支问题一律为错误，任一即不通过）")
         else:
-            print(f"流程分支: ✗ 错误 {branch['e']}，警告 {branch['w']}"
-                  f"（硬规则：流程分支不允许任何警告/错误）")
+            print(f"流程分支: ✗ 错误 {branch['errors']}"
+                  "（硬规则：流程分支问题一律为错误，不解决不准编译）")
         if not branch_ok:
             print(f"结论: ✗ 流程分支不合格（总错误 {len(errs)}，总警告 {len(warns)}）")
         elif errs:

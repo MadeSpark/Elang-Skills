@@ -256,6 +256,7 @@ REF_ALLOW = {
         "Win32与DLL互操作.md",
         "程序入口与编译验证.md",
         "黑月编译与黑月界面类.md",
+        "UI事件处理器Mem修复.md",
     },
     "elang-build": set(),
     "qaq-etool-cli": set(),
@@ -445,7 +446,7 @@ head(8, "跨技能运行期依赖（技能必须成套安装）")
 CROSS_DEP_ALLOW = {
     "elang-ai-coding": {"qaq-etool-cli"},
     "elang-debug": {"qaq-etool-cli"},
-    "elang-build": {"elang-debug", "qaq-etool-cli"},
+    "elang-build": {"elang-ai-coding", "elang-debug", "qaq-etool-cli"},
 }
 SKILL_REF_RE = re.compile(r"\b(elang-ai-coding|elang-build|elang-debug|qaq-etool-cli)\b")
 cross_seen = False

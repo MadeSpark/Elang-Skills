@@ -4,7 +4,7 @@
 
     python ecompile.py <输入.e|文本目录> <输出.exe|输出.dll> [--kind 静态编译种类]
                        [--fne <elang_addin.fne>] [--home <易语言目录>] [--etool <QAQ-ETool.exe>]
-                       [--timeout 300] [--workdir <目录>] [--json] [-q]
+                       [--echeck <echeck.py>] [--timeout 300] [--workdir <目录>] [--json] [-q]
     python ecompile.py <输入.e|文本目录> --check [--fast] [--json] [-q]
                        # 只要语法检查、不要产物（--fast = 毫秒级但不充分，见下）
     python ecompile.py --doctor [--json]
@@ -50,6 +50,10 @@
 
 流程（真编译；`--check` 省掉产物等待）：
 
+  0. **流程分支硬门禁（2026-10-24 起，无条件）**：先用 echeck.py --branch-only 检查
+     输入源码；任何流程分支错误都拒绝编译（不解决就不允许编译）。输入是 .e 时先
+     用 QAQ-ETool 拆到临时目录；拆包不完整也拒绝编译。echeck.py 由同装的
+     elang-ai-coding 技能提供，找不到照样 fail closed。
   1. 输入是文本目录（含 代码/ 或 class/）时先 t2e 出 .e（QAQ-ETool，由同装的技能
      qaq-etool-cli 提供；定位顺序见 etool.py）。
   2. mkcage 加壳：把本套装宿主库 elang_addin 登记进工程库表（绝不改原 .e）。
@@ -82,9 +86,11 @@
 红线详见 --help 尾部。
 
 结果 JSON（--json；stdout 只放 JSON）：
-  真编译 {"ok":true,"status":"ok","output":"…","outputSize":N,…}
-  --check {"ok":true,"status":"syntax-ok","errors":null,…}
+  真编译 {"ok":true,"status":"ok","output":"…","outputSize":N,"branchGate":{…},…}
+  --check {"ok":true,"status":"syntax-ok","errors":null,"branchGate":{…},…}
           {"ok":false,"status":"syntax-error","errors":["错误(10022): …",…],"errorTail":[…],…}
+  流程分支门禁失败 {"ok":false,"branchGate":{"ok":false,"branch":{"errors":N,"warnings":0,
+                    "passed":false,"messages":[…]}},"error":"流程分支门禁未过…"}
 退出码：0 成功/语法通过；2 环境或输入错误；3 编译失败、语法错误或超时；4 自检未通过。
 
 ⚠️ 前提：静态编译需要本机 IDE 已配置过「静态编译链接器」（首次请在 IDE 里手动
@@ -125,6 +131,7 @@ RED_LINES = """\n交付红线（违反任何一条都不准交付）:
   3. 候选 .ec 部署前必须反向抽取（e2t）验证关键语句仍在；缺失 = 丢代码，不准交付
      （--ecom-validate 默认开启；关键语句清单用 --guard 指定）。
   4. 覆盖常用模块前必须先备份旧版。
+  5. 流程分支问题一律为错误；echeck --branch-only 不过 ⇒ 禁止启动编译器（无旁路开关）。
 """
 
 
@@ -191,6 +198,98 @@ def find_tool(name: str, sub: str) -> Path | None:
 def find_etool(explicit: str | None) -> str | None:
     """QAQ-ETool：--etool → QAQ_ETOOL → 同级技能 qaq-etool-cli → ~/.agents → PATH。"""
     return etool.find(explicit)
+
+
+def find_echeck(explicit: str | None) -> Path | None:
+    """定位 elang-ai-coding 的 echeck.py。
+
+    ecompile 的流程分支门禁是硬依赖：找不到就不允许编译（fail closed）。
+    顺序：--echeck → 同级技能 elang-ai-coding → ~/.agents → ~/.dsh。
+    """
+    if explicit:
+        p = Path(explicit)
+        return p if p.is_file() else None
+    cands = [
+        SKILL_ROOT.parent / "elang-ai-coding" / "scripts" / "echeck.py",
+        # 开发工作区布局：tools/ 里放的是 Python 真源；不能优先命中 ~/.agents 的旧副本。
+        SKILL_ROOT / "tools" / "echeck.py",
+        Path.home() / ".agents" / "skills" / "elang-ai-coding" / "scripts" / "echeck.py",
+        Path.home() / ".dsh" / "skills" / "elang-ai-coding" / "scripts" / "echeck.py",
+    ]
+    for p in cands:
+        if p.is_file():
+            return p
+    return None
+
+
+def branch_gate(src: Path, tool: str | None, work: Path,
+                echeck: Path | None) -> dict:
+    """编译前强制跑 echeck --branch-only；任何流程分支错误都拒绝编译。
+
+    这是用户明确要求的硬门禁：流程分支问题一律是错误，不解决就不允许编译。
+    输入是 .e 时先用 QAQ-ETool 拆到临时文本目录；拆包不完整（rc≠0 或有
+    [错误]）也按门禁失败处理，绝不在结构未知的源码上启动编译器。
+    """
+    res: dict[str, object] = {
+        "ok": False,
+        "echeck": str(echeck) if echeck else None,
+        "rule": "流程分支问题一律为错误；不解决不允许编译",
+    }
+    if not echeck or not echeck.is_file():
+        res["error"] = "缺少流程分支门禁 echeck.py（elang-ai-coding 技能 scripts/）"
+        return res
+
+    text_dir = src
+    if src.is_file():
+        if not tool:
+            res["error"] = "输入 .e 需要 QAQ-ETool 拆包后才能跑流程分支门禁。" + etool.NOT_FOUND
+            return res
+        unpacked = work / "branch_gate_text"
+        shutil.rmtree(unpacked, ignore_errors=True)
+        r = etool.run(tool, "e2t", str(src), str(unpacked), "-level", "2")
+        if not r.clean:
+            res["error"] = ("流程分支门禁无法完整拆包（rc=%s）：%s"
+                            % (r.rc, r.info() or r.tail()))
+            return res
+        text_dir = unpacked
+
+    so_path = work / "branch_gate.stdout.txt"
+    se_path = work / "branch_gate.stderr.txt"
+    env = os.environ.copy()
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    cmd = [sys.executable, str(echeck), str(text_dir), "--branch-only", "--json"]
+    try:
+        with open(so_path, "w", encoding="utf-8") as so, \
+                open(se_path, "w", encoding="utf-8") as se:
+            p = subprocess.run(cmd, stdout=so, stderr=se, env=env)
+    except OSError as exc:
+        res["error"] = "流程分支门禁无法执行: %s" % exc
+        return res
+    raw = so_path.read_text(encoding="utf-8", errors="replace")
+    try:
+        d = json.loads(raw)
+    except ValueError:
+        tail = se_path.read_text(encoding="utf-8", errors="replace")[-500:]
+        res["error"] = ("流程分支门禁未返回 JSON（rc=%s）。stdout=%r stderr=%s"
+                        % (p.returncode, raw[-300:], tail))
+        return res
+    branch = d.get("branch") or {}
+    res["branch"] = branch
+    res["exitCode"] = p.returncode
+    if not branch:
+        res["error"] = "流程分支门禁输出缺少 branch 字段"
+        return res
+    res["ok"] = bool(branch.get("passed")) and p.returncode == 0
+    if not res["ok"]:
+        msgs = branch.get("messages") or d.get("errors") or []
+        if not msgs:
+            msgs = ["流程分支错误 %s 条" % branch.get("errors", "?")]
+        res["error"] = ("流程分支门禁未过（不解决不允许编译）：\n  - "
+                        + "\n  - ".join(str(m) for m in msgs[:20]))
+        if len(msgs) > 20:
+            res["error"] += "\n  …（另有 %d 条）" % (len(msgs) - 20)
+    return res
 
 
 def find_elang_dir(explicit: str | None) -> Path | None:
@@ -311,17 +410,20 @@ def doctor(args) -> int:
     fne = Path(args.fne) if args.fne else find_tool(
         "elang_addin.fne", "elang-debug" + os.sep + "assets")
     tool = find_etool(args.etool)
+    echeck = find_echeck(args.echeck)
     elang = find_elang_dir(args.home)
     checks = {
         "mkcage": str(mkcage) if mkcage else None,
         "elaunch": str(elaunch) if elaunch else None,
         "elang_addin_fne": str(fne) if fne else None,
         "qaq_etool": tool,
+        "echeck": str(echeck) if echeck else None,
         "elang_dir": str(elang) if elang else None,
         "static_linker_note": "静态编译要求 IDE 已配置过静态链接器（首次先在 IDE 手动静态编译一次）",
     }
-    # QAQ-ETool 是加壳（mkcage）、文本目录输入与 .ec 门禁的必需品
-    ok_all = all([mkcage, elaunch, fne, elang, tool])
+    # QAQ-ETool 是加壳（mkcage）、文本目录输入与 .ec 门禁的必需品；
+    # echeck 是编译前流程分支硬门禁的必需品，缺了必须 fail closed。
+    ok_all = all([mkcage, elaunch, fne, elang, tool, echeck])
     result = {"ok": ok_all, **checks}
     if args.json:
         print(json.dumps(result, ensure_ascii=False))
@@ -588,6 +690,8 @@ def main() -> int:
     ap.add_argument("--home", help="易语言安装目录（默认 ELANG_HOME → 注册表 → 文件关联）")
     ap.add_argument("--etool", help="QAQ-ETool.exe 路径或其所在目录（默认 QAQ_ETOOL → "
                                     "同级技能 qaq-etool-cli/assets → ~/.agents/skills → PATH）")
+    ap.add_argument("--echeck", help="流程分支门禁 echeck.py（默认同级技能 elang-ai-coding/scripts "
+                                    "→ ~/.agents/skills → ~/.dsh/skills；找不到就不允许编译）")
     ap.add_argument("--timeout", type=float, default=300.0, help="编译等待秒数（默认 300）")
     ap.add_argument("--workdir", help="工作目录（默认临时目录，保留加壳副本与日志）")
     ap.add_argument("--json", action="store_true")
@@ -606,6 +710,7 @@ def main() -> int:
     fne = Path(args.fne) if args.fne else find_tool(
         "elang_addin.fne", "elang-debug" + os.sep + "assets")
     elang = find_elang_dir(args.home)
+    echeck = find_echeck(args.echeck)
 
     missing = []
     if not mkcage and not args.direct:
@@ -616,6 +721,8 @@ def main() -> int:
         missing.append("elang_addin.fne（elang-debug 技能 assets/）")
     if not elang:
         missing.append("易语言安装目录（--home / ELANG_HOME / 注册表）")
+    if not echeck:
+        missing.append("echeck.py（elang-ai-coding 技能 scripts/，流程分支硬门禁）")
     if missing:
         result["error"] = "缺少依赖: " + "; ".join(missing)
         if args.json:
@@ -652,6 +759,31 @@ def main() -> int:
         return EXIT_ENV
 
     dst = Path(args.dst).resolve() if args.dst else None
+    work = Path(args.workdir).resolve() if args.workdir \
+        else Path(tempfile.mkdtemp(prefix="ecompile_"))
+    work.mkdir(parents=True, exist_ok=True)
+
+    # ★ 编译前流程分支硬门禁（2026-10-24）：先跑 echeck --branch-only。
+    #   只由流程分支决定是否放行；任何一条流程分支错误都拒绝启动编译器。
+    #   门禁用独立临时目录，避免影响正式编译工作目录的保留/清理规则。
+    gate_work = work / "branch_gate"
+    shutil.rmtree(gate_work, ignore_errors=True)
+    gate_work.mkdir(parents=True, exist_ok=True)
+    try:
+        gate = branch_gate(src, tool, gate_work, echeck)
+    finally:
+        shutil.rmtree(gate_work, ignore_errors=True)
+    result["branchGate"] = gate
+    if not gate.get("ok"):
+        result["error"] = str(gate.get("error") or "流程分支门禁未过（不解决不允许编译）")
+        if args.json:
+            print(json.dumps(result, ensure_ascii=False))
+        out(str(result["error"]))
+        if not args.workdir:
+            shutil.rmtree(work, ignore_errors=True)
+        return EXIT_COMPILE
+
+    # 旧产物必须在门禁通过后才能清掉：门禁失败时不能把用户已有的成品删掉。
     if dst is not None:
         dst.parent.mkdir(parents=True, exist_ok=True)
         if dst.exists():
@@ -662,10 +794,6 @@ def main() -> int:
     rcx_before: set = set()
     if dst is not None and dst.parent.is_dir():
         rcx_before = {p.name for p in dst.parent.glob("RCX*.tmp")}
-
-    work = Path(args.workdir).resolve() if args.workdir \
-        else Path(tempfile.mkdtemp(prefix="ecompile_"))
-    work.mkdir(parents=True, exist_ok=True)
 
     # ★ 修复（2026-10-09）：finally 里引用的 check_out_made / expect_out 从未被赋值，
     #   于是**每一次**调用都会在 finally 抛 NameError("name 'check_out_made' is not

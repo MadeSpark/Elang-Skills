@@ -110,19 +110,22 @@ Releases/Elang-AiTools/skills/elang-ai-coding/assets/导出支持库文档.exe -
 ## 工作流（AI 写易语言代码的标准闭环）
 
 ```
-echeck 静态语义检查（命令/参数/块结构，复用 commands.jsonl）
+echeck 流程分支硬门禁（--branch-only，错误级）+ 静态语义检查
   → rtcheck 双次往返收敛自检（格式）
   → QAQ-ETool t2e 生成 .e（出现 [错误] 或退出码 2 即失败）
+  → ecompile 编译前再强制流程分支门禁（不过不启动编译器）
   → 易语言 IDE 编译运行验收（终审）
 ```
 
 `echeck` 不依赖 IDE：用支持库文档校验每个命令调用（存在性 / 参数个数 / 可空留空）与
 块首块尾配对，把 AI 最常犯的错挡在进 IDE 之前；`rtcheck` 保证格式收敛。
 
-2026-10-20 起 `echeck` 会额外打印一行「**流程分支**」：汇总 `check_blocks` / `check_hidden_tail_gap` /
-`check_sub_tail_gap` / `check_empty_branch_gap` 四类块结构问题，**必须 `✓ 0 错误 0 警告`，任一非零即退出码 1**。
+2026-10-24 起 `echeck` 会额外打印一行「**流程分支**」：汇总 `check_blocks` / `check_hidden_tail_gap` /
+`check_sub_tail_gap` / `check_empty_branch_gap` / `check_if_needs_else` / `check_loop_head_args`
+六类块结构问题，**必须 `✓ 0 错误`，任一即退出码 1**。流程分支问题一律按错误处理，没有警告档；
+`ecompile.py` 在编译前强制跑 `echeck.py --branch-only`，门禁不过就拒绝启动编译器（返回码 3）。
 这类「编译通过、`t2e`/`rtcheck` 全绿，但 IDE 打开弹『控制块有格式错误』或流程线串到窗口底」的缺陷，
-`ecompile --check`、`e2t`、`t2e`、`rtcheck` 全都看不见，只有它和真 IDE 能发现。
+单看 `ecompile --check`、`e2t`、`t2e`、`rtcheck` 全都看不见，只有流程分支门禁和真 IDE 能发现。
 
 唯一验收标准：**能不能在易语言 IDE 里打开并编译运行**。
 
