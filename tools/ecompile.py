@@ -882,6 +882,10 @@ def main() -> int:
         result["precompileOk"] = d.get("precompileOk")
         result["eExitCode"] = d.get("eExitCode")
         result["headless"] = d.get("headless")
+        # 双向 IPC（2026-10-29 起）：elaunch 会建命名管道并把弹窗决策交给 Python，
+        # 这里原样透传桥的统计，编译侧也能看出「弹窗是宿主自己答的，还是桥答的」。
+        if d.get("ipc") is not None:
+            result["ipc"] = d.get("ipc")
         if args.check:
             result["syntaxOk"] = bool(d.get("syntaxOk"))
             result["ok"] = bool(d.get("ok"))

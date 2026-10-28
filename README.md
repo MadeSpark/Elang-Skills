@@ -18,6 +18,14 @@
 | `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch`/`ecompile` 等工程脚本 |
 | `tools/emodfix/` | **易模块完整性检查/修复**：检查 .e 的易模块 `DefinedIds` 声明与实际方法数是否一致；从完整供体恢复缺失模块方法，并同步 `0x0D` 的 `FileNames` 并行数组。这是新建按钮事件无效的根因修复工具（`check`/`restore`） |
 
+**宿主事件总线 + 双向 IPC（v1.3.9 起）**：`elang_addin.fne` 在 e.exe 进程内挂 WinEvent 钩子，
+弹窗（`#32770`）一出现就通过**命名管道**（JSONL、双向、GBK-hex 文本字段）推给 `tools/elaunch.py` 的
+`PipeBridge`；AI 在 **1500 ms** 内回一条 `decide` 决定点哪个按钮，回不来/没连上就走原有的内置安全兜底策略。
+于是 Python 侧不再靠 `EnumWindows` 死循环找弹窗（实测整场会话枚举次数从数万降到近零）。
+协议契约见 [方案-宿主事件总线与双向IPC协议.md](docs/方案-宿主事件总线与双向IPC协议.md)；
+`--no-ipc` 回退旧的纯轮询模式，`ELANG_AI_PIPE_SDDL` 可覆盖管道 ACL
+（受限令牌/沙箱下默认自动放宽，否则连自己建的管道都连不上）。
+
 技能遵循 **Agent Skills 开放规范**（agentskills.io），frontmatter 只有 `name` + `description`，
 一份文件跨工具通用；`安装技能.cmd` / `install-skills.py` 可一键装进本机所有 AI 工具（实测 9 处 × 4 技能）。
 

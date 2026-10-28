@@ -30,6 +30,7 @@
  */
 
 #include "sdk_compat.h"
+#include <time.h>               /* IPC dialog 帧的 ts（epoch 秒） */
 
 /* ==========================================================================
  * 0. 编译期自证：结构体 packing / 字段偏移
@@ -298,6 +299,9 @@ static volatile LONG g_nDlgPolicy = 0;
  *   - 多个按钮且含 IDOK                          → 点 IDOK
  *   - 多个按钮、无 IDOK、含 IDCANCEL 且无 IDYES  → 点 IDCANCEL
  *   - 其余（是/否问句等语义不明）                → 只记录，绝不瞎猜 */
+#define DLG_BTN_MAX  10
+#define DLG_EDIT_MAX 6
+
 typedef struct _DLG_SCAN
 {
     char  items[10][220];
@@ -307,6 +311,14 @@ typedef struct _DLG_SCAN
     BOOL  blHas[8];                 /* 按 IDOK..IDCANCEL 序号表 */
     char  szMsg[260];               /* 消息文本 = 第一个非按钮、非空文本的子控件
                                        （MessageBox 的正文就是它，如「无法找到启动子程序…」） */
+    /* IPC 快照：所有 Button / Edit 子控件（不受上面 items 10 项上限影响） */
+    int   nBtns;
+    int   btnId[DLG_BTN_MAX];
+    char  btnTxt[DLG_BTN_MAX][128];
+    int   nEdits;
+    int   editId[DLG_EDIT_MAX];
+    char  editCls[DLG_EDIT_MAX][32];
+    char  editTxt[DLG_EDIT_MAX][128];
 } DLG_SCAN;
 
 static BOOL CALLBACK DlgChildProc(HWND hChild, LPARAM lp)
@@ -316,10 +328,31 @@ static BOOL CALLBACK DlgChildProc(HWND hChild, LPARAM lp)
     char szTxt[128] = { 0 };
     int  nId;
 
-    if (p->n >= 10) return TRUE;
     GetClassNameA(hChild, szCls, sizeof(szCls));
     GetWindowTextA(hChild, szTxt, sizeof(szTxt));
     nId = (int)GetDlgCtrlID(hChild);
+
+    /* IPC 快照：先于 items 上限记录，btns/edits 要尽量完整 */
+    if (strcmp(szCls, "Button") == 0)
+    {
+        if (p->nBtns < DLG_BTN_MAX)
+        {
+            p->btnId[p->nBtns] = nId;
+            snprintf(p->btnTxt[p->nBtns], sizeof(p->btnTxt[0]), "%s", szTxt);
+            p->nBtns++;
+        }
+    }
+    else if (_stricmp(szCls, "Edit") == 0 && p->nEdits < DLG_EDIT_MAX)
+    {
+        p->editId[p->nEdits] = nId;
+        snprintf(p->editCls[p->nEdits], sizeof(p->editCls[0]), "%.31s", szCls);
+        /* 密码框的内容不外送 */
+        if ((GetWindowLongA(hChild, GWL_STYLE) & ES_PASSWORD) == 0)
+            snprintf(p->editTxt[p->nEdits], sizeof(p->editTxt[0]), "%s", szTxt);
+        p->nEdits++;
+    }
+
+    if (p->n >= 10) return TRUE;
     snprintf(p->items[p->n], sizeof(p->items[0]), "cls='%s' id=%d text='%s'",
              szCls, nId, szTxt);
     p->n++;
@@ -354,11 +387,23 @@ typedef struct _DLG_RETRY
 static DLG_RETRY g_Retry[DLG_RETRY_MAX];
 static int       g_nRetry = 0;
 
+/* 2026-10-29：DlgHandle 挪到 DlgWorkerProc 线程后，DlgRetryAdd（工作线程）与
+   DlgRetryPump（监控线程）并发访问本表 ⇒ 加锁。锁内只做 PostMessage / EventWrite，
+   不会阻塞。锁序：g_csDlgRetry → g_cs（EventWrite 内部），绝无反向。 */
+static CRITICAL_SECTION g_csDlgRetry;
+static BOOL             g_blDlgCsReady = FALSE;
+
 static void DlgRetryAdd(HWND hDlg, HWND hBtn, DWORD dwCmd)
 {
     int i;
+    if (g_blDlgCsReady) EnterCriticalSection(&g_csDlgRetry);
     for (i = 0; i < g_nRetry && i < DLG_RETRY_MAX; i++)
-        if (g_Retry[i].hDlg == hDlg) { g_Retry[i].tLast = GetTickCount(); return; }
+        if (g_Retry[i].hDlg == hDlg)
+        {
+            g_Retry[i].tLast = GetTickCount();
+            if (g_blDlgCsReady) LeaveCriticalSection(&g_csDlgRetry);
+            return;
+        }
     if (g_nRetry >= DLG_RETRY_MAX)
     {
         /* 表满：挤掉最老的一项（正常会话同时存在的模态框远小于 8） */
@@ -371,6 +416,7 @@ static void DlgRetryAdd(HWND hDlg, HWND hBtn, DWORD dwCmd)
     g_Retry[g_nRetry].tLast   = GetTickCount();
     g_Retry[g_nRetry].nTries  = 1;
     g_nRetry++;
+    if (g_blDlgCsReady) LeaveCriticalSection(&g_csDlgRetry);
 }
 
 /* 泵循环里调用：补点仍在的框、清掉已消失的框。 */
@@ -378,6 +424,7 @@ static void DlgRetryPump(void)
 {
     int i;
     DWORD now = GetTickCount();
+    if (g_blDlgCsReady) EnterCriticalSection(&g_csDlgRetry);
     for (i = 0; i < g_nRetry; )
     {
         if (!IsWindow(g_Retry[i].hDlg) || !IsWindowVisible(g_Retry[i].hDlg) ||
@@ -400,6 +447,7 @@ static void DlgRetryPump(void)
         }
         i++;
     }
+    if (g_blDlgCsReady) LeaveCriticalSection(&g_csDlgRetry);
 }
 
 static BOOL CALLBACK DlgSaveChkProc(HWND hChild, LPARAM lp)
@@ -411,17 +459,685 @@ static BOOL CALLBACK DlgSaveChkProc(HWND hChild, LPARAM lp)
     return TRUE;
 }
 
+/* ==========================================================================
+ * 3a-3. 命名管道 IPC 客户端（2026-10-29；协议见 docs\方案-宿主事件总线与双向IPC协议.md）
+ * --------------------------------------------------------------------------
+ * fne 是管道「客户端」，Python（elaunch.py 的 PipeBridge）是服务端。
+ *   - ELANG_AI_PIPE 是**模板**，含字面量 {pid}；打开前替换成本进程 PID。
+ *     空串/未设 ⇒ IPC 完全不启用（不建 IPC 线程、不连管道）。
+ *   - 全部 IO 在独立的 IpcProc 线程里；DlgHandle（DlgWorkerProc 线程）只做
+ *     「发 dialog 帧 → 等 decide（事件对象，≤ELANG_AI_DLG_TIMEOUT_MS）」。
+ *   - WinEvent 回调只入队（见 DlgEnqueue），绝不碰管道。
+ *   - ⚠ 必须用重叠 IO（FILE_FLAG_OVERLAPPED）：同步句柄上读线程挂着 ReadFile 时，
+ *     别的线程的 WriteFile 会被 IO 管理器排在后面 ⇒ 永远发不出 dialog 帧。
+ *   - 线格式：一行一个 JSON，纯 ASCII；文本字段 = GBK 原始字节的小写十六进制。
+ * ========================================================================== */
+#define IPC_PIPE_ENV_VAR     "ELANG_AI_PIPE"
+#define IPC_TOKEN_ENV_VAR    "ELANG_AI_PIPE_TOKEN"
+#define IPC_TIMEOUT_ENV_VAR  "ELANG_AI_DLG_TIMEOUT_MS"
+#define IPC_FW_VER           "v1.3.9"
+#define IPC_LINE_MAX         65536     /* 单行上限，超了丢弃并记 IPC-BADFRAME */
+#define IPC_FRAME_MAX        12288     /* 单个外发帧缓冲 */
+#define IPC_FAST_RETRY_MS    3000      /* 前 3 秒每 60ms 重连 */
+#define IPC_FAST_STEP_MS     60
+#define IPC_SLOW_STEP_MS     5000      /* 之后每 5 秒 */
+#define IPC_ACK_TMO_MS       2000      /* hello 之后等 ack 的上限 */
+#define IPC_WRITE_TMO_MS     1000      /* 单次写的上限（对端不读就放弃，别卡死） */
+#define IPC_PING_MS          5000
+#define IPC_PONG_TMO_MS      15000
+
+#define IPC_ACT_UNKNOWN    (-1)
+#define IPC_ACT_NONE       0
+#define IPC_ACT_CLICK      1
+#define IPC_ACT_FILL       2
+#define IPC_ACT_FILLCLICK  3
+#define IPC_ACT_HIDE       4
+
+static BOOL             g_blIpcWanted   = FALSE;          /* 环境变量要求启用 IPC */
+static volatile BOOL    g_blIpcUp       = FALSE;          /* 已握手、可收发 */
+static HANDLE           g_hIpc          = INVALID_HANDLE_VALUE;
+static CRITICAL_SECTION g_csIpc;                          /* 保护待决 decide 表 */
+static CRITICAL_SECTION g_csIpcW;                         /* 串行化写 + 句柄生命周期 */
+static BOOL             g_blIpcCsReady  = FALSE;
+static volatile LONG    g_nDlgId        = 0;              /* dialog 帧自增 id（从 1 起） */
+static int              g_nIpcTimeoutMs = 1500;
+static char             g_szIpcPipe[MAX_PATH]  = { 0 };   /* 已替换 {pid} 的最终管道名 */
+static char             g_szIpcToken[260]      = { 0 };
+
+/* 待决 decide 表（1 项：同一时刻只有 DlgWorkerProc 一个线程在等） */
+static int              g_nWaitId    = 0;                 /* 0 = 没人在等 */
+static int              g_nWaitAct   = IPC_ACT_UNKNOWN;
+static int              g_nWaitBtn   = -1;
+static int              g_nWaitHide  = 0;
+static BOOL             g_bHasDecide = FALSE;
+static HANDLE           g_hWaitEvt   = NULL;              /* 手动复位事件 */
+static HANDLE           g_hIpcWEvt   = NULL;              /* 写完成事件（g_csIpcW 内使用） */
+
+/* GBK 原始字节 → 小写十六进制（进程内本来就是 GBK，不转代码页）。
+   返回写出的字符数；放不下就截断（保证以 NUL 结尾）。 */
+static int HexGbk(const char *pszSrc, char *pszDst, int nCap)
+{
+    static const char kHex[] = "0123456789abcdef";
+    int i = 0, o = 0;
+    if (pszDst == NULL || nCap <= 0) return 0;
+    if (pszSrc != NULL)
+    {
+        while (pszSrc[i] != '\0' && o + 2 < nCap)
+        {
+            unsigned char c = (unsigned char)pszSrc[i++];
+            pszDst[o++] = kHex[c >> 4];
+            pszDst[o++] = kHex[c & 15];
+        }
+    }
+    pszDst[o] = '\0';
+    return o;
+}
+
+/* 极简的行缓冲拼装：溢出即置 blFull，调用方据此放弃整帧（绝不发半截 JSON）。 */
+typedef struct _IPC_BUF { char *p; int cap; int n; BOOL blFull; } IPC_BUF;
+
+static void IpcPrintf(IPC_BUF *b, const char *pszFmt, ...)
+{
+    va_list ap;
+    int     r;
+    if (b->blFull) return;
+    va_start(ap, pszFmt);
+    r = vsnprintf(b->p + b->n, (size_t)(b->cap - b->n), pszFmt, ap);
+    va_end(ap);
+    if (r < 0 || r >= b->cap - b->n) b->blFull = TRUE;
+    else b->n += r;
+}
+
+/* ---- 极简 JSON 取值（对端帧是单层对象，字段值只有数字或不含引号的 ASCII） ---- */
+static const char *IpcJsonFind(const char *pszLine, const char *pszKey)
+{
+    char        szPat[40];
+    const char *p = pszLine;
+    size_t      nPat;
+    snprintf(szPat, sizeof(szPat), "\"%s\"", pszKey);
+    nPat = strlen(szPat);
+    while ((p = strstr(p, szPat)) != NULL)
+    {
+        const char *q = p + nPat;
+        while (*q == ' ') q++;
+        if (*q == ':')
+        {
+            q++;
+            while (*q == ' ') q++;
+            return q;
+        }
+        p += nPat;
+    }
+    return NULL;
+}
+
+static BOOL IpcJsonStr(const char *pszLine, const char *pszKey, char *pszOut, int nCap)
+{
+    const char *p;
+    int         n = 0;
+    if (pszOut == NULL || nCap <= 0) return FALSE;
+    pszOut[0] = '\0';
+    p = IpcJsonFind(pszLine, pszKey);
+    if (p == NULL || *p != '"') return FALSE;
+    p++;
+    while (*p != '\0' && *p != '"' && n + 1 < nCap) pszOut[n++] = *p++;
+    pszOut[n] = '\0';
+    return (*p == '"');                  /* 完整闭合才算（被截断 ⇒ FALSE） */
+}
+
+static BOOL IpcJsonInt(const char *pszLine, const char *pszKey, long *pnVal)
+{
+    const char *p = IpcJsonFind(pszLine, pszKey);
+    if (p == NULL) return FALSE;
+    if (strncmp(p, "true", 4) == 0)  { *pnVal = 1; return TRUE; }
+    if (strncmp(p, "false", 5) == 0) { *pnVal = 0; return TRUE; }
+    if (*p == '-' || (*p >= '0' && *p <= '9')) { *pnVal = strtol(p, NULL, 10); return TRUE; }
+    return FALSE;
+}
+
+static const char *IpcActName(int nAct)
+{
+    switch (nAct)
+    {
+    case IPC_ACT_NONE:      return "none";
+    case IPC_ACT_CLICK:     return "click";
+    case IPC_ACT_FILL:      return "fill";
+    case IPC_ACT_FILLCLICK: return "fillclick";
+    case IPC_ACT_HIDE:      return "hide";
+    }
+    return "unknown";
+}
+
+/* ---- 写（重叠 IO；调用方必须持有 g_csIpcW） ---- */
+static BOOL IpcWriteRaw(HANDLE h, const char *psz, int nLen)
+{
+    OVERLAPPED ov;
+    DWORD      dwW = 0;
+    memset(&ov, 0, sizeof(ov));
+    ov.hEvent = g_hIpcWEvt;
+    ResetEvent(g_hIpcWEvt);
+    if (!WriteFile(h, psz, (DWORD)nLen, &dwW, &ov))
+    {
+        if (GetLastError() != ERROR_IO_PENDING) return FALSE;
+        if (WaitForSingleObject(g_hIpcWEvt, IPC_WRITE_TMO_MS) != WAIT_OBJECT_0)
+        {
+            CancelIoEx(h, &ov);                       /* 对端不读：撤销，别无限卡 */
+            GetOverlappedResult(h, &ov, &dwW, TRUE);
+            return FALSE;
+        }
+        if (!GetOverlappedResult(h, &ov, &dwW, FALSE)) return FALSE;
+    }
+    return (dwW == (DWORD)nLen);
+}
+
+/* 发一整帧（psz 已含结尾 \n）。IPC 不可用或写失败返回 FALSE；
+   写失败 ⇒ 立刻置不可用、撤销读线程挂起的 ReadFile（让它去收尾）、唤醒等决策的线程。 */
+static BOOL IpcSend(const char *psz, int nLen)
+{
+    BOOL blOk = FALSE, blBroke = FALSE;
+    if (!g_blIpcUp || !g_blIpcCsReady) return FALSE;
+    EnterCriticalSection(&g_csIpcW);
+    if (g_blIpcUp && g_hIpc != INVALID_HANDLE_VALUE)
+    {
+        blOk = IpcWriteRaw(g_hIpc, psz, nLen);
+        if (!blOk)
+        {
+            g_blIpcUp = FALSE;
+            CancelIoEx(g_hIpc, NULL);
+            blBroke = TRUE;
+        }
+    }
+    LeaveCriticalSection(&g_csIpcW);
+    if (blBroke)
+    {
+        EventWrite("IPC-CLOSE", "reason=write-fail");
+        SetEvent(g_hWaitEvt);
+    }
+    return blOk;
+}
+
+static BOOL IpcSendBuf(IPC_BUF *b)
+{
+    if (b->blFull || b->n <= 0)
+    {
+        EventWrite("IPC-BADFRAME", "out frame too large cap=%d", b->cap);
+        return FALSE;
+    }
+    return IpcSend(b->p, b->n);
+}
+
+/* ---- 待决 decide 表 ---- */
+static void IpcArm(int nId)
+{
+    EnterCriticalSection(&g_csIpc);
+    g_nWaitId    = nId;
+    g_nWaitAct   = IPC_ACT_UNKNOWN;
+    g_nWaitBtn   = -1;
+    g_nWaitHide  = 0;
+    g_bHasDecide = FALSE;
+    ResetEvent(g_hWaitEvt);
+    LeaveCriticalSection(&g_csIpc);
+}
+
+static void IpcDisarm(void)
+{
+    EnterCriticalSection(&g_csIpc);
+    g_nWaitId    = 0;
+    g_bHasDecide = FALSE;
+    LeaveCriticalSection(&g_csIpc);
+}
+
+/* 等 id 对应的 decide，最长 g_nIpcTimeoutMs。返回后无论成败都会清掉待决项
+   （id=0），晚到的 decide 因 id 比对不上被丢弃，不会串到下一个弹窗。 */
+static BOOL IpcWaitDecide(int nId, int *pnAct, int *pnBtn, int *pnHide)
+{
+    BOOL blGot;
+    WaitForSingleObject(g_hWaitEvt, (DWORD)g_nIpcTimeoutMs);
+    EnterCriticalSection(&g_csIpc);
+    blGot = (g_bHasDecide && g_nWaitId == nId);
+    if (blGot)
+    {
+        *pnAct  = g_nWaitAct;
+        *pnBtn  = g_nWaitBtn;
+        *pnHide = g_nWaitHide;
+    }
+    g_nWaitId    = 0;
+    g_bHasDecide = FALSE;
+    LeaveCriticalSection(&g_csIpc);
+    return blGot;
+}
+
+/* ---- 收（只在 IpcProc 线程里调用） ---- */
+static BOOL  s_blAcked  = FALSE;
+static DWORD s_tLastRx  = 0;
+
+/* 处理一行（不含换行）。返回 1 = 握手被拒（结束会话且不再重连），其余 0。 */
+static int IpcOnLine(const char *pszLine)
+{
+    char szT[24];
+    long nVal = 0;
+
+    if (!IpcJsonStr(pszLine, "t", szT, sizeof(szT)))
+    {
+        EventWrite("IPC-BADFRAME", "no t field len=%d", (int)strlen(pszLine));
+        return 0;
+    }
+
+    if (!s_blAcked)
+    {
+        if (strcmp(szT, "ack") != 0) return 0;           /* 握手前只认 ack */
+        if (IpcJsonInt(pszLine, "ok", &nVal) && nVal == 1)
+        {
+            s_blAcked = TRUE;
+            EnterCriticalSection(&g_csIpcW);
+            g_blIpcUp = TRUE;
+            LeaveCriticalSection(&g_csIpcW);
+            EventWrite("IPC-CONN", "handshake ok pipe='%s' timeoutMs=%d",
+                       g_szIpcPipe, g_nIpcTimeoutMs);
+            Trace("IPC up pipe='%s'", g_szIpcPipe);
+            return 0;
+        }
+        else
+        {
+            char szErr[260];
+            if (!IpcJsonStr(pszLine, "err", szErr, sizeof(szErr))) szErr[0] = '\0';
+            EventWrite("IPC-CONN", "ack rejected errHex=%s (退回内置策略，不再重连)", szErr);
+            return 1;
+        }
+    }
+
+    if (strcmp(szT, "decide") == 0)
+    {
+        long nId = 0, nBtn = -1, nHide = 0;
+        char szAct[24];
+        int  nAct = IPC_ACT_UNKNOWN;
+        BOOL blTaken = FALSE;
+
+        if (!IpcJsonInt(pszLine, "id", &nId))
+        {
+            EventWrite("IPC-BADFRAME", "decide without id");
+            return 0;
+        }
+        if (IpcJsonStr(pszLine, "act", szAct, sizeof(szAct)))
+        {
+            if      (strcmp(szAct, "none") == 0)      nAct = IPC_ACT_NONE;
+            else if (strcmp(szAct, "click") == 0)     nAct = IPC_ACT_CLICK;
+            else if (strcmp(szAct, "fill") == 0)      nAct = IPC_ACT_FILL;
+            else if (strcmp(szAct, "fillclick") == 0) nAct = IPC_ACT_FILLCLICK;
+            else if (strcmp(szAct, "hide") == 0)      nAct = IPC_ACT_HIDE;
+        }
+        if (!IpcJsonInt(pszLine, "btn", &nBtn)) nBtn = -1;
+        if (!IpcJsonInt(pszLine, "hide", &nHide)) nHide = 0;
+
+        EnterCriticalSection(&g_csIpc);
+        if (g_nWaitId != 0 && g_nWaitId == (int)nId && !g_bHasDecide)
+        {
+            g_nWaitAct   = nAct;
+            g_nWaitBtn   = (int)nBtn;
+            g_nWaitHide  = (nHide != 0) ? 1 : 0;
+            g_bHasDecide = TRUE;
+            blTaken = TRUE;
+            SetEvent(g_hWaitEvt);
+        }
+        LeaveCriticalSection(&g_csIpc);
+        if (!blTaken)
+            EventWrite("IPC-DECIDE", "late/unmatched id=%ld act=%s 已丢弃", nId, IpcActName(nAct));
+        return 0;
+    }
+
+    if (strcmp(szT, "policy") == 0)
+    {
+        char szPol[24];
+        if (IpcJsonStr(pszLine, "dlg", szPol, sizeof(szPol)))
+        {
+            if (strcmp(szPol, "dismiss") == 0 || strcmp(szPol, "observe") == 0)
+            {
+                InterlockedExchange(&g_nDlgPolicy, (strcmp(szPol, "dismiss") == 0) ? 1 : 0);
+                EventWrite("IPC-DECIDE", "policy -> %s", szPol);
+            }
+        }
+        return 0;
+    }
+
+    /* pong / ping / 其它：合法但无需处理（未识别的 t 一律忽略） */
+    return 0;
+}
+
+/* 一次连接的生命周期：发 hello → 等 ack（≤2s）→ 读帧 + 定时 ping。
+   返回 1 = 握手被明确拒绝（不再重连）；0 = 其它原因结束（调用方稍后重连）。 */
+static int IpcSession(HANDLE h)
+{
+    OVERLAPPED  ov;
+    HANDLE      hEvt;
+    char        buf[4096];
+    char        szHello[1024];
+    char        szTok[560];
+    char        szFw[40];
+    static char s_szAcc[IPC_LINE_MAX + 8];
+    IPC_BUF     b;
+    DWORD       dwRead = 0, dwNow, tStart, tPing;
+    int         nRet = 0, nAcc = 0, i;
+    BOOL        blSkip = FALSE, blWaitFail, blHelloOk;
+    const char *pszWhy = "closed";
+
+    hEvt = CreateEventA(NULL, TRUE, FALSE, NULL);
+    if (hEvt == NULL) { CloseHandle(h); return 0; }
+
+    s_blAcked = FALSE;
+    tStart = tPing = s_tLastRx = GetTickCount();
+
+    /* 把句柄公布给写者（g_blIpcUp 仍为 FALSE，ack 之前业务线程不会写） */
+    HexGbk(g_szIpcToken, szTok, sizeof(szTok));
+    HexGbk(IPC_FW_VER, szFw, sizeof(szFw));
+    b.p = szHello; b.cap = sizeof(szHello); b.n = 0; b.blFull = FALSE;
+    IpcPrintf(&b, "{\"t\":\"hello\",\"token\":\"%s\",\"pid\":%lu,\"fw\":\"%s\"}\n",
+              szTok, (unsigned long)GetCurrentProcessId(), szFw);
+    EnterCriticalSection(&g_csIpcW);
+    g_hIpc = h;
+    blHelloOk = (!b.blFull && IpcWriteRaw(h, b.p, b.n));
+    LeaveCriticalSection(&g_csIpcW);
+    if (!blHelloOk) pszWhy = "hello-write-fail";
+
+    while (blHelloOk)
+    {
+        memset(&ov, 0, sizeof(ov));
+        ov.hEvent = hEvt;
+        ResetEvent(hEvt);
+        dwRead = 0;
+        if (!ReadFile(h, buf, sizeof(buf), &dwRead, &ov))
+        {
+            if (GetLastError() != ERROR_IO_PENDING) { pszWhy = "read-fail"; break; }
+            blWaitFail = FALSE;
+            for (;;)
+            {
+                if (WaitForSingleObject(hEvt, 500) == WAIT_OBJECT_0) break;
+                dwNow = GetTickCount();
+                if (!s_blAcked)
+                {
+                    if (dwNow - tStart >= IPC_ACK_TMO_MS)
+                    { pszWhy = "ack-timeout"; blWaitFail = TRUE; break; }
+                }
+                else
+                {
+                    if (dwNow - s_tLastRx >= IPC_PONG_TMO_MS)
+                    { pszWhy = "pong-timeout"; blWaitFail = TRUE; break; }
+                    if (dwNow - tPing >= IPC_PING_MS)
+                    {
+                        char    szPing[64];
+                        IPC_BUF pb;
+                        pb.p = szPing; pb.cap = sizeof(szPing); pb.n = 0; pb.blFull = FALSE;
+                        IpcPrintf(&pb, "{\"t\":\"ping\",\"ts\":%lu}\n", (unsigned long)dwNow);
+                        IpcSendBuf(&pb);         /* 失败会 CancelIoEx，下一轮读即返回 */
+                        tPing = dwNow;
+                    }
+                }
+            }
+            if (blWaitFail)
+            {
+                CancelIoEx(h, &ov);
+                GetOverlappedResult(h, &ov, &dwRead, TRUE);
+                break;
+            }
+            if (!GetOverlappedResult(h, &ov, &dwRead, FALSE)) { pszWhy = "read-fail"; break; }
+        }
+        if (dwRead == 0) { pszWhy = "eof"; break; }
+        s_tLastRx = GetTickCount();
+
+        /* 按 \n 切行；单行上限 64KB，超了丢弃到下一个 \n */
+        for (i = 0; i < (int)dwRead; i++)
+        {
+            char c = buf[i];
+            if (c == '\n')
+            {
+                if (blSkip) blSkip = FALSE;
+                else
+                {
+                    if (nAcc > 0 && s_szAcc[nAcc - 1] == '\r') nAcc--;
+                    s_szAcc[nAcc] = '\0';
+                    if (nAcc > 0 && IpcOnLine(s_szAcc) == 1) { nRet = 1; pszWhy = "ack-denied"; }
+                }
+                nAcc = 0;
+                if (nRet) break;
+            }
+            else if (!blSkip)
+            {
+                if (nAcc >= IPC_LINE_MAX)
+                {
+                    blSkip = TRUE;
+                    nAcc = 0;
+                    EventWrite("IPC-BADFRAME", "line > %d bytes, 丢弃", IPC_LINE_MAX);
+                }
+                else s_szAcc[nAcc++] = c;
+            }
+        }
+        if (nRet) break;
+    }
+
+    /* 收尾：先标不可用 + 关句柄（持写锁，避免写线程正拿着句柄），再唤醒等决策的线程 */
+    EnterCriticalSection(&g_csIpcW);
+    g_blIpcUp = FALSE;
+    g_hIpc    = INVALID_HANDLE_VALUE;
+    CloseHandle(h);
+    LeaveCriticalSection(&g_csIpcW);
+    SetEvent(g_hWaitEvt);
+    CloseHandle(hEvt);
+    EventWrite("IPC-CLOSE", "reason=%s acked=%d", pszWhy, s_blAcked ? 1 : 0);
+    Trace("IPC closed reason=%s", pszWhy);
+    s_blAcked = FALSE;
+    return nRet;
+}
+
+/* 连管道：前 3 秒每 60ms 重试，之后每 5 秒。永不放弃（Python 侧可能晚启动/重建）。 */
+static HANDLE IpcConnect(void)
+{
+    DWORD  t0 = GetTickCount();
+    DWORD  dwErr;
+    BOOL   blLoggedFirst = FALSE, blLoggedSlow = FALSE;
+    HANDLE h;
+
+    for (;;)
+    {
+        h = CreateFileA(g_szIpcPipe, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
+                        FILE_FLAG_OVERLAPPED | SECURITY_SQOS_PRESENT | SECURITY_ANONYMOUS, NULL);
+        if (h != INVALID_HANDLE_VALUE)
+        {
+            EventWrite("IPC-CONN", "connected after %lums pipe='%s'",
+                       (unsigned long)(GetTickCount() - t0), g_szIpcPipe);
+            return h;
+        }
+        dwErr = GetLastError();
+        if (!blLoggedFirst)
+        {
+            blLoggedFirst = TRUE;
+            EventWrite("IPC-CONN", "connect failed err=%lu, 重试中 pipe='%s'",
+                       (unsigned long)dwErr, g_szIpcPipe);
+        }
+        if (GetTickCount() - t0 < IPC_FAST_RETRY_MS) Sleep(IPC_FAST_STEP_MS);
+        else
+        {
+            if (!blLoggedSlow)
+            {
+                blLoggedSlow = TRUE;
+                EventWrite("IPC-CONN", "3s 内未连上 err=%lu，改为每 5s 重试（期间走内置策略）",
+                           (unsigned long)dwErr);
+            }
+            Sleep(IPC_SLOW_STEP_MS);
+        }
+    }
+}
+
+static DWORD __stdcall IpcProc(LPVOID lp)
+{
+    (void)lp;
+    for (;;)
+    {
+        HANDLE h = IpcConnect();
+        if (IpcSession(h) == 1) break;           /* 令牌被拒：再连也没用 */
+        Sleep(1000);
+    }
+    return 0;
+}
+
+/* 读环境变量、替换 {pid}、建同步对象。返回 TRUE = 该启用 IPC（尚未建线程）。
+   非 AI 模式 / ELANG_AI_PIPE 空或未设 / 名字不合法 ⇒ FALSE，零影响。 */
+static BOOL IpcInitFromEnv(void)
+{
+    char  szTpl[MAX_PATH];
+    char  szPid[16];
+    char  szTmo[32];
+    char *pEnd = NULL;
+    const char *p;
+    int   o = 0;
+    long  nTmo;
+    size_t nPid;
+
+    if (!g_blAiMode) return FALSE;
+    if (!GetEnvStr(IPC_PIPE_ENV_VAR, szTpl, sizeof(szTpl))) return FALSE;
+
+    /* 名字模板里的字面量 {pid} → GetCurrentProcessId() 十进制。
+       环境变量在 Popen 之前设好，那时 PID 还不存在，所以必须在这里替换。 */
+    snprintf(szPid, sizeof(szPid), "%lu", (unsigned long)GetCurrentProcessId());
+    nPid = strlen(szPid);
+    for (p = szTpl; *p != '\0'; )
+    {
+        if (strncmp(p, "{pid}", 5) == 0)
+        {
+            if (o + (int)nPid >= (int)sizeof(g_szIpcPipe)) { o = -1; break; }
+            memcpy(g_szIpcPipe + o, szPid, nPid);
+            o += (int)nPid;
+            p += 5;
+        }
+        else
+        {
+            if (o + 1 >= (int)sizeof(g_szIpcPipe)) { o = -1; break; }
+            g_szIpcPipe[o++] = *p++;
+        }
+    }
+    if (o < 0)
+    {
+        g_szIpcPipe[0] = '\0';
+        EventWrite("IPC-CONN", "pipe name too long, IPC disabled");
+        return FALSE;
+    }
+    g_szIpcPipe[o] = '\0';
+    /* 只允许本机命名管道，防止环境变量把我们指到任意文件路径 */
+    if (_strnicmp(g_szIpcPipe, "\\\\.\\pipe\\", 9) != 0)
+    {
+        EventWrite("IPC-CONN", "pipe name must start with \\\\.\\pipe\\, IPC disabled");
+        g_szIpcPipe[0] = '\0';
+        return FALSE;
+    }
+
+    if (!GetEnvStr(IPC_TOKEN_ENV_VAR, g_szIpcToken, sizeof(g_szIpcToken)))
+        g_szIpcToken[0] = '\0';
+
+    g_nIpcTimeoutMs = 1500;
+    if (GetEnvStr(IPC_TIMEOUT_ENV_VAR, szTmo, sizeof(szTmo)))
+    {
+        nTmo = strtol(szTmo, &pEnd, 10);
+        if (pEnd != szTmo && *pEnd == '\0' && nTmo >= 100 && nTmo <= 10000)
+            g_nIpcTimeoutMs = (int)nTmo;
+    }
+
+    InitializeCriticalSection(&g_csIpc);
+    InitializeCriticalSection(&g_csIpcW);
+    g_hWaitEvt = CreateEventA(NULL, TRUE, FALSE, NULL);
+    g_hIpcWEvt = CreateEventA(NULL, TRUE, FALSE, NULL);
+    if (g_hWaitEvt == NULL || g_hIpcWEvt == NULL)
+    {
+        EventWrite("IPC-CONN", "CreateEvent failed err=%lu, IPC disabled", GetLastError());
+        return FALSE;
+    }
+    g_blIpcCsReady = TRUE;
+    g_blIpcWanted  = TRUE;
+    return TRUE;
+}
+
+/* ---- DlgHandle 用的外发帧 ---- */
+static BOOL IpcIsUp(void) { return g_blIpcUp; }
+
+/* event 帧：DLG-ERROR / DLG-MODAL 镜像给 Python（不等回复）。 */
+static void DlgIpcEvent(const char *pszKind, const char *pszCls,
+                        const char *pszTitle, const char *pszMsg)
+{
+    char    szFrame[2048];
+    char    szA[560];
+    char    szB[560];
+    char    szC[160];
+    IPC_BUF b;
+    if (!IpcIsUp()) return;
+    HexGbk(pszCls, szC, sizeof(szC));
+    HexGbk(pszTitle, szA, sizeof(szA));
+    HexGbk(pszMsg, szB, sizeof(szB));
+    b.p = szFrame; b.cap = sizeof(szFrame); b.n = 0; b.blFull = FALSE;
+    IpcPrintf(&b, "{\"t\":\"event\",\"k\":\"%s\",\"cls\":\"%s\",\"title\":\"%s\",\"msg\":\"%s\"}\n",
+              pszKind, szC, szA, szB);
+    IpcSendBuf(&b);
+}
+
+/* result 帧 */
+static void DlgIpcResult(int nId, const char *pszHow, const char *pszAct, DWORD dwMs)
+{
+    char    szFrame[160];
+    IPC_BUF b;
+    b.p = szFrame; b.cap = sizeof(szFrame); b.n = 0; b.blFull = FALSE;
+    IpcPrintf(&b, "{\"t\":\"result\",\"id\":%d,\"how\":\"%s\",\"act\":\"%s\",\"ms\":%lu}\n",
+              nId, pszHow, pszAct, (unsigned long)dwMs);
+    IpcSendBuf(&b);
+}
+
+/* dialog 帧：全部子控件快照。发送成功返回 TRUE。 */
+static BOOL DlgIpcDialog(HWND hDlg, int nId, const char *pszCls, const char *pszTitle,
+                         const DLG_SCAN *pScan, const char *pszPol)
+{
+    char    szFrame[IPC_FRAME_MAX];
+    char    szHex[560];
+    char    szHex2[560];
+    char    szHex3[560];
+    IPC_BUF b;
+    int     i;
+
+    b.p = szFrame; b.cap = sizeof(szFrame); b.n = 0; b.blFull = FALSE;
+    HexGbk(pszCls, szHex, sizeof(szHex));
+    HexGbk(pszTitle, szHex2, sizeof(szHex2));
+    HexGbk(pScan->szMsg, szHex3, sizeof(szHex3));
+    IpcPrintf(&b, "{\"t\":\"dialog\",\"id\":%d,\"hwnd\":%u,\"cls\":\"%s\",\"title\":\"%s\",\"msg\":\"%s\",\"btns\":[",
+              nId, (unsigned)(size_t)hDlg, szHex, szHex2, szHex3);
+    for (i = 0; i < pScan->nBtns; i++)
+    {
+        HexGbk(pScan->btnTxt[i], szHex, sizeof(szHex));
+        IpcPrintf(&b, "%s{\"i\":%d,\"txt\":\"%s\"}", i ? "," : "", pScan->btnId[i], szHex);
+    }
+    IpcPrintf(&b, "],\"edits\":[");
+    for (i = 0; i < pScan->nEdits; i++)
+    {
+        HexGbk(pScan->editCls[i], szHex, sizeof(szHex));
+        HexGbk(pScan->editTxt[i], szHex2, sizeof(szHex2));
+        IpcPrintf(&b, "%s{\"c\":%d,\"cls\":\"%s\",\"txt\":\"%s\"}", i ? "," : "",
+                  pScan->editId[i], szHex, szHex2);
+    }
+    IpcPrintf(&b, "],\"pol\":\"%s\",\"ts\":%ld}\n", pszPol, (long)time(NULL));
+    return IpcSendBuf(&b);
+}
+
 static void DlgHandle(HWND hDlg)
 {
     char        szTitle[256] = { 0 };
+    char        szCls[64] = { 0 };
     DLG_SCAN    scan;
     DLG_SAVECHK sv;
     int         i;
     HWND        hClick = NULL;
     int         nClickId = 0;
     BOOL        blHasOk, blHasYes, blHasNo, blHasCancel;
+    int         nDlgId = 0;                 /* 0 = 没发过 dialog 帧 */
+    BOOL        blSent = FALSE;             /* dialog 帧已发出 */
+    BOOL        blDone = FALSE;             /* 已按 IPC 决策处理完 */
+    BOOL        blClicked = FALSE;
+    DWORD       dwT0 = 0;
 
     GetWindowTextA(hDlg, szTitle, sizeof(szTitle));
+    GetClassNameA(hDlg, szCls, sizeof(szCls));
 
     /* 编译保存框归既有填充线程管，这里只留一条事件绝不动它 */
     if (strstr(szTitle, "请输入欲编译到") != NULL)
@@ -449,6 +1165,7 @@ static void DlgHandle(HWND hDlg)
                    (unsigned)(size_t)hDlg, szTitle, scan.nBtn, scan.szMsg, szKids);
         Trace("DLG-MODAL hwnd=0x%08X title='%s' msg='%s' kids=%d",
               (unsigned)(size_t)hDlg, szTitle, scan.szMsg, scan.n);
+        DlgIpcEvent("DLG-MODAL", szCls, szTitle, scan.szMsg);
     }
 
     /* 错误弹窗（如「无法找到启动子程序」）：单独发一条 DLG-ERROR —— Python 侧
@@ -459,13 +1176,101 @@ static void DlgHandle(HWND hDlg)
         EventWrite("DLG-ERROR", "hwnd=0x%08X title='%s' msg='%s'",
                    (unsigned)(size_t)hDlg, szTitle, scan.szMsg);
         Trace("DLG-ERROR title='%s' msg='%s'", szTitle, scan.szMsg);
+        DlgIpcEvent("DLG-ERROR", szCls, szTitle, scan.szMsg);
     }
 
-    if (g_nDlgPolicy < 1 || sv.blSave) return;
+    /* 编译保存框 / 覆盖确认框：保持现状 —— 不 IPC、不点（归既有填充线程 /
+       AnswerConfirmDialogs 管）。 */
+    if (sv.blSave) return;
     if (strstr(szTitle, "另存") || strstr(szTitle, "Save As") ||
         strstr(szTitle, "覆盖") || strstr(szTitle, "覆蓋") ||
         strstr(szTitle, "已存在"))
-        return;                          /* 覆盖确认框归 AnswerConfirmDialogs 管 */
+        return;
+
+    /* observe：只记录（现有行为）。IPC 在线时仍把 dialog 帧发给 Python（供 AI 观察），
+       但绝不点、也不等决策；result.how="skip"。 */
+    if (g_nDlgPolicy < 1)
+    {
+        if (IpcIsUp())
+        {
+            nDlgId = (int)InterlockedIncrement(&g_nDlgId);
+            dwT0 = GetTickCount();
+            if (DlgIpcDialog(hDlg, nDlgId, szCls, szTitle, &scan, "observe"))
+                DlgIpcResult(nDlgId, "skip", "none", GetTickCount() - dwT0);
+        }
+        return;
+    }
+
+    /* dismiss + IPC 在线：发 dialog 帧，等 decide（≤ELANG_AI_DLG_TIMEOUT_MS）。
+       本函数跑在 DlgWorkerProc 线程，可以等；绝不能在 WinEvent 回调里等。
+       先「挂牌」(IpcArm) 再发帧，避免 decide 比挂牌还早到。 */
+    if (IpcIsUp())
+    {
+        nDlgId = (int)InterlockedIncrement(&g_nDlgId);
+        dwT0 = GetTickCount();
+        IpcArm(nDlgId);
+        blSent = DlgIpcDialog(hDlg, nDlgId, szCls, szTitle, &scan, "dismiss");
+        if (!blSent)
+        {
+            IpcDisarm();
+            EventWrite("IPC-FALLBACK", "id=%d reason=send-fail", nDlgId);
+        }
+        else
+        {
+            int nAct = IPC_ACT_UNKNOWN, nBtn = -1, nHide = 0;
+            if (IpcWaitDecide(nDlgId, &nAct, &nBtn, &nHide))
+            {
+                EventWrite("IPC-DECIDE", "id=%d act=%s btn=%d hide=%d ms=%lu",
+                           nDlgId, IpcActName(nAct), nBtn, nHide,
+                           (unsigned long)(GetTickCount() - dwT0));
+                if (nAct == IPC_ACT_NONE || nAct == IPC_ACT_HIDE)
+                {
+                    blDone = TRUE;                       /* none：不动；hide：只记录 */
+                }
+                else if (nAct == IPC_ACT_CLICK)
+                {
+                    /* btn 必须出现在 dialog 帧的 btns 里，否则视为越权 */
+                    BOOL blListed = FALSE;
+                    for (i = 0; i < scan.nBtns; i++)
+                        if (scan.btnId[i] == nBtn) { blListed = TRUE; break; }
+                    if (blListed)
+                    {
+                        HWND hB = GetDlgItem(hDlg, nBtn);
+                        if (!IsWindow(hDlg))
+                        {
+                            blDone = TRUE;               /* 框已经自己消失了 */
+                        }
+                        else if (hB != NULL)
+                        {
+                            DWORD dwCmd = (DWORD)((WORD)nBtn | ((DWORD)BN_CLICKED << 16));
+                            PostMessageA(hDlg, WM_COMMAND, (WPARAM)dwCmd, (LPARAM)hB);
+                            PostMessageA(hB, BM_CLICK, 0, 0);
+                            EventWrite("DLG-DISMISSED", "hwnd=0x%08X clicked=%d",
+                                       (unsigned)(size_t)hDlg, nBtn);
+                            DlgRetryAdd(hDlg, hB, dwCmd);
+                            blDone = TRUE;
+                            blClicked = TRUE;
+                        }
+                    }
+                }
+                /* fill / fillclick / 未知 act / 越权 btn ⇒ blDone 仍为 FALSE ⇒ 走内置规则 */
+                if (!blDone)
+                    EventWrite("IPC-FALLBACK", "id=%d reason=bad-decision act=%s btn=%d",
+                               nDlgId, IpcActName(nAct), nBtn);
+            }
+            else
+            {
+                EventWrite("IPC-FALLBACK", "id=%d reason=timeout/ipc-down waited=%lums",
+                           nDlgId, (unsigned long)(GetTickCount() - dwT0));
+            }
+        }
+    }
+
+    if (blDone)
+    {
+        DlgIpcResult(nDlgId, "ipc", blClicked ? "click" : "none", GetTickCount() - dwT0);
+        return;
+    }
 
     /* 按钮语义判定（见函数头注释的安全规则） */
     blHasOk = blHasYes = blHasNo = blHasCancel = FALSE;
@@ -500,13 +1305,88 @@ static void DlgHandle(HWND hDlg)
         EventWrite("DLG-DISMISSED", "hwnd=0x%08X clicked=%d",
                    (unsigned)(size_t)hDlg, nClickId ? nClickId : 1);
         DlgRetryAdd(hDlg, hClick, dwCmd);
+        blClicked = TRUE;
     }
+
+    /* 发过 dialog 帧才有 id 可回报：超时/决策越权 ⇒ fallback */
+    if (blSent)
+        DlgIpcResult(nDlgId, "fallback", blClicked ? "click" : "none", GetTickCount() - dwT0);
 }
 
 /* 每个 hwnd 只报一次（环形表；仅监控线程读写，无需加锁） */
 #define DLG_SEEN_MAX 32
 static HWND  g_hDlgSeen[DLG_SEEN_MAX];
 static int   g_nDlgSeen = 0;
+
+/* ---- WinEvent 回调 → 工作线程的队列 ----
+   回调（在 DlgWatchProc 线程里被投递）只允许入队 + SetEvent，绝不阻塞：
+   不 SendMessage、不等管道、不 Sleep。出队后的 DlgHandle 在 DlgWorkerProc 线程里跑
+   （它可能等 IPC 决策最长 ELANG_AI_DLG_TIMEOUT_MS）。 */
+#define DLG_Q_MAX 64
+static HWND             g_hDlgQ[DLG_Q_MAX];
+static int              g_nDlgQHead  = 0;
+static int              g_nDlgQCount = 0;
+static volatile LONG    g_lDlgQDrop  = 0;
+static CRITICAL_SECTION g_csDlgQ;
+static HANDLE           g_hDlgQEvt   = NULL;      /* 自动复位 */
+static volatile BOOL    g_blDlgWorker = FALSE;    /* 工作线程已建好 */
+
+static void DlgEnqueue(HWND hWnd)
+{
+    BOOL blQueued = FALSE;
+    if (!g_blDlgWorker)
+    {
+        /* 退路：工作线程没建起来（CreateThread 失败）⇒ 退回旧行为，直接处理。
+           此时 IPC 也不会启用，DlgHandle 不会等。 */
+        DlgHandle(hWnd);
+        return;
+    }
+    EnterCriticalSection(&g_csDlgQ);
+    if (g_nDlgQCount < DLG_Q_MAX)
+    {
+        g_hDlgQ[(g_nDlgQHead + g_nDlgQCount) % DLG_Q_MAX] = hWnd;
+        g_nDlgQCount++;
+        blQueued = TRUE;
+    }
+    LeaveCriticalSection(&g_csDlgQ);
+    if (blQueued) SetEvent(g_hDlgQEvt);
+    else InterlockedIncrement(&g_lDlgQDrop);
+}
+
+static BOOL DlgDequeue(HWND *phWnd)
+{
+    BOOL blGot = FALSE;
+    EnterCriticalSection(&g_csDlgQ);
+    if (g_nDlgQCount > 0)
+    {
+        *phWnd = g_hDlgQ[g_nDlgQHead];
+        g_nDlgQHead = (g_nDlgQHead + 1) % DLG_Q_MAX;
+        g_nDlgQCount--;
+        blGot = TRUE;
+    }
+    LeaveCriticalSection(&g_csDlgQ);
+    return blGot;
+}
+
+/* 弹窗处理线程：出队 → DlgHandle。IPC 开不开都要有这条线程（弹窗兜底在这里）。 */
+static DWORD __stdcall DlgWorkerProc(LPVOID lp)
+{
+    (void)lp;
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
+    for (;;)
+    {
+        HWND hWnd = NULL;
+        LONG lDrop;
+        WaitForSingleObject(g_hDlgQEvt, INFINITE);
+        while (DlgDequeue(&hWnd))
+        {
+            if (IsWindow(hWnd)) DlgHandle(hWnd);
+        }
+        lDrop = InterlockedExchange(&g_lDlgQDrop, 0);
+        if (lDrop > 0) EventWrite("DLG-QFULL", "dropped=%ld", (long)lDrop);
+    }
+    /* not reached */
+}
 
 static void CALLBACK DlgWinEventProc(HWINEVENTHOOK hHook, DWORD dwEvent, HWND hWnd,
                                      LONG idObject, LONG idChild,
@@ -550,18 +1430,49 @@ static void CALLBACK DlgWinEventProc(HWINEVENTHOOK hHook, DWORD dwEvent, HWND hW
         g_nDlgSeen = 1;
     }
 
-    DlgHandle(hWnd);
+    DlgEnqueue(hWnd);                    /* 只入队；真正的处理在 DlgWorkerProc */
 }
 
 static DWORD __stdcall DlgWatchProc(LPVOID lp)
 {
     HWINEVENTHOOK hkDlg, hkObj;
+    BOOL          blIpc;
     (void)lp;
 
     {
         char sz[32] = { 0 };
         if (GetEnvStr(DLGPOLICY_ENV_VAR, sz, sizeof(sz)))
             g_nDlgPolicy = (_stricmp(sz, "dismiss") == 0) ? 1 : 0;
+    }
+
+    /* 同步对象必须赶在装钩子之前建好（钩子一装，回调随时可能来） */
+    InitializeCriticalSection(&g_csDlgRetry);
+    g_blDlgCsReady = TRUE;
+    InitializeCriticalSection(&g_csDlgQ);
+    g_hDlgQEvt = CreateEventA(NULL, FALSE, FALSE, NULL);
+    blIpc = IpcInitFromEnv();            /* 非 AI / ELANG_AI_PIPE 空 ⇒ FALSE，零影响 */
+
+    /* DlgWorkerProc：IPC 开不开都要建（弹窗兜底点击在它里面）。 */
+    if (g_hDlgQEvt != NULL)
+    {
+        HANDLE hW = CreateThread(NULL, 0, DlgWorkerProc, NULL, 0, NULL);
+        if (hW != NULL) { CloseHandle(hW); g_blDlgWorker = TRUE; }
+        else Trace("DLGWORKER CreateThread FAILED err=%lu", GetLastError());
+    }
+    if (!g_blDlgWorker)
+    {
+        blIpc = FALSE;                   /* 没有工作线程就不启用 IPC（回调里直接处理，不能等） */
+        g_blIpcWanted = FALSE;
+    }
+    if (blIpc)
+    {
+        HANDLE hI = CreateThread(NULL, 0, IpcProc, NULL, 0, NULL);
+        if (hI != NULL) CloseHandle(hI);
+        else
+        {
+            g_blIpcWanted = FALSE;
+            EventWrite("IPC-CONN", "IpcProc CreateThread failed err=%lu", GetLastError());
+        }
     }
 
     hkDlg = SetWinEventHook(EVENT_SYSTEM_DIALOGSTART, EVENT_SYSTEM_DIALOGEND, NULL,

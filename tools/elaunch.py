@@ -72,6 +72,16 @@ syntax-error；3=启动器自身失败。
   * 事件行同时落面板日志与 trace 可回看：`DLG-MODAL`（含 msg=）、`DLG-DISMISSED`、
     `DLG-RETRY`（自动应答补点）、`COMPILE-START/END/OUT-SEEN`、`IDE-READY/IDE-EXIT`。
 
+宿主事件总线 + 双向 IPC（2026-10-29 起，协议见 docs\方案-宿主事件总线与双向IPC协议.md）
+==========================================================================================
+elaunch 是管道**服务端**（`PipeBridge`），fne 是客户端：先 Popen 拿 e.exe 的 PID，立刻按
+`\\.\pipe\elang_addin.<pid>.<tag>` 建管道；环境变量注入 `ELANG_AI_PIPE`（含 `{pid}` 占位的模板，
+启用开关）/ `ELANG_AI_PIPE_TOKEN` / `ELANG_AI_PIPE_TAG` / `ELANG_AI_DLG_TIMEOUT_MS`。
+弹窗由 fne 上报 `dialog`、本进程回 `decide`（默认规则见 `PipeBridge._default_decide`），
+两个方向的每一帧写 `<log目录>/<tag>_ipc.jsonl`。窗口隐藏默认交给宿主事件总线（
+`ELANG_AI_HIDE_ENGINE=host`，Python 不再周期性 EnumWindows）；`both`/`python` 可回退。
+结果 JSON 增加 `ipc` 段。`--no-ipc` 或 `ELANG_AI_IPC=0` 关闭，行为与此前一致。
+
 无头（默认开）
 ==============
 **默认不开可见窗口**：`e.exe` 以 `STARTUPINFO.wShowWindow = SW_HIDE` 启动（压住主窗口），
@@ -98,6 +108,7 @@ import hashlib
 import json
 import os
 import re
+import secrets
 import shutil
 import subprocess
 import sys
@@ -471,6 +482,651 @@ def _rect(u32, hwnd):
     return (r.left, r.top, r.right, r.bottom)
 
 
+# --------------------------------------------------------------------------- #
+# 宿主事件总线 + 双向 IPC（协议见 docs\方案-宿主事件总线与双向IPC协议.md，两端唯一契约）
+# --------------------------------------------------------------------------- #
+def hexg(text) -> str:
+    """文本 → GBK 原始字节的小写十六进制（协议里所有中文/路径字段都这样存）。
+
+    GBK 编不了的字符用 errors="replace"（变 "?"），绝不抛。"""
+    if text is None:
+        return ""
+    return str(text).encode("gbk", errors="replace").hex()
+
+
+def unhexg(s) -> str:
+    """hexg 的逆运算：GBK 十六进制 → 文本。非法十六进制返回空串（来自对端的数据不可信）。"""
+    if not s:
+        return ""
+    try:
+        return bytes.fromhex(str(s)).decode("gbk", errors="replace")
+    except ValueError:
+        return ""
+
+
+_PIPE_API = None
+
+
+def _pipe_api():
+    """惰性加载 kernel32 管道 API（ctypes，**不依赖 pywin32**；本机 Python 也没装它）。
+
+    只在真要建管道时才 import ctypes/wintypes，非 IPC 路径零开销。
+    返回 (kernel32, OVERLAPPED 结构类)。"""
+    global _PIPE_API
+    if _PIPE_API is None:
+        import ctypes
+        import ctypes.wintypes as wt
+
+        class OVERLAPPED(ctypes.Structure):
+            _fields_ = [("Internal", ctypes.c_size_t), ("InternalHigh", ctypes.c_size_t),
+                        ("Offset", wt.DWORD), ("OffsetHigh", wt.DWORD),
+                        ("hEvent", wt.HANDLE)]
+
+        k = ctypes.WinDLL("kernel32", use_last_error=True)
+        vp = ctypes.c_void_p
+        dw = wt.DWORD
+        pdw = ctypes.POINTER(wt.DWORD)
+
+        def sig(name, res, *args):
+            f = getattr(k, name)
+            f.restype = res
+            f.argtypes = list(args)
+
+        sig("CreateNamedPipeW", wt.HANDLE, wt.LPCWSTR, dw, dw, dw, dw, dw, dw, vp)
+        sig("ConnectNamedPipe", wt.BOOL, wt.HANDLE, vp)
+        sig("DisconnectNamedPipe", wt.BOOL, wt.HANDLE)
+        sig("ReadFile", wt.BOOL, wt.HANDLE, vp, dw, pdw, vp)
+        sig("WriteFile", wt.BOOL, wt.HANDLE, vp, dw, pdw, vp)
+        sig("CreateEventW", wt.HANDLE, vp, wt.BOOL, wt.BOOL, wt.LPCWSTR)
+        sig("SetEvent", wt.BOOL, wt.HANDLE)
+        sig("ResetEvent", wt.BOOL, wt.HANDLE)
+        sig("CloseHandle", wt.BOOL, wt.HANDLE)
+        sig("WaitForSingleObject", dw, wt.HANDLE, dw)
+        sig("WaitForMultipleObjects", dw, dw, ctypes.POINTER(wt.HANDLE), wt.BOOL, dw)
+        sig("GetOverlappedResult", wt.BOOL, wt.HANDLE, vp, pdw, wt.BOOL)
+        sig("CancelIoEx", wt.BOOL, wt.HANDLE, vp)
+        _PIPE_API = (k, OVERLAPPED)
+    return _PIPE_API
+
+
+# 受限令牌下用的管道 ACL：SYSTEM 全权 + Everyone 读写（不含 ACL 写权限，改不了 DACL）
+RESTRICTED_PIPE_SDDL = "D:(A;;GA;;;SY)(A;;GRGW;;;WD)"
+
+
+def _token_restricted():
+    """当前进程是否跑在**受限令牌**下（沙箱 / 低权限容器）。
+
+    受限令牌做访问检查时要求「正常令牌 + 受限 SID 列表」同时通过；系统为新建对象配的
+    默认 DACL 里没有受限 SID，于是连自己进程 CreateFile 自己的命名管道都会
+    ERROR_ACCESS_DENIED(=5)。检测到就自动放宽 ACL，而不是让用户手工设 SDDL。
+    """
+    try:
+        import ctypes
+        import ctypes.wintypes as wt
+        k = ctypes.WinDLL("kernel32", use_last_error=True)
+        adv = ctypes.WinDLL("advapi32", use_last_error=True)
+        k.GetCurrentProcess.restype = wt.HANDLE
+        adv.OpenProcessToken.argtypes = [wt.HANDLE, wt.DWORD, ctypes.POINTER(wt.HANDLE)]
+        adv.IsTokenRestricted.argtypes = [wt.HANDLE]
+        tok = wt.HANDLE()
+        if not adv.OpenProcessToken(k.GetCurrentProcess(), 0x0008, ctypes.byref(tok)):
+            return False                                  # TOKEN_QUERY
+        try:
+            return bool(adv.IsTokenRestricted(tok))
+        finally:
+            k.CloseHandle(tok)
+    except BaseException:                                 # noqa: BLE001
+        return False
+
+
+class PipeBridge(object):
+    """IPC 管道服务端（Python 侧）。fne 是客户端，本类是服务端：
+
+      * `start()` 起一个 daemon 读线程：CreateNamedPipe → ConnectNamedPipe →
+        握手（hello→ack）→ 逐行读 JSONL；断线后回到等待连接（fne 每 5 秒会重连）。
+      * 收 `dialog` 就在读线程里立刻 `_decide` 并回 `decide` 行（默认规则见
+        `_default_decide`；可传 decider 回调覆盖，回调必须很快——fne 只等 timeout_ms）；
+        收 result / event / pong / policy 只计数与审计；收 ping 回 pong。
+      * 所有收发的每一帧写 `<log_dir>/<tag>_ipc.jsonl`（`{ts,dir,raw}`，UTF-8）。
+
+    ⚠️ 必须用**重叠 IO**：同步句柄上 ReadFile 阻塞时，别的线程的 WriteFile 会被 IO 管理器
+    串行化排在后面 ⇒ 读线程等 fne 开口、发送线程等读线程 ⇒ 死锁。重叠 IO + 一个「停止事件」
+    也让 close() 能立刻唤醒阻塞中的 Connect/Read，e.exe 退出后不会卡住 Python 进程。
+    """
+
+    ACK_V = 1                  # 本端协议主版本
+    LAT_MAX = 2000             # 决策延迟样本上限（有界，供算 p95）
+    LINE_MAX = 1 << 20         # 单行上限 1 MiB，超了丢弃缓冲（防对端乱发）
+    AUDIT_MAX = 32 << 20       # 审计文件上限 32 MiB，超了停写（防事件风暴塞满磁盘）
+    ACTS = ("none", "click", "fill", "fillclick", "hide")    # 协议白名单
+    IDOK, IDCANCEL, IDYES = 1, 2, 6
+
+    def __init__(self, pipe_path: str, token: str, log_path: str = None,
+                 timeout_ms: int = 1500, decider=None, sddl: str = None):
+        import collections
+        self.pipe_path = pipe_path
+        # 管道 ACL。默认 None = 系统默认安全描述符（仅本用户/系统可访问）。
+        # 受限令牌（沙箱、低权限容器）下默认 DACL 里没有受限 SID，**连本进程自己**去
+        # CreateFile 自己建的管道都会被拒（实测 ERROR_ACCESS_DENIED=5）⇒ 这时自动放宽到
+        # Everyone（管道名带 48 位随机 tag、握手令牌 128 位，仍只有拿到令牌的一方能发帧）。
+        # ELANG_AI_PIPE_SDDL 可显式覆盖（见 elaunch()）。
+        self.sddl = sddl
+        if self.sddl is None and _token_restricted():
+            self.sddl = RESTRICTED_PIPE_SDDL
+        self.token = token
+        self.log_path = log_path
+        self.timeout_ms = int(timeout_ms)
+        self._decider = decider                  # 可选：dialog(dict) → decision(dict)|None
+        self.error = None                        # 建管道/线程异常（诊断）
+        self.audit_error = None                  # 审计文件打不开的原因（不影响 IPC）
+        self.peer_pid = None
+        self.peer_fw = ""
+        self.frames_in = 0
+        self.frames_out = 0
+        self.decisions = 0                       # 我们发出的 decide 数
+        self.fallbacks = 0                       # fne 回报 result.how=fallback 的次数
+        self.latency = collections.deque(maxlen=self.LAT_MAX)    # 毫秒，有界
+        self.dialogs_in = 0
+        self.bad_frames = 0                      # 非法 JSON / 超长行
+        self.unknown_frames = 0                  # 未识别的 t（按协议忽略并计数）
+        self.ignored_pre_hello = 0
+        self.handshake_fail = 0
+        self.events_in = {}                      # event.k → 次数（键数有界）
+        self.results_in = {}                     # result.how → 次数
+        self.recent = []                         # 最近的弹窗决策摘要（有界，诊断）
+        self.ever_connected = False
+        self._connected_at = None
+        self._hello_ok = False
+        self._conn = False                       # 管道上当前有客户端
+        self._closing = False
+        self._t = None
+        self._h = None                           # 管道句柄（读线程创建/关闭）
+        self._stop_h = None                      # Win32 事件：close() 用它唤醒阻塞 IO
+        self._ev_w = None
+        self._ov_w = None
+        self._created = threading.Event()        # 管道已建好（或建失败）
+        self._ready = threading.Event()          # 握手完成
+        self._lk = threading.Lock()              # 统计
+        self._wlock = threading.Lock()           # 写 + 句柄/连接状态
+        self._alk = threading.Lock()             # 审计文件
+        self._audit_f = None
+        self._audit_bytes = 0
+
+    # -- 对外属性 ------------------------------------------------------------ #
+    @property
+    def connected(self) -> bool:
+        return bool(self._conn and self._hello_ok)
+
+    def connected_for(self) -> float:
+        """已握手连通多少秒（未连通为 0）。WindowHider 据此决定何时停掉轮询。"""
+        t = self._connected_at
+        return (time.time() - t) if (self.connected and t) else 0.0
+
+    def wait_ready(self, timeout: float = 3.0) -> bool:
+        """等握手完成（fne 连上并通过令牌校验）；超时返回 False。"""
+        return self._ready.wait(timeout)
+
+    # -- 生命周期 ------------------------------------------------------------ #
+    def start(self):
+        if sys.platform != "win32":
+            self.error = "非 Windows，IPC 不可用"
+            return self
+        if self._t is not None:
+            return self
+        if self.log_path:
+            # 审计打不开不应拖垮 IPC 本身：只记下原因，照常建管道
+            try:
+                os.makedirs(os.path.dirname(os.path.abspath(self.log_path)), exist_ok=True)
+                self._audit_f = open(self.log_path, "a", encoding="utf-8", newline="\n")
+            except OSError as e:
+                self.audit_error = "%s: %s" % (type(e).__name__, e)
+        try:
+            k, ov_cls = _pipe_api()
+            self._stop_h = k.CreateEventW(None, True, False, None)
+            self._ev_w = k.CreateEventW(None, True, False, None)
+            self._ov_w = ov_cls()
+            self._ov_w.hEvent = self._ev_w
+        except BaseException as e:                                 # noqa: BLE001
+            self.error = "%s: %s" % (type(e).__name__, e)
+            self._release()
+            return self
+        self._t = threading.Thread(target=self._serve, name="pipe-bridge", daemon=True)
+        self._t.start()
+        self._created.wait(1.0)          # 让调用方返回时管道已存在（fne 本来也会重试）
+        return self
+
+    def close(self):
+        """干净退出：唤醒阻塞中的 IO、关句柄、关审计。可重复调用。"""
+        self._closing = True
+        try:
+            if self._stop_h:
+                _pipe_api()[0].SetEvent(self._stop_h)
+        except BaseException:                                      # noqa: BLE001
+            pass
+        t = self._t
+        if t is not None and t is not threading.current_thread():
+            t.join(timeout=2.0)
+        # 线程若还没退（极端情况）就不去关它在用的句柄；它是 daemon，不会卡住进程
+        if t is None or not t.is_alive():
+            self._release()
+
+    def _release(self):
+        try:
+            k = _pipe_api()[0] if sys.platform == "win32" else None
+        except BaseException:                                      # noqa: BLE001
+            k = None
+        with self._wlock:
+            for name in ("_ev_w", "_stop_h"):
+                h = getattr(self, name)
+                setattr(self, name, None)
+                if h and k is not None:
+                    try:
+                        k.CloseHandle(h)
+                    except BaseException:                          # noqa: BLE001
+                        pass
+        with self._alk:
+            f, self._audit_f = self._audit_f, None
+            if f is not None:
+                try:
+                    f.close()
+                except OSError:
+                    pass
+
+    # -- 读线程 -------------------------------------------------------------- #
+    def _serve(self):
+        import ctypes
+        k, ov_cls = _pipe_api()
+        ev = None
+        try:
+            invalid = ctypes.c_void_p(-1).value
+            flags = 0x3 | 0x40000000 | 0x00080000     # DUPLEX | OVERLAPPED | FIRST_PIPE_INSTANCE
+            mode = 0x0 | 0x0 | 0x0 | 0x8              # BYTE | READMODE_BYTE | WAIT | REJECT_REMOTE
+            sa_ptr, sd = None, None
+            if self.sddl:
+                import ctypes.wintypes as wt
+                adv = ctypes.WinDLL("advapi32", use_last_error=True)
+                adv.ConvertStringSecurityDescriptorToSecurityDescriptorW.argtypes = [
+                    wt.LPCWSTR, wt.DWORD, ctypes.POINTER(ctypes.c_void_p), ctypes.c_void_p]
+
+                class SECURITY_ATTRIBUTES(ctypes.Structure):
+                    _fields_ = [("nLength", wt.DWORD), ("lpSecurityDescriptor", ctypes.c_void_p),
+                                ("bInheritHandle", wt.BOOL)]
+
+                sd = ctypes.c_void_p()
+                if not adv.ConvertStringSecurityDescriptorToSecurityDescriptorW(
+                        self.sddl, 1, ctypes.byref(sd), None):
+                    raise OSError(ctypes.get_last_error(), "SDDL 无效: %s" % self.sddl)
+                sa = SECURITY_ATTRIBUTES(ctypes.sizeof(SECURITY_ATTRIBUTES), sd, False)
+                sa_ptr = ctypes.byref(sa)
+            h = k.CreateNamedPipeW(self.pipe_path, flags, mode, 255, 65536, 65536, 0, sa_ptr)
+            if sd is not None and sd.value:
+                ctypes.WinDLL("kernel32").LocalFree(sd)
+            if h is None or h == invalid:
+                raise OSError(ctypes.get_last_error(), "CreateNamedPipe 失败: %s" % self.pipe_path)
+            with self._wlock:
+                self._h = h
+            self._created.set()
+            ev = k.CreateEventW(None, True, False, None)
+            while not self._closing:
+                if not self._accept(k, ov_cls, h, ev):
+                    break
+                with self._wlock:
+                    self._conn = True
+                try:
+                    self._session(k, ov_cls, h, ev)
+                finally:
+                    self._drop_conn(k, h)
+        except BaseException as e:                                 # noqa: BLE001
+            self.error = "%s: %s" % (type(e).__name__, e)
+        finally:
+            self._created.set()
+            with self._wlock:
+                hh, self._h = self._h, None
+                self._conn = False
+                self._hello_ok = False
+            if hh:
+                for fn in (k.DisconnectNamedPipe, k.CloseHandle):
+                    try:
+                        fn(hh)
+                    except BaseException:                          # noqa: BLE001
+                        pass
+            if ev:
+                try:
+                    k.CloseHandle(ev)
+                except BaseException:                              # noqa: BLE001
+                    pass
+
+    def _wait(self, k, ev, ms: int = 0xFFFFFFFF) -> int:
+        """等 ev 或「停止事件」。返回 0=ev 触发 / 1=要求停止 / 其它=超时或失败。"""
+        import ctypes.wintypes as wt
+        arr = (wt.HANDLE * 2)(ev, self._stop_h)
+        return k.WaitForMultipleObjects(2, arr, False, ms)
+
+    def _accept(self, k, ov_cls, h, ev) -> bool:
+        import ctypes
+        import ctypes.wintypes as wt
+        ov = ov_cls()
+        ov.hEvent = ev
+        k.ResetEvent(ev)
+        if k.ConnectNamedPipe(h, ctypes.byref(ov)):
+            return True
+        err = ctypes.get_last_error()
+        if err == 535:                                  # ERROR_PIPE_CONNECTED：客户端抢先连上了
+            return True
+        if err != 997:                                  # 不是 IO_PENDING
+            raise OSError(err, "ConnectNamedPipe 失败")
+        n = wt.DWORD(0)
+        if self._wait(k, ev) == 0:
+            if k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), False):
+                return True
+            raise OSError(ctypes.get_last_error(), "ConnectNamedPipe 完成态失败")
+        k.CancelIoEx(h, ctypes.byref(ov))               # 收到停止：撤销挂起的连接等待
+        k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), True)
+        return False
+
+    def _drop_conn(self, k, h):
+        with self._wlock:
+            self._conn = False
+            self._hello_ok = False
+            self._connected_at = None
+            try:
+                k.DisconnectNamedPipe(h)
+            except BaseException:                                  # noqa: BLE001
+                pass
+
+    def _session(self, k, ov_cls, h, ev):
+        """一次连接的生命周期：逐块读、按换行符切行、派发。返回即表示会话结束。"""
+        import ctypes
+        import ctypes.wintypes as wt
+        buf = ctypes.create_string_buffer(65536)
+        ov = ov_cls()
+        ov.hEvent = ev
+        acc = bytearray()
+        while not self._closing:
+            k.ResetEvent(ev)
+            n = wt.DWORD(0)
+            if not k.ReadFile(h, buf, 65536, ctypes.byref(n), ctypes.byref(ov)):
+                if ctypes.get_last_error() != 997:      # 109=对端已关 等：会话结束
+                    return
+                if self._wait(k, ev) != 0:              # 要求停止：撤销挂起的读
+                    k.CancelIoEx(h, ctypes.byref(ov))
+                    k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), True)
+                    return
+                if not k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), False):
+                    return
+            if n.value == 0:
+                return
+            acc += ctypes.string_at(buf, n.value)
+            while True:
+                i = acc.find(b"\n")
+                if i < 0:
+                    break
+                line = bytes(acc[:i])
+                del acc[:i + 1]
+                if not self._on_line(line):
+                    return
+            if len(acc) > self.LINE_MAX:
+                acc.clear()
+                with self._lk:
+                    self.bad_frames += 1
+
+    # -- 帧处理 -------------------------------------------------------------- #
+    def _on_line(self, line: bytes) -> bool:
+        """处理一行；返回 False 表示应结束本次会话（握手失败）。"""
+        text = line.decode("utf-8", errors="replace").rstrip("\r")
+        if not text.strip():
+            return True
+        with self._lk:
+            self.frames_in += 1
+        self._audit("in", text)
+        try:
+            obj = json.loads(text)
+            if not isinstance(obj, dict):
+                raise ValueError("not an object")
+        except ValueError:
+            with self._lk:
+                self.bad_frames += 1
+            return True
+        t = obj.get("t")
+        if not self._hello_ok:
+            if t != "hello":
+                with self._lk:
+                    self.ignored_pre_hello += 1
+                return True
+            return self._on_hello(obj)
+        if t == "dialog":
+            self._on_dialog(obj)
+        elif t == "event":
+            kk = obj.get("k")
+            if isinstance(kk, str) and len(kk) <= 32:
+                with self._lk:
+                    if kk in self.events_in or len(self.events_in) < 32:
+                        self.events_in[kk] = self.events_in.get(kk, 0) + 1
+        elif t == "result":
+            how = obj.get("how")
+            how = how if isinstance(how, str) and len(how) <= 16 else "?"
+            with self._lk:
+                self.results_in[how] = self.results_in.get(how, 0) + 1
+                if how == "fallback":
+                    self.fallbacks += 1
+        elif t == "ping":
+            self.send({"t": "pong", "ts": obj.get("ts", 0)})
+        elif t in ("pong", "policy", "hello"):
+            pass                                       # 合法但无需处理（hello 重发直接忽略）
+        else:
+            with self._lk:
+                self.unknown_frames += 1               # 未识别的 t：忽略并计数
+        return True
+
+    def _on_hello(self, obj: dict) -> bool:
+        import hmac
+        tok = unhexg(obj.get("token"))
+        # 令牌按协议是 hex(GBK)；也容忍对端直接发明文（令牌本身就是十六进制串）
+        good = (hmac.compare_digest(tok.encode("utf-8"), self.token.encode("utf-8"))
+                or hmac.compare_digest(str(obj.get("token", "")).encode("utf-8"),
+                                       self.token.encode("utf-8")))
+        if not good:
+            with self._lk:
+                self.handshake_fail += 1
+            self.send({"t": "ack", "v": self.ACK_V, "ok": 0, "err": hexg("token mismatch")})
+            return False
+        try:
+            self.peer_pid = int(obj.get("pid"))
+        except (TypeError, ValueError):
+            self.peer_pid = None
+        self.peer_fw = unhexg(obj.get("fw"))
+        if not self.send({"t": "ack", "v": self.ACK_V, "ok": 1}):
+            return False
+        self._connected_at = time.time()
+        self._hello_ok = True
+        self.ever_connected = True
+        self._ready.set()
+        return True
+
+    @staticmethod
+    def _num(v, default=None):
+        try:
+            return int(v)
+        except (TypeError, ValueError):
+            return default
+
+    def _on_dialog(self, obj: dict):
+        t0 = time.perf_counter()
+        did = self._num(obj.get("id"))
+        if did is None:
+            with self._lk:
+                self.bad_frames += 1
+            return
+        btns = []
+        for b in (obj.get("btns") or []):
+            if isinstance(b, dict) and self._num(b.get("i")) is not None:
+                btns.append({"i": self._num(b.get("i")), "txt": unhexg(b.get("txt"))})
+        edits = []
+        for e in (obj.get("edits") or []):
+            if isinstance(e, dict) and self._num(e.get("c")) is not None:
+                edits.append({"c": self._num(e.get("c")), "cls": unhexg(e.get("cls")),
+                              "txt": unhexg(e.get("txt"))})
+        dlg = {"id": did, "hwnd": obj.get("hwnd"), "kind": obj.get("kind"),
+               "cls": unhexg(obj.get("cls")), "title": unhexg(obj.get("title")),
+               "msg": unhexg(obj.get("msg")), "btns": btns, "edits": edits,
+               "pol": obj.get("pol"), "ts": obj.get("ts")}
+        dec = self._decide(dlg)
+        frame = self._build_decide(did, dec, btns, edits)
+        sent = self.send(frame)
+        ms = (time.perf_counter() - t0) * 1000.0
+        with self._lk:
+            self.dialogs_in += 1
+            if sent:
+                self.decisions += 1
+                self.latency.append(ms)
+            self.recent.append({"id": did, "kind": dlg["kind"], "title": dlg["title"],
+                                "msg": dlg["msg"][:200], "act": frame["act"],
+                                "btn": frame.get("btn"), "sent": sent})
+            if len(self.recent) > 20:
+                del self.recent[:-20]
+
+    def _decide(self, dlg: dict) -> dict:
+        """决策入口：先问外部 decider（若有），异常/无结果/形态不对就退回默认规则。"""
+        if self._decider is not None:
+            try:
+                d = self._decider(dlg)
+                if isinstance(d, dict) and d.get("act") in self.ACTS:
+                    return d
+            except BaseException:                                  # noqa: BLE001
+                pass
+        return self._default_decide(dlg)
+
+    def _default_decide(self, dlg: dict) -> dict:
+        """默认规则（与 fne 内置兜底一致）：
+        单按钮 → 点它；多按钮有 IDOK → 点 IDOK；
+        多按钮无 IDOK、有 IDCANCEL 且无 IDYES → 点 IDCANCEL；其余 → none。
+
+        例外：`pol == "observe"`（ELANG_AI_DLG_POLICY=observe）时一律 none。
+        观察模式的语义是「只记录，不动窗口」，桥这边要是照点不误，等于把
+        用户显式设的观察模式破了 —— 这类框可能是程序自己的业务确认框。"""
+        if (dlg.get("pol") or "").lower() == "observe":
+            return {"act": "none"}
+        ids = [b["i"] for b in (dlg.get("btns") or [])]
+        if len(ids) == 1:
+            return {"act": "click", "btn": ids[0]}
+        if len(ids) > 1:
+            if self.IDOK in ids:
+                return {"act": "click", "btn": self.IDOK}
+            if self.IDCANCEL in ids and self.IDYES not in ids:
+                return {"act": "click", "btn": self.IDCANCEL}
+        return {"act": "none"}
+
+    def _build_decide(self, did: int, dec: dict, btns: list, edits: list) -> dict:
+        """把决策按协议白名单规整成 decide 帧；越权的 btn / 控件号一律剔除或降级为 none。"""
+        act = dec.get("act")
+        btn_ids = {b["i"] for b in btns}
+        edit_ids = {e["c"] for e in edits}
+        btn = self._num(dec.get("btn"))
+        fill = {}
+        for c, v in (dec.get("edits") or {}).items():
+            ci = self._num(c)
+            if ci in edit_ids:
+                fill[str(ci)] = hexg(v)
+        if act in ("click", "fillclick") and btn not in btn_ids:
+            act = "fill" if (act == "fillclick" and fill) else "none"
+        if act in ("fill", "fillclick") and not fill:
+            act = "click" if (act == "fillclick" and btn in btn_ids) else "none"
+        if act not in self.ACTS:
+            act = "none"
+        fr = {"t": "decide", "id": did, "act": act}
+        if act in ("click", "fillclick"):
+            fr["btn"] = btn
+        if act in ("fill", "fillclick"):
+            fr["edits"] = fill
+        if dec.get("hide"):
+            fr["hide"] = 1
+        return fr
+
+    # -- 发送 ---------------------------------------------------------------- #
+    def send(self, obj: dict) -> bool:
+        """按协议序列化成一行写进管道（同步等写完，最多 2 秒）并写审计。
+
+        text 类字段请调用方自己先 hexg()；这里只保证输出是单行纯 ASCII JSON。"""
+        try:
+            line = json.dumps(obj, ensure_ascii=True, separators=(",", ":"))
+        except (TypeError, ValueError):
+            return False
+        if not self._write((line + "\n").encode("ascii")):
+            return False
+        with self._lk:
+            self.frames_out += 1
+        self._audit("out", line)
+        return True
+
+    def set_policy(self, dlg: str, hide: str = None) -> bool:
+        """运行期改 fne 策略（observe / dismiss）。"""
+        fr = {"t": "policy", "dlg": dlg}
+        if hide:
+            fr["hide"] = hide
+        return self.send(fr)
+
+    def _write(self, raw: bytes) -> bool:
+        import ctypes
+        import ctypes.wintypes as wt
+        with self._wlock:
+            h = self._h
+            if h is None or not self._conn or self._ov_w is None or self._ev_w is None:
+                return False
+            k = _pipe_api()[0]
+            ev, ov = self._ev_w, self._ov_w
+            k.ResetEvent(ev)
+            buf = ctypes.create_string_buffer(raw, len(raw))
+            n = wt.DWORD(0)
+            if not k.WriteFile(h, buf, len(raw), ctypes.byref(n), ctypes.byref(ov)):
+                if ctypes.get_last_error() != 997:
+                    return False
+                if k.WaitForSingleObject(ev, 2000) != 0:      # 对端不读：撤销，别无限卡
+                    k.CancelIoEx(h, ctypes.byref(ov))
+                    k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), True)
+                    return False
+                if not k.GetOverlappedResult(h, ctypes.byref(ov), ctypes.byref(n), False):
+                    return False
+            return n.value == len(raw)
+
+    # -- 审计与统计 ---------------------------------------------------------- #
+    def _audit(self, direction: str, raw: str):
+        """<tag>_ipc.jsonl：每行 {"ts":毫秒,"dir":"in"|"out","raw":"原始一行"}（UTF-8）。"""
+        with self._alk:
+            f = self._audit_f
+            if f is None or self._audit_bytes > self.AUDIT_MAX:
+                return
+            try:
+                s = json.dumps({"ts": int(time.time() * 1000), "dir": direction, "raw": raw},
+                               ensure_ascii=False) + "\n"
+                f.write(s)
+                f.flush()
+                self._audit_bytes += len(s)
+            except (OSError, ValueError):
+                pass
+
+    def p95_ms(self):
+        with self._lk:
+            xs = sorted(self.latency)
+        if not xs:
+            return None
+        return round(xs[max(0, int(-(-len(xs) * 95 // 100)) - 1)], 2)
+
+    def stats(self) -> dict:
+        p95 = self.p95_ms()
+        with self._lk:
+            return {
+                "connected": self.connected, "everConnected": self.ever_connected,
+                "framesIn": self.frames_in, "framesOut": self.frames_out,
+                "decisions": self.decisions, "fallbacks": self.fallbacks, "p95Ms": p95,
+                "dialogsIn": self.dialogs_in, "eventsIn": dict(self.events_in),
+                "resultsIn": dict(self.results_in), "badFrames": self.bad_frames,
+                "unknownFrames": self.unknown_frames, "handshakeFail": self.handshake_fail,
+                "ignoredPreHello": self.ignored_pre_hello, "peerPid": self.peer_pid,
+                "pipe": self.pipe_path, "auditFile": self.log_path, "error": self.error,
+                "auditError": self.audit_error,
+            }
+
+
 class WindowHider(object):
     """后台线程：持续把 `e.exe` 的顶层窗口「移出屏幕」和/或「SW_HIDE」并统计露脸情况。
 
@@ -487,6 +1143,19 @@ class WindowHider(object):
     逐像素测量抓到过 17637 抽样像素的整屏差异，就是这一帧。
     事件通道是内核直接投递到本线程消息队列的，且**只在真有窗口显示时才唤醒**，
     所以既快又不吃 CPU。
+
+    ## 轮询引擎（engine，2026-10-29 宿主事件总线）
+
+    环境变量 `ELANG_AI_HIDE_ENGINE`（优先于构造参数）取值：
+
+    | engine | 行为 |
+    |---|---|
+    | `host`（IPC 启用时的默认） | **不跑周期性全系统 EnumWindows**：只在启动后 ~2 秒宽限期内做有限轮次兜底，之后仅保留 SetWinEventHook 事件通道；桥已连通 >3 秒也会立刻停轮询 |
+    | `both` | 事件 + 轮询（旧行为；IPC 未启用时的默认，保持与改动前一致） |
+    | `python` | 只跑轮询（调试用） |
+
+    停轮询的原因记在 `poll_stopped_reason`。`host` 下若事件通道没成功挂上
+    （`hook_ok` 为假），轮询**不会停**，等同 `both`——否则就没有任何 Python 侧兜底了。
 
     ## 三种策略（mode）
 
@@ -549,10 +1218,22 @@ class WindowHider(object):
     POLL_IDLE = 0.012          # 安静时：12ms
     OFFSCREEN = -32000
     MODES = ("park", "shide", "hide")
+    ENGINES = ("host", "both", "python")
+    HOST_GRACE_SEC = 2.0       # host 引擎：启动后兜底轮询的宽限期
+    HOST_MAX_ROUNDS = 200      # host 引擎：宽限期内最多轮询多少轮（有限轮次）
+    HOST_BRIDGE_SEC = 3.0      # host 引擎：桥连通超过这么久就彻底停轮询
 
-    def __init__(self, pid: int, mode: str = "hide", verbose=None):
+    def __init__(self, pid: int, mode: str = "hide", verbose=None, engine: str = "host",
+                 bridge=None):
         self.pid = pid
         self.mode = mode if mode in self.MODES else "hide"
+        # 环境变量优先于参数；非法值一律按参数/默认 host
+        _env_engine = os.environ.get("ELANG_AI_HIDE_ENGINE", "").strip().lower()
+        if _env_engine in self.ENGINES:
+            engine = _env_engine
+        self.engine = engine if engine in self.ENGINES else "host"
+        self.bridge = bridge                    # PipeBridge（可为 None）；只读它的连通状态
+        self.poll_stopped_reason = None         # 轮询分支为什么停的（统计用）
         self.enabled = bool(mode != "off" and sys.platform == "win32")
         self.hide_windows = (self.mode == "hide")     # 轮询里是否 SW_HIDE
         self._verbose = verbose
@@ -578,6 +1259,8 @@ class WindowHider(object):
         self.n_vis_own = 0          # 诊断：累计「属于本进程且可见」的窗口数
         self.errs = []              # 诊断：EnumWindows 抛出的异常（有界）
         self.error = None
+        if not self.enabled:
+            self.poll_stopped_reason = "disabled"
     # -- 内部：Win32 --
     def _run(self):
         import ctypes
@@ -607,7 +1290,13 @@ class WindowHider(object):
             return not (r.right <= _vx or r.left >= _vx + _vw
                         or r.bottom <= _vy or r.top >= _vy + _vh)
 
+        _poll_t0 = time.time()
         while not self._stop.is_set():
+            if self.engine == "host":
+                _why = self._host_poll_stop_reason(_poll_t0)
+                if _why:
+                    self.poll_stopped_reason = _why
+                    break
             found = []
             box = [0]
             st = [0, 0]
@@ -661,10 +1350,34 @@ class WindowHider(object):
 
             self._stop.wait(self.POLL_BUSY if busy else self.POLL_IDLE)
 
+        if self.poll_stopped_reason is None:
+            self.poll_stopped_reason = "stop-requested"
         try:
             ctypes.WinDLL("winmm").timeEndPeriod(1)
         except BaseException:                                      # noqa: BLE001
             pass
+
+    def _host_poll_stop_reason(self, t0: float):
+        """host 引擎：轮询分支该不该停；返回原因串，None=继续。
+
+        事件通道没挂上（hook_ok 为假）时绝不停，否则 Python 侧就彻底没有兜底了。"""
+        if not self.hook_ok:
+            return None
+        br = self.bridge
+        if br is not None and br.connected:
+            # 桥活着：连满 HOST_BRIDGE_SEC 就把轮询撤掉，从此靠宿主事件总线
+            if br.connected_for() > self.HOST_BRIDGE_SEC:
+                return "bridge-connected"
+            return None
+        if br is None or not getattr(br, "ever_connected", False):
+            # 桥从头到尾没连上过（旧版 fne / ACL 拒绝 / --no-ipc）⇒ 绝不停轮询。
+            # 这时候停掉等于把 Python 侧唯一的兜底撤了，宁可退回改动前的行为。
+            return None
+        if time.time() - t0 >= self.HOST_GRACE_SEC:
+            return "bridge-lost"
+        if self.polls >= self.HOST_MAX_ROUNDS:
+            return "bridge-lost"
+        return None
 
     def start(self):
         if not self.enabled:
@@ -680,6 +1393,7 @@ class WindowHider(object):
             self._run()
         except BaseException as e:                                 # noqa: BLE001
             self.error = "%s: %s" % (type(e).__name__, e)
+            self.poll_stopped_reason = "error"
 
     # -- 事件驱动通道 ------------------------------------------------------- #
     EV_OBJECT_CREATE = 0x8000
@@ -766,10 +1480,13 @@ class WindowHider(object):
             return "未启用（--headless off / 非 Windows）"
         if self.error:
             return "失败: %s" % self.error
-        return ("mode=%s 动作 %d 次（事件通道 %d / 轮询 %d；轮询 %d 次见到可见窗口 %d 个）；"
-                "采样到「可见且与屏幕相交」%d 次"
-                % (self.mode, self.handled, self.hook_hits, self.handled - self.hook_hits,
-                   self.polls, self.seen, self.peak_visible))
+        s = ("mode=%s 动作 %d 次（事件通道 %d / 轮询 %d；轮询 %d 次见到可见窗口 %d 个）；"
+             "采样到「可见且与屏幕相交」%d 次"
+             % (self.mode, self.handled, self.hook_hits, self.handled - self.hook_hits,
+                self.polls, self.seen, self.peak_visible))
+        if self.engine != "both":
+            s += "；engine=%s 轮询停止原因=%s" % (self.engine, self.poll_stopped_reason)
+        return s
 
 
 def make_hidden_startupinfo():
@@ -844,7 +1561,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
             fne: str = None, home: str = None, tag: str = None, quiet: bool = False,
             compile_kind: str = None, expect_out: str = None,
             check_only: bool = False, headless: str = None,
-            open_target: str = None) -> dict:
+            open_target: str = None, ipc: bool = None) -> dict:
     # `precompile`（= FN_PRE_COMPILE）只做语法/语义静态检查：无产物、无保存框。
     pre_mode = (compile_kind == "precompile")
     # 编译模式禁止默认启动两层隐藏守护链：其会并发改写 IDE 窗口，
@@ -857,6 +1574,11 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     elif headless is False:
         headless = "off"
     hl_mode = headless
+    # 宿主事件总线 + 双向 IPC（协议见 docs\方案-宿主事件总线与双向IPC协议.md）。
+    # 默认开；--no-ipc / ELANG_AI_IPC=0 / 非 Windows 时与改动前行为完全一致。
+    if ipc is None:
+        ipc = os.environ.get("ELANG_AI_IPC", "1").strip().lower() not in ("0", "off", "false", "no")
+    ipc = bool(ipc and sys.platform == "win32")
 
     ai_e = os.path.abspath(ai_e)
     if not os.path.isfile(ai_e):
@@ -896,6 +1618,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     # 事件文件：**每会话独享**（旧实现缺省落 %TEMP%\elang_ai_events.log，多会话互相
     # 覆盖、还会读到上一次的旧事件）。fne 侧 EventWrite 认 ELANG_AI_EVENTS。
     events = os.path.join(log_dir, "%s_events.txt" % tag)
+    ipc_log = os.path.join(log_dir, "%s_ipc.jsonl" % tag)
 
     # `--check` 走真编译时（`--check --compile <种类>`）不关心产物，但 IDE 的保存框必须
     # **有东西可填**才会被宿主库消掉（模态框不消掉，触发线程就永远不返回）。所以给个临时
@@ -906,7 +1629,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         check_out_made = True
 
     # 只清**同名 tag** 旧证据，不碰别次运行
-    for f in (log, trace, harness, events):
+    for f in (log, trace, harness, events, ipc_log):
         if os.path.exists(f):
             safe_remove(f)
 
@@ -917,6 +1640,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     proc = None
     ho = None
     hider = None
+    bridge = None
+    ipc_stats = None
     before_dir = toplist(e_dir)
     cleanup_warn = []
     start = {"runStart": None, "runEnd": None, "weSent": False}
@@ -946,6 +1671,19 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         # 收尾，而不是空等到超时（面板判据对「弹窗报错」完全失效）。
         env["ELANG_AI_EVENTS"] = events
         env["ELANG_AI_DLG_POLICY"] = "dismiss"
+        ipc_tag = ipc_token = ipc_pipe_tpl = None
+        if ipc:
+            # IPC：fne 是管道客户端，本进程是服务端。管道名含 e.exe 的 PID，而环境变量
+            # 必须在 Popen 之前定好 —— 所以这里只能注入带 {pid} 占位的模板（fne 侧用
+            # GetCurrentProcessId() + ELANG_AI_PIPE_TAG 自行拼出同一个名字，ELANG_AI_PIPE
+            # 主要是「启用开关」），Popen 之后再按真实 PID 建管道（fne 会重试 3 秒）。
+            ipc_tag = secrets.token_hex(3)
+            ipc_token = secrets.token_hex(16)
+            ipc_pipe_tpl = "\\\\.\\pipe\\elang_addin.{pid}.%s" % ipc_tag
+            env["ELANG_AI_PIPE"] = ipc_pipe_tpl
+            env["ELANG_AI_PIPE_TOKEN"] = ipc_token
+            env["ELANG_AI_PIPE_TAG"] = ipc_tag
+            env.setdefault("ELANG_AI_DLG_TIMEOUT_MS", "1500")
         if compile_kind:
             # 编译模式：触发 FNST_RUN 编译家族功能号，监视期望产物出现
             env.update({
@@ -985,7 +1723,18 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         pid = proc.pid
         print("   e.exe pid = %d" % pid)
         print("   无头模式 = %s" % hl_mode)
-        hider = WindowHider(pid, mode=hl_mode).start()
+        if ipc:
+            pipe_name = ipc_pipe_tpl.replace("{pid}", str(pid))
+            try:
+                _to = int(env.get("ELANG_AI_DLG_TIMEOUT_MS") or 1500)
+            except ValueError:
+                _to = 1500
+            bridge = PipeBridge(pipe_name, ipc_token, ipc_log, _to,
+                                sddl=(os.environ.get("ELANG_AI_PIPE_SDDL") or None)).start()
+            print("   ipc     = %s%s" % (pipe_name, ("  !! %s" % bridge.error) if bridge.error else ""))
+        # IPC 启用 → 窗口隐藏交给宿主事件总线（host 引擎）；未启用 → 沿用事件+轮询（both）
+        hider = WindowHider(pid, mode=hl_mode, engine=("host" if bridge else "both"),
+                            bridge=bridge).start()
         evw = EventWatch(events)
 
         deadline = t0 + float(timeout)
@@ -1091,6 +1840,12 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         # 先停无头守护线程（它只动窗口样式，不影响收尾）
         if hider is not None:
             hider.stop()
+        # 桥统计先于杀进程快照（杀掉后连接必断）；close 放在 e.exe 结束之后
+        if bridge is not None:
+            try:
+                ipc_stats = bridge.stats()
+            except BaseException:                                  # noqa: BLE001
+                ipc_stats = None
         # 精确 PID 结束；绝不 /IM（收尾失败也不改判结果）
         try:
             if pid:
@@ -1102,6 +1857,15 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                         pass
         except BaseException:                                      # noqa: BLE001
             pass
+        if bridge is not None:
+            try:
+                bridge.close()
+                _fin = bridge.stats()          # close 后再取一次，把收尾瞬间的帧也算进去
+                if ipc_stats is not None:
+                    _fin["connectedAtExit"] = ipc_stats.get("connected")
+                ipc_stats = _fin
+            except BaseException:                                  # noqa: BLE001
+                pass
         # 清理投放的 .fne + diff 自证（尽力而为，失败只记警告）
         if os.path.exists(dst_fne) and not safe_remove(dst_fne):
             cleanup_warn.append("未能移除 lib\\%s" % LIB_FNAME)
@@ -1245,8 +2009,26 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
              "errs": hider.errs or None,
              "diag": hider.diag[:60] or None, "diagVis": hider.diag_vis[:20] or None,
              "visibleOnScreenSamples": hider.peak_visible,
-             "worstRects": (hider._worst[:4] or None), "error": hider.error}),
+             "worstRects": (hider._worst[:4] or None), "error": hider.error,
+             "hideEngine": hider.engine, "pollStoppedReason": hider.poll_stopped_reason}),
     }
+    if ipc_stats is not None:
+        # ipc 段（仅 IPC 启用时出现）。connected = 本会话期间曾握手成功
+        result["ipc"] = {
+            "connected": bool(ipc_stats.get("everConnected")),
+            "connectedAtExit": ipc_stats.get("connectedAtExit"),
+            "framesIn": ipc_stats.get("framesIn"), "framesOut": ipc_stats.get("framesOut"),
+            "decisions": ipc_stats.get("decisions"), "fallbacks": ipc_stats.get("fallbacks"),
+            "p95Ms": ipc_stats.get("p95Ms"),
+            "hideEngine": None if hider is None else hider.engine,
+            "pollStoppedReason": None if hider is None else hider.poll_stopped_reason,
+            "dialogsIn": ipc_stats.get("dialogsIn"), "eventsIn": ipc_stats.get("eventsIn"),
+            "resultsIn": ipc_stats.get("resultsIn"), "badFrames": ipc_stats.get("badFrames"),
+            "unknownFrames": ipc_stats.get("unknownFrames"),
+            "handshakeFail": ipc_stats.get("handshakeFail"),
+            "pipe": ipc_stats.get("pipe"), "auditFile": ipc_stats.get("auditFile"),
+            "error": ipc_stats.get("error"),
+        }
     # 结果摘要**始终**写进 harness（stderr），这样 `<TAG>_harness.txt` 里也有
     # 「异常 → 退出码」这条物证（即使面板随崩溃一起没了）。
     # ⚠️ 摘要只走 stderr —— `--json` 契约是「stdout 只放结果 JSON」。
@@ -1257,6 +2039,11 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
           % (panel_seen, log_bytes, cleanup_warn or "无"), file=sys.stderr)
     if hider is not None:
         print("   无头=%s" % hider.summary(), file=sys.stderr)
+    if ipc_stats is not None:
+        print("   ipc=connected:%s in:%s out:%s decisions:%s fallbacks:%s p95Ms:%s"
+              % (result["ipc"]["connected"], result["ipc"]["framesIn"],
+                 result["ipc"]["framesOut"], result["ipc"]["decisions"],
+                 result["ipc"]["fallbacks"], result["ipc"]["p95Ms"]), file=sys.stderr)
     for e in errors:
         print("   编译错误: %s" % e, file=sys.stderr)
     if start.get("dialogBlocked"):
@@ -1298,6 +2085,8 @@ def main():
                     help="窗口策略。编译默认 off，调试运行默认 hide；hide=隐藏+移出屏幕（屏幕零窗口）；"
                          "shide=同上但主窗口走 SW_HIDE 启动；park=只移出屏幕、保持可见；"
                          "off=显示窗口")
+    ap.add_argument("--no-ipc", action="store_true", dest="no_ipc",
+                    help="不启用宿主事件总线/双向 IPC（等价 ELANG_AI_IPC=0；行为与引入 IPC 前一致）")
     ap.add_argument("--home", help="易语言安装目录（默认 $ELANG_HOME → 注册表）")
     ap.add_argument("--tag", help="证据命名前缀（默认 <名>_<时分秒>）")
     ap.add_argument("-q", "--quiet", action="store_true", help="不打印过程")
@@ -1314,7 +2103,8 @@ def main():
                          compile_kind=a.compile_kind, expect_out=a.expect_out,
                          check_only=a.check_only,
                          headless=("off" if a.visible else a.headless),
-                         open_target=a.open_target)
+                         open_target=a.open_target,
+                         ipc=(False if a.no_ipc else None))
     except SystemExit as e:
         if a.as_json:
             print(json.dumps({"ok": False, "status": "error", "error": str(e)},
