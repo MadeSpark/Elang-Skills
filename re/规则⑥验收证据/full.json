@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
