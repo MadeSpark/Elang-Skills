@@ -1,3 +1,0 @@
-流程分支门禁未过（不解决不允许编译）：
-  - .scratch_session\ecompile_narrow_bad\branch_gate\branch_gate_text\class\窗口程序集_界面.form.e.txt:5468 隐藏块尾「.如果结束」与更浅的隐藏块尾「.如果真结束」（第5469行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线）；在该行后补一个 8 空格缩进的空行
-  - .scratch_session\ecompile_narrow_bad\branch_gate\branch_gate_text\class\窗口程序集_界面.form.e.txt:5479 隐藏块尾「.如果结束」与更浅的隐藏块尾「.如果真结束」（第5480行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线）；在该行后补一个 8 空格缩进的空行
