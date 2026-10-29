@@ -134,7 +134,7 @@ python tools\selftest-ipc.py
 | Release | https://github.com/MadeSpark/Elang-Skills/releases/tag/v1.3.9 |
 | 资产 | `Elang-AiTools.zip` 30,705,028 B，sha256 `1a83e23be414d4df2dbd08301a8eca920d6d75965426701712239063ad0e22b1`；50 个文件，条目全为 `Elang-AiTools/…`，逐条 md5 回验 0 问题 |
 
-`python tools/verify-release.py`：**90 项通过 / 24 项失败**。24 条失败全部是环境侧：23 条「本机已有安装副本与发布区不一致」（`agents/`、`claude/`、`codex/`、`cursor/`、`dsh/`、`trae/`、`trae-cn/`、`windsurf/`、`opencode/`、`workbuddy/` 下的 elang-build / elang-debug / elang-ai-coding 副本），1 条**预存漂移**：`skills/elang-ai-coding/scripts/echeck.py` 为 2026-10-28 35656 B，比 `tools/echeck.py`（2026-10-24 33582 B）更新 —— 是 v1.3.8 期间直接在发布区改的，从未回灌工程侧。受限沙箱下 `~/.claude/skills` 等目录不可写，安装副本无法在本会话刷新。
+`python tools/verify-release.py`：**90 项通过 / 24 项失败**。24 条失败全部是环境侧：23 条「本机已有安装副本与发布区不一致」（`agents/`、`claude/`、`codex/`、`cursor/`、`dsh/`、`trae/`、`trae-cn/`、`windsurf/`、`opencode/`、`workbuddy/` 下的 elang-build / elang-debug / elang-ai-coding 副本），1 条**预存漂移**：`skills/elang-ai-coding/scripts/echeck.py` 为 2026-10-28 35656 B，比 `tools/echeck.py`（2026-10-24 33582 B）更新 —— 是 v1.3.8 期间直接在发布区改的、当时尚未回灌工程侧（2026-10-29 已回灌，见下）。受限沙箱下 `~/.claude/skills` 等目录不可写，安装副本无法在本会话刷新。
 
 > 回灌`echeck.py`已于 2026-10-29 完成：发布区 35656 B 那份 **原样**覆盖 `tools/echeck.py`
 > （sha1 `6954ef8a2898d7b609ebb2eaa3203bcf4d8e88b6`，与 `dist/elang-ai-coding.zip` 内 `scripts/echeck.py` 逐字节一致），
