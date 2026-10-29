@@ -1,0 +1,12 @@
+{
+  "files": 3359,
+  "read_fail": [],
+  "old_total": 151,
+  "new_total": 151,
+  "old_files": 79,
+  "new_files": 79,
+  "only_old": 0,
+  "only_new": 0
+}
+--- only_old（新版漏报，应为 0）
+--- only_new（新版新增命中，应为 0 或全部有 IDE 实证）

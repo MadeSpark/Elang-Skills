@@ -17,6 +17,10 @@
 
 # 检出成 CRLF 会让 bash 报 \r
 *.sh   text eol=lf
+# 规则⑥ 验收样本靠「行尾 + 行尾空格」表达语义（其中一份还是 BOM+CRLF 对照），
+# 必须按原字节进出：-text 关掉 autocrlf 归一化，否则 clone 出来的样本行尾会被改写，
+# 那条 CRLF 对照就悄悄退化成 LF，证据失效。
+re/规则⑥验收证据/fixtures/** -text
 # Windows 批处理必须 CRLF（安装技能.cmd 同时要求 GBK 编码）
 *.cmd  text eol=crlf
 *.bat  text eol=crlf

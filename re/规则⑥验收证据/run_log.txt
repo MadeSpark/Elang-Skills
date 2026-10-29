@@ -1,0 +1,347 @@
+--- bad_unwind (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\bad_unwind\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的隐藏块尾「.如果真结束」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\bad_unwind\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的隐藏块尾「.如果真结束」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- good_unwind (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- bad_reverse_explicit (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\bad_reverse_explicit\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\bad_reverse_explicit\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- reverse_legal (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- explicit_loop_legal (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- explicit_loop_mixed (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- hidden_mixed (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\hidden_mixed\\程序集1.static.e.txt:7 「.如果真结束」后的空行缩进 4 ≠ 本行缩进 8→ IDE 流程线对不齐（把空行改成 8 空格缩进）"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\hidden_mixed\\程序集1.static.e.txt:7 「.如果真结束」后的空行缩进 4 ≠ 本行缩进 8→ IDE 流程线对不齐（把空行改成 8 空格缩进）"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- good_two_blank (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- cross_sub (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- else_marker (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\else_marker\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」紧贴着中段标记「.否则」（中间无空行）→ 整个 .判断 的框在 IDE 里画不出来（该行后面补一个 8 空格缩进的空行）"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\else_marker\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」紧贴着中段标记「.否则」（中间无空行）→ 整个 .判断 的框在 IDE 里画不出来（该行后面补一个 8 空格缩进的空行）"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- jm_five (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:15 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第16行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:23 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第24行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:31 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第32行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:39 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第40行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 5,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:15 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第16行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:23 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第24行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:31 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第32行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\jm_five\\程序集1.static.e.txt:39 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第40行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- jm_five_fixed (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- bad_explicit_kinds (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:11 隐藏块尾「.如果真结束」与更浅的显式块尾「.判断结束」（第12行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:19 隐藏块尾「.如果真结束」与更浅的显式块尾「.判断循环尾」（第20行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:27 隐藏块尾「.如果真结束」与更浅的显式块尾「.变量循环尾」（第28行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:35 隐藏块尾「.如果真结束」与更浅的显式块尾「.循环判断尾」（第36行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 4,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:11 隐藏块尾「.如果真结束」与更浅的显式块尾「.判断结束」（第12行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:19 隐藏块尾「.如果真结束」与更浅的显式块尾「.判断循环尾」（第20行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:27 隐藏块尾「.如果真结束」与更浅的显式块尾「.变量循环尾」（第28行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\bad_explicit_kinds\\程序集1.static.e.txt:35 隐藏块尾「.如果真结束」与更浅的显式块尾「.循环判断尾」（第36行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- bad_if_end_explicit (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\bad_if_end_explicit\\程序集1.static.e.txt:9 隐藏块尾「.如果结束」与更浅的显式块尾「.计次循环尾」（第10行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\bad_if_end_explicit\\程序集1.static.e.txt:9 隐藏块尾「.如果结束」与更浅的显式块尾「.计次循环尾」（第10行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- bad_unwind_chain (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\bad_unwind_chain\\程序集1.static.e.txt:8 隐藏块尾「.如果真结束」与更浅的隐藏块尾「.如果真结束」（第9行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+    "re\\规则⑥验收证据\\fixtures\\bad_unwind_chain\\程序集1.static.e.txt:9 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第10行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 2,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\bad_unwind_chain\\程序集1.static.e.txt:8 隐藏块尾「.如果真结束」与更浅的隐藏块尾「.如果真结束」（第9行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 12 空格缩进的空行",
+      "re\\规则⑥验收证据\\fixtures\\bad_unwind_chain\\程序集1.static.e.txt:9 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第10行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- chain_fixed_inner (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\chain_fixed_inner\\程序集1.static.e.txt:8 「.如果真结束」后的空行缩进 8 ≠ 本行缩进 12→ IDE 流程线对不齐（把空行改成 12 空格缩进）",
+    "re\\规则⑥验收证据\\fixtures\\chain_fixed_inner\\程序集1.static.e.txt:10 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第11行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 2,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\chain_fixed_inner\\程序集1.static.e.txt:8 「.如果真结束」后的空行缩进 8 ≠ 本行缩进 12→ IDE 流程线对不齐（把空行改成 12 空格缩进）",
+      "re\\规则⑥验收证据\\fixtures\\chain_fixed_inner\\程序集1.static.e.txt:10 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第11行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- gap_wrong_indent_explicit (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\gap_wrong_indent_explicit\\程序集1.static.e.txt:7 「.如果真结束」后的空行缩进 0 ≠ 本行缩进 8→ IDE 流程线对不齐（把空行改成 8 空格缩进）"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\gap_wrong_indent_explicit\\程序集1.static.e.txt:7 「.如果真结束」后的空行缩进 0 ≠ 本行缩进 8→ IDE 流程线对不齐（把空行改成 8 空格缩进）"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- explicit_A_all_kinds (PASS) ---
+{
+  "errors": [],
+  "warnings": [],
+  "branch": {
+    "errors": 0,
+    "warnings": 0,
+    "passed": true,
+    "messages": []
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- crlf_bom_variant (PASS) ---
+{
+  "errors": [
+    "re\\规则⑥验收证据\\fixtures\\crlf_bom_variant\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      "re\\规则⑥验收证据\\fixtures\\crlf_bom_variant\\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的显式块尾「.计次循环尾」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}
+--- unit_next_indent_gate (PASS) ---
+B 与 A 同缩进              → 0 条（期望 0）
+B 比 A 更深               → 0 条（期望 0）
+B 更浅（隐藏尾）              → 1 条（期望 1）
+B 更浅（显式尾）              → 1 条（期望 1）
+A 是显式尾                 → 0 条（期望 0）
+已有空行（归规则③）             → 0 条（期望 0）
+A 混在语句中                → 0 条（期望 0）
+--- gbk_pipe_utf8_output (PASS) ---
+检查文件 1 个；仅流程分支门禁
+  ✗ re\规则⑥验收证据\fixtures\bad_unwind\程序集1.static.e.txt:7 隐藏块尾「.如果真结束」与更浅的隐藏块尾「.如果真结束」（第8行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行
+流程分支: ✗ 错误 1（硬规则：流程分支问题一律为错误，不解决不准编译）
+
+用例                       结果     期望                           实际
+----------------------------------------------------------------------------------------
+bad_unwind               PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+good_unwind              PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+bad_reverse_explicit     PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+reverse_legal            PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+explicit_loop_legal      PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+explicit_loop_mixed      PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+hidden_mixed             PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+good_two_blank           PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+cross_sub                PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+else_marker              PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+jm_five                  PASS   exit=1 errors=5 warnings=0   5 错误 / 0 警告
+jm_five_fixed            PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+bad_explicit_kinds       PASS   exit=1 errors=4 warnings=0   4 错误 / 0 警告
+bad_if_end_explicit      PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+bad_unwind_chain         PASS   exit=1 errors=2 warnings=0   2 错误 / 0 警告
+chain_fixed_inner        PASS   exit=1 errors=2 warnings=0   2 错误 / 0 警告
+gap_wrong_indent_explicit PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+explicit_A_all_kinds     PASS   exit=0 errors=0 warnings=0   0 错误 / 0 警告
+crlf_bom_variant         PASS   exit=1 errors=1 warnings=0   1 错误 / 0 警告
+unit_next_indent_gate    PASS   7 个内存档（同缩进/更深/显式A/已有空行 均 0 条） 7 个内存档全部符合
+gbk_pipe_utf8_output     PASS   exit=1 且 ✗ 行完整               GBK stdout 下报错行完整保留
+----------------------------------------------------------------------------------------
+合计 21 用例，失败 0 条 → 全部通过

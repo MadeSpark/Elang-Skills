@@ -210,14 +210,18 @@ def check_hidden_tail_gap(path, lines, errs):
     ③ 隔在中间的空行缩进必须与隐藏块尾自身缩进一致，否则流程线对不齐 → 错误；
     ⑤ 隐藏块尾紧贴中段标记（.否则 / .默认 / .判断）→ 整个 .判断 的框画不出来
        → 错误（2026-10-03 深夜实证：A/B demo 的 case5/case6；原生代码 0 处紧贴）。
-    ① 原规则「隐藏块尾紧贴下一条块尾 → 串线」**2026-10-20 删除**：
-       那是合法的嵌套收口写法（A/B demo 的 `.如果真结束` 紧接 `.计次循环尾`），
-       IDE 实开无弹框、剪贴板控制块模型 87/87 与 107/107 行完整、无丢行断线。
-       原生代码里少见只是书写习惯，继续当缺陷查会让**正确的交付件永远报 ⚠**，
-       与「流程分支 0 警告」的硬规则直接冲突，故整条删除而不是降级成提示。
+    ① 原规则「隐藏块尾紧贴下一条块尾 → 串线」2026-10-20 曾被整条删除，
+        理由是当时把 demos/下载接管 的 A/B demo 判定为「合法嵌套收口」——
+        依据是「IDE 无弹框 + 剪贴板控制块模型 87/87、107/107 完整」。
+        **该结论 2026-10-27 被用户端实证推翻**：这一形态坏的是**流程线的画法**
+        （红线/串线，隐藏尾的收口被挂到内层最后一条语句上），
+        它既不弹框、也不丢行，上述两条证据本来就看不见它。
+        ① 由此重新启用，但**只保留 B 比 A 更浅的那一半**（B 与 A 同缩进或更深时
+        相邻块尾仍合法），实现落在 check_unwind_tail_gap（规则⑥），
+        本函数不重复判，避免同一处报两条。
     只查隐藏块尾后的衔接：显式块尾（判断结束/计次循环尾等）→块首/中段/显式块尾
-    仍不查（IDE 会画可见收尾线，查了就是误报）。但「隐藏块尾→更浅隐藏块尾」
-    是另一条规则⑥，由 check_unwind_tail_gap 单独判，不在这里重复。
+    仍不查（IDE 会画可见收尾线，查了就是误报）。但「隐藏块尾→更浅块尾」
+    （B 是隐藏尾还是显式循环尾都算）是另一条规则⑥，由 check_unwind_tail_gap 单独判。
     隐藏块尾 → 空行 → .子程序 等声明行、隐藏块尾紧贴同缩进块首都是合法写法
     （用户 IDE 负对照实测：case7 隐藏块尾紧贴块首渲染正常）。
     （统计基准：未经打包往返的原生代码里，「隐藏块尾→中段标记」0 处紧贴、
@@ -239,8 +243,8 @@ def check_hidden_tail_gap(path, lines, errs):
         if next_kw not in TAIL_KIND and next_kw not in ("否则", "默认", "判断"):
             continue  # 只查「隐藏块尾 → 块尾/中段标记」衔接，其余写法合法
         if not gaps:
-            # 相邻块尾：本函数不判（反方向「隐藏尾→显式尾」合法）；
-            # 「隐藏块尾→更浅隐藏块尾」由 check_unwind_tail_gap 判。
+            # 相邻块尾：本函数不判 ——「隐藏块尾→更浅的块尾（隐藏或显式）」
+            # 由 check_unwind_tail_gap（规则⑥）判；同缩进/更深的紧贴本来就合法。
             if next_kw not in ("否则", "默认", "判断"):
                 continue
             errs.append(
@@ -257,25 +261,35 @@ def check_hidden_tail_gap(path, lines, errs):
 
 
 def check_unwind_tail_gap(path, lines, errs):
-    """规则⑥：隐藏块尾 A 后紧贴更浅的隐藏块尾 B 时，必须补 A 同缩进空行。
+    """规则⑥：隐藏块尾 A 后紧贴更浅的块尾 B 时，必须补 A 同缩进空行。
 
-    2026-10-24 实证（会话 session-e0f8c9bd-... 的「格式化字节数」）：
+    B 是隐藏块尾（.如果真结束 / .如果结束）或显式块尾（.判断结束 / .计次循环尾 /
+    .判断循环尾 / .变量循环尾 / .循环判断尾）都算 —— 判据只看缩进，不看 B 是哪种尾。
+
+    证据一（2026-10-24，格式化字节数）：
         .如果结束          ← 8 空格（隐藏块尾 A）
         .如果真结束        ← 4 空格（更浅的隐藏块尾 B），中间没有空行
-    IDE 会把外层隐藏块尾的收口箭头挂到内层最后一个返回语句上，红线从
-    格式化字节数 的两个 KB/MB 分支一路串到后面；补一条 8 空格空行后恢复。
+      IDE 把外层隐藏块尾的收口箭头挂到内层最后一个返回语句上，红线一路串到后面；
+      补一条 8 空格空行后恢复。
 
-    只对「隐藏尾 → 更浅隐藏尾」判错，不匹配子程序名：
-      · A ∈ {.如果真结束, .如果结束}；
-      · B ∈ {.如果真结束, .如果结束}，且 B 的缩进比 A 更浅；
-      · A、B 之间没有空行 → 错误；已有空行时交给 check_hidden_tail_gap
-        检查「每一条空行都必须与 A 同缩进」，本函数只补它的无空行分支。
+    证据二（2026-10-27，JM下载_移植版.e 的 程序集1：下载本子 / 下载章节 /
+      API取明文 / 下载图片 / 取分带基准ID 五个子程序）：
+        .如果真结束              ← 8 / 12 空格（隐藏块尾 A）
+        .计次循环尾 ()           ← 4 /  8 空格（更浅的显式循环尾 B），中间没有空行
+      共 5 处；IDE 里表现为流程线崩坏（A 行右侧出现红色竖线、收口箭头错位到 B 之后）。
+      用户在每处 A 后补一条与 A 同缩进的空行（8/8/8/12/8 空格）即恢复；
+      拆包比对坏件与 _分支修复.e，代码文本的差异只有这 5 条空白行
+      （其余差异是 IDE 重存时改写的库表计数、标签页、qtprj，与流程无关）。
+      本函数对坏件命中 5/5、对修复件 0 误报。
+      —— 这解释了 2026-10-20 那次「实测合法」为什么错：**不弹框、块模型不丢行
+      ≠ 线画对了**，那两个判据本来就看不出画错的线。
 
-    全量修复工程实测：该形态 103 处全部带 A 缩进空行；修复前只有
-    「格式化字节数」的 2 处紧贴，补 8 空格空行后 0 处。
-    显式循环尾（.计次循环尾 / .判断循环尾 / .循环判断尾）→ 更浅隐藏尾
-    不纳入本规则：没有逐处 IDE 证据，且技能文档把显式块尾紧贴块尾列为
-    合法写法；不能把未证实的 9 处当成硬错误。
+    判定：A ∈ {.如果真结束, .如果结束}；B ∈ 全部块尾、且 B 的缩进比 A 更浅；
+      · A、B 之间没有空行 → 错误（本函数）；
+      · 已有空行 → 交给 check_hidden_tail_gap 检查「每条空行都与 A 同缩进」。
+    B 与 A 同缩进、或比 A 更深时，相邻块尾仍然合法，不判。
+    （语料基准：隐藏尾→显式尾共 1295 处，其中 1282 处带 A 同缩进空行、13 处紧贴；
+      13 处紧贴全部是同一份 A/B demo 的多份副本，也就是本轮被推翻的那个负对照。）
     """
     n = len(lines)
     for ln, raw in enumerate(lines, 1):
@@ -290,16 +304,17 @@ def check_unwind_tail_gap(path, lines, errs):
         if j >= n:
             continue
         next_indent, next_kw = parse_kw(lines[j])
-        if next_kw not in HIDDEN_TAIL_KIND:
+        if next_kw not in TAIL_KIND:
             continue
         if next_indent is None or next_indent >= indent:
             continue
         if gaps:
             # check_hidden_tail_gap 已负责检查空行缩进；这里只补「无空行」。
             continue
+        kind = "隐藏块尾" if next_kw in HIDDEN_TAIL_KIND else "显式块尾"
         errs.append(
-            f"{path}:{ln} 隐藏块尾「.{kw}」与更浅的隐藏块尾「.{next_kw}」（第{j + 1}行）之间没有空行"
-            f" → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线）；"
+            f"{path}:{ln} 隐藏块尾「.{kw}」与更浅的{kind}「.{next_kw}」（第{j + 1}行）之间没有空行"
+            f" → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；"
             f"在该行后补一个 {indent} 空格缩进的空行")
 
 
@@ -639,7 +654,24 @@ def run_branch_checks(texts, errs):
     return branch
 
 
+def _ensure_utf8_output():
+    """输出流编码表示不了 ✓ ✗ ⚠ 时改用 UTF-8。
+
+    中文 Windows 上 stdout 被管道/重定向接走时默认是 GBK，打印「✗」直接抛
+    UnicodeEncodeError —— 门禁本该报出的错误全部丢失，只剩一段回溯。
+    控制台（WriteConsoleW）和已设 PYTHONIOENCODING=utf-8 的调用方不受影响。"""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            "✓✗⚠".encode(stream.encoding or "ascii")
+        except (UnicodeEncodeError, LookupError):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except (AttributeError, ValueError):
+                pass
+
+
 def main():
+    _ensure_utf8_output()
     ap = argparse.ArgumentParser(description="易语言文本源码静态检查（块结构 + 命令/参数）")
     ap.add_argument("src", help="文本目录或单个 .e.txt")
     ap.add_argument("--lib", help="commands.jsonl 路径（缺省自动找 ../支持库文档 或 技能 assets 产物）")

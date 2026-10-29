@@ -1,0 +1,16 @@
+{
+  "errors": [
+    ".scratch_session\\fixtures\\bad_unwind\\代码\\test.static.e.txt:8 隐藏块尾「.如果结束」与更浅的隐藏块尾「.如果真结束」（第9行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+  ],
+  "warnings": [],
+  "branch": {
+    "errors": 1,
+    "warnings": 0,
+    "passed": false,
+    "messages": [
+      ".scratch_session\\fixtures\\bad_unwind\\代码\\test.static.e.txt:8 隐藏块尾「.如果结束」与更浅的隐藏块尾「.如果真结束」（第9行）之间没有空行 → IDE 会把隐藏块尾的收口挂到内层最后一条语句上（流程线串线/崩坏）；在该行后补一个 8 空格缩进的空行"
+    ]
+  },
+  "lib": false,
+  "branchOnly": true
+}

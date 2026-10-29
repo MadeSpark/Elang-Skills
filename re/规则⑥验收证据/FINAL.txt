@@ -1,0 +1,28 @@
+FINAL VERIFICATION MATERIALS (do not delete)
+commit: 6c67effa25c46bf4f3064fb4e01b83cc9dfe4ba9 (v1.3.8)
+
+Stable evidence:
+  .scratch_session/evidence/
+  re/规则⑥验收证据/
+
+--- 2026-10-27 二次定案：规则⑥ 扩到显式尾（以本段为准）---
+JM下载_移植版.e            -> exit 1, 5 errors (隐藏尾 -> 更浅的 .计次循环尾 (); 5 处 = 下载本子/下载章节/API取明文/下载图片/取分带基准ID)
+JM下载_移植版_流程修复.e    -> exit 0, 0 errors
+reverse_legal (已补空行)   -> exit 0, 0 errors (隐藏尾 -> 更浅显式尾 + 8 空格空行)
+bad_reverse_explicit       -> exit 1, 1 error  (隐藏尾 -> 更浅显式尾, 无空行)
+demos 01/02/03             -> rule 6 = 0
+
+--- v1.3.8 原始记录（口径已作废，仅留档）---
+before -> exit 1, 2 errors, 0 warnings (格式化字节数)
+partial -> exit 0, 0 errors
+full -> exit 0, 0 errors
+bad_unwind -> exit 1, 1 error
+good_unwind -> exit 0, 0 errors
+reverse_legal -> exit 0, 0 errors   [当时该样本是「无空行」形态，被误判为合法；2026-10-27 改为带空行]
+explicit_loop_legal -> exit 0 (A 是显式尾，不属规则⑥)
+explicit_loop_mixed -> exit 0 (A 是显式尾，不属规则⑥)
+hidden_mixed -> exit 1 (rule 3, not rule 6)
+good_two_blank -> exit 0
+
+Gate: exit 3, branchGate.ok=false, 2 errors, no logFile.
+Baseline: 14 errors / 180 total / 56 warnings; rule 6 = 0.
