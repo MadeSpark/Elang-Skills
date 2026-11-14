@@ -18,6 +18,12 @@
 | `src/` + `tools/` | 支持库文档导出工具、调试宿主支持库的 C 源码与构建脚本；以及 `mkcage`/`elaunch`/`ecompile` 等工程脚本 |
 | `tools/emodfix/` | **易模块完整性检查/修复**：检查 .e 的易模块 `DefinedIds` 声明与实际方法数是否一致；从完整供体恢复缺失模块方法，并同步 `0x0D` 的 `FileNames` 并行数组。这是新建按钮事件无效的根因修复工具（`check`/`restore`） |
 
+**无头编译进程隔离（v1.4.0 起）**：`elaunch.py` / `ecompile.py` 默认把 `e.exe` 关进**私有隐藏桌面 + 作业对象**。
+IDE 插件（iDraw / CeTools 等）装的全局键鼠钩子、窗口、焦点只存在于那个桌面，不会再拖慢或冻结用户的键盘鼠标；
+作业对象限制 CPU（硬上限，默认 50%）、内存、进程数，并保证调用方无论怎么死（超时/被强杀）`e.exe` 都被内核一并收掉，
+`lib\elang_addin.fne` 由脱离进程树的看守补删。`--isolation {desktop,job,none}` 可切换（`--visible` 自动用 `job`）；
+自测 `python tools/selftest-isolation.py`。根因与验收见 [修复-无头编译隔离桌面与作业对象（2026-11-14）.md](docs/修复-无头编译隔离桌面与作业对象（2026-11-14）.md)。
+
 **宿主事件总线 + 双向 IPC（v1.3.9 起）**：`elang_addin.fne` 在 e.exe 进程内挂 WinEvent 钩子，
 弹窗（`#32770`）一出现就通过**命名管道**（JSONL、双向、GBK-hex 文本字段）推给 `tools/elaunch.py` 的
 `PipeBridge`；AI 在 **1500 ms** 内回一条 `decide` 决定点哪个按钮，回不来/没连上就走原有的内置安全兜底策略。

@@ -62,11 +62,16 @@
      自动填「请输入欲编译到的可执行文件名」保存框 → 监视期望产物出现 → 按 PID 收尾，
      并对易语言安装目录做 before/after diff 自证还原。
 
-无头（默认）：**不会弹出易语言窗口**。IDE 以 `SW_HIDE` 启动 + 后台线程把它的顶层窗口
-隐藏并移到屏幕外（宿主库侧 `ELANG_AI_HIDE` 再做一层）。排障要看界面时加 `--visible`。
-（别改成「独立 Windows 桌面」：实测 e.exe 在非默认桌面上 0.04 秒就自行退出。）
+无头 + 进程隔离（默认，v1.4.0）：**e.exe 跑在私有隐藏桌面上，并装进作业对象**。
+IDE 加载的 iDraw / CeTools 等插件装的全局键鼠钩子、窗口、焦点、模态框都只存在于那个桌面，
+碰不到用户的真实桌面；作业对象限制 CPU（硬上限，默认 50%，ELANG_AI_CPU_PCT）、内存、进程数，
+并保证本进程无论怎么死（超时/被强杀）e.exe 都被内核一并收掉。
+`--isolation {desktop,job,none}`：desktop=默认；job=只有作业对象（`--visible` 自动选，窗口出现在
+用户桌面；插件钩子仍在用户输入链上，只建议排障）；none=旧行为（窗口隐藏守护，不隔离）。
+（历史备注：旧文档写过「e.exe 在非默认桌面 0.04 秒退出」，v1.4.0 复测不成立。）
 个别大型 DLL 工程若在无头编译中崩（eExitCode=0xC0000005），怀疑与窗口守护链对 IDE
-窗口的并发改写有关，可改 `--headless park`（只移出屏幕不隐藏）或 `--visible` 重试。
+窗口的并发改写有关，可改 `--headless park`（只移出屏幕不隐藏）或 `--visible` 重试
+（desktop 隔离模式下不再有窗口守护链，这类崩溃的并发源已被去掉）。
 
 静态编译种类（--kind，缺省 static_console）：
 
@@ -424,6 +429,22 @@ def doctor(args) -> int:
     # QAQ-ETool 是加壳（mkcage）、文本目录输入与 .ec 门禁的必需品；
     # echeck 是编译前流程分支硬门禁的必需品，缺了必须 fail closed。
     ok_all = all([mkcage, elaunch, fne, elang, tool, echeck])
+    # 进程隔离能力（只建桌面+作业对象，不启动进程）；建不起来不判失败，会自动降级，但要告知
+    iso = None
+    if elaunch:
+        try:
+            r = subprocess.run([sys.executable, str(elaunch), "--isolation-selftest"],
+                               capture_output=True, timeout=30)
+            iso = json.loads((r.stdout or b"{}").decode("utf-8", "replace") or "{}")
+        except Exception as ex:                      # noqa: BLE001
+            iso = {"desktop": False, "job": False, "error": str(ex)}
+    checks["isolation"] = iso
+    # 残留的 lib\elang_addin.fne = 上次被强杀时没来得及清理（严禁常驻）
+    stray = None
+    if elang:
+        sp = Path(elang) / "lib" / "elang_addin.fne"
+        stray = str(sp) if sp.exists() else None
+    checks["stray_fne"] = stray
     result = {"ok": ok_all, **checks}
     if args.json:
         print(json.dumps(result, ensure_ascii=False))
@@ -659,6 +680,10 @@ def main() -> int:
                          "⚠️ 实测它对确定有问题的源码也一律返回成功，**不能单独当通过判据**")
     ap.add_argument("--visible", action="store_true",
                     help="显式显示易语言窗口（等价 --headless off）")
+    ap.add_argument("--isolation", choices=["desktop", "job", "none"], default=None,
+                    help="进程隔离：desktop=私有隐藏桌面+作业对象（默认，插件的键鼠钩子/窗口碰不到"
+                         "用户桌面，且 CPU/内存/进程数有硬上限）；job=只有作业对象（--visible 时自动"
+                         "选它）；none=旧行为。也可用环境变量 ELANG_AI_ISOLATION")
     ap.add_argument("--headless", choices=["park", "shide", "hide", "off"],
                     help="显式指定窗口策略。默认 hide（真无头，编译全程不弹窗）；"
                          "hide=隐藏+移出屏幕；shide=同上但主窗口走 SW_HIDE 启动；"
@@ -833,10 +858,15 @@ def main() -> int:
         cmd = [sys.executable, str(elaunch), str(ai_e),
                "--timeout", str(args.timeout), "--fne", str(fne),
                "--home", str(elang), "--json"]
+        if args.isolation:
+            cmd += ["--isolation", args.isolation]
         if args.visible:
             cmd += ["--headless", "off"]
         elif args.headless:
             cmd += ["--headless", args.headless]
+        elif args.isolation in (None, "desktop") and \
+                os.environ.get("ELANG_AI_ISOLATION", "desktop").strip().lower() in ("", "desktop"):
+            pass                         # 隐藏桌面里本来就没有可见窗口，不需要窗口守护
         else:
             # ★ 修复（2026-10-09，用户实测点名）：此前这里什么都不传，落到 elaunch 的
             #   「编译模式默认 off」⇒ IDE 窗口全程可见，用户看得见它自动编译、自动填
@@ -882,6 +912,7 @@ def main() -> int:
         result["precompileOk"] = d.get("precompileOk")
         result["eExitCode"] = d.get("eExitCode")
         result["headless"] = d.get("headless")
+        result["isolation"] = d.get("isolation")
         # 双向 IPC（2026-10-29 起）：elaunch 会建命名管道并把弹窗决策交给 Python，
         # 这里原样透传桥的统计，编译侧也能看出「弹窗是宿主自己答的，还是桥答的」。
         if d.get("ipc") is not None:

@@ -82,19 +82,44 @@ elaunch 是管道**服务端**（`PipeBridge`），fne 是客户端：先 Popen 
 `ELANG_AI_HIDE_ENGINE=host`，Python 不再周期性 EnumWindows）；`both`/`python` 可回退。
 结果 JSON 增加 `ipc` 段。`--no-ipc` 或 `ELANG_AI_IPC=0` 关闭，行为与此前一致。
 
-无头（默认开）
-==============
-**默认不开可见窗口**：`e.exe` 以 `STARTUPINFO.wShowWindow = SW_HIDE` 启动（压住主窗口），
-同时一个后台线程以 2~12ms 轮询把它的**所有可见顶层窗口** `SW_HIDE` 并挪到 `(-32000,-32000)`。
+进程隔离（v1.4.0 起，默认开）
+===========================
+**默认把 e.exe 关进「私有隐藏桌面 + 作业对象」**（见 `IsolatedProcess`）：
 
-* 排障要看界面时加 `--visible`（= 旧行为，窗口正常显示）。
-* **不要用「独立 Windows 桌面」**：实测 `e.exe` 在非默认桌面上 **0.04 秒就自行退出**。
-  另注意 Python 的 `subprocess.STARTUPINFO` **不暴露 `lpDesktop`**，设了也没人读。
+  * 隐藏桌面：`CreateDesktopW` 建一个只属于本次会话的桌面，`CreateProcessW` 用
+    `lpDesktop="WinSta0\<桌面名>"` 把 e.exe（连同它加载的 iDraw / CeTools / eTools 等 IDE 插件）
+    整个丢进去。插件装的低级键鼠钩子、窗口、焦点、模态框**全在那个桌面上**，
+    碰不到用户的真实桌面，也就不可能再拖慢/冻结用户的键盘鼠标。
+  * 作业对象：`KILL_ON_JOB_CLOSE`（本进程无论怎么死——超时、被工具强杀——e.exe 与其全部
+    子进程都由内核立即收掉）、活动进程数上限、单进程/整体内存上限、CPU **硬上限**
+    （默认 50%，`ELANG_AI_CPU_PCT=10..100`）、BelowNormal 优先级、禁改系统参数/显示设置/
+    切换桌面/注销。
+  * 注意：只拿作业对象管不住钩子（钩子挂在全局输入链上），**真正隔开键鼠的是隐藏桌面**。
+
+`--isolation {desktop,job,none}`（或环境变量 `ELANG_AI_ISOLATION`）：
+
+  * `desktop`（默认）：隐藏桌面 + 作业对象。窗口根本不在用户桌面上，不再需要「隐藏/移出屏幕」
+    那套守护（宿主库侧 `ELANG_AI_HIDE=0`，`WindowHider` 不启动）。
+  * `job`：只有作业对象，窗口在用户桌面（`--visible` / `--headless off|park` 时自动选它）。
+    ⚠️ 插件的全局键鼠钩子仍在用户的输入链上，只建议排障时用。
+  * `none`：旧行为（普通 Popen + 窗口守护）。
+  隐藏桌面或作业对象建不起来时自动降级（desktop → job+hide → none），原因写进结果 JSON 的
+  `isolation.fallbackReason`。
+
+无头（`job` / `none` 模式下的老办法）
+================================
+`e.exe` 以 `STARTUPINFO.wShowWindow = SW_HIDE` 启动（压住主窗口），
+同时一个后台线程把它的**所有可见顶层窗口** `SW_HIDE` 并挪到 `(-32000,-32000)`。
+
+* 排障要看界面时加 `--visible`（窗口正常显示在用户桌面，进程仍在作业对象里）。
 * 宿主库侧另有 `ELANG_AI_HIDE`（默认 1）做同样的事，两层互为兜底。详见 `WindowHider`。
+* 历史备注：旧版本文档写过「e.exe 在非默认桌面 0.04 秒就退出」，v1.4.0 复测**不成立**
+  （e.exe 在隐藏桌面稳定运行并正常建窗）。Python 的 `subprocess.STARTUPINFO` 不暴露
+  `lpDesktop`，所以这里直接用 ctypes 调 `CreateProcessW`。
 
 纪律（team-lead 要求，勿退化）
 ==============================
-  * 只用**精确 PID** 结束 e.exe（绝不 `taskkill /F /IM`）
+  * 只结束**本次启动的** e.exe（隔离模式 `TerminateJobObject`，其余按精确 PID；绝不 `taskkill /F /IM`）
   * `finally` 里清理投放的 `.fne`，并对易语言安装目录做 before/after `diff` 自证
   * 易语言安装目录**默认只读**（只写/删一个 `lib\elang_addin.fne`）
   * 日志里的中文同时给 `.utf8.txt` 视图（面板文本是 GBK）
@@ -104,6 +129,7 @@ elaunch 是管道**服务端**（`PipeBridge`），fne 是客户端：先 Popen 
 from __future__ import annotations
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -1516,6 +1542,422 @@ def make_visible_startupinfo():
 # --------------------------------------------------------------------------- #
 # 主流程
 # --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
+# 进程隔离：私有隐藏桌面 + 作业对象（v1.4.0）
+# --------------------------------------------------------------------------- #
+_W = None
+
+
+def _winapi():
+    """惰性构建 ctypes 绑定（非 Windows 导入本模块也不会炸）。"""
+    global _W
+    if _W is not None:
+        return _W
+    import ctypes.wintypes as wt
+
+    class STARTUPINFOW(ctypes.Structure):
+        _fields_ = [("cb", wt.DWORD), ("lpReserved", wt.LPWSTR), ("lpDesktop", wt.LPWSTR),
+                    ("lpTitle", wt.LPWSTR), ("dwX", wt.DWORD), ("dwY", wt.DWORD),
+                    ("dwXSize", wt.DWORD), ("dwYSize", wt.DWORD),
+                    ("dwXCountChars", wt.DWORD), ("dwYCountChars", wt.DWORD),
+                    ("dwFillAttribute", wt.DWORD), ("dwFlags", wt.DWORD),
+                    ("wShowWindow", wt.WORD), ("cbReserved2", wt.WORD),
+                    ("lpReserved2", ctypes.c_void_p), ("hStdInput", wt.HANDLE),
+                    ("hStdOutput", wt.HANDLE), ("hStdError", wt.HANDLE)]
+
+    class STARTUPINFOEXW(ctypes.Structure):
+        _fields_ = [("StartupInfo", STARTUPINFOW), ("lpAttributeList", ctypes.c_void_p)]
+
+    class PROCESS_INFORMATION(ctypes.Structure):
+        _fields_ = [("hProcess", wt.HANDLE), ("hThread", wt.HANDLE),
+                    ("dwProcessId", wt.DWORD), ("dwThreadId", wt.DWORD)]
+
+    class BASIC_LIMIT(ctypes.Structure):
+        _fields_ = [("PerProcessUserTimeLimit", ctypes.c_int64),
+                    ("PerJobUserTimeLimit", ctypes.c_int64), ("LimitFlags", wt.DWORD),
+                    ("MinimumWorkingSetSize", ctypes.c_size_t),
+                    ("MaximumWorkingSetSize", ctypes.c_size_t),
+                    ("ActiveProcessLimit", wt.DWORD), ("Affinity", ctypes.c_size_t),
+                    ("PriorityClass", wt.DWORD), ("SchedulingClass", wt.DWORD)]
+
+    class IO_COUNTERS(ctypes.Structure):
+        _fields_ = [(n, ctypes.c_uint64) for n in
+                    ("ReadOps", "WriteOps", "OtherOps", "ReadBytes", "WriteBytes", "OtherBytes")]
+
+    class EXT_LIMIT(ctypes.Structure):
+        _fields_ = [("Basic", BASIC_LIMIT), ("Io", IO_COUNTERS),
+                    ("ProcessMemoryLimit", ctypes.c_size_t), ("JobMemoryLimit", ctypes.c_size_t),
+                    ("PeakProcessMemoryUsed", ctypes.c_size_t),
+                    ("PeakJobMemoryUsed", ctypes.c_size_t)]
+
+    class CPU_RATE(ctypes.Structure):
+        _fields_ = [("ControlFlags", wt.DWORD), ("CpuRate", wt.DWORD)]
+
+    class UI_LIMIT(ctypes.Structure):
+        _fields_ = [("UIRestrictionsClass", wt.DWORD)]
+
+    class BASIC_ACCT(ctypes.Structure):
+        _fields_ = [("TotalUserTime", ctypes.c_int64), ("TotalKernelTime", ctypes.c_int64),
+                    ("ThisPeriodTotalUserTime", ctypes.c_int64),
+                    ("ThisPeriodTotalKernelTime", ctypes.c_int64),
+                    ("TotalPageFaultCount", wt.DWORD), ("TotalProcesses", wt.DWORD),
+                    ("ActiveProcesses", wt.DWORD), ("TotalTerminatedProcesses", wt.DWORD)]
+
+    k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    u32 = ctypes.WinDLL("user32", use_last_error=True)
+    V = ctypes.c_void_p
+    k32.CreateJobObjectW.restype = wt.HANDLE
+    k32.CreateJobObjectW.argtypes = [V, wt.LPCWSTR]
+    k32.SetInformationJobObject.argtypes = [wt.HANDLE, ctypes.c_int, V, wt.DWORD]
+    k32.QueryInformationJobObject.argtypes = [wt.HANDLE, ctypes.c_int, V, wt.DWORD, V]
+    k32.AssignProcessToJobObject.argtypes = [wt.HANDLE, wt.HANDLE]
+    k32.TerminateJobObject.argtypes = [wt.HANDLE, wt.UINT]
+    k32.CreateProcessW.argtypes = [wt.LPCWSTR, wt.LPWSTR, V, V, wt.BOOL, wt.DWORD, V,
+                                   wt.LPCWSTR, V, V]
+    k32.ResumeThread.argtypes = [wt.HANDLE]
+    k32.TerminateProcess.argtypes = [wt.HANDLE, wt.UINT]
+    k32.WaitForSingleObject.argtypes = [wt.HANDLE, wt.DWORD]
+    k32.GetExitCodeProcess.argtypes = [wt.HANDLE, V]
+    k32.CloseHandle.argtypes = [wt.HANDLE]
+    k32.SetHandleInformation.argtypes = [wt.HANDLE, wt.DWORD, wt.DWORD]
+    k32.InitializeProcThreadAttributeList.argtypes = [V, wt.DWORD, wt.DWORD, V]
+    k32.UpdateProcThreadAttribute.argtypes = [V, wt.DWORD, V, V, ctypes.c_size_t, V, V]
+    k32.DeleteProcThreadAttributeList.argtypes = [V]
+    k32.OpenProcess.restype = wt.HANDLE
+    k32.OpenProcess.argtypes = [wt.DWORD, wt.BOOL, wt.DWORD]
+    u32.CreateDesktopW.restype = wt.HANDLE
+    u32.CreateDesktopW.argtypes = [wt.LPCWSTR, wt.LPCWSTR, V, wt.DWORD, wt.DWORD, V]
+    u32.CloseDesktop.argtypes = [wt.HANDLE]
+
+    class NS(object):
+        pass
+    _W = NS()
+    _W.__dict__.update(dict(
+        wt=wt, k32=k32, u32=u32, STARTUPINFOW=STARTUPINFOW, STARTUPINFOEXW=STARTUPINFOEXW,
+        PROCESS_INFORMATION=PROCESS_INFORMATION, EXT_LIMIT=EXT_LIMIT, CPU_RATE=CPU_RATE,
+        UI_LIMIT=UI_LIMIT, BASIC_ACCT=BASIC_ACCT))
+    return _W
+
+
+def _env_int(name: str, default: int, lo: int, hi: int, env=None) -> int:
+    try:
+        v = int((env if env is not None else os.environ).get(name, "") or default)
+    except ValueError:
+        v = default
+    return max(lo, min(hi, v))
+
+
+class IsolatedProcess(object):
+    """e.exe 的隔离启动器：私有隐藏桌面（可选）+ 作业对象，接口仿 subprocess.Popen。
+
+    为什么：无头编译会把完整的 IDE（含 iDraw / CeTools / eTools 等装了全局低级键鼠钩子的
+    插件）拉起来。IDE 忙/被强杀时，这些钩子会让**整个系统**的键鼠等超时（卡死 + 嘟嘟声）。
+    放进私有桌面后，钩子只挂在那个桌面的输入链上；作业对象再兜住资源与生死。
+
+    限制（JOBOBJECT_*）：KILL_ON_JOB_CLOSE、DIE_ON_UNHANDLED_EXCEPTION、活动进程数、
+    单进程/整体内存、优先级 BelowNormal、CPU 硬上限、UI 限制（桌面/显示设置/注销/系统参数）。
+    环境变量：ELANG_AI_CPU_PCT(10..100, 默认 50) ELANG_AI_PROC_MEM_MIB(默认 3072)
+    ELANG_AI_JOB_MEM_MIB(默认 4096) ELANG_AI_MAX_PROCS(默认 32)。
+    """
+    STILL_ACTIVE = 259
+
+    def __init__(self, argv, cwd, env, stdout=None, desktop=True, tag="x", show=5):
+        self.argv = list(argv)
+        self.cwd = cwd
+        self.env = env
+        self.stdout = stdout
+        self.want_desktop = bool(desktop)
+        self.tag = tag
+        self.show = show
+        self.pid = None
+        self.returncode = None
+        self.desktop_name = None
+        self.notes = []
+        self.limits = {}
+        self.breakaway = False
+        self._job = self._hproc = self._hthread = self._hdesk = None
+        self._closed = False
+
+    # ---- 启动 ----
+    def start(self):
+        W = _winapi()
+        wt, k32, u32 = W.wt, W.k32, W.u32
+        GENERIC_ALL = 0x10000000
+        if self.want_desktop:
+            self.desktop_name = "elang_ai_%d_%s" % (os.getpid(), secrets.token_hex(3))
+            self._hdesk = u32.CreateDesktopW(self.desktop_name, None, None, 0, GENERIC_ALL, None)
+            if not self._hdesk:
+                raise OSError("CreateDesktopW 失败 err=%d" % ctypes.get_last_error())
+        try:
+            self._make_job(W)
+            self._spawn(W)
+        except BaseException:
+            self.close()
+            raise
+        return self
+
+    def _make_job(self, W):
+        k32 = W.k32
+        job = k32.CreateJobObjectW(None, None)
+        if not job:
+            raise OSError("CreateJobObjectW 失败 err=%d" % ctypes.get_last_error())
+        self._job = job
+        proc_mib = _env_int("ELANG_AI_PROC_MEM_MIB", 3072, 256, 1 << 20, self.env)
+        job_mib = _env_int("ELANG_AI_JOB_MEM_MIB", 4096, 256, 1 << 20, self.env)
+        max_procs = _env_int("ELANG_AI_MAX_PROCS", 32, 2, 4096, self.env)
+        cpu_pct = _env_int("ELANG_AI_CPU_PCT", 50, 10, 100, self.env)
+        eli = W.EXT_LIMIT()
+        # KILL_ON_JOB_CLOSE | DIE_ON_UNHANDLED_EXCEPTION | PRIORITY_CLASS | ACTIVE_PROCESS
+        # | PROCESS_MEMORY | JOB_MEMORY
+        eli.Basic.LimitFlags = 0x2000 | 0x400 | 0x20 | 0x8 | 0x100 | 0x200
+        eli.Basic.PriorityClass = 0x4000                      # BELOW_NORMAL_PRIORITY_CLASS
+        eli.Basic.ActiveProcessLimit = max_procs
+        eli.ProcessMemoryLimit = proc_mib * 1024 * 1024
+        eli.JobMemoryLimit = job_mib * 1024 * 1024
+        if not k32.SetInformationJobObject(job, 9, ctypes.byref(eli), ctypes.sizeof(eli)):
+            raise OSError("SetInformationJobObject(limits) 失败 err=%d" % ctypes.get_last_error())
+        self.limits.update({"processMemMiB": proc_mib, "jobMemMiB": job_mib,
+                            "maxProcesses": max_procs, "priority": "BelowNormal",
+                            "killOnClose": True})
+        cr = W.CPU_RATE()
+        cr.ControlFlags = 0x1 | 0x4                           # ENABLE | HARD_CAP
+        cr.CpuRate = cpu_pct * 100                            # 1/100 of percent
+        if k32.SetInformationJobObject(job, 15, ctypes.byref(cr), ctypes.sizeof(cr)):
+            self.limits["cpuPct"] = cpu_pct
+        else:
+            self.notes.append("CPU 硬上限未生效 err=%d" % ctypes.get_last_error())
+            self.limits["cpuPct"] = None
+        ui = W.UI_LIMIT()
+        ui.UIRestrictionsClass = 0x40 | 0x10 | 0x80 | 0x8    # DESKTOP|DISPLAYSETTINGS|EXITWINDOWS|SYSTEMPARAMETERS
+        if k32.SetInformationJobObject(job, 4, ctypes.byref(ui), ctypes.sizeof(ui)):
+            self.limits["uiRestrictions"] = ["DESKTOP", "DISPLAYSETTINGS", "EXITWINDOWS",
+                                             "SYSTEMPARAMETERS"]
+        else:
+            self.notes.append("UI 限制未生效 err=%d" % ctypes.get_last_error())
+
+    def _spawn(self, W):
+        wt, k32 = W.wt, W.k32
+        flags_base = 0x4 | 0x400 | 0x80000          # SUSPENDED|UNICODE_ENVIRONMENT|EXTENDED_STARTUPINFO
+        cmd = ctypes.create_unicode_buffer(subprocess.list2cmdline(self.argv))
+        items = ["%s=%s" % (k, v) for k, v in self.env.items()]
+        envbuf = ctypes.create_unicode_buffer("\0".join(items) + "\0\0", sum(len(i) + 1 for i in items) + 2)
+
+        hstd = None
+        if self.stdout is not None:
+            import msvcrt
+            hstd = msvcrt.get_osfhandle(self.stdout.fileno())
+        last_err = 0
+        for attempt in (0, 1):
+            si = W.STARTUPINFOEXW()
+            si.StartupInfo.cb = ctypes.sizeof(si)
+            if self.want_desktop:
+                si.StartupInfo.lpDesktop = "WinSta0\\" + self.desktop_name
+            si.StartupInfo.dwFlags = 0x1                      # STARTF_USESHOWWINDOW
+            si.StartupInfo.wShowWindow = self.show
+            attr_buf = None
+            hl = None
+            inherit = False
+            if hstd is not None:
+                si.StartupInfo.dwFlags |= 0x100               # STARTF_USESTDHANDLES
+                si.StartupInfo.hStdOutput = hstd
+                si.StartupInfo.hStdError = hstd
+                k32.SetHandleInformation(hstd, 1, 1)          # 临时可继承
+                size = ctypes.c_size_t(0)
+                k32.InitializeProcThreadAttributeList(None, 1, 0, ctypes.byref(size))
+                attr_buf = ctypes.create_string_buffer(size.value)
+                if not k32.InitializeProcThreadAttributeList(attr_buf, 1, 0, ctypes.byref(size)):
+                    raise OSError("InitializeProcThreadAttributeList 失败")
+                hl = (wt.HANDLE * 1)(hstd)
+                # 只让子进程继承 harness 日志句柄，其余句柄（含上游管道）一律不继承，
+                # 否则 e.exe 残留会憋住上游的 subprocess.run(capture_output)。
+                if not k32.UpdateProcThreadAttribute(attr_buf, 0, 0x20002, hl,
+                                                     ctypes.sizeof(hl), None, None):
+                    raise OSError("UpdateProcThreadAttribute 失败")
+                si.lpAttributeList = ctypes.cast(attr_buf, ctypes.c_void_p)
+                inherit = True
+            pi = W.PROCESS_INFORMATION()
+            flags = flags_base | (0x01000000 if attempt else 0)   # CREATE_BREAKAWAY_FROM_JOB
+            ok = k32.CreateProcessW(None, cmd, None, None, inherit, flags,
+                                    ctypes.cast(envbuf, ctypes.c_void_p), self.cwd,
+                                    ctypes.byref(si), ctypes.byref(pi))
+            last_err = ctypes.get_last_error()
+            if attr_buf is not None:
+                k32.DeleteProcThreadAttributeList(attr_buf)
+            if hstd is not None:
+                k32.SetHandleInformation(hstd, 1, 0)
+            if not ok:
+                if attempt == 0 and last_err == 5:
+                    continue                                   # 外层作业禁止嵌套？试 breakaway
+                raise OSError("CreateProcessW 失败 err=%d" % last_err)
+            self._hproc, self._hthread, self.pid = pi.hProcess, pi.hThread, pi.dwProcessId
+            if k32.AssignProcessToJobObject(self._job, self._hproc):
+                self.breakaway = bool(attempt)
+                break
+            aerr = ctypes.get_last_error()
+            k32.TerminateProcess(self._hproc, 1)
+            k32.CloseHandle(self._hthread)
+            k32.CloseHandle(self._hproc)
+            self._hproc = self._hthread = self.pid = None
+            if attempt == 0 and aerr == 5:
+                continue
+            raise OSError("AssignProcessToJobObject 失败 err=%d" % aerr)
+        else:
+            raise OSError("CreateProcessW/Assign 重试仍失败 err=%d" % last_err)
+        k32.ResumeThread(self._hthread)
+
+    # ---- Popen 风格接口 ----
+    def poll(self):
+        if self.returncode is not None:
+            return self.returncode
+        if not self._hproc:
+            return self.returncode
+        W = _winapi()
+        code = W.wt.DWORD()
+        if W.k32.GetExitCodeProcess(self._hproc, ctypes.byref(code)) and \
+                code.value != self.STILL_ACTIVE:
+            self.returncode = code.value
+        return self.returncode
+
+    def wait(self, timeout=None):
+        if self._hproc is None:
+            return self.returncode
+        W = _winapi()
+        ms = 0xFFFFFFFF if timeout is None else int(timeout * 1000)
+        r = W.k32.WaitForSingleObject(self._hproc, ms)
+        if r == 0:
+            self.poll()
+            return self.returncode
+        raise subprocess.TimeoutExpired(self.argv, timeout)
+
+    def stats(self) -> dict:
+        """作业当前活动进程数 / 峰值内存（诊断用，尽力而为）。"""
+        out = {}
+        if not self._job:
+            return out
+        try:
+            W = _winapi()
+            acct = W.BASIC_ACCT()
+            if W.k32.QueryInformationJobObject(self._job, 1, ctypes.byref(acct),
+                                               ctypes.sizeof(acct), None):
+                out["activeProcesses"] = acct.ActiveProcesses
+                out["totalProcesses"] = acct.TotalProcesses
+                out["cpuSeconds"] = round((acct.TotalUserTime + acct.TotalKernelTime) / 1e7, 2)
+            eli = W.EXT_LIMIT()
+            if W.k32.QueryInformationJobObject(self._job, 9, ctypes.byref(eli),
+                                               ctypes.sizeof(eli), None):
+                out["peakJobMemMiB"] = round(eli.PeakJobMemoryUsed / 1048576.0, 1)
+                out["peakProcMemMiB"] = round(eli.PeakProcessMemoryUsed / 1048576.0, 1)
+        except BaseException:                                  # noqa: BLE001
+            pass
+        return out
+
+    def kill(self):
+        """杀掉整个作业（e.exe + 全部子进程）。"""
+        W = _winapi()
+        if self._job:
+            W.k32.TerminateJobObject(self._job, 1)
+        elif self._hproc:
+            W.k32.TerminateProcess(self._hproc, 1)
+
+    def close(self):
+        if self._closed:
+            return
+        self._closed = True
+        W = _winapi()
+        for h in (self._hthread, self._hproc):
+            if h:
+                W.k32.CloseHandle(h)
+        if self._job:
+            W.k32.CloseHandle(self._job)         # KILL_ON_JOB_CLOSE：兜底再收一次
+        if self._hdesk:
+            W.u32.CloseDesktop(self._hdesk)
+        self._hthread = self._hproc = self._job = self._hdesk = None
+
+    def info(self) -> dict:
+        d = {"desktop": self.desktop_name, "job": True, "breakaway": self.breakaway}
+        d.update(self.limits)
+        if self.notes:
+            d["notes"] = list(self.notes)
+        return d
+
+
+def isolation_selftest() -> dict:
+    """只建不启：隐藏桌面 + 作业对象能不能建起来（--doctor 用）。"""
+    res = {"desktop": False, "job": False, "error": None}
+    if sys.platform != "win32":
+        res["error"] = "非 Windows"
+        return res
+    try:
+        W = _winapi()
+        name = "elang_ai_doctor_%d_%s" % (os.getpid(), secrets.token_hex(2))
+        h = W.u32.CreateDesktopW(name, None, None, 0, 0x10000000, None)
+        if h:
+            res["desktop"] = True
+            W.u32.CloseDesktop(h)
+        else:
+            res["error"] = "CreateDesktopW err=%d" % ctypes.get_last_error()
+        j = W.k32.CreateJobObjectW(None, None)
+        if j:
+            eli = W.EXT_LIMIT()
+            eli.Basic.LimitFlags = 0x2000
+            res["job"] = bool(W.k32.SetInformationJobObject(j, 9, ctypes.byref(eli),
+                                                            ctypes.sizeof(eli)))
+            W.k32.CloseHandle(j)
+        elif not res["error"]:
+            res["error"] = "CreateJobObjectW err=%d" % ctypes.get_last_error()
+    except BaseException as ex:                                # noqa: BLE001
+        res["error"] = "%s: %s" % (type(ex).__name__, ex)
+    return res
+
+
+def spawn_janitor(e_pid: int, fne_path: str):
+    """脱离进程树的看守：e.exe 一退出就删 lib\\ 里本次投放的 fne。
+
+    作业对象保证 e.exe 随本进程一起死，但本进程被强杀时 finally 不会执行，
+    fne 会残留在 lib\\（严禁常驻）。看守不属于任何作业，等 e.exe 退出后补删。
+    尽力而为：失败不影响主流程。"""
+    if os.environ.get("ELANG_AI_JANITOR", "1").strip() in ("0", "off", "false"):
+        return None
+    try:
+        size = os.path.getsize(fne_path)
+    except OSError:
+        return None
+    argv = [sys.executable, os.path.abspath(__file__), "--janitor", str(e_pid), fne_path,
+            str(size)]
+    base = 0x08000000 | 0x00000200                  # CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP
+    for extra in (0x01000000, 0):                   # 先尝试脱离外层作业，不行就算了
+        try:
+            return subprocess.Popen(argv, creationflags=base | extra, close_fds=True,
+                                    stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL)
+        except OSError:
+            continue
+    return None
+
+
+def janitor_main(argv) -> int:
+    """--janitor <e_pid> <fne> <size>：等 e.exe 退出，再删（仅当文件大小仍是投放时的大小）。"""
+    try:
+        pid, path, size = int(argv[0]), argv[1], int(argv[2])
+        W = _winapi()
+        h = W.k32.OpenProcess(0x00100000, False, pid)        # SYNCHRONIZE
+        if h:
+            W.k32.WaitForSingleObject(h, 6 * 3600 * 1000)
+            W.k32.CloseHandle(h)
+        time.sleep(0.5)
+        if os.path.basename(path).lower() == LIB_FNAME and os.path.isfile(path) \
+                and os.path.getsize(path) == size:
+            for _ in range(20):
+                try:
+                    os.remove(path)
+                    break
+                except OSError:
+                    time.sleep(0.5)
+    except BaseException:                                      # noqa: BLE001
+        return 1
+    return 0
+
+
 def preflight(e_dir: str, lib_dir: str, log_fn=print):
     """启动前置健康检查（交接 2026-09-26「易语言 IDE 卡死」专项，红线 1/C.2）：
 
@@ -1561,12 +2003,13 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
             fne: str = None, home: str = None, tag: str = None, quiet: bool = False,
             compile_kind: str = None, expect_out: str = None,
             check_only: bool = False, headless: str = None,
-            open_target: str = None, ipc: bool = None) -> dict:
+            open_target: str = None, ipc: bool = None, isolation: str = None) -> dict:
     # `precompile`（= FN_PRE_COMPILE）只做语法/语义静态检查：无产物、无保存框。
     pre_mode = (compile_kind == "precompile")
     # 编译模式禁止默认启动两层隐藏守护链：其会并发改写 IDE 窗口，
     # 大型 DLL 工程触发官方编译功能号时可能因此令 e.exe 访问冲突。
     # 调试运行仍沿用 hide 默认；无头编译须由调用方显式声明。
+    headless_given = headless is not None
     if headless is None:
         headless = "off" if compile_kind else "hide"
     if headless is True:
@@ -1574,6 +2017,14 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     elif headless is False:
         headless = "off"
     hl_mode = headless
+    # 进程隔离（v1.4.0）：desktop = 私有隐藏桌面 + 作业对象；job = 只有作业对象；
+    # none = 旧行为。未显式指定时：用户明确要看窗口（off/park）→ job，否则 desktop。
+    iso = (isolation or os.environ.get("ELANG_AI_ISOLATION") or "").strip().lower()
+    if iso not in ("desktop", "job", "none"):
+        iso = "job" if (headless_given and hl_mode in ("off", "park")) else "desktop"
+    if sys.platform != "win32":
+        iso = "none"
+    iso_fallback = None
     # 宿主事件总线 + 双向 IPC（协议见 docs\方案-宿主事件总线与双向IPC协议.md）。
     # 默认开；--no-ipc / ELANG_AI_IPC=0 / 非 Windows 时与改动前行为完全一致。
     if ipc is None:
@@ -1640,6 +2091,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
     proc = None
     ho = None
     hider = None
+    iso_info = None
+    iso_stats = None
     bridge = None
     ipc_stats = None
     before_dir = toplist(e_dir)
@@ -1684,6 +2137,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
             env["ELANG_AI_PIPE_TOKEN"] = ipc_token
             env["ELANG_AI_PIPE_TAG"] = ipc_tag
             env.setdefault("ELANG_AI_DLG_TIMEOUT_MS", "1500")
+        fne_hide = "0" if (hl_mode == "off" or iso == "desktop") else hl_mode
         if compile_kind:
             # 编译模式：触发 FNST_RUN 编译家族功能号，监视期望产物出现
             env.update({
@@ -1693,7 +2147,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 "ELANG_AI_COMPILE_DELAY": "2500",
                 "ELANG_AI_EXPECT_OUT": expect_out or "",
                 "ELANG_AI_CAPTURE": log,
-                "ELANG_AI_HIDE": ("0" if hl_mode == "off" else hl_mode),
+                "ELANG_AI_HIDE": fne_hide,
             })
             if open_target:
                 env["ELANG_AI_OPEN_TARGET"] = open_target
@@ -1704,7 +2158,7 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 "ELANG_AI_RUN": "1",
                 "ELANG_AI_RUN_DELAY": "2500",
                 "ELANG_AI_CAPTURE": log,
-                "ELANG_AI_HIDE": ("0" if hl_mode == "off" else hl_mode),
+                "ELANG_AI_HIDE": fne_hide,
             })
             env["ELANG_AI_STOP"] = str(int(stop_after)) if stop_after else "0"
 
@@ -1716,13 +2170,45 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         # 无头：`park`/`shide`/`hide` 见 WindowHider；`off` = 旧行为（窗口正常显示）
         # ⚠️ park/off 也必须**显式** SW_SHOW（见 make_visible_startupinfo 的注释）
         si_hide = (hl_mode in ("shide", "hide"))
-        proc = subprocess.Popen([e_exe, ai_e], cwd=e_dir, env=env,
-                                stdout=ho, stderr=ho,
-                                startupinfo=(make_hidden_startupinfo() if si_hide
-                                             else make_visible_startupinfo()))
+        proc = None
+        iso_info = None
+        while iso in ("desktop", "job") and proc is None:
+            try:
+                proc = IsolatedProcess([e_exe, ai_e], cwd=e_dir, env=env, stdout=ho,
+                                       desktop=(iso == "desktop"), tag=tag,
+                                       show=(0 if (iso == "job" and si_hide) else 5)).start()
+                iso_info = proc.info()
+            except OSError as ex:
+                proc = None
+                if iso == "desktop":
+                    # 隐藏桌面不可用 → 退到「作业对象 + 窗口守护」，窗口仍要藏起来
+                    iso_fallback = "desktop→job: %s" % ex
+                    iso = "job"
+                    if hl_mode in ("off", "park"):
+                        hl_mode = "hide"
+                    si_hide = (hl_mode in ("shide", "hide"))
+                    env["ELANG_AI_HIDE"] = hl_mode
+                else:
+                    iso_fallback = (iso_fallback + "; " if iso_fallback else "") + \
+                        "job→none: %s" % ex
+                    iso = "none"
+                print("   !! 隔离降级: %s" % iso_fallback)
+        if proc is None:
+            if hl_mode == "off" and iso_fallback:
+                hl_mode = "hide"
+                si_hide = True
+                env["ELANG_AI_HIDE"] = hl_mode
+            proc = subprocess.Popen([e_exe, ai_e], cwd=e_dir, env=env,
+                                    stdout=ho, stderr=ho,
+                                    startupinfo=(make_hidden_startupinfo() if si_hide
+                                                 else make_visible_startupinfo()))
         pid = proc.pid
         print("   e.exe pid = %d" % pid)
-        print("   无头模式 = %s" % hl_mode)
+        print("   隔离模式 = %s%s" % (iso, ("（%s）" % iso_fallback) if iso_fallback else ""))
+        if isinstance(proc, IsolatedProcess):
+            print("   隔离详情 = %s" % (iso_info,))
+        print("   无头模式 = %s" % ("n/a（隐藏桌面）" if iso == "desktop" else hl_mode))
+        spawn_janitor(pid, dst_fne)
         if ipc:
             pipe_name = ipc_pipe_tpl.replace("{pid}", str(pid))
             try:
@@ -1733,7 +2219,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                                 sddl=(os.environ.get("ELANG_AI_PIPE_SDDL") or None)).start()
             print("   ipc     = %s%s" % (pipe_name, ("  !! %s" % bridge.error) if bridge.error else ""))
         # IPC 启用 → 窗口隐藏交给宿主事件总线（host 引擎）；未启用 → 沿用事件+轮询（both）
-        hider = WindowHider(pid, mode=hl_mode, engine=("host" if bridge else "both"),
+        hider = WindowHider(pid, mode=("off" if iso == "desktop" else hl_mode),
+                            engine=("host" if bridge else "both"),
                             bridge=bridge).start()
         evw = EventWatch(events)
 
@@ -1846,9 +2333,20 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
                 ipc_stats = bridge.stats()
             except BaseException:                                  # noqa: BLE001
                 ipc_stats = None
-        # 精确 PID 结束；绝不 /IM（收尾失败也不改判结果）
+        # 结束本次启动的 e.exe；绝不 /IM（收尾失败也不改判结果）
+        # 隔离模式：TerminateJobObject 一次收掉 e.exe 与全部子进程；否则按精确 PID。
         try:
-            if pid:
+            if isinstance(proc, IsolatedProcess):
+                iso_stats = proc.stats()
+                proc.kill()
+                try:
+                    proc.wait(timeout=10)
+                except Exception:                                  # noqa: BLE001
+                    pass
+                _after = proc.stats()
+                iso_stats["activeAfterKill"] = _after.get("activeProcesses")
+                proc.close()
+            elif pid:
                 subprocess.run(["taskkill", "/F", "/PID", str(pid)], capture_output=True)
                 if proc:
                     try:
@@ -1997,6 +2495,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
         "errors": errors or None,
         "errorTail": error_tail,
         "dialogBlocked": start.get("dialogBlocked"),
+        "isolation": {"mode": iso, "fallbackReason": iso_fallback,
+                      **(iso_info or {}), "stats": iso_stats},
         "eventsFile": events,
         "eventsTail": evw.tail() or None,
         "dialogsSeen": [d.get("raw") for d in evw.dialogs[-8:]] or None,
@@ -2037,6 +2537,8 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
           % (status, target_exit, e_exit, run_seconds), file=sys.stderr)
     print("   panelSeen=%s logBytes=%d cleanupWarning=%s"
           % (panel_seen, log_bytes, cleanup_warn or "无"), file=sys.stderr)
+    print("   隔离=%s%s stats=%s" % (iso, ("（%s）" % iso_fallback) if iso_fallback else "",
+                                  iso_stats), file=sys.stderr)
     if hider is not None:
         print("   无头=%s" % hider.summary(), file=sys.stderr)
     if ipc_stats is not None:
@@ -2054,6 +2556,11 @@ def elaunch(ai_e: str, log: str = None, timeout: float = 30.0, stop_after: float
 
 
 def main():
+    if len(sys.argv) >= 5 and sys.argv[1] == "--janitor":
+        return janitor_main(sys.argv[2:5])
+    if len(sys.argv) >= 2 and sys.argv[1] == "--isolation-selftest":
+        print(json.dumps(isolation_selftest(), ensure_ascii=False))
+        return 0
     ap = argparse.ArgumentParser(
         description="启动易语言 IDE 调试运行加壳后的 .e，流式收调试日志并输出结果 JSON",
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -2079,12 +2586,17 @@ def main():
     ap.add_argument("--open-target", dest="open_target",
                     help="由已加壳引导工程加载 FNE 后，用官方 FN_OPEN_FILE2 打开的真实 .e")
     ap.add_argument("--visible", action="store_true", dest="visible",
-                    help="排障用：**开着窗口**跑（等价 --headless off）")
+                    help="排障用：**开着窗口**跑（等价 --headless off；隔离自动退到 job，"
+                         "窗口出现在用户桌面）")
     ap.add_argument("--headless", choices=["park", "shide", "hide", "off"],
                     default=None,
                     help="窗口策略。编译默认 off，调试运行默认 hide；hide=隐藏+移出屏幕（屏幕零窗口）；"
                          "shide=同上但主窗口走 SW_HIDE 启动；park=只移出屏幕、保持可见；"
                          "off=显示窗口")
+    ap.add_argument("--isolation", choices=["desktop", "job", "none"], default=None,
+                    help="进程隔离：desktop=私有隐藏桌面+作业对象（默认；插件的键鼠钩子/窗口碰不到"
+                         "用户桌面）；job=只有作业对象（--visible 时自动选）；none=旧行为。"
+                         "也可用环境变量 ELANG_AI_ISOLATION")
     ap.add_argument("--no-ipc", action="store_true", dest="no_ipc",
                     help="不启用宿主事件总线/双向 IPC（等价 ELANG_AI_IPC=0；行为与引入 IPC 前一致）")
     ap.add_argument("--home", help="易语言安装目录（默认 $ELANG_HOME → 注册表）")
@@ -2104,7 +2616,8 @@ def main():
                          check_only=a.check_only,
                          headless=("off" if a.visible else a.headless),
                          open_target=a.open_target,
-                         ipc=(False if a.no_ipc else None))
+                         ipc=(False if a.no_ipc else None),
+                         isolation=a.isolation)
     except SystemExit as e:
         if a.as_json:
             print(json.dumps({"ok": False, "status": "error", "error": str(e)},
